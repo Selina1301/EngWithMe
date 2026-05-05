@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - EnglishPath</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">EnglishPath</a>
+    <nav class="nav-links" aria-label="Menu quản trị">
+      <a href="admin.html">Admin</a>
+      <a href="#users">Người dùng</a>
+      <a href="#courses">Khóa học</a>
+      <a href="#questions">Câu hỏi</a>
+      <a href="#settings">Cài đặt</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="dashboard.html">Học viên</a>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <section class="page-title">
+      <p class="eyebrow">Admin dashboard</p>
+      <h1>Quản lý nội dung học tiếng Anh</h1>
+      <p>Giao diện mẫu cho quản trị viên. Khi nối backend, các form này sẽ ghi dữ liệu vào MySQL.</p>
+    </section>
+
+    <section class="section compact">
+      <div class="stat-grid">
+        <article class="stat-card">
+          <span>Người học</span>
+          <strong>1,248</strong>
+        </article>
+        <article class="stat-card">
+          <span>Khóa học</span>
+          <strong>12</strong>
+        </article>
+        <article class="stat-card">
+          <span>Câu hỏi</span>
+          <strong>420</strong>
+        </article>
+        <article class="stat-card">
+          <span>Doanh thu tháng</span>
+          <strong>18.5M</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section-muted" id="courses">
+      <div class="admin-layout">
+        <form class="admin-form">
+          <h2>Thêm bài học</h2>
+          <label>Tên bài học <input type="text" value="Greetings and Introductions"></label>
+          <label>Loại bài học
+            <select>
+              <option>Vocabulary</option>
+              <option>Grammar</option>
+              <option>Listening</option>
+              <option>Speaking</option>
+              <option>Reading</option>
+            </select>
+          </label>
+          <label>Nội dung <textarea rows="5">Mục tiêu: chào hỏi và giới thiệu bản thân.</textarea></label>
+          <button class="btn btn-primary" type="button">Lưu bài học mẫu</button>
+        </form>
+        <div class="table-card" id="users">
+          <h2>Quản lý người dùng</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Tên</th>
+                <th>Email</th>
+                <th>Vai trò</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Nguyễn Văn A</td>
+                <td>student@example.com</td>
+                <td>Student</td>
+                <td>Active</td>
+              </tr>
+              <tr>
+                <td>Admin Demo</td>
+                <td>admin@example.com</td>
+                <td>Admin</td>
+                <td>Active</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="questions">
+      <div class="table-card">
+        <h2>Ngân hàng câu hỏi mẫu</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Câu hỏi</th>
+              <th>Loại</th>
+              <th>Đáp án đúng</th>
+              <th>Trình độ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>She ___ to school every day.</td>
+              <td>Trắc nghiệm</td>
+              <td>goes</td>
+              <td>A2</td>
+            </tr>
+            <tr>
+              <td>Nice to meet you.</td>
+              <td>Dịch nghĩa</td>
+              <td>Rất vui được gặp bạn</td>
+              <td>A1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section section-muted" id="settings">
+      <div class="section-heading">
+        <p class="eyebrow">Cài đặt hệ thống</p>
+        <h2>Những phần sẽ nối backend</h2>
+      </div>
+      <div class="feature-grid three">
+        <article class="feature-card"><h3>Gói học</h3><p>Free, Pro, Premium.</p></article>
+        <article class="feature-card"><h3>Thanh toán</h3><p>VNPay, MoMo, Stripe hoặc PayPal.</p></article>
+        <article class="feature-card"><h3>Email</h3><p>Xác thực tài khoản và nhắc lịch học.</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <strong>EnglishPath</strong>
+      <p>Học tiếng Anh theo lộ trình cá nhân.</p>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">Trang chủ</a>
+      <a href="dashboard.html">Dashboard học viên</a>
+    </div>
+    <p>&copy; <span data-current-year></span> EnglishPath.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

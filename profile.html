@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hồ sơ cá nhân - EnglishPath</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">EnglishPath</a>
+    <nav class="nav-links" aria-label="Menu học viên">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="lessons.html">Lộ trình</a>
+      <a href="results.html">Kết quả</a>
+      <a href="profile.html">Hồ sơ</a>
+    </nav>
+  </header>
+
+  <main class="page-main">
+    <section class="page-title">
+      <p class="eyebrow">Profile</p>
+      <h1>Hồ sơ cá nhân</h1>
+      <p>Thông tin tài khoản, trình độ hiện tại và mục tiêu học tập.</p>
+    </section>
+
+    <section class="section compact">
+      <form class="auth-card profile-card">
+        <label>Họ tên <input type="text" value="Nguyễn Văn A"></label>
+        <label>Email <input type="email" value="student@example.com"></label>
+        <label>Trình độ hiện tại
+          <select>
+            <option>A1</option>
+            <option selected>A2</option>
+            <option>B1</option>
+            <option>B2</option>
+            <option>C1</option>
+          </select>
+        </label>
+        <label>Mục tiêu học <input type="text" value="Giao tiếp hằng ngày"></label>
+        <button class="btn btn-primary" type="button">Lưu thay đổi mẫu</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div><strong>EnglishPath</strong><p>Học tiếng Anh theo lộ trình cá nhân.</p></div>
+    <div class="footer-links"><a href="dashboard.html">Dashboard</a><a href="results.html">Kết quả</a></div>
+    <p>&copy; <span data-current-year></span> EnglishPath.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

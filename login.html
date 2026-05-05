@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập - EnglishPath</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">EnglishPath</a>
+    <nav class="nav-links" aria-label="Menu chính">
+      <a href="index.html">Trang chủ</a>
+      <a href="lessons.html">Khóa học</a>
+      <a href="quiz.html">Kiểm tra</a>
+      <a href="vocabulary.html">Từ vựng</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-primary" href="register.html">Đăng ký</a>
+    </div>
+  </header>
+
+  <main class="auth-page">
+    <form class="auth-card" data-login-form>
+      <p class="eyebrow">Welcome back</p>
+      <h1>Đăng nhập</h1>
+      <label>Email <input type="email" name="email" placeholder="student@example.com" required></label>
+      <label>Mật khẩu <input type="password" name="password" placeholder="••••••••" required></label>
+      <button class="btn btn-primary" type="submit">Đăng nhập</button>
+      <p class="form-note">Chưa có tài khoản? <a href="register.html">Đăng ký ngay</a></p>
+      <p class="feedback" data-auth-feedback></p>
+    </form>
+  </main>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luyện nói - EnglishPath</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">EnglishPath</a>
+    <nav class="nav-links" aria-label="Menu học viên">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="lessons.html">Lộ trình</a>
+      <a href="vocabulary.html">Từ vựng</a>
+      <a href="grammar.html">Ngữ pháp</a>
+      <a href="listening.html">Nghe</a>
+      <a href="speaking.html">Nói</a>
+      <a href="reading.html">Đọc</a>
+    </nav>
+  </header>
+
+  <main class="page-main">
+    <section class="page-title">
+      <p class="eyebrow">Speaking</p>
+      <h1>Luyện nói với câu mẫu</h1>
+      <p>Bản MVP cho phép nghe câu mẫu, ghi âm, nghe lại và tự so sánh phát âm.</p>
+    </section>
+
+    <section class="section compact">
+      <div class="speaking-panel">
+        <div>
+          <p class="eyebrow">Câu mẫu</p>
+          <h2>Hello, my name is Anna. Nice to meet you.</h2>
+          <p>Nghe mẫu, bấm ghi âm, sau đó nghe lại bản ghi của mình.</p>
+        </div>
+        <div class="recorder-box">
+          <button class="btn btn-primary" type="button" data-record-start>Bắt đầu ghi âm</button>
+          <button class="btn btn-secondary" type="button" data-record-stop disabled>Dừng</button>
+          <audio controls data-record-audio></audio>
+          <p class="feedback" data-record-feedback>Chưa có bản ghi.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div><strong>EnglishPath</strong><p>Học tiếng Anh theo lộ trình cá nhân.</p></div>
+    <div class="footer-links"><a href="reading.html">Luyện đọc</a><a href="quiz.html">Quiz</a></div>
+    <p>&copy; <span data-current-year></span> EnglishPath.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

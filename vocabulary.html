@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Từ vựng - EnglishPath</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">EnglishPath</a>
+    <nav class="nav-links" aria-label="Menu chính">
+      <a href="index.html">Trang chủ</a>
+      <a href="lessons.html">Khóa học</a>
+      <a href="quiz.html">Kiểm tra</a>
+      <a href="vocabulary.html">Từ vựng</a>
+      <a href="blog.html">Blog</a>
+      <a href="pricing.html">Bảng giá</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="login.html">Đăng nhập</a>
+      <a class="btn btn-primary" href="register.html">Đăng ký</a>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <section class="page-title">
+      <p class="eyebrow">Vocabulary</p>
+      <h1>Học từ vựng bằng flashcard</h1>
+      <p>Mỗi thẻ gồm từ tiếng Anh, phiên âm, nghĩa tiếng Việt, ví dụ, nhóm chủ đề và nút lưu để ôn lại.</p>
+    </section>
+
+    <section class="section compact">
+      <div class="toolbar">
+        <label for="vocabFilter">Chủ đề</label>
+        <select id="vocabFilter">
+          <option value="all">Tất cả</option>
+          <option value="greetings">Greetings</option>
+          <option value="daily">Daily activities</option>
+          <option value="study">Study</option>
+        </select>
+        <span class="saved-count" data-saved-count>0 từ đã lưu</span>
+      </div>
+      <div class="vocab-grid" data-vocab-list></div>
+    </section>
+
+    <section class="section section-muted">
+      <div class="section-heading">
+        <p class="eyebrow">Bài tập nhanh</p>
+        <h2>Chọn nghĩa đúng</h2>
+      </div>
+      <div class="mini-quiz" data-vocab-quiz>
+        <p><strong>improve</strong> có nghĩa là gì?</p>
+        <button data-answer="wrong">giới thiệu</button>
+        <button data-answer="correct">cải thiện</button>
+        <button data-answer="wrong">lắng nghe</button>
+        <p class="feedback" data-vocab-feedback></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <strong>EnglishPath</strong>
+      <p>Học tiếng Anh theo lộ trình cá nhân.</p>
+    </div>
+    <div class="footer-links">
+      <a href="grammar.html">Ngữ pháp</a>
+      <a href="listening.html">Luyện nghe</a>
+      <a href="quiz.html">Quiz</a>
+    </div>
+    <p>&copy; <span data-current-year></span> EnglishPath.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

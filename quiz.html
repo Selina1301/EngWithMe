@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kiểm tra trình độ - EnglishPath</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">EnglishPath</a>
+    <nav class="nav-links" aria-label="Menu chính">
+      <a href="index.html">Trang chủ</a>
+      <a href="lessons.html">Khóa học</a>
+      <a href="quiz.html">Kiểm tra</a>
+      <a href="vocabulary.html">Từ vựng</a>
+      <a href="blog.html">Blog</a>
+      <a href="pricing.html">Bảng giá</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="login.html">Đăng nhập</a>
+      <a class="btn btn-primary" href="register.html">Đăng ký</a>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <section class="page-title">
+      <p class="eyebrow">Placement test</p>
+      <h1>Kiểm tra trình độ tiếng Anh</h1>
+      <p>Bản MVP dùng bộ câu hỏi ngắn để phân loại trình độ và đề xuất lộ trình học phù hợp.</p>
+    </section>
+
+    <section class="section compact">
+      <form class="quiz-form" data-quiz-form>
+        <div data-quiz-list></div>
+        <div class="quiz-actions">
+          <button class="btn btn-primary" type="submit">Nộp bài</button>
+          <button class="btn btn-secondary" type="button" data-reset-quiz>Làm lại</button>
+        </div>
+      </form>
+      <div class="result-box" data-quiz-result hidden></div>
+    </section>
+
+    <section class="section section-muted">
+      <div class="section-heading">
+        <p class="eyebrow">Dạng câu hỏi</p>
+        <h2>Hệ thống test có thể mở rộng</h2>
+      </div>
+      <div class="feature-grid three">
+        <article class="feature-card">
+          <h3>Trắc nghiệm</h3>
+          <p>Chọn đáp án đúng về từ vựng, ngữ pháp và đọc hiểu.</p>
+        </article>
+        <article class="feature-card">
+          <h3>Điền từ</h3>
+          <p>Hoàn thành câu, transcript hoặc đoạn văn ngắn.</p>
+        </article>
+        <article class="feature-card">
+          <h3>Nghe hiểu</h3>
+          <p>Nghe audio/video rồi chọn đáp án hoặc điền từ còn thiếu.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <strong>EnglishPath</strong>
+      <p>Học tiếng Anh theo lộ trình cá nhân.</p>
+    </div>
+    <div class="footer-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="results.html">Kết quả</a>
+      <a href="lessons.html">Bài học</a>
+    </div>
+    <p>&copy; <span data-current-year></span> EnglishPath.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
