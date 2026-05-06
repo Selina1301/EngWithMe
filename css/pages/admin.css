@@ -1,0 +1,49 @@
+/* Admin page only */
+.admin-page .page-title {
+  padding-bottom: 42px;
+}
+
+.admin-page .admin-layout {
+  grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
+  align-items: start;
+}
+
+.admin-page .admin-form,
+.admin-page .table-card {
+  border-color: rgba(125, 211, 252, 0.28);
+}
+
+.admin-page .admin-form {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-page .admin-form label {
+  display: grid;
+  gap: 7px;
+  color: #f8fbff;
+  font-weight: 800;
+}
+
+.admin-page .table-card {
+  overflow-x: auto;
+}
+
+.admin-page table {
+  min-width: 620px;
+}
+
+.admin-page .stat-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.admin-page .stat-card {
+  min-height: 132px;
+}
+
+.admin-page .stat-card:hover,
+.admin-page .admin-form:focus-within,
+.admin-page .table-card:hover {
+  border-color: rgba(74, 222, 128, 0.58);
+  box-shadow: var(--glow), 0 26px 70px rgba(0, 0, 0, 0.42);
+}

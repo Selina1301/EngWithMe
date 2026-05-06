@@ -1,0 +1,28 @@
+/* Tablet / iPad layout */
+@media (min-width: 681px) and (max-width: 1024px) {
+  .site-header {
+    gap: 18px;
+  }
+
+  .nav-links {
+    gap: 8px;
+  }
+
+  .hero h1 {
+    font-size: 56px;
+  }
+
+  .feature-grid,
+  .course-grid,
+  .article-grid,
+  .pricing-grid,
+  .stat-grid,
+  .home-feature-grid,
+  .admin-page .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-page .admin-layout {
+    grid-template-columns: 1fr;
+  }
+}
