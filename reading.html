@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Luyện đọc - EnglishPath</title>
   <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/pages/study.css">
+  <link rel="stylesheet" href="css/pages/reading.css">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
@@ -12,54 +14,428 @@
 <body>
   <header class="site-header">
     <a class="brand" href="index.html">EnglishPath</a>
-    <nav class="nav-links" aria-label="Menu học viên">
-      <a href="dashboard.html">Dashboard</a>
-      <a href="lessons.html">Lộ trình</a>
+    <nav class="nav-links" aria-label="Menu chính">
+      <a href="index.html">Trang chủ</a>
       <a href="vocabulary.html">Từ vựng</a>
-      <a href="grammar.html">Ngữ pháp</a>
-      <a href="listening.html">Nghe</a>
-      <a href="speaking.html">Nói</a>
       <a href="reading.html">Đọc</a>
+      <a href="grammar.html">Ngữ pháp</a>
+      <a href="quiz.html">Đề thi</a>
+      <a href="blog.html">Blog</a>
+      <a href="pricing.html">Bảng giá</a>
     </nav>
   </header>
 
-  <main class="page-main">
-    <section class="page-title">
+  <main class="study-page reading-study-page">
+    <section class="study-hero">
       <p class="eyebrow">Reading</p>
-      <h1>Đọc hiểu đoạn văn ngắn</h1>
-      <p>Luyện đọc theo cấp độ với từ vựng quan trọng và câu hỏi kiểm tra ý chính.</p>
+      <h1>9 cuộc hội thoại ngắn theo cấp độ</h1>
+      <p>Chọn Easy, Medium hoặc Hard để đưa nhóm đó lên đầu danh sách. Mỗi bài là một card hội thoại đầy đủ, phần dịch tiếng Việt được che mặc định và có thể bật lại khi cần so nghĩa.</p>
     </section>
 
-    <section class="section compact lesson-layout">
-      <article class="reading-panel">
-        <h2>My Daily Routine</h2>
-        <p>I wake up at six o'clock every morning. I brush my teeth, have breakfast, and go to school. In the evening, I study English for twenty minutes.</p>
-        <h3>Từ khóa</h3>
-        <ul class="check-list">
-          <li>wake up: thức dậy</li>
-          <li>breakfast: bữa sáng</li>
-          <li>evening: buổi tối</li>
-        </ul>
-      </article>
-      <aside class="lesson-sidebar">
-        <h3>Câu hỏi</h3>
-        <div class="mini-quiz">
-          <p>When does the student study English?</p>
-          <button data-answer="wrong">In the morning</button>
-          <button data-answer="correct">In the evening</button>
-          <button data-answer="wrong">At school</button>
-          <p class="feedback"></p>
+    <section class="study-shell">
+      <div class="study-toolbar">
+        <div class="level-tabs compact-tabs" aria-label="Ưu tiên cấp độ đọc">
+          <button class="level-tab active" type="button" data-reading-level-tab="easy">Easy</button>
+          <button class="level-tab" type="button" data-reading-level-tab="medium">Medium</button>
+          <button class="level-tab" type="button" data-reading-level-tab="hard">Hard</button>
         </div>
-      </aside>
+        <label class="study-search">
+          <i class="ti-search"></i>
+          <input type="search" placeholder="Tìm chủ đề hoặc câu hội thoại" data-reading-search>
+        </label>
+        <button class="schedule-button" type="button" data-schedule-demo data-demo-title="Lịch trình đọc đang cập nhật" data-demo-message="Bản demo lịch trình đọc sẽ xếp 9 hội thoại theo ngày, đánh dấu bài đã xem và gợi ý bài cần ôn lại.">
+          <i class="ti-calendar"></i>
+          Lịch trình
+        </button>
+      </div>
+
+      <div class="reading-layout">
+        <aside class="reading-topic-list" aria-label="Danh sách chủ đề đọc">
+          <button class="reading-topic-card is-active" type="button" data-reading-topic-link="morning-market" data-reading-level="easy" data-original-index="0">
+            <span>Easy</span>
+            <strong>A Morning Market</strong>
+            <small>6 câu thoại</small>
+            <i class="topic-check ti-check" aria-hidden="true"></i>
+          </button>
+          <button class="reading-topic-card" type="button" data-reading-topic-link="small-room-chat" data-reading-level="easy" data-original-index="1">
+            <span>Easy</span>
+            <strong>My Small Room</strong>
+            <small>6 câu thoại</small>
+            <i class="topic-check ti-check" aria-hidden="true"></i>
+          </button>
+          <button class="reading-topic-card" type="button" data-reading-topic-link="ordering-breakfast" data-reading-level="easy" data-original-index="2">
+            <span>Easy</span>
+            <strong>Ordering Breakfast</strong>
+            <small>6 câu thoại</small>
+            <i class="topic-check ti-check" aria-hidden="true"></i>
+          </button>
+          <button class="reading-topic-card" type="button" data-reading-topic-link="asking-directions" data-reading-level="easy" data-original-index="3">
+            <span>Easy</span>
+            <strong>Asking for Directions</strong>
+            <small>6 câu thoại</small>
+            <i class="topic-check ti-check" aria-hidden="true"></i>
+          </button>
+          <button class="reading-topic-card" type="button" data-reading-topic-link="library-day" data-reading-level="medium" data-original-index="4">
+            <span>Medium</span>
+            <strong>A Quiet Day at the Library</strong>
+            <small>7 câu thoại</small>
+            <i class="topic-check ti-check" aria-hidden="true"></i>
+          </button>
+          <button class="reading-topic-card" type="button" data-reading-topic-link="rainy-commute" data-reading-level="medium" data-original-index="5">
+            <span>Medium</span>
+            <strong>A Rainy Commute</strong>
+            <small>7 câu thoại</small>
+            <i class="topic-check ti-check" aria-hidden="true"></i>
+          </button>
+          <button class="reading-topic-card" type="button" data-reading-topic-link="weekend-study" data-reading-level="medium" data-original-index="6">
+            <span>Medium</span>
+            <strong>Weekend Study Plan</strong>
+            <small>7 câu thoại</small>
+            <i class="topic-check ti-check" aria-hidden="true"></i>
+          </button>
+          <button class="reading-topic-card" type="button" data-reading-topic-link="job-interview" data-reading-level="hard" data-original-index="7">
+            <span>Hard</span>
+            <strong>Job Interview Practice</strong>
+            <small>8 câu thoại</small>
+            <i class="topic-check ti-check" aria-hidden="true"></i>
+          </button>
+          <button class="reading-topic-card" type="button" data-reading-topic-link="community-project" data-reading-level="hard" data-original-index="8">
+            <span>Hard</span>
+            <strong>Community Project</strong>
+            <small>8 câu thoại</small>
+            <i class="topic-check ti-check" aria-hidden="true"></i>
+          </button>
+        </aside>
+
+        <div class="reading-passages" data-reading-passages>
+          <article class="reading-passage translations-muted" id="morning-market" data-reading-level="easy" data-original-index="0" data-reading-topic>
+            <div class="reading-passage-head">
+              <div>
+                <span class="level-chip easy">Easy</span>
+                <h2>A Morning Market</h2>
+                <p>Chủ đề: mua đồ ăn buổi sáng và hỏi giá đơn giản.</p>
+              </div>
+              <button class="translation-toggle" type="button" data-toggle-translation="morning-market">
+                <i class="ti-eye"></i>
+                Bật dịch
+              </button>
+            </div>
+            <div class="sentence-stack dialogue-card">
+              <div class="sentence-row"><p class="sentence-en">Customer: Good morning. Are these tomatoes fresh?</p><p class="sentence-vi">Khách hàng: Chào buổi sáng. Những quả cà chua này có tươi không?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Seller: Yes, they arrived early this morning.</p><p class="sentence-vi">Người bán: Có, chúng được chuyển đến sớm sáng nay.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Customer: I need half a kilo, please.</p><p class="sentence-vi">Khách hàng: Tôi cần nửa ký, làm ơn.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Seller: Here you are. Do you want eggs too?</p><p class="sentence-vi">Người bán: Của bạn đây. Bạn có muốn mua thêm trứng không?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Customer: Yes, six eggs and a small bag of rice.</p><p class="sentence-vi">Khách hàng: Có, sáu quả trứng và một túi gạo nhỏ.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Seller: That is thirty thousand dong altogether.</p><p class="sentence-vi">Người bán: Tổng cộng là ba mươi nghìn đồng.</p></div>
+            </div>
+          </article>
+
+          <article class="reading-passage translations-muted" id="small-room-chat" data-reading-level="easy" data-original-index="1" data-reading-topic>
+            <div class="reading-passage-head">
+              <div>
+                <span class="level-chip easy">Easy</span>
+                <h2>My Small Room</h2>
+                <p>Chủ đề: mô tả phòng, đồ vật và thói quen học.</p>
+              </div>
+              <button class="translation-toggle" type="button" data-toggle-translation="small-room-chat">
+                <i class="ti-eye"></i>
+                Bật dịch
+              </button>
+            </div>
+            <div class="sentence-stack dialogue-card">
+              <div class="sentence-row"><p class="sentence-en">Lan: Is this your room?</p><p class="sentence-vi">Lan: Đây là phòng của bạn à?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Minh: Yes, it is small, but I like it.</p><p class="sentence-vi">Minh: Đúng, nó nhỏ, nhưng tôi thích nó.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Lan: Your desk is next to the window.</p><p class="sentence-vi">Lan: Bàn học của bạn ở bên cạnh cửa sổ.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Minh: I study English here every night.</p><p class="sentence-vi">Minh: Tôi học tiếng Anh ở đây mỗi tối.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Lan: The room looks clean and quiet.</p><p class="sentence-vi">Lan: Căn phòng trông sạch sẽ và yên tĩnh.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Minh: That helps me remember new words.</p><p class="sentence-vi">Minh: Điều đó giúp tôi nhớ từ mới.</p></div>
+            </div>
+          </article>
+
+          <article class="reading-passage translations-muted" id="ordering-breakfast" data-reading-level="easy" data-original-index="2" data-reading-topic>
+            <div class="reading-passage-head">
+              <div>
+                <span class="level-chip easy">Easy</span>
+                <h2>Ordering Breakfast</h2>
+                <p>Chủ đề: gọi món, hỏi đồ uống và cảm ơn lịch sự.</p>
+              </div>
+              <button class="translation-toggle" type="button" data-toggle-translation="ordering-breakfast">
+                <i class="ti-eye"></i>
+                Bật dịch
+              </button>
+            </div>
+            <div class="sentence-stack dialogue-card">
+              <div class="sentence-row"><p class="sentence-en">Waiter: Good morning. What would you like?</p><p class="sentence-vi">Phục vụ: Chào buổi sáng. Bạn muốn dùng gì?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Mai: I would like a bowl of noodles.</p><p class="sentence-vi">Mai: Tôi muốn một tô mì.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Waiter: Would you like tea or water?</p><p class="sentence-vi">Phục vụ: Bạn muốn trà hay nước lọc?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Mai: Water, please.</p><p class="sentence-vi">Mai: Nước lọc, làm ơn.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Waiter: Your food will be ready soon.</p><p class="sentence-vi">Phục vụ: Món của bạn sẽ sẵn sàng sớm.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Mai: Thank you very much.</p><p class="sentence-vi">Mai: Cảm ơn bạn rất nhiều.</p></div>
+            </div>
+          </article>
+
+          <article class="reading-passage translations-muted" id="asking-directions" data-reading-level="easy" data-original-index="3" data-reading-topic>
+            <div class="reading-passage-head">
+              <div>
+                <span class="level-chip easy">Easy</span>
+                <h2>Asking for Directions</h2>
+                <p>Chủ đề: hỏi đường đến thư viện bằng câu ngắn.</p>
+              </div>
+              <button class="translation-toggle" type="button" data-toggle-translation="asking-directions">
+                <i class="ti-eye"></i>
+                Bật dịch
+              </button>
+            </div>
+            <div class="sentence-stack dialogue-card">
+              <div class="sentence-row"><p class="sentence-en">Tourist: Excuse me. Where is the library?</p><p class="sentence-vi">Du khách: Xin lỗi. Thư viện ở đâu?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Student: It is near the coffee shop.</p><p class="sentence-vi">Học sinh: Nó ở gần quán cà phê.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Tourist: Is it far from here?</p><p class="sentence-vi">Du khách: Nó có xa chỗ này không?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Student: No, walk straight for five minutes.</p><p class="sentence-vi">Học sinh: Không, đi thẳng trong năm phút.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Tourist: Should I turn left?</p><p class="sentence-vi">Du khách: Tôi có nên rẽ trái không?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Student: Yes, turn left at the second corner.</p><p class="sentence-vi">Học sinh: Có, rẽ trái ở góc thứ hai.</p></div>
+            </div>
+          </article>
+
+          <article class="reading-passage translations-muted" id="library-day" data-reading-level="medium" data-original-index="4" data-reading-topic>
+            <div class="reading-passage-head">
+              <div>
+                <span class="level-chip medium">Medium</span>
+                <h2>A Quiet Day at the Library</h2>
+                <p>Chủ đề: học tập, mượn sách và giữ tập trung.</p>
+              </div>
+              <button class="translation-toggle" type="button" data-toggle-translation="library-day">
+                <i class="ti-eye"></i>
+                Bật dịch
+              </button>
+            </div>
+            <div class="sentence-stack dialogue-card">
+              <div class="sentence-row"><p class="sentence-en">Librarian: Do you need help finding a book?</p><p class="sentence-vi">Thủ thư: Bạn có cần giúp tìm một cuốn sách không?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Student: Yes, I need a simple English novel.</p><p class="sentence-vi">Học sinh: Có, tôi cần một tiểu thuyết tiếng Anh đơn giản.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Librarian: The graded readers are on the second shelf.</p><p class="sentence-vi">Thủ thư: Các sách đọc phân cấp nằm trên kệ thứ hai.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Student: I also want a quiet seat near the window.</p><p class="sentence-vi">Học sinh: Tôi cũng muốn một chỗ ngồi yên tĩnh gần cửa sổ.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Librarian: That table is free until five o'clock.</p><p class="sentence-vi">Thủ thư: Cái bàn đó còn trống đến năm giờ.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Student: Great. I will review grammar before reading.</p><p class="sentence-vi">Học sinh: Tuyệt. Tôi sẽ ôn ngữ pháp trước khi đọc.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Librarian: Please keep your phone on silent mode.</p><p class="sentence-vi">Thủ thư: Vui lòng để điện thoại của bạn ở chế độ im lặng.</p></div>
+            </div>
+          </article>
+
+          <article class="reading-passage translations-muted" id="rainy-commute" data-reading-level="medium" data-original-index="5" data-reading-topic>
+            <div class="reading-passage-head">
+              <div>
+                <span class="level-chip medium">Medium</span>
+                <h2>A Rainy Commute</h2>
+                <p>Chủ đề: đi lại, thời tiết và đến lớp muộn.</p>
+              </div>
+              <button class="translation-toggle" type="button" data-toggle-translation="rainy-commute">
+                <i class="ti-eye"></i>
+                Bật dịch
+              </button>
+            </div>
+            <div class="sentence-stack dialogue-card">
+              <div class="sentence-row"><p class="sentence-en">Teacher: You look tired. Was the traffic bad?</p><p class="sentence-vi">Giáo viên: Em trông mệt. Giao thông có tệ không?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Student: Yes, the rain started when I left home.</p><p class="sentence-vi">Học sinh: Có, mưa bắt đầu khi em rời nhà.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Teacher: Did you bring an umbrella?</p><p class="sentence-vi">Giáo viên: Em có mang ô không?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Student: I did, but the bus stop was very crowded.</p><p class="sentence-vi">Học sinh: Em có mang, nhưng trạm xe buýt rất đông.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Teacher: At least your notebook stayed dry.</p><p class="sentence-vi">Giáo viên: Ít nhất thì vở của em vẫn khô.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Student: Yes, I kept it inside my bag.</p><p class="sentence-vi">Học sinh: Vâng, em giữ nó bên trong túi.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Teacher: Next time, check the weather before leaving.</p><p class="sentence-vi">Giáo viên: Lần tới, hãy kiểm tra thời tiết trước khi rời đi.</p></div>
+            </div>
+          </article>
+
+          <article class="reading-passage translations-muted" id="weekend-study" data-reading-level="medium" data-original-index="6" data-reading-topic>
+            <div class="reading-passage-head">
+              <div>
+                <span class="level-chip medium">Medium</span>
+                <h2>Weekend Study Plan</h2>
+                <p>Chủ đề: lập kế hoạch học cuối tuần và chia thời gian.</p>
+              </div>
+              <button class="translation-toggle" type="button" data-toggle-translation="weekend-study">
+                <i class="ti-eye"></i>
+                Bật dịch
+              </button>
+            </div>
+            <div class="sentence-stack dialogue-card">
+              <div class="sentence-row"><p class="sentence-en">Nam: Do you want to study together this weekend?</p><p class="sentence-vi">Nam: Bạn có muốn học cùng nhau cuối tuần này không?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Hoa: Yes, but I only have Saturday morning free.</p><p class="sentence-vi">Hoa: Có, nhưng tôi chỉ rảnh sáng thứ Bảy.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Nam: That works. We can review vocabulary first.</p><p class="sentence-vi">Nam: Như vậy được. Chúng ta có thể ôn từ vựng trước.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Hoa: After that, I want to practice reading aloud.</p><p class="sentence-vi">Hoa: Sau đó, tôi muốn luyện đọc thành tiếng.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Nam: Good idea. It will help our pronunciation.</p><p class="sentence-vi">Nam: Ý hay. Việc đó sẽ giúp phát âm của chúng ta.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Hoa: Let us study for ninety minutes, then take a break.</p><p class="sentence-vi">Hoa: Hãy học trong chín mươi phút, rồi nghỉ giải lao.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Nam: I will bring my grammar notes.</p><p class="sentence-vi">Nam: Tôi sẽ mang ghi chú ngữ pháp của tôi.</p></div>
+            </div>
+          </article>
+
+          <article class="reading-passage translations-muted" id="job-interview" data-reading-level="hard" data-original-index="7" data-reading-topic>
+            <div class="reading-passage-head">
+              <div>
+                <span class="level-chip hard">Hard</span>
+                <h2>Job Interview Practice</h2>
+                <p>Chủ đề: phỏng vấn, kinh nghiệm và cách diễn đạt chuyên nghiệp.</p>
+              </div>
+              <button class="translation-toggle" type="button" data-toggle-translation="job-interview">
+                <i class="ti-eye"></i>
+                Bật dịch
+              </button>
+            </div>
+            <div class="sentence-stack dialogue-card">
+              <div class="sentence-row"><p class="sentence-en">Interviewer: Could you briefly introduce your recent experience?</p><p class="sentence-vi">Người phỏng vấn: Bạn có thể giới thiệu ngắn gọn kinh nghiệm gần đây của mình không?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Candidate: I worked as a support assistant for an online learning team.</p><p class="sentence-vi">Ứng viên: Tôi đã làm trợ lý hỗ trợ cho một nhóm học trực tuyến.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Interviewer: What was your main responsibility in that role?</p><p class="sentence-vi">Người phỏng vấn: Trách nhiệm chính của bạn trong vai trò đó là gì?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Candidate: I answered student questions and organized weekly progress reports.</p><p class="sentence-vi">Ứng viên: Tôi trả lời câu hỏi của học viên và sắp xếp báo cáo tiến độ hằng tuần.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Interviewer: How did you handle urgent problems?</p><p class="sentence-vi">Người phỏng vấn: Bạn đã xử lý các vấn đề khẩn cấp như thế nào?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Candidate: I checked the facts first, then contacted the right person immediately.</p><p class="sentence-vi">Ứng viên: Tôi kiểm tra sự thật trước, sau đó liên hệ đúng người ngay lập tức.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Interviewer: That sounds practical and organized.</p><p class="sentence-vi">Người phỏng vấn: Điều đó nghe thực tế và có tổ chức.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Candidate: Thank you. I try to stay calm under pressure.</p><p class="sentence-vi">Ứng viên: Cảm ơn. Tôi cố gắng giữ bình tĩnh dưới áp lực.</p></div>
+            </div>
+          </article>
+
+          <article class="reading-passage translations-muted" id="community-project" data-reading-level="hard" data-original-index="8" data-reading-topic>
+            <div class="reading-passage-head">
+              <div>
+                <span class="level-chip hard">Hard</span>
+                <h2>Community Project</h2>
+                <p>Chủ đề: đề xuất dự án, phân công và thống nhất kế hoạch.</p>
+              </div>
+              <button class="translation-toggle" type="button" data-toggle-translation="community-project">
+                <i class="ti-eye"></i>
+                Bật dịch
+              </button>
+            </div>
+            <div class="sentence-stack dialogue-card">
+              <div class="sentence-row"><p class="sentence-en">Leader: We need a clear plan before presenting the project.</p><p class="sentence-vi">Trưởng nhóm: Chúng ta cần một kế hoạch rõ ràng trước khi trình bày dự án.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Member: The main goal is to help students practice English after class.</p><p class="sentence-vi">Thành viên: Mục tiêu chính là giúp học sinh luyện tiếng Anh sau giờ học.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Leader: Good. Who will prepare the weekly conversation topics?</p><p class="sentence-vi">Trưởng nhóm: Tốt. Ai sẽ chuẩn bị chủ đề hội thoại hằng tuần?</p></div>
+              <div class="sentence-row"><p class="sentence-en">Member: I can do that if someone else designs the posters.</p><p class="sentence-vi">Thành viên: Tôi có thể làm việc đó nếu người khác thiết kế áp phích.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Leader: I will ask Linh to handle the visual materials.</p><p class="sentence-vi">Trưởng nhóm: Tôi sẽ nhờ Linh phụ trách tài liệu hình ảnh.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Member: We should also collect feedback after each meeting.</p><p class="sentence-vi">Thành viên: Chúng ta cũng nên thu thập phản hồi sau mỗi buổi gặp.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Leader: Agreed. That will show whether the project is useful.</p><p class="sentence-vi">Trưởng nhóm: Đồng ý. Điều đó sẽ cho thấy dự án có hữu ích hay không.</p></div>
+              <div class="sentence-row"><p class="sentence-en">Member: Then we can improve the next session based on real comments.</p><p class="sentence-vi">Thành viên: Sau đó chúng ta có thể cải thiện buổi tiếp theo dựa trên góp ý thật.</p></div>
+            </div>
+          </article>
+        </div>
+      </div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div><strong>EnglishPath</strong><p>Học tiếng Anh theo lộ trình cá nhân.</p></div>
-    <div class="footer-links"><a href="results.html">Kết quả</a><a href="quiz.html">Quiz</a></div>
+    <div class="footer-links"><a href="grammar.html">Ngữ pháp</a><a href="quiz.html">Đề thi</a></div>
     <p>&copy; <span data-current-year></span> EnglishPath.</p>
   </footer>
 
+  <script src="js/core.js"></script>
+  <script src="js/demo-actions.js"></script>
   <script src="js/main.js"></script>
+  <script>
+    const readingLevelTabs = document.querySelectorAll("[data-reading-level-tab]");
+    const readingTopicList = document.querySelector(".reading-topic-list");
+    const readingTopicCards = Array.from(document.querySelectorAll("[data-reading-topic-link]"));
+    const readingPassageList = document.querySelector("[data-reading-passages]");
+    const readingPassages = Array.from(document.querySelectorAll("[data-reading-topic]"));
+    const readingSearch = document.querySelector("[data-reading-search]");
+    const levelOrder = ["easy", "medium", "hard"];
+    const viewedStorageKey = "englishPathViewedReadingTopics";
+    const viewedTopics = new Set(JSON.parse(localStorage.getItem(viewedStorageKey) || "[]"));
+    let activeReadingLevel = "easy";
+
+    function getReadingSortValue(element) {
+      const level = element.dataset.readingLevel;
+      const base = level === activeReadingLevel ? 0 : levelOrder.indexOf(level) + 1;
+      return base * 100 + Number(element.dataset.originalIndex || 0);
+    }
+
+    function updateViewedCards() {
+      readingTopicCards.forEach((card) => {
+        card.classList.toggle("is-viewed", viewedTopics.has(card.dataset.readingTopicLink));
+      });
+    }
+
+    function sortReadingItems() {
+      [...readingTopicCards]
+        .sort((a, b) => getReadingSortValue(a) - getReadingSortValue(b))
+        .forEach((card) => readingTopicList.appendChild(card));
+
+      [...readingPassages]
+        .sort((a, b) => getReadingSortValue(a) - getReadingSortValue(b))
+        .forEach((passage) => readingPassageList.appendChild(passage));
+    }
+
+    function setActiveTopic(topicId, shouldScroll = false, markViewed = false) {
+      const target = document.getElementById(topicId);
+      const card = document.querySelector(`[data-reading-topic-link="${topicId}"]`);
+      if (!target || !card) return;
+
+      readingTopicCards.forEach((item) => item.classList.remove("is-active"));
+      card.classList.add("is-active");
+
+      if (markViewed) {
+        viewedTopics.add(topicId);
+        localStorage.setItem(viewedStorageKey, JSON.stringify([...viewedTopics]));
+        updateViewedCards();
+      }
+
+      if (shouldScroll) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    function syncReadingView(selectFirst = false) {
+      const query = readingSearch.value.trim().toLowerCase();
+      let firstVisibleTopicId = null;
+
+      sortReadingItems();
+
+      readingTopicCards.forEach((card) => {
+        const target = document.getElementById(card.dataset.readingTopicLink);
+        const searchableText = `${card.textContent} ${target?.textContent || ""}`.toLowerCase();
+        const isVisible = !query || searchableText.includes(query);
+        card.hidden = !isVisible;
+        if (isVisible && !firstVisibleTopicId) firstVisibleTopicId = card.dataset.readingTopicLink;
+      });
+
+      readingPassages.forEach((passage) => {
+        const card = document.querySelector(`[data-reading-topic-link="${passage.id}"]`);
+        const searchableText = `${card?.textContent || ""} ${passage.textContent}`.toLowerCase();
+        const isVisible = !query || searchableText.includes(query);
+        passage.hidden = !isVisible;
+      });
+
+      const activeCard = document.querySelector(".reading-topic-card.is-active:not([hidden])");
+      if ((selectFirst || !activeCard) && firstVisibleTopicId) {
+        setActiveTopic(firstVisibleTopicId);
+      }
+    }
+
+    readingLevelTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        activeReadingLevel = tab.dataset.readingLevelTab;
+        readingLevelTabs.forEach((item) => item.classList.remove("active"));
+        tab.classList.add("active");
+        syncReadingView(true);
+      });
+    });
+
+    readingTopicCards.forEach((card) => {
+      card.addEventListener("click", () => {
+        setActiveTopic(card.dataset.readingTopicLink, true, true);
+      });
+    });
+
+    document.querySelectorAll("[data-toggle-translation]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const target = document.getElementById(button.dataset.toggleTranslation);
+        if (!target) return;
+        const isHidden = target.classList.toggle("translations-muted");
+        button.classList.toggle("is-showing", !isHidden);
+        button.innerHTML = isHidden
+          ? '<i class="ti-eye"></i> Bật dịch'
+          : '<i class="ti-eye"></i> Tắt dịch';
+      });
+    });
+
+    readingSearch.addEventListener("input", () => syncReadingView(true));
+    updateViewedCards();
+    syncReadingView(true);
+  </script>
 </body>
 </html>

@@ -1,0 +1,561 @@
+.grammar-hero {
+  padding-bottom: 24px;
+}
+
+.grammar-hero-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.grammar-hero-metrics span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  min-height: 42px;
+  border: 1px solid rgba(125, 211, 252, 0.22);
+  border-radius: 999px;
+  background: rgba(2, 6, 23, 0.66);
+  color: #dbeafe;
+  font-weight: 800;
+  padding: 8px 14px;
+}
+
+.grammar-hero-metrics strong {
+  color: #a7fbc0;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.grammar-learning-shell {
+  padding-top: 18px;
+}
+
+.grammar-topic-panel {
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-radius: 24px;
+  background:
+    linear-gradient(145deg, rgba(15, 23, 42, 0.70), rgba(2, 6, 23, 0.76));
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.28);
+  padding: 20px;
+}
+
+.grammar-topic-header,
+.grammar-detail-head,
+.grammar-detail-meta,
+.grammar-card-stats,
+.grammar-check-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.grammar-topic-header {
+  margin-bottom: 16px;
+}
+
+.grammar-topic-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+.grammar-scroll-actions {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.grammar-scroll-button {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(125, 211, 252, 0.26);
+  border-radius: 50%;
+  background: rgba(2, 6, 23, 0.74);
+  color: #ecfeff;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.grammar-scroll-button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(112, 245, 157, 0.58);
+  box-shadow: 0 0 22px rgba(46, 232, 120, 0.18);
+}
+
+.grammar-topic-rail {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding: 4px 4px 18px;
+  scroll-padding: 4px;
+  scroll-snap-type: x mandatory;
+  scrollbar-color: rgba(112, 245, 157, 0.78) rgba(125, 211, 252, 0.14);
+  scrollbar-width: thin;
+}
+
+.grammar-topic-rail::-webkit-scrollbar {
+  height: 10px;
+}
+
+.grammar-topic-rail::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(125, 211, 252, 0.14);
+}
+
+.grammar-topic-rail::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2ee878, #48cfff);
+}
+
+.grammar-topic-card {
+  display: grid;
+  grid-template-rows: auto auto minmax(64px, 1fr) auto;
+  flex: 0 0 224px;
+  min-height: 218px;
+  border: 1px solid rgba(125, 211, 252, 0.20);
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(15, 23, 42, 0.92), rgba(2, 6, 23, 0.96));
+  color: #f8fbff;
+  padding: 16px;
+  scroll-snap-align: start;
+  text-align: left;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+}
+
+.grammar-topic-card:hover,
+.grammar-topic-card.is-active {
+  transform: translateY(-4px);
+  border-color: rgba(112, 245, 157, 0.58);
+  box-shadow: 0 0 0 1px rgba(46, 232, 120, 0.18), 0 22px 52px rgba(0, 0, 0, 0.42);
+}
+
+.grammar-topic-card.is-active {
+  background:
+    linear-gradient(145deg, rgba(20, 184, 166, 0.24), rgba(14, 165, 233, 0.16)),
+    rgba(2, 6, 23, 0.96);
+}
+
+.grammar-topic-card.is-completed {
+  border-color: rgba(112, 245, 157, 0.34);
+  background:
+    linear-gradient(145deg, rgba(22, 101, 52, 0.20), rgba(2, 6, 23, 0.96));
+}
+
+.grammar-card-index {
+  color: #a7fbc0;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.grammar-topic-card h3 {
+  margin: 8px 0 10px;
+  color: #ffffff;
+  font-size: 1.22rem;
+  line-height: 1.2;
+}
+
+.grammar-topic-card p {
+  margin: 0;
+  color: #a6b4c9;
+  line-height: 1.58;
+}
+
+.grammar-card-stats {
+  align-items: flex-end;
+  margin-top: 14px;
+}
+
+.grammar-card-stats span {
+  color: #9be8ff;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.grammar-card-stats i {
+  color: #a7fbc0;
+}
+
+.grammar-detail-view {
+  margin-top: 26px;
+  border: 1px solid rgba(125, 211, 252, 0.20);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top right, rgba(46, 232, 120, 0.12), transparent 30%),
+    linear-gradient(145deg, rgba(15, 23, 42, 0.94), rgba(2, 6, 23, 0.98));
+  box-shadow: 0 30px 74px rgba(0, 0, 0, 0.40);
+  overflow: hidden;
+}
+
+.grammar-detail-head {
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(125, 211, 252, 0.16);
+  padding: 26px;
+}
+
+.grammar-detail-head h2 {
+  margin: 8px 0 10px;
+  color: #ffffff;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1.08;
+}
+
+.grammar-detail-head p {
+  max-width: 760px;
+  margin: 0;
+  color: #cbd5e1;
+  line-height: 1.72;
+}
+
+.grammar-detail-meta {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.grammar-detail-meta span,
+.grammar-theory-section li,
+.grammar-example,
+.grammar-mistake-list li,
+.grammar-exercise {
+  border: 1px solid rgba(125, 211, 252, 0.16);
+  border-radius: 16px;
+  background: rgba(248, 250, 252, 0.04);
+}
+
+.grammar-detail-meta span {
+  color: #dbeafe;
+  font-weight: 800;
+  padding: 8px 11px;
+}
+
+.grammar-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 0;
+}
+
+.grammar-theory-panel,
+.grammar-practice-panel {
+  padding: 26px;
+}
+
+.grammar-practice-panel {
+  border-left: 1px solid rgba(125, 211, 252, 0.16);
+  background: rgba(2, 6, 23, 0.22);
+}
+
+.grammar-theory-section + .grammar-theory-section,
+.grammar-example-list,
+.grammar-mistake-list,
+.grammar-exercise-list {
+  margin-top: 22px;
+}
+
+.grammar-theory-section h3,
+.grammar-practice-panel h3 {
+  margin: 0 0 13px;
+  color: #ffffff;
+  font-size: 1.35rem;
+  line-height: 1.25;
+}
+
+.grammar-theory-section ul,
+.grammar-mistake-list {
+  display: grid;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.grammar-theory-section li,
+.grammar-mistake-list li {
+  color: #cbd5e1;
+  padding: 12px 14px;
+}
+
+.grammar-formula-list {
+  display: grid;
+  gap: 10px;
+}
+
+.grammar-formula-list code {
+  display: block;
+  border: 1px solid rgba(112, 245, 157, 0.26);
+  border-radius: 14px;
+  background: rgba(46, 232, 120, 0.10);
+  color: #d0ffd8;
+  font-size: 0.98rem;
+  font-weight: 900;
+  padding: 12px 14px;
+  white-space: normal;
+}
+
+.grammar-tense-groups,
+.grammar-tense-list {
+  display: grid;
+  gap: 18px;
+}
+
+.grammar-tense-group {
+  border: 1px solid rgba(125, 211, 252, 0.16);
+  border-radius: 20px;
+  background: rgba(2, 6, 23, 0.30);
+  padding: 18px;
+}
+
+.grammar-tense-group h4 {
+  margin: 0 0 14px;
+  color: #a7fbc0;
+  font-size: 1.15rem;
+}
+
+.grammar-tense-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grammar-tense-card {
+  border: 1px solid rgba(125, 211, 252, 0.16);
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(15, 23, 42, 0.82), rgba(2, 6, 23, 0.88));
+  padding: 16px;
+}
+
+.grammar-tense-head {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.grammar-tense-head > span {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(46, 232, 120, 0.16);
+  color: #a7fbc0;
+  font-weight: 900;
+}
+
+.grammar-tense-head h5 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.12rem;
+}
+
+.grammar-tense-head p {
+  margin: 2px 0 0;
+  color: #9be8ff;
+  font-weight: 800;
+}
+
+.grammar-tense-block {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.grammar-tense-block strong {
+  color: #ffffff;
+}
+
+.grammar-tense-block ul {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+}
+
+.grammar-tense-block li {
+  border-radius: 12px;
+  padding: 9px 11px;
+}
+
+.grammar-tense-formulas {
+  display: grid;
+  gap: 8px;
+}
+
+.grammar-tense-formulas code {
+  display: block;
+  border: 1px solid rgba(112, 245, 157, 0.22);
+  border-radius: 12px;
+  background: rgba(46, 232, 120, 0.08);
+  color: #d0ffd8;
+  padding: 10px 11px;
+  white-space: normal;
+}
+
+.grammar-tense-formulas span {
+  color: #ffffff;
+  font-weight: 900;
+}
+
+.grammar-signal-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.grammar-signal-list span {
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.08);
+  color: #bfdbfe;
+  font-size: 0.84rem;
+  font-weight: 800;
+  padding: 6px 9px;
+}
+
+.grammar-example-list {
+  display: grid;
+  gap: 12px;
+}
+
+.grammar-example {
+  padding: 14px;
+}
+
+.grammar-example strong {
+  display: block;
+  color: #ffffff;
+}
+
+.grammar-example span {
+  display: block;
+  color: #9be8ff;
+  margin-top: 5px;
+}
+
+.grammar-practice-panel > p {
+  margin: 0 0 18px;
+  color: #a6b4c9;
+}
+
+.grammar-exercise-list {
+  display: grid;
+  gap: 14px;
+}
+
+.grammar-exercise {
+  padding: 16px;
+}
+
+.grammar-exercise.is-correct {
+  border-color: rgba(112, 245, 157, 0.44);
+  background: rgba(46, 232, 120, 0.08);
+}
+
+.grammar-check-row {
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.grammar-check-row strong {
+  color: #ffffff;
+  line-height: 1.42;
+}
+
+.grammar-check-row span {
+  color: #a7fbc0;
+  font-size: 0.78rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.grammar-options {
+  display: grid;
+  gap: 9px;
+}
+
+.grammar-option {
+  width: 100%;
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-radius: 14px;
+  background: rgba(2, 6, 23, 0.68);
+  color: #dbeafe;
+  font-weight: 800;
+  padding: 10px 12px;
+  text-align: left;
+  transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.grammar-option:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(125, 211, 252, 0.52);
+}
+
+.grammar-option.is-correct {
+  border-color: rgba(112, 245, 157, 0.64);
+  background: rgba(46, 232, 120, 0.16);
+  color: #d0ffd8;
+}
+
+.grammar-option.is-wrong {
+  border-color: rgba(248, 113, 113, 0.58);
+  background: rgba(248, 113, 113, 0.12);
+  color: #fecaca;
+}
+
+.grammar-feedback {
+  min-height: 24px;
+  margin: 11px 0 0;
+  color: #9be8ff;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+@media (max-width: 980px) {
+  .grammar-detail-grid,
+  .grammar-tense-list {
+    grid-template-columns: 1fr;
+  }
+
+  .grammar-practice-panel {
+    border-left: 0;
+    border-top: 1px solid rgba(125, 211, 252, 0.16);
+  }
+}
+
+@media (max-width: 680px) {
+  .grammar-topic-header,
+  .grammar-detail-head,
+  .grammar-check-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .grammar-scroll-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .grammar-scroll-button {
+    width: 100%;
+    border-radius: 14px;
+  }
+
+  .grammar-topic-panel,
+  .grammar-detail-head,
+  .grammar-theory-panel,
+  .grammar-practice-panel {
+    border-radius: 18px;
+    padding: 18px;
+  }
+
+  .grammar-topic-card {
+    flex-basis: min(82vw, 250px);
+  }
+}

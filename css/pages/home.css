@@ -380,3 +380,61 @@
     0 0 28px rgba(72, 207, 255, 0.34),
     0 0 18px rgba(46, 232, 120, 0.24);
 }
+
+@media (max-width: 680px) {
+  .path-guide {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 0;
+  }
+
+  .path-guide::before,
+  .path-guide::after {
+    display: none;
+  }
+
+  .path-step {
+    min-height: 44px;
+    min-width: 0;
+    border: 1px solid rgba(125, 211, 252, 0.22);
+    border-radius: var(--radius);
+    background: rgba(15, 23, 42, 0.72);
+  }
+
+  .path-step::before {
+    display: none;
+  }
+
+  .path-step i {
+    position: relative;
+    display: inline-flex;
+    width: 24px;
+    height: 18px;
+    margin-left: auto;
+  }
+
+  .path-step i::before {
+    display: none;
+  }
+
+  .path-step i::after {
+    right: 5px;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    border-top-width: 3px;
+    border-right-width: 3px;
+    transform: translateY(-50%) rotate(45deg);
+  }
+
+  .path-step:last-child i {
+    display: none;
+  }
+
+  .path-label {
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+}

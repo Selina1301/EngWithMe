@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kiểm tra trình độ - EnglishPath</title>
+  <title>Đề thi - EnglishPath</title>
   <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/pages/study.css">
+  <link rel="stylesheet" href="css/pages/exam.css">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
@@ -14,9 +16,10 @@
     <a class="brand" href="index.html">EnglishPath</a>
     <nav class="nav-links" aria-label="Menu chính">
       <a href="index.html">Trang chủ</a>
-      <a href="lessons.html">Khóa học</a>
-      <a href="quiz.html">Kiểm tra</a>
       <a href="vocabulary.html">Từ vựng</a>
+      <a href="reading.html">Đọc</a>
+      <a href="grammar.html">Ngữ pháp</a>
+      <a href="quiz.html">Đề thi</a>
       <a href="blog.html">Blog</a>
       <a href="pricing.html">Bảng giá</a>
     </nav>
@@ -26,43 +29,95 @@
     </div>
   </header>
 
-  <main class="page-main">
-    <section class="page-title">
-      <p class="eyebrow">Placement test</p>
-      <h1>Kiểm tra trình độ tiếng Anh</h1>
-      <p>Bản MVP dùng bộ câu hỏi ngắn để phân loại trình độ và đề xuất lộ trình học phù hợp.</p>
+  <main class="study-page exam-study-page">
+    <section class="study-hero exam-hero">
+      <p class="eyebrow">Exam</p>
+      <h1>Đề thi thử đang ở bản demo</h1>
+      <p>Phần “Kiểm tra” được đổi thành khu “Đề thi”. Hiện tại giao diện cho xem trước cấu trúc đề, trạng thái và các phần sẽ triển khai sau.</p>
     </section>
 
-    <section class="section compact">
-      <form class="quiz-form" data-quiz-form>
-        <div data-quiz-list></div>
-        <div class="quiz-actions">
-          <button class="btn btn-primary" type="submit">Nộp bài</button>
-          <button class="btn btn-secondary" type="button" data-reset-quiz>Làm lại</button>
+    <section class="study-shell">
+      <div class="exam-dashboard">
+        <article class="exam-preview-panel">
+          <span class="demo-status-pill">Demo preview</span>
+          <h2>TOEIC Mini Test 01</h2>
+          <p>Giao diện đề thi sẽ có đồng hồ, câu hỏi theo part, bảng đáp án và trang kết quả. Bản này chỉ mô phỏng bố cục để chờ dữ liệu đề thật.</p>
+          <div class="exam-part-list">
+            <span>Part 1: Listening</span>
+            <span>Part 2: Grammar</span>
+            <span>Part 3: Reading</span>
+            <span>Part 4: Vocabulary</span>
+          </div>
+          <button class="btn btn-primary" type="button" data-demo-action data-demo-title="Đề thi TOEIC Mini đang cập nhật" data-demo-message="Khi hoàn thiện, đề thi này sẽ mở màn hình làm bài thật, có chấm điểm và lưu lịch sử kết quả.">
+            <i class="ti-control-play"></i>
+            Xem demo đề thi
+          </button>
+        </article>
+
+        <aside class="exam-status-panel">
+          <h3>Trạng thái triển khai</h3>
+          <div class="status-row"><span>Giao diện đề</span><strong>70%</strong></div>
+          <div class="status-row"><span>Ngân hàng câu hỏi</span><strong>Đang nhập</strong></div>
+          <div class="status-row"><span>Chấm điểm</span><strong>Chưa mở</strong></div>
+          <div class="status-row"><span>Lưu kết quả</span><strong>Chờ backend</strong></div>
+        </aside>
+      </div>
+
+      <section class="exam-section">
+        <div class="section-heading">
+          <p class="eyebrow">Danh sách đề</p>
+          <h2>Chọn đề để xem trạng thái demo</h2>
         </div>
-      </form>
-      <div class="result-box" data-quiz-result hidden></div>
-    </section>
+        <div class="exam-card-grid">
+          <article class="exam-card">
+            <div>
+              <span class="level-chip easy">Easy</span>
+              <h3>Foundation Exam</h3>
+              <p>Đề nền tảng cho người mới: từ vựng đời sống, thì cơ bản và đọc câu ngắn.</p>
+            </div>
+            <button class="practice-link" type="button" data-demo-action data-demo-title="Foundation Exam đang cập nhật">Xem demo <span>=&gt;</span></button>
+          </article>
+          <article class="exam-card">
+            <div>
+              <span class="level-chip medium">Medium</span>
+              <h3>Grammar & Reading Test</h3>
+              <p>Đề tập trung vào ngữ pháp, đọc hiểu đoạn ngắn và chọn đáp án theo ngữ cảnh.</p>
+            </div>
+            <button class="practice-link" type="button" data-demo-action data-demo-title="Grammar & Reading Test đang cập nhật">Xem demo <span>=&gt;</span></button>
+          </article>
+          <article class="exam-card">
+            <div>
+              <span class="level-chip hard">TOEIC</span>
+              <h3>TOEIC Practice Set</h3>
+              <p>Mô phỏng đề TOEIC rút gọn với listening, reading và bảng phân tích lỗi.</p>
+            </div>
+            <button class="practice-link" type="button" data-demo-action data-demo-title="TOEIC Practice Set đang cập nhật">Xem demo <span>=&gt;</span></button>
+          </article>
+        </div>
+      </section>
 
-    <section class="section section-muted">
-      <div class="section-heading">
-        <p class="eyebrow">Dạng câu hỏi</p>
-        <h2>Hệ thống test có thể mở rộng</h2>
-      </div>
-      <div class="feature-grid three">
-        <article class="feature-card">
-          <h3>Trắc nghiệm</h3>
-          <p>Chọn đáp án đúng về từ vựng, ngữ pháp và đọc hiểu.</p>
-        </article>
-        <article class="feature-card">
-          <h3>Điền từ</h3>
-          <p>Hoàn thành câu, transcript hoặc đoạn văn ngắn.</p>
-        </article>
-        <article class="feature-card">
-          <h3>Nghe hiểu</h3>
-          <p>Nghe audio/video rồi chọn đáp án hoặc điền từ còn thiếu.</p>
-        </article>
-      </div>
+      <section class="exam-section">
+        <div class="exam-wireframe" aria-label="Bản xem trước màn hình làm đề">
+          <div class="wireframe-top">
+            <span>00:45:00</span>
+            <strong>Question 1 / 40</strong>
+            <button type="button" data-demo-action data-demo-title="Bộ điều hướng câu hỏi đang cập nhật">Nộp bài demo</button>
+          </div>
+          <div class="wireframe-body">
+            <div class="wireframe-question">
+              <p class="eyebrow">Preview question</p>
+              <h3>The full exam screen will appear here.</h3>
+              <p>Người học sẽ đọc câu hỏi, chọn đáp án, đánh dấu câu cần xem lại và chuyển part ngay trong màn hình này.</p>
+            </div>
+            <div class="wireframe-answers">
+              <span>A. Answer option</span>
+              <span>B. Answer option</span>
+              <span>C. Answer option</span>
+              <span>D. Answer option</span>
+            </div>
+          </div>
+        </div>
+      </section>
     </section>
   </main>
 
@@ -72,13 +127,15 @@
       <p>Học tiếng Anh theo lộ trình cá nhân.</p>
     </div>
     <div class="footer-links">
-      <a href="dashboard.html">Dashboard</a>
-      <a href="results.html">Kết quả</a>
-      <a href="lessons.html">Bài học</a>
+      <a href="vocabulary.html">Từ vựng</a>
+      <a href="reading.html">Đọc</a>
+      <a href="grammar.html">Ngữ pháp</a>
     </div>
     <p>&copy; <span data-current-year></span> EnglishPath.</p>
   </footer>
 
+  <script src="js/core.js"></script>
+  <script src="js/demo-actions.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

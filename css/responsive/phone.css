@@ -1,4 +1,4 @@
-/* Phone layout */
+/* Phone layout: global shell and admin fallbacks only */
 @media (max-width: 680px) {
   .brand:hover,
   .nav-links a:hover,
@@ -7,128 +7,8 @@
     margin-inline: 0;
   }
 
-  .path-guide {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    padding: 0;
-  }
-
-  .path-guide::before,
-  .path-guide::after {
-    display: none;
-  }
-
-  .path-step {
-    min-height: 44px;
-    min-width: 0;
-    border: 1px solid rgba(125, 211, 252, 0.22);
-    border-radius: var(--radius);
-    background: rgba(15, 23, 42, 0.72);
-  }
-
-  .path-step::before {
-    display: none;
-  }
-
-  .path-step i {
-    position: relative;
-    display: inline-flex;
-    width: 24px;
-    height: 18px;
-    margin-left: auto;
-  }
-
-  .path-step i::before {
-    display: none;
-  }
-
-  .path-step i::after {
-    right: 5px;
-    top: 50%;
-    width: 10px;
-    height: 10px;
-    border-top-width: 3px;
-    border-right-width: 3px;
-    transform: translateY(-50%) rotate(45deg);
-  }
-
-  .path-step:last-child i {
-    display: none;
-  }
-
-  .path-label {
-    min-width: 0;
-    border: 0;
-    background: transparent;
-    box-shadow: none;
-  }
-
   .admin-page .admin-layout,
   .admin-page .stat-grid {
     grid-template-columns: 1fr;
-  }
-
-  .vocab-hero {
-    padding-top: 48px;
-  }
-
-  .vocab-section .vocab-container {
-    display: block;
-  }
-
-  .vocab-topbar {
-    grid-column: auto;
-    grid-row: auto;
-    flex-direction: row;
-    align-items: center;
-    min-height: auto;
-    margin: 0 0 12px;
-    padding: 0;
-    border-right: 1px solid rgba(148, 163, 184, 0.18);
-    border-radius: 999px;
-  }
-
-  .level-heading {
-    min-height: auto;
-    padding: 24px 18px;
-    border-radius: 24px;
-    border-left-width: 1px;
-    margin-bottom: 22px;
-  }
-
-  .saved-count {
-    position: static;
-    width: 100%;
-    margin-top: 2px;
-  }
-
-  .level-tabs {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .level-tab {
-    flex: 1;
-    text-align: center;
-  }
-
-  .rail-card {
-    width: 100%;
-  }
-
-  .topic-rail-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .topic-modal-content {
-    width: calc(100% - 18px);
-    margin: 9px auto;
-    padding: 18px;
-    max-height: calc(100vh - 18px);
-  }
-
-  .topic-modal-header h2 {
-    font-size: 2rem;
   }
 }
