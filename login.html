@@ -3,34 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng nhập - EnglishPath</title>
+  <title>Đăng nhập - EngWithMe</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
 </head>
-<body>
+<body class="auth-body">
   <header class="site-header">
-    <a class="brand" href="index.html">EnglishPath</a>
-    <nav class="nav-links" aria-label="Menu chính">
-      <a href="index.html">Trang chủ</a>
-      <a href="lessons.html">Khóa học</a>
-      <a href="quiz.html">Kiểm tra</a>
-      <a href="vocabulary.html">Từ vựng</a>
-    </nav>
+    <a class="brand" href="index.html">EngWithMe</a>
+    <nav class="nav-links" aria-label="Menu chính"></nav>
     <div class="nav-actions">
-      <a class="btn btn-primary" href="register.html">Đăng ký</a>
+      <a class="btn btn-primary" href="register.html"><span class="ti-plus"></span> Đăng ký</a>
     </div>
   </header>
 
-  <main class="auth-page">
-    <form class="auth-card" data-login-form>
-      <p class="eyebrow">Welcome back</p>
-      <h1>Đăng nhập</h1>
-      <label>Email <input type="email" name="email" placeholder="student@example.com" required></label>
-      <label>Mật khẩu <input type="password" name="password" placeholder="••••••••" required></label>
-      <button class="btn btn-primary" type="submit">Đăng nhập</button>
-      <p class="form-note">Chưa có tài khoản? <a href="register.html">Đăng ký ngay</a></p>
+  <main class="auth-page auth-split">
+    <section class="auth-copy" aria-labelledby="loginTitle">
+      <p class="eyebrow">EngWithMe Account</p>
+      <h1 id="loginTitle">Tiếp tục lộ trình học của bạn</h1>
+      <p>Đăng nhập để mở dashboard, hồ sơ cá nhân và tiến độ học tập đã lưu.</p>
+      <div class="auth-highlights" aria-label="Điểm nổi bật">
+        <span><i class="ti-check"></i> Theo dõi tiến độ</span>
+        <span><i class="ti-check"></i> Lưu mục tiêu học</span>
+        <span><i class="ti-check"></i> Quản trị người dùng</span>
+      </div>
+    </section>
+
+    <form class="auth-card auth-panel" data-login-form>
+      <div class="auth-card-heading">
+        <span class="auth-icon ti-lock"></span>
+        <div>
+          <p class="eyebrow">Welcome back</p>
+          <h2>Đăng nhập</h2>
+        </div>
+      </div>
+
+      <label>Email
+        <input type="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+      </label>
+      <label>Mật khẩu
+        <input type="password" name="password" placeholder="Nhập mật khẩu" autocomplete="current-password" required>
+      </label>
+
+      <button class="btn btn-primary" type="submit"><span class="ti-arrow-right"></span> Vào tài khoản</button>
+      <p class="form-note">Chưa có tài khoản? <a href="register.html">Tạo tài khoản mới</a></p>
       <p class="feedback" data-auth-feedback></p>
     </form>
   </main>

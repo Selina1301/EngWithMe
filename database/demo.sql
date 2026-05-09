@@ -1,8 +1,8 @@
-CREATE DATABASE IF NOT EXISTS english_learning
+CREATE DATABASE IF NOT EXISTS engwithme_db
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE english_learning;
+USE engwithme_db;
 
 DROP TABLE IF EXISTS test_results;
 DROP TABLE IF EXISTS user_progress;
@@ -152,8 +152,8 @@ CREATE TABLE payments (
 );
 
 INSERT INTO users (name, email, password_hash, role, level, learning_goal) VALUES
-('Nguyen Van A', 'student@example.com', '$2y$demo_student_hash', 'student', 'A2', 'Giao tiep hang ngay'),
-('Admin Demo', 'admin@example.com', '$2y$demo_admin_hash', 'admin', 'B2', 'Quan tri noi dung');
+('Nguyen Van A', 'student@example.com', '$2y$10$ERjOMRydsI53tD3qtDDBQeS4498azdQnZyIg0VPZjwtpeeDnHzZBW', 'student', 'A2', 'Giao tiep hang ngay'),
+('Admin Demo', 'admin@example.com', '$2y$10$OHx8VFwtRSFrmCfQCMH9Ru/LnXdjgUSoOL21T5Gvc.Rz/F9.twPWm', 'admin', 'B2', 'Quan tri noi dung');
 
 INSERT INTO courses (title, description, level, thumbnail, price, status) VALUES
 ('English for Beginners', 'Khoa hoc A1 cho nguoi moi bat dau.', 'A1', 'images/course-beginner.jpg', 0, 'published'),

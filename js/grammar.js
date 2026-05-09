@@ -3,12 +3,67 @@ function initGrammarLearning() {
   const detail = document.querySelector("[data-grammar-detail]");
   if (!rail || !detail || typeof grammarTopics === "undefined") return;
 
-  const stateKey = "englishPathGrammarPractice";
+  const grammarModeTabs = document.querySelectorAll("[data-grammar-mode]");
+  const grammarStudyView = document.querySelector("[data-grammar-study-view]");
+  const grammarProgressView = document.querySelector("[data-grammar-progress-view]");
+  const grammarProgressScore = document.querySelector("[data-grammar-progress-score]");
+  const grammarProgressSummary = document.querySelector("[data-grammar-progress-summary]");
+  const grammarProgressBar = document.querySelector("[data-grammar-progress-bar]");
+  const grammarTopicComplete = document.querySelector("[data-grammar-topic-complete]");
+  const grammarQuestionComplete = document.querySelector("[data-grammar-question-complete]");
+  const grammarQuestionRemaining = document.querySelector("[data-grammar-question-remaining]");
+  const stateKey = "engWithMeGrammarPractice";
+  const modeKey = "engWithMeGrammarMode";
   let practiceState = getGrammarPracticeState(stateKey);
+  let activeGrammarMode = localStorage.getItem(modeKey) === "progress" ? "progress" : "study";
 
   const getTopic = (topicId) => grammarTopics.find((topic) => topic.id === topicId) || grammarTopics[0];
   const getSolvedQuestions = (topicId) => new Set(practiceState[topicId] || []);
   const savePracticeState = () => localStorage.setItem(stateKey, JSON.stringify(practiceState));
+
+  function getGrammarProgressSnapshot() {
+    const totalTopics = grammarTopics.length;
+    const totalQuestions = grammarTopics.reduce((sum, topic) => sum + topic.exercises.length, 0);
+    const solvedQuestions = grammarTopics.reduce((sum, topic) => sum + getSolvedQuestions(topic.id).size, 0);
+    const completedTopics = grammarTopics.filter((topic) => getSolvedQuestions(topic.id).size === topic.exercises.length).length;
+    const progress = totalQuestions ? Math.round((solvedQuestions / totalQuestions) * 100) : 0;
+
+    return {
+      totalTopics,
+      totalQuestions,
+      solvedQuestions,
+      completedTopics,
+      progress,
+      remainingQuestions: Math.max(0, totalQuestions - solvedQuestions)
+    };
+  }
+
+  function updateGrammarProgress() {
+    const snapshot = getGrammarProgressSnapshot();
+    grammarProgressScore.textContent = `${snapshot.progress}%`;
+    grammarProgressBar.style.width = `${snapshot.progress}%`;
+    grammarTopicComplete.textContent = `${snapshot.completedTopics}/${snapshot.totalTopics}`;
+    grammarQuestionComplete.textContent = `${snapshot.solvedQuestions}/${snapshot.totalQuestions}`;
+    grammarQuestionRemaining.textContent = snapshot.remainingQuestions;
+    grammarProgressSummary.textContent = snapshot.totalQuestions
+      ? `Bạn đã làm đúng ${snapshot.solvedQuestions}/${snapshot.totalQuestions} câu. Điểm này tính từ bài tập thật đã hoàn thành.`
+      : "Chưa có dữ liệu bài tập.";
+  }
+
+  function syncGrammarModeTabs() {
+    grammarModeTabs.forEach((tab) => {
+      tab.classList.toggle("is-active", tab.dataset.grammarMode === activeGrammarMode);
+    });
+  }
+
+  function setGrammarMode(mode) {
+    activeGrammarMode = mode === "progress" ? "progress" : "study";
+    localStorage.setItem(modeKey, activeGrammarMode);
+    syncGrammarModeTabs();
+    if (grammarStudyView) grammarStudyView.hidden = activeGrammarMode !== "study";
+    if (grammarProgressView) grammarProgressView.hidden = activeGrammarMode !== "progress";
+    if (activeGrammarMode === "progress") updateGrammarProgress();
+  }
 
   const renderRail = (activeId) => {
     const previousScroll = rail.scrollLeft;
@@ -218,6 +273,7 @@ function initGrammarLearning() {
       const progressMeta = detail.querySelector(".grammar-detail-meta span:last-child");
       if (progressMeta) progressMeta.textContent = `${practiceState[topic.id].length}/${topic.exercises.length} bài tập đúng`;
       renderRail(topic.id);
+      updateGrammarProgress();
       return;
     }
 
@@ -239,7 +295,15 @@ function initGrammarLearning() {
     if (topicId) renderTopic(topicId, false, false);
   });
 
+  grammarModeTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      setGrammarMode(tab.dataset.grammarMode);
+    });
+  });
+
   renderTopic(window.location.hash.replace("#", "") || grammarTopics[0].id, false, false);
+  updateGrammarProgress();
+  setGrammarMode(activeGrammarMode);
 }
 
 function getGrammarPracticeState(stateKey) {

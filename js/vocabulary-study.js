@@ -16,9 +16,18 @@ function initVocabularyStudy() {
   let selectedMatchTile = null;
   let matchedPairs = new Set();
   let gameScore = 0;
+  let pendingSaveWord = null;
+  const savedWordsKey = "engWithMeSavedVocabularyWords";
+  let savedWordRecords = normalizeSavedWordRecords(JSON.parse(localStorage.getItem(savedWordsKey) || "[]"));
+  let savedWords = new Set(savedWordRecords.keys());
 
   const getTopic = () => vocabularyData[activeLevel]?.topics.find(topic => topic.id === currentTopicId);
   const getListHref = () => `vocabulary.html?level=${activeLevel}`;
+  const getWordKey = (topic, word) => `${activeLevel}-${topic.id}-${word.word}`;
+  const saveSavedWords = () => {
+    savedWords = new Set(savedWordRecords.keys());
+    localStorage.setItem(savedWordsKey, JSON.stringify(Array.from(savedWordRecords.values())));
+  };
   const syncUrl = () => {
     window.history.replaceState(null, "", `vocabulary-study.html?level=${activeLevel}&topic=${currentTopicId}&mode=${currentWorkspaceMode}`);
   };
@@ -39,18 +48,168 @@ function initVocabularyStudy() {
     gameScore = 0;
   }
 
-  function getRelatedHints(topic, item) {
-    const near = topic.words
-      .filter(word => word.word !== item.word)
-      .slice(0, 2)
-      .map(word => `${word.word}: ${word.meaning}`);
+  function normalizeSavedWordRecords(value) {
+    const records = new Map();
+    if (!Array.isArray(value)) return records;
 
-    while (near.length < 2) near.push(`${item.meaning} trong ngữ cảnh`);
+    value.forEach(item => {
+      if (typeof item === "string") {
+        records.set(item, { key: item, studyLevel: "easy" });
+        return;
+      }
+
+      if (!item || typeof item !== "object" || !item.key) return;
+      const studyLevel = ["easy", "medium", "hard"].includes(item.studyLevel) ? item.studyLevel : "easy";
+      records.set(item.key, { key: item.key, studyLevel });
+    });
+
+    return records;
+  }
+
+  const closeMeaningHints = {
+    classroom: ["class: lớp học/phòng học", "learning space: không gian học"],
+    subject: ["course: môn học/khóa học", "discipline: lĩnh vực học"],
+    homework: ["assignment: bài tập được giao", "schoolwork: bài học/bài tập"],
+    notebook: ["exercise book: vở ghi", "copybook: vở viết"],
+    teacher: ["instructor: giáo viên/giảng viên", "educator: nhà giáo"],
+    assignment: ["task: nhiệm vụ được giao", "homework: bài tập"],
+    presentation: ["talk: bài nói", "speech: bài thuyết trình"],
+    project: ["assignment: bài làm/dự án", "task: nhiệm vụ"],
+    semester: ["term: học kỳ", "school term: kỳ học"],
+    curriculum: ["syllabus: đề cương/chương trình học", "course plan: kế hoạch môn học"],
+    assessment: ["evaluation: đánh giá", "test: bài kiểm tra/đánh giá"],
+    scholarship: ["grant: học bổng/khoản tài trợ", "study grant: học bổng học tập"],
+    routine: ["habit: thói quen", "daily pattern: nếp sinh hoạt"],
+    housework: ["chores: việc nhà", "domestic work: việc trong nhà"],
+    appointment: ["meeting: cuộc hẹn", "scheduled visit: lịch hẹn"],
+    responsibility: ["duty: bổn phận", "obligation: nghĩa vụ"],
+    balance: ["equilibrium: trạng thái cân bằng", "stability: sự ổn định"],
+    schedule: ["timetable: thời khóa biểu/lịch trình", "plan: kế hoạch"],
+    independence: ["self-reliance: sự tự lập", "autonomy: quyền tự chủ"],
+    job: ["work: công việc", "position: vị trí công việc"],
+    meeting: ["session: buổi họp", "appointment: cuộc hẹn"],
+    manager: ["supervisor: người giám sát", "leader: người quản lý/lãnh đạo"],
+    deadline: ["due date: hạn nộp", "time limit: thời hạn"],
+    colleague: ["coworker: đồng nghiệp", "teammate: người cùng nhóm"],
+    doctor: ["physician: bác sĩ", "medical practitioner: người hành nghề y"],
+    medicine: ["medication: thuốc", "remedy: phương thuốc"],
+    symptom: ["sign: dấu hiệu", "indication: biểu hiện"],
+    treatment: ["therapy: liệu pháp", "care: điều trị/chăm sóc"],
+    reply: ["respond: phản hồi", "answer: trả lời"],
+    agree: ["accept: đồng ý/chấp nhận", "consent: tán thành"],
+    explain: ["clarify: làm rõ", "describe: giải thích/mô tả"],
+    listen: ["hear: nghe", "pay attention: chú ý lắng nghe"],
+    opinion: ["view: quan điểm", "point of view: góc nhìn"],
+    money: ["cash: tiền mặt", "funds: tiền/quỹ"],
+    price: ["cost: giá/chi phí", "rate: mức giá"],
+    budget: ["spending plan: kế hoạch chi tiêu", "allowance: khoản chi cho phép"],
+    expense: ["cost: chi phí", "expenditure: khoản chi"],
+    clean: ["tidy: gọn gàng/sạch sẽ", "unpolluted: không ô nhiễm"],
+    protect: ["preserve: gìn giữ", "safeguard: bảo vệ"],
+    tradition: ["custom: phong tục", "heritage practice: tập tục truyền thống"],
+    identity: ["character: bản sắc/đặc điểm", "sense of self: ý thức bản thân"],
+    device: ["gadget: thiết bị", "tool: công cụ"],
+    app: ["application: ứng dụng", "software app: phần mềm ứng dụng"],
+    interface: ["UI: giao diện", "control surface: bề mặt điều khiển"],
+    customer: ["client: khách hàng", "buyer: người mua"],
+    profit: ["earnings: lợi nhuận", "gain: khoản lời"],
+    revenue: ["income: doanh thu/thu nhập", "sales: doanh số"],
+    strategy: ["plan: chiến lược/kế hoạch", "approach: cách tiếp cận"],
+    topic: ["subject: chủ đề", "theme: đề tài"],
+    example: ["instance: ví dụ/trường hợp", "sample: mẫu minh họa"],
+    idea: ["thought: ý tưởng", "concept: khái niệm"],
+    result: ["outcome: kết quả", "consequence: hệ quả"],
+    evidence: ["proof: bằng chứng", "supporting data: dữ liệu hỗ trợ"],
+    significant: ["important: quan trọng", "notable: đáng chú ý"],
+    analysis: ["examination: sự phân tích", "study: nghiên cứu/phân tích"],
+    research: ["study: nghiên cứu", "investigation: điều tra/nghiên cứu"],
+    rule: ["regulation: quy định", "guideline: hướng dẫn/quy tắc"],
+    law: ["rule: luật/quy tắc", "legislation: luật pháp"],
+    legal: ["lawful: hợp pháp", "permitted: được phép"],
+    feeling: ["emotion: cảm xúc", "sense: cảm giác"],
+    stress: ["pressure: áp lực", "strain: sự căng thẳng"],
+    mind: ["mental state: trạng thái tâm trí", "thoughts: suy nghĩ"],
+    habit: ["routine: thói quen", "pattern: nếp sinh hoạt"],
+    fear: ["anxiety: lo âu", "worry: nỗi lo"],
+    memory: ["recollection: ký ức", "recall: sự nhớ lại"],
+    video: ["clip: video ngắn", "recording: bản ghi hình"],
+    post: ["article: bài viết", "update: bài cập nhật"],
+    news: ["report: bản tin", "information: thông tin"],
+    photo: ["picture: bức ảnh", "image: hình ảnh"],
+    share: ["distribute: chia sẻ/phân phối", "pass on: chuyển tiếp"]
+  };
+
+  function getAllVocabularyEntries() {
+    return Object.entries(vocabularyData).flatMap(([levelKey, levelData]) =>
+      levelData.topics.flatMap(topic =>
+        topic.words.map(word => ({
+          ...word,
+          levelKey,
+          topicId: topic.id,
+          topicName: topic.name
+        }))
+      )
+    );
+  }
+
+  function getRelatedHints(topic, item) {
+    const normalize = (value) => String(value || "").trim().toLowerCase();
+    const currentWord = normalize(item.word);
+    const currentMeaning = normalize(item.meaning);
+    const seen = new Set([currentWord]);
+    const toHint = (type, label, text) => ({ type, label, text });
+
+    const takeUnique = (hints, limit) => {
+      const unique = [];
+      hints.forEach(hint => {
+        const key = normalize(hint.text);
+        if (!key || seen.has(key)) return;
+        seen.add(key);
+        unique.push(hint);
+      });
+      return unique.slice(0, limit);
+    };
+
+    const closeHints = takeUnique(
+      (closeMeaningHints[currentWord] || []).map(text => toHint("near", "Đồng nghĩa", text)),
+      2
+    );
+
+    const sameMeaningHints = takeUnique(
+      getAllVocabularyEntries()
+        .filter(word => normalize(word.word) !== currentWord)
+        .filter(word => normalize(word.meaning) === currentMeaning)
+        .map(word => toHint("same", "Cùng nghĩa", `${word.word}: ${word.meaning}`)),
+      2
+    );
+
+    const contextHints = takeUnique(
+      topic.words
+        .filter(word => normalize(word.word) !== currentWord)
+        .sort((a, b) => {
+          if (a.difficulty === item.difficulty && b.difficulty !== item.difficulty) return -1;
+          if (a.difficulty !== item.difficulty && b.difficulty === item.difficulty) return 1;
+          return topic.words.indexOf(a) - topic.words.indexOf(b);
+        })
+        .map(word => toHint("context", "Cùng chủ đề", `${word.word}: ${word.meaning}`)),
+      2
+    );
+
+    const related = [...closeHints, ...sameMeaningHints].slice(0, 2);
+    const fallbackRelated = related.length ? related : contextHints.slice(0, 2);
 
     return {
-      near,
-      exact: `${item.word}: ${item.meaning}`
+      related: fallbackRelated
     };
+  }
+
+  function hintTagTemplate(hint) {
+    return `
+      <span class="hint-tag ${hint.type}">
+        <small>${hint.label}</small>
+        <span>${hint.text}</span>
+      </span>
+    `;
   }
 
   function workspaceTabTemplate(mode, icon, label) {
@@ -87,8 +246,11 @@ function initVocabularyStudy() {
         </div>
 
         <div class="workspace-title">
-          <span class="modal-level-pill ${activeLevel}">${vocabularyData[activeLevel].label}</span>
-          <h2><i class="${topic.icon || "ti-book"}"></i><span>${topic.name}</span></h2>
+          <div class="workspace-title-head">
+            <span class="modal-level-pill ${activeLevel}">${vocabularyData[activeLevel].label}</span>
+            <span class="workspace-topic-icon" aria-hidden="true"><i class="${topic.icon || "ti-book"}"></i></span>
+          </div>
+          <h2><span>${topic.name}</span></h2>
           <p>${topic.desc}</p>
         </div>
 
@@ -117,19 +279,27 @@ function initVocabularyStudy() {
   function renderViewPanel(topic) {
     const item = topic.words[currentWordIndex];
     const hints = getRelatedHints(topic, item);
-    const list = topic.words.map((word, index) => `
-      <article class="word-list-card">
-        <div>
-          <span class="word-level ${word.difficulty}">${index + 1}. ${word.difficulty}</span>
-          <h4>${word.word}</h4>
-          <p>${word.phonetic}</p>
-        </div>
-        <div>
-          <p><strong>${word.meaning}</strong></p>
-          <p>${word.example}</p>
-        </div>
-      </article>
-    `).join("");
+    const list = topic.words.map((word, index) => {
+      const wordKey = getWordKey(topic, word);
+      const isSaved = savedWords.has(wordKey);
+
+      return `
+        <article class="word-list-card">
+          <div>
+            <span class="word-level ${word.difficulty}">${index + 1}. ${word.difficulty}</span>
+            <h4>${word.word}</h4>
+            <p>${word.phonetic}</p>
+          </div>
+          <div>
+            <p><strong>${word.meaning}</strong></p>
+            <p>${word.example}</p>
+            <button class="save-word-btn ${isSaved ? "saved" : ""}" type="button" data-save-word="${wordKey}">
+              ${isSaved ? `Đã lưu (${(savedWordRecords.get(wordKey)?.studyLevel || "easy").toUpperCase()})` : "Lưu từ"}
+            </button>
+          </div>
+        </article>
+      `;
+    }).join("");
 
     return `
       <button class="word-view-card" type="button" data-flip-view>
@@ -139,8 +309,7 @@ function initVocabularyStudy() {
             <p class="example"><strong>${item.word}</strong> ${item.phonetic}</p>
             <p class="example">${item.example}</p>
             <div class="hint-tags">
-              ${hints.near.map(text => `<span class="hint-tag near">${text}</span>`).join("")}
-              <span class="hint-tag exact">${hints.exact}</span>
+              ${hints.related.map(hintTagTemplate).join("")}
             </div>
           </div>
         ` : `
@@ -160,6 +329,28 @@ function initVocabularyStudy() {
 
       <h3 class="word-list-title">Từ mới trong chủ đề này (${topic.words.length})</h3>
       <div class="word-list">${list}</div>
+      ${pendingSaveWord ? renderSaveLevelDialog() : ""}
+    `;
+  }
+
+  function renderSaveLevelDialog() {
+    return `
+      <div class="save-level-dialog" role="dialog" aria-modal="true" aria-labelledby="saveLevelTitle">
+        <div class="save-level-backdrop" data-cancel-save-level></div>
+        <section class="save-level-panel">
+          <p class="eyebrow">My vocab</p>
+          <h3 id="saveLevelTitle">Chọn mức cho từ mới</h3>
+          <p><strong>${pendingSaveWord.word.word}</strong> sẽ được lưu vào Từ vựng của tôi.</p>
+          <div class="save-level-options">
+            <button class="level-tab active" type="button" data-save-level="easy">Easy</button>
+            <button class="level-tab" type="button" data-save-level="medium">Medium</button>
+            <button class="level-tab" type="button" data-save-level="hard">Hard</button>
+          </div>
+          <button class="saved-words-close" type="button" data-cancel-save-level aria-label="Đóng chọn mức">
+            <i class="ti-close"></i>
+          </button>
+        </section>
+      </div>
     `;
   }
 
@@ -405,6 +596,44 @@ function initVocabularyStudy() {
       });
     });
 
+    root.querySelectorAll("[data-save-word]").forEach(button => {
+      button.addEventListener("click", () => {
+        const wordKey = button.dataset.saveWord;
+        if (!wordKey) return;
+
+        if (savedWords.has(wordKey)) {
+          savedWordRecords.delete(wordKey);
+          saveSavedWords();
+          render();
+        } else {
+          const word = topic.words.find(item => getWordKey(topic, item) === wordKey);
+          if (!word) return;
+          pendingSaveWord = { key: wordKey, word };
+          render();
+        }
+      });
+    });
+
+    root.querySelectorAll("[data-save-level]").forEach(button => {
+      button.addEventListener("click", () => {
+        if (!pendingSaveWord) return;
+        savedWordRecords.set(pendingSaveWord.key, {
+          key: pendingSaveWord.key,
+          studyLevel: button.dataset.saveLevel
+        });
+        pendingSaveWord = null;
+        saveSavedWords();
+        render();
+      });
+    });
+
+    root.querySelectorAll("[data-cancel-save-level]").forEach(button => {
+      button.addEventListener("click", () => {
+        pendingSaveWord = null;
+        render();
+      });
+    });
+
     root.querySelector("[data-prev-word]")?.addEventListener("click", () => {
       if (currentWorkspaceMode === "study") {
         moveStudyStep(-1, topic);
@@ -543,14 +772,6 @@ function initVocabularyStudy() {
     if (fallbackLevel) activeLevel = fallbackLevel;
     if (!getTopic()) currentTopicId = vocabularyData[activeLevel].topics[0]?.id;
   }
-
-  localStorage.setItem(
-    "englishPathViewedVocabTopics",
-    JSON.stringify(Array.from(new Set([
-      ...JSON.parse(localStorage.getItem("englishPathViewedVocabTopics") || "[]"),
-      `${activeLevel}-${currentTopicId}`
-    ])))
-  );
 
   render();
 }

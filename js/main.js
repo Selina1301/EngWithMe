@@ -2,6 +2,7 @@
   [
     "setCurrentYear",
     "setActiveNav",
+    "initAuthNav",
     "initDemoActions",
     "initQuiz",
     "initMiniQuizzes",
@@ -10,6 +11,9 @@
     "initProgressButtons",
     "initAuthForms",
     "initDashboard",
+    "initProfile",
+    "initAdminDashboard",
+    "initLogoutButtons",
     "initResults",
     "initRecorder",
     "initHomeSuggestion",

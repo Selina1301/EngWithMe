@@ -1,4 +1,4 @@
-﻿function initHomeSuggestion() {
+function initHomeSuggestion() {
   const section = document.querySelector("[data-today-suggestion]");
   if (!section) return;
 
@@ -60,14 +60,67 @@ function initContactForm() {
   const form = document.querySelector("[data-contact-form]");
   if (!form) return;
 
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const feedback = form.querySelector("[data-contact-feedback]");
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton?.innerHTML;
+
+    // Set loading state
     if (feedback) {
-      feedback.textContent = "Đã nhận góp ý demo. Khi có backend, form này sẽ gửi dữ liệu về admin.";
-      feedback.style.color = "var(--success)";
+      feedback.textContent = "Đang gửi góp ý của bạn...";
+      feedback.style.color = "var(--muted)";
     }
-    form.reset();
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<span class="ti-reload spinner"></span> Đang gửi...';
+    }
+
+    const formData = new FormData(form);
+
+    // Prepare payload formatted for FormSubmit API
+    const payload = {
+      "Họ tên": formData.get("name"),
+      "Số điện thoại": formData.get("phone"),
+      "Email": formData.get("email"),
+      "Tiêu đề": formData.get("title"),
+      "Nội dung": formData.get("message"),
+      "_subject": "EngWithMe - Góp ý mới: " + formData.get("title"),
+      "_captcha": "false" // Disable captcha for smooth user experience
+    };
+
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/efd4322bff58b17e507bbc634769ef5a", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success === "true") {
+        if (feedback) {
+          feedback.textContent = "Gửi góp ý thành công! Thông tin đã được gửi trực tiếp đến email của Admin.";
+          feedback.style.color = "var(--success)";
+        }
+        form.reset();
+      } else {
+        throw new Error(result.message || "Không gửi được qua API.");
+      }
+    } catch (error) {
+      if (feedback) {
+        feedback.textContent = "Gửi thất bại. Hãy kiểm tra kết nối mạng của bạn và thử lại.";
+        feedback.style.color = "var(--danger)";
+      }
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalButtonText || '<i class="ti-email"></i> Gửi góp ý';
+      }
+    }
   });
 }
 

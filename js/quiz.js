@@ -1,4 +1,4 @@
-﻿function initQuiz() {
+function initQuiz() {
   const form = document.querySelector("[data-quiz-form]");
   const list = document.querySelector("[data-quiz-list]");
   const result = document.querySelector("[data-quiz-result]");
@@ -30,8 +30,8 @@
 
     const level = getRecommendedLevel(correct, quizQuestions.length);
     const percent = Math.round((correct / quizQuestions.length) * 100);
-    localStorage.setItem("englishPathLastScore", `${correct}/${quizQuestions.length}`);
-    localStorage.setItem("englishPathLevel", level);
+    localStorage.setItem("engWithMeLastScore", `${correct}/${quizQuestions.length}`);
+    localStorage.setItem("engWithMeLevel", level);
 
     result.hidden = false;
     result.innerHTML = `

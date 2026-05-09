@@ -1,25 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
-  <title>Bright four leaf path mark</title>
+  <title>Premium Geometric Four Leaf Clover Logo</title>
   <defs>
-    <linearGradient id="leaf" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#93ffb8"/>
-      <stop offset="0.45" stop-color="#2ee878"/>
-      <stop offset="1" stop-color="#48cfff"/>
+    <!-- Vibrant and modern gradient for each leaf -->
+    <linearGradient id="leaf-grad" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#05b5fe" />   <!-- Deep Electric Cyan -->
+      <stop offset="35%" stop-color="#2ee878" />  <!-- Vibrant Neon Green -->
+      <stop offset="100%" stop-color="#c8ff4f" /> <!-- Bright Golden Lime -->
     </linearGradient>
-    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="2.4" result="blur"/>
+    
+    <!-- Smooth gradient for the elegant curved stem -->
+    <linearGradient id="stem-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2ee878" />
+      <stop offset="100%" stop-color="#0a5c43" />
+    </linearGradient>
+
+    <!-- Glowing filter to make the logo pop off the dark background -->
+    <filter id="premium-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2.8" result="blur"/>
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.5 0" result="coloredBlur"/>
       <feMerge>
-        <feMergeNode in="blur"/>
+        <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+
+    <!-- Symmetrical heart-shaped leaf path -->
+    <path id="heart-leaf" d="M 32,32 C 24.5,24.5 17.5,25 17.5,17 C 17.5,9 24.5,7 32,16 C 39.5,7 46.5,9 46.5,17 C 46.5,25 39.5,24.5 32,32 Z" />
   </defs>
-  <g filter="url(#glow)">
-    <path d="M31.8 29.3C22.4 16.7 10.2 17.5 9 26.7c-1.1 8.3 8.8 12.9 21.1 4.8l1.7-2.2Z" fill="url(#leaf)"/>
-    <path d="M34.7 29.6c7.8-13.6 20.3-14.1 22.6-5.1 2 8.1-7.2 14-20.5 7.8l-2.1-2.7Z" fill="url(#leaf)"/>
-    <path d="M29.7 34.3C16 42 15.6 54.6 24.7 56.7c8.1 1.9 13.9-7.4 7.4-20.6l-2.4-1.8Z" fill="url(#leaf)"/>
-    <path d="M35.2 35.1C45.7 46.7 58 44.8 58.3 35.4c.3-8.3-10-11.9-21.4-2.8l-1.7 2.5Z" fill="url(#leaf)"/>
-    <path d="M32.7 37.2c3 7.8 1.5 14.5-5.2 20" fill="none" stroke="#64ff9a" stroke-width="4.8" stroke-linecap="round"/>
-    <circle cx="32.8" cy="32.5" r="5.4" fill="#eaffc5"/>
+
+  <!-- Glowing background elements for extra premium depth -->
+  <g filter="url(#premium-glow)">
+    <!-- Elegant curved stem -->
+    <path d="M 32,32 C 32,46 26.5,55 16.5,58" fill="none" stroke="url(#stem-grad)" stroke-width="4" stroke-linecap="round"/>
+    
+    <!-- The four symmetric clover leaves -->
+    <use href="#heart-leaf" transform="rotate(0 32 32)" fill="url(#leaf-grad)"/>
+    <use href="#heart-leaf" transform="rotate(90 32 32)" fill="url(#leaf-grad)"/>
+    <use href="#heart-leaf" transform="rotate(180 32 32)" fill="url(#leaf-grad)"/>
+    <use href="#heart-leaf" transform="rotate(270 32 32)" fill="url(#leaf-grad)"/>
+    
+    <!-- Sparkly crystal center -->
+    <circle cx="32" cy="32" r="3.2" fill="#ffffff" />
+    <circle cx="32" cy="32" r="1.5" fill="#ecfeff" />
   </g>
 </svg>

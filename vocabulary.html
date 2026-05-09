@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Từ vựng - EnglishPath</title>
+  <title>Từ vựng - EngWithMe</title>
 
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/pages/vocabulary.css" />
@@ -14,7 +14,7 @@
 
 <body>
   <header class="site-header">
-    <a class="brand" href="index.html">EnglishPath</a>
+    <a class="brand" href="index.html">EngWithMe</a>
     <nav class="nav-links" aria-label="Menu chính">
       <a href="index.html">Trang chủ</a>
       <a href="vocabulary.html">Từ vựng</a>
@@ -42,50 +42,132 @@
 
     <section class="vocab-section">
       <div class="vocab-container">
-        <div class="vocab-topbar">
-          <div class="level-tabs" aria-label="Chọn mức từ vựng">
-            <button class="level-tab active" type="button" data-level="easy">Easy</button>
-            <button class="level-tab" type="button" data-level="medium">Medium</button>
-            <button class="level-tab" type="button" data-level="hard">Hard</button>
-          </div>
-          <label class="study-search vocab-search">
-            <i class="ti-search"></i>
-            <input type="search" placeholder="Tìm chủ đề từ vựng" data-topic-search>
-          </label>
-          <button class="schedule-button" type="button" data-schedule-demo data-demo-title="Lịch trình từ vựng đang cập nhật" data-demo-message="Bản demo lịch trình từ vựng sẽ gom các chủ đề cần học, từ đã lưu và mục ôn lại theo ngày.">
-            <i class="ti-calendar"></i>
-            Lịch trình
+        <div class="vocab-mode-switch" role="tablist" aria-label="Chế độ từ vựng">
+          <button class="vocab-mode-tab is-active" type="button" data-vocab-mode="study">
+            <i class="ti-book"></i>
+            <span>Học</span>
+          </button>
+          <button class="vocab-mode-tab" type="button" data-vocab-mode="progress">
+            <i class="ti-bar-chart"></i>
+            <span>Tiến độ</span>
+          </button>
+          <button class="vocab-mode-tab" type="button" data-vocab-mode="my-vocab">
+            <i class="ti-folder"></i>
+            <span>Từ vựng của tôi</span>
           </button>
         </div>
 
-        <div class="level-intro" data-level-intro></div>
-        <span class="saved-count" data-saved-count>0 từ đã lưu</span>
-
-        <div class="topic-rail-block">
-          <div class="topic-rail-header">
-            <div>
-              <h3>Chưa xem</h3>
-              <p>Trượt ngang để chọn chủ đề muốn học.</p>
+        <section class="vocab-progress-view" data-vocab-progress-view hidden>
+          <div class="vocab-progress-hero stat-card">
+            <div class="vocab-progress-copy">
+              <p class="eyebrow">Tiến độ chuẩn</p>
+              <h2 data-vocab-progress-score>0%</h2>
+              <p data-vocab-progress-summary>Chưa có dữ liệu học tập.</p>
+              <div class="progress-track"><span data-vocab-progress-bar style="width: 0%"></span></div>
             </div>
-            <span data-unseen-count>0 chủ đề</span>
-          </div>
-          <div class="topic-rail" data-unseen-track></div>
-        </div>
-
-        <div class="topic-rail-block seen-block" data-seen-block hidden>
-          <div class="topic-rail-header">
-            <div>
-              <h3>Đã xem qua</h3>
-              <p>Các chủ đề bạn đã mở sẽ nằm ở đây.</p>
+            <div class="vocab-progress-metrics">
+              <div class="vocab-progress-metric">
+                <span>Độ chính xác</span>
+                <strong data-vocab-accuracy>0%</strong>
+              </div>
+              <div class="vocab-progress-metric">
+                <span>Streak hiện tại</span>
+                <strong data-vocab-streak>0 ngày</strong>
+              </div>
+              <div class="vocab-progress-metric">
+                <span>Từ đã lưu</span>
+                <strong data-vocab-saved-words>0</strong>
+              </div>
+              <div class="vocab-progress-metric">
+                <span>Câu quiz đã làm</span>
+                <strong data-vocab-quiz-total>0</strong>
+              </div>
             </div>
-            <span data-seen-count>0 chủ đề</span>
           </div>
-          <div class="topic-rail" data-seen-track></div>
+
+          <div class="stat-grid vocab-progress-grid">
+            <article class="stat-card">
+              <span>Từ đã lưu</span>
+              <strong data-vocab-saved-words-total>0</strong>
+              <a href="#" data-saved-words-open>Xem danh sách</a>
+            </article>
+            <article class="stat-card">
+              <span>Câu sai cần ôn</span>
+              <strong data-vocab-wrong-total>0</strong>
+              <a href="#" data-vocab-focus-quiz>Ôn lại quiz</a>
+            </article>
+            <article class="stat-card">
+              <span>Quiz đã làm</span>
+              <strong data-vocab-quiz-done>0</strong>
+              <a href="vocabulary-study.html" data-vocab-random-topic>Học chủ đề tiếp</a>
+            </article>
+          </div>
+
+          <article class="stat-card vocab-progress-summary">
+            <span>Tiến độ tổng quan</span>
+            <strong data-vocab-progress-score-large>0%</strong>
+            <p data-vocab-progress-detail>Hãy lưu từ quan trọng và làm thêm bài nhanh để tăng điểm.</p>
+            <div class="progress-track"><span data-vocab-progress-bar-large style="width: 0%"></span></div>
+          </article>
+        </section>
+
+        <section class="my-vocab-view" data-my-vocab-view hidden>
+          <div class="my-vocab-head stat-card">
+            <div>
+              <p class="eyebrow">My vocab</p>
+              <h2>Từ vựng của tôi</h2>
+              <p>Lưu từ mới vào Easy, Medium hoặc Hard để tạo danh sách ôn riêng.</p>
+            </div>
+            <strong data-my-vocab-total>0 từ</strong>
+          </div>
+
+          <div class="my-vocab-level-tabs" role="tablist" aria-label="Lọc từ vựng của tôi">
+            <button class="my-vocab-level-tab active" type="button" data-my-vocab-level="easy">Easy</button>
+            <button class="my-vocab-level-tab" type="button" data-my-vocab-level="medium">Medium</button>
+            <button class="my-vocab-level-tab" type="button" data-my-vocab-level="hard">Hard</button>
+          </div>
+
+          <div class="my-vocab-list" data-my-vocab-list></div>
+        </section>
+
+        <div class="vocab-study-view" data-vocab-study-view>
+          <div class="vocab-topbar">
+            <div class="level-tabs" aria-label="Chọn mức từ vựng">
+              <button class="level-tab active" type="button" data-level="easy">Easy</button>
+              <button class="level-tab" type="button" data-level="medium">Medium</button>
+              <button class="level-tab" type="button" data-level="hard">Hard</button>
+            </div>
+            <label class="study-search vocab-search" aria-label="Tìm chủ đề từ vựng">
+              <span class="search-icon" aria-hidden="true"><i class="ti-search"></i></span>
+              <input type="search" placeholder="Tìm chủ đề, nghĩa từ..." data-topic-search>
+            </label>
+            <button class="schedule-button vocab-schedule" type="button" data-schedule-demo data-demo-meta="Lịch học" data-demo-title="Lịch ôn từ vựng" data-demo-message="Lịch học sẽ ưu tiên từ đã lưu, câu sai cần ôn và chủ đề tiếp theo để bạn quay lại đúng phần cần luyện mỗi ngày.">
+              <span class="schedule-button-icon" aria-hidden="true"><i class="ti-calendar"></i></span>
+              <span class="schedule-button-copy">
+                <strong>Lịch học</strong>
+                <small>Ôn theo ngày</small>
+              </span>
+            </button>
+          </div>
+
+          <div class="level-intro" data-level-intro></div>
+          <button class="saved-count" type="button" data-saved-count data-saved-words-open>0 từ đã lưu</button>
+
+          <div class="topic-rail-block">
+            <div class="topic-rail-header">
+              <div>
+                <h3>Chủ đề từ vựng</h3>
+                <p>Trượt ngang để chọn chủ đề muốn học.</p>
+              </div>
+              <span data-unseen-count>0 chủ đề</span>
+            </div>
+            <div class="topic-rail" data-unseen-track></div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="quick-quiz-section">
+    <section class="quick-quiz-section" data-vocab-quiz-section>
       <div class="vocab-container">
         <div class="section-heading">
           <p class="eyebrow">Bài tập nhanh</p>
@@ -100,11 +182,27 @@
         </div>
       </div>
     </section>
+
+    <div class="saved-words-popover" data-saved-words-popover hidden>
+      <div class="saved-words-backdrop" data-saved-words-close></div>
+      <section class="saved-words-panel" role="dialog" aria-modal="true" aria-labelledby="savedWordsTitle">
+        <header class="saved-words-head">
+          <div>
+            <p class="eyebrow">Từ đã lưu</p>
+            <h2 id="savedWordsTitle">Danh sách ôn nhanh</h2>
+          </div>
+          <button class="saved-words-close" type="button" data-saved-words-close aria-label="Đóng danh sách từ đã lưu">
+            <i class="ti-close"></i>
+          </button>
+        </header>
+        <div class="saved-words-list" data-saved-words-list></div>
+      </section>
+    </div>
   </main>
 
   <footer class="site-footer">
     <div>
-      <strong>EnglishPath</strong>
+      <strong>EngWithMe</strong>
       <p>Học tiếng Anh theo lộ trình cá nhân.</p>
     </div>
     <div class="footer-links">
@@ -112,7 +210,7 @@
       <a href="listening.html">Luyện nghe</a>
       <a href="quiz.html">Đề thi</a>
     </div>
-    <p>&copy; <span data-current-year></span> EnglishPath.</p>
+    <p>&copy; <span data-current-year></span> EngWithMe.</p>
   </footer>
 
   <script src="js/core.js"></script>
@@ -121,37 +219,355 @@
   <script src="js/main.js"></script>
 
   <script>
+    const modeTabs = document.querySelectorAll("[data-vocab-mode]");
+    const studyView = document.querySelector("[data-vocab-study-view]");
+    const progressView = document.querySelector("[data-vocab-progress-view]");
+    const myVocabView = document.querySelector("[data-my-vocab-view]");
+    const quizSection = document.querySelector("[data-vocab-quiz-section]");
     const levelTabs = document.querySelectorAll(".level-tab");
     const levelIntro = document.querySelector("[data-level-intro]");
     const unseenTrack = document.querySelector("[data-unseen-track]");
-    const seenTrack = document.querySelector("[data-seen-track]");
-    const seenBlock = document.querySelector("[data-seen-block]");
     const unseenCount = document.querySelector("[data-unseen-count]");
-    const seenCount = document.querySelector("[data-seen-count]");
     const savedCount = document.querySelector("[data-saved-count]");
     const topicSearch = document.querySelector("[data-topic-search]");
     const quizQuestion = document.querySelector("[data-quiz-question]");
     const quizOptions = document.querySelector("[data-quiz-options]");
     const quizFeedback = document.querySelector("[data-vocab-feedback]");
+    const progressScore = document.querySelector("[data-vocab-progress-score]");
+    const progressSummary = document.querySelector("[data-vocab-progress-summary]");
+    const progressBar = document.querySelector("[data-vocab-progress-bar]");
+    const progressAccuracy = document.querySelector("[data-vocab-accuracy]");
+    const progressStreak = document.querySelector("[data-vocab-streak]");
+    const progressSavedWords = document.querySelector("[data-vocab-saved-words]");
+    const progressQuizTotal = document.querySelector("[data-vocab-quiz-total]");
+    const progressSavedWordsTotal = document.querySelector("[data-vocab-saved-words-total]");
+    const progressWrongTotal = document.querySelector("[data-vocab-wrong-total]");
+    const progressQuizDone = document.querySelector("[data-vocab-quiz-done]");
+    const progressScoreLarge = document.querySelector("[data-vocab-progress-score-large]");
+    const progressBarLarge = document.querySelector("[data-vocab-progress-bar-large]");
+    const progressDetail = document.querySelector("[data-vocab-progress-detail]");
+    const focusQuizButton = document.querySelector("[data-vocab-focus-quiz]");
+    const randomTopicButton = document.querySelector("[data-vocab-random-topic]");
+    const savedWordsOpenButtons = document.querySelectorAll("[data-saved-words-open]");
+    const savedWordsPopover = document.querySelector("[data-saved-words-popover]");
+    const savedWordsList = document.querySelector("[data-saved-words-list]");
+    const savedWordsCloseButtons = document.querySelectorAll("[data-saved-words-close]");
+    const myVocabLevelTabs = document.querySelectorAll("[data-my-vocab-level]");
+    const myVocabList = document.querySelector("[data-my-vocab-list]");
+    const myVocabTotal = document.querySelector("[data-my-vocab-total]");
 
     const initialLevel = new URLSearchParams(window.location.search).get("level");
+    const modeStorageKey = "engWithMeVocabMode";
+    const savedStorageKey = "engWithMeSavedVocabularyWords";
+    const quizStatsKey = "engWithMeVocabQuizStats";
+    const activityStorageKey = "engWithMeVocabActivityDays";
     let activeLevel = vocabularyData[initialLevel] ? initialLevel : "easy";
-    const savedWords = new Set();
-    const viewedTopics = new Set(JSON.parse(localStorage.getItem("englishPathViewedVocabTopics") || "[]"));
+    let activeMode = ["study", "progress", "my-vocab"].includes(localStorage.getItem(modeStorageKey)) ? localStorage.getItem(modeStorageKey) : "study";
+    let activeMyVocabLevel = "easy";
+    let savedWordRecords = normalizeSavedWordRecords(JSON.parse(localStorage.getItem(savedStorageKey) || "[]"));
+    let savedWords = new Set(savedWordRecords.keys());
+    const quizStats = normalizeQuizStats(JSON.parse(localStorage.getItem(quizStatsKey) || "null"));
     let quizTimer = null;
 
-    function updateSavedCount() {
-      savedCount.textContent = `${savedWords.size} từ đã lưu`;
+    function normalizeQuizStats(value) {
+      if (!value || typeof value !== "object") {
+        return {
+          correct: 0,
+          total: 0,
+          wrongWords: {}
+        };
+      }
+
+      return {
+        correct: Number(value.correct || 0),
+        total: Number(value.total || 0),
+        wrongWords: value.wrongWords && typeof value.wrongWords === "object" ? value.wrongWords : {}
+      };
     }
 
-    function saveViewedTopics() {
-      localStorage.setItem("englishPathViewedVocabTopics", JSON.stringify(Array.from(viewedTopics)));
+    function normalizeSavedWordRecords(value) {
+      const records = new Map();
+      if (!Array.isArray(value)) return records;
+
+      value.forEach(item => {
+        if (typeof item === "string") {
+          records.set(item, { key: item, studyLevel: "easy" });
+          return;
+        }
+
+        if (!item || typeof item !== "object" || !item.key) return;
+        const studyLevel = ["easy", "medium", "hard"].includes(item.studyLevel) ? item.studyLevel : "easy";
+        records.set(item.key, { key: item.key, studyLevel });
+      });
+
+      return records;
+    }
+
+    function saveSavedWordRecords() {
+      savedWords = new Set(savedWordRecords.keys());
+      localStorage.setItem(savedStorageKey, JSON.stringify(Array.from(savedWordRecords.values())));
+    }
+
+    function saveArray(key, set) {
+      localStorage.setItem(key, JSON.stringify(Array.from(set)));
+    }
+
+    function todayKey(date = new Date()) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function parseDayKey(key) {
+      const parts = String(key || "").split("-").map(Number);
+      if (parts.length !== 3 || parts.some(Number.isNaN)) return null;
+      return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+
+    function isNextDay(previousKey, nextKey) {
+      const previous = parseDayKey(previousKey);
+      const next = parseDayKey(nextKey);
+      if (!previous || !next) return false;
+      const diff = next.getTime() - previous.getTime();
+      return diff === 24 * 60 * 60 * 1000;
+    }
+
+    function calculateStreak(days) {
+      const uniqueDays = Array.from(new Set(days)).sort();
+      if (!uniqueDays.length) {
+        return { current: 0, best: 0 };
+      }
+
+      let current = 0;
+      let cursor = todayKey();
+      while (uniqueDays.includes(cursor)) {
+        current += 1;
+        const currentDate = parseDayKey(cursor);
+        if (!currentDate) break;
+        currentDate.setDate(currentDate.getDate() - 1);
+        cursor = todayKey(currentDate);
+      }
+
+      let best = 0;
+      let chain = 0;
+      uniqueDays.forEach((day, index) => {
+        if (index === 0 || isNextDay(uniqueDays[index - 1], day)) {
+          chain += 1;
+        } else {
+          chain = 1;
+        }
+        best = Math.max(best, chain);
+      });
+
+      return { current, best };
+    }
+
+    function recordVocabActivity() {
+      const days = new Set(JSON.parse(localStorage.getItem(activityStorageKey) || "[]"));
+      days.add(todayKey());
+      localStorage.setItem(activityStorageKey, JSON.stringify(Array.from(days).sort()));
+    }
+
+    function saveQuizStats() {
+      localStorage.setItem(quizStatsKey, JSON.stringify(quizStats));
+    }
+
+    function updateSavedCount() {
+      const validSavedCount = getSavedWordEntries().length;
+      savedCount.textContent = `${validSavedCount} từ đã lưu`;
+      savedCount.setAttribute("aria-label", `Mở danh sách ${validSavedCount} từ đã lưu`);
+    }
+
+    function getAllWordEntries() {
+      return Object.entries(vocabularyData).flatMap(([levelKey, levelData]) =>
+        levelData.topics.flatMap(topic =>
+          topic.words.map(word => ({
+            key: `${levelKey}-${topic.id}-${word.word}`,
+            levelKey,
+            levelLabel: levelData.label,
+            topicName: topic.name,
+            ...word
+          }))
+        )
+      );
+    }
+
+    function getSavedWordEntries() {
+      const entriesByKey = new Map(getAllWordEntries().map(entry => [entry.key, entry]));
+      return Array.from(savedWordRecords.values())
+        .map(record => {
+          const entry = entriesByKey.get(record.key);
+          return entry ? { ...entry, studyLevel: record.studyLevel } : null;
+        })
+        .filter(Boolean);
+    }
+
+    function getQuizAccuracy() {
+      return quizStats.total ? Math.round((quizStats.correct / quizStats.total) * 100) : 0;
+    }
+
+    function getProgressSnapshot() {
+      const totalWords = getAllWordEntries().length;
+      const savedWordCount = getSavedWordEntries().length;
+      const savedPercent = totalWords ? Math.round((savedWordCount / totalWords) * 100) : 0;
+      const accuracy = getQuizAccuracy();
+      const progressScoreValue = Math.round((savedPercent * 0.45) + (accuracy * 0.55));
+      const activityDays = JSON.parse(localStorage.getItem(activityStorageKey) || "[]");
+      const streak = calculateStreak(activityDays);
+      const wrongTotal = Math.max(0, quizStats.total - quizStats.correct);
+      const wrongUnique = Object.keys(quizStats.wrongWords || {}).length;
+
+      return {
+        totalWords,
+        savedWordCount,
+        savedPercent,
+        accuracy,
+        progressScoreValue,
+        streak,
+        wrongTotal,
+        wrongUnique
+      };
+    }
+
+    function updateProgressView() {
+      const snapshot = getProgressSnapshot();
+      const scoreText = `${snapshot.progressScoreValue}%`;
+      const savedWordText = `${snapshot.savedWordCount}/${snapshot.totalWords}`;
+      const wrongReviewCount = snapshot.wrongUnique || snapshot.wrongTotal;
+
+      progressScore.textContent = scoreText;
+      progressScoreLarge.textContent = scoreText;
+      progressBar.style.width = `${snapshot.progressScoreValue}%`;
+      progressBarLarge.style.width = `${snapshot.progressScoreValue}%`;
+      progressAccuracy.textContent = `${snapshot.accuracy}%`;
+      progressStreak.textContent = `${snapshot.streak.current} ngày`;
+      progressSavedWords.textContent = savedWordText;
+      progressQuizTotal.textContent = quizStats.total;
+      progressSavedWordsTotal.textContent = snapshot.savedWordCount;
+      progressWrongTotal.textContent = wrongReviewCount;
+      progressQuizDone.textContent = quizStats.total;
+
+      progressSummary.textContent = snapshot.totalWords
+        ? `Bạn đã lưu ${savedWordText} từ. Độ chính xác bài nhanh hiện tại là ${snapshot.accuracy}%.`
+        : "Chưa có dữ liệu học tập.";
+      progressDetail.textContent = "Điểm tiến độ lấy từ số từ đã lưu và kết quả bài tập nhanh.";
+    }
+
+    function renderSavedWordsList() {
+      const entries = getSavedWordEntries();
+
+      savedWordsList.innerHTML = entries.length
+        ? entries.map(entry => `
+            <article class="saved-word-item">
+              <div>
+                <span>${entry.studyLevel.toUpperCase()} · ${entry.levelLabel} · ${entry.topicName}</span>
+                <h3>${entry.word}</h3>
+                <p>${entry.phonetic} · ${entry.meaning}</p>
+                <small>${entry.example}</small>
+              </div>
+              <button type="button" data-remove-saved-word="${entry.key}">Bỏ lưu</button>
+            </article>
+          `).join("")
+        : `
+            <article class="saved-word-empty">
+              <h3>Chưa có từ nào được lưu</h3>
+              <p>Vào phần Xem từ trong từng chủ đề và bấm Lưu từ để tạo danh sách ôn nhanh.</p>
+            </article>
+          `;
+
+      savedWordsList.querySelectorAll("[data-remove-saved-word]").forEach(button => {
+        button.addEventListener("click", () => {
+          savedWordRecords.delete(button.dataset.removeSavedWord);
+          saveSavedWordRecords();
+          updateSavedCount();
+          renderSavedWordsList();
+          renderMyVocab();
+          updateProgressView();
+        });
+      });
+    }
+
+    function renderMyVocab() {
+      const entries = getSavedWordEntries();
+      const filteredEntries = entries.filter(entry => entry.studyLevel === activeMyVocabLevel);
+
+      if (myVocabTotal) myVocabTotal.textContent = `${entries.length} từ`;
+
+      myVocabLevelTabs.forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.myVocabLevel === activeMyVocabLevel);
+      });
+
+      myVocabList.innerHTML = filteredEntries.length
+        ? filteredEntries.map(entry => `
+            <article class="my-vocab-card ${entry.studyLevel}">
+              <div>
+                <span>${entry.topicName}</span>
+                <h3>${entry.word}</h3>
+                <p>${entry.phonetic} · ${entry.meaning}</p>
+                <small>${entry.example}</small>
+              </div>
+              <button type="button" data-remove-my-vocab="${entry.key}">Bỏ lưu</button>
+            </article>
+          `).join("")
+        : `
+            <article class="saved-word-empty my-vocab-empty">
+              <h3>Chưa có từ mức ${activeMyVocabLevel.toUpperCase()}</h3>
+              <p>Khi bấm Lưu từ, hãy chọn mức Easy, Medium hoặc Hard để đưa từ vào danh sách này.</p>
+            </article>
+          `;
+
+      myVocabList.querySelectorAll("[data-remove-my-vocab]").forEach(button => {
+        button.addEventListener("click", () => {
+          savedWordRecords.delete(button.dataset.removeMyVocab);
+          saveSavedWordRecords();
+          updateSavedCount();
+          renderMyVocab();
+          updateProgressView();
+        });
+      });
+    }
+
+    function openSavedWords() {
+      renderSavedWordsList();
+      savedWordsPopover.hidden = false;
+      document.body.classList.add("modal-open");
+    }
+
+    function closeSavedWords() {
+      savedWordsPopover.hidden = true;
+      document.body.classList.remove("modal-open");
     }
 
     function syncLevelTabs() {
       levelTabs.forEach(tab => {
         tab.classList.toggle("active", tab.dataset.level === activeLevel);
       });
+    }
+
+    function syncModeTabs() {
+      modeTabs.forEach(tab => {
+        tab.classList.toggle("is-active", tab.dataset.vocabMode === activeMode);
+      });
+    }
+
+    function setVocabMode(mode) {
+      activeMode = ["study", "progress", "my-vocab"].includes(mode) ? mode : "study";
+      localStorage.setItem(modeStorageKey, activeMode);
+      syncModeTabs();
+
+      if (studyView) studyView.hidden = activeMode !== "study";
+      if (quizSection) quizSection.hidden = activeMode !== "study";
+      if (progressView) progressView.hidden = activeMode !== "progress";
+      if (myVocabView) myVocabView.hidden = activeMode !== "my-vocab";
+
+      if (activeMode === "progress") {
+        updateProgressView();
+      }
+
+      if (activeMode === "my-vocab") {
+        renderMyVocab();
+      }
     }
 
     function renderLevelIntro() {
@@ -168,20 +584,27 @@
 
     function topicCardTemplate(topic) {
       return `
-        <button class="topic-card rail-card ${activeLevel}" type="button" data-topic-id="${topic.id}">
-          <div class="topic-icon"><i class="${topic.icon || "ti-book"}"></i></div>
-          <h3>${topic.name}</h3>
-          <p>${topic.desc}</p>
-          <small>${topic.words.length} từ mới</small>
-        </button>
+        <article class="topic-card rail-card ${activeLevel}" data-topic-id="${topic.id}">
+          <button class="topic-card-open" type="button" data-topic-open data-topic-id="${topic.id}" aria-label="Mở chủ đề ${topic.name}"></button>
+          <span class="topic-level-chip">${vocabularyData[activeLevel].label}</span>
+          <div class="topic-icon" aria-hidden="true"><i class="${topic.icon || "ti-book"}"></i></div>
+          <div class="topic-card-body">
+            <h3>${topic.name}</h3>
+            <p>${topic.desc}</p>
+          </div>
+          <span class="topic-card-footer">
+            <small>${topic.words.length} từ mới</small>
+            <i class="ti-arrow-right" aria-hidden="true"></i>
+          </span>
+        </article>
       `;
     }
 
     function doneCardTemplate(sectionName, emptyType = "done") {
       const isNoHope = emptyType === "no-hope";
       const isSearch = emptyType === "search";
-      const pillText = isSearch ? "Search" : (isNoHope ? "No hope" : "Done");
-      const title = isSearch ? "Không có chủ đề phù hợp" : (isNoHope ? "Nơi đây còn trống rỗng hơn túi tiền của bạn =))" : `Hoàn thành ${vocabularyData[activeLevel].title}`);
+      const pillText = isSearch ? "Tìm kiếm" : (isNoHope ? "Trống" : "Hoàn tất");
+      const title = isSearch ? "Không có chủ đề phù hợp" : (isNoHope ? "Chưa có chủ đề" : `Hoàn thành ${vocabularyData[activeLevel].title}`);
       const description = isNoHope
         ? `Chưa có chủ đề nào được mở ở mức ${vocabularyData[activeLevel].title}.`
         : isSearch
@@ -200,11 +623,16 @@
     }
 
     function attachTopicEvents() {
-      document.querySelectorAll("[data-topic-id]").forEach(button => {
-        button.addEventListener("click", () => {
-          viewedTopics.add(`${activeLevel}-${button.dataset.topicId}`);
-          saveViewedTopics();
+      document.querySelectorAll("[data-topic-open]").forEach(button => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
           window.location.href = `vocabulary-study.html?level=${activeLevel}&topic=${button.dataset.topicId}`;
+        });
+      });
+
+      document.querySelectorAll(".topic-card[data-topic-id]").forEach(card => {
+        card.addEventListener("click", (event) => {
+          window.location.href = `vocabulary-study.html?level=${activeLevel}&topic=${card.dataset.topicId}`;
         });
       });
     }
@@ -218,22 +646,14 @@
           .toLowerCase()
           .includes(searchQuery);
       });
-      const unseenTopics = topics.filter(topic => !viewedTopics.has(`${activeLevel}-${topic.id}`));
-      const seenTopics = topics.filter(topic => viewedTopics.has(`${activeLevel}-${topic.id}`));
       const emptyType = searchQuery ? "search" : "done";
 
-      unseenTrack.innerHTML = unseenTopics.length
-        ? unseenTopics.map(topicCardTemplate).join("")
-        : doneCardTemplate("Chưa xem", emptyType);
-      seenTrack.innerHTML = seenTopics.length
-        ? seenTopics.map(topicCardTemplate).join("")
-        : doneCardTemplate("Đã xem qua", searchQuery ? "search" : "no-hope");
-      unseenTrack.dataset.remainder = unseenTopics.length % 4;
-      seenTrack.dataset.remainder = seenTopics.length % 4;
+      unseenTrack.innerHTML = topics.length
+        ? topics.map(topicCardTemplate).join("")
+        : doneCardTemplate("Chủ đề", emptyType);
+      unseenTrack.dataset.remainder = topics.length % 4;
 
-      unseenCount.textContent = `${unseenTopics.length} chủ đề`;
-      seenCount.textContent = `${seenTopics.length} chủ đề`;
-      seenBlock.hidden = false;
+      unseenCount.textContent = `${topics.length} chủ đề`;
 
       attachTopicEvents();
     }
@@ -247,10 +667,14 @@
         syncLevelTabs();
         renderLevelIntro();
         renderTopics();
+        updateProgressView();
       });
     });
 
-    topicSearch?.addEventListener("input", renderTopics);
+    topicSearch?.addEventListener("input", () => {
+      renderTopics();
+      updateProgressView();
+    });
 
     function getAllWords() {
       const allWords = [];
@@ -319,6 +743,16 @@
           const isCorrect = button.dataset.correct === "true";
           const buttons = quizOptions.querySelectorAll(".quiz-option-btn");
 
+          quizStats.total += 1;
+          if (isCorrect) {
+            quizStats.correct += 1;
+          } else {
+            quizStats.wrongWords[correctWord.word] = (quizStats.wrongWords[correctWord.word] || 0) + 1;
+          }
+          saveQuizStats();
+          recordVocabActivity();
+          updateProgressView();
+
           buttons.forEach(btn => {
             btn.disabled = true;
 
@@ -350,11 +784,57 @@
       });
     }
 
+    modeTabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        setVocabMode(tab.dataset.vocabMode);
+      });
+    });
+
+    myVocabLevelTabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        activeMyVocabLevel = tab.dataset.myVocabLevel;
+        renderMyVocab();
+      });
+    });
+
+    focusQuizButton?.addEventListener("click", (event) => {
+      event.preventDefault();
+      setVocabMode("study");
+      quizSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    randomTopicButton?.addEventListener("click", (event) => {
+      event.preventDefault();
+      const allTopics = Object.entries(vocabularyData).flatMap(([levelKey, levelData]) =>
+        levelData.topics.map(topic => ({ levelKey, topic }))
+      );
+      const target = allTopics.find(({ levelKey, topic }) =>
+        topic.words.some(word => !savedWords.has(`${levelKey}-${topic.id}-${word.word}`))
+      ) || allTopics[0];
+      if (!target) return;
+      window.location.href = `vocabulary-study.html?level=${target.levelKey}&topic=${target.topic.id}`;
+    });
+
+    savedWordsOpenButtons.forEach(button => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        openSavedWords();
+      });
+    });
+    savedWordsCloseButtons.forEach(button => {
+      button.addEventListener("click", closeSavedWords);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !savedWordsPopover.hidden) closeSavedWords();
+    });
+
     updateSavedCount();
     syncLevelTabs();
     renderLevelIntro();
     renderTopics();
     createQuiz();
+    updateProgressView();
+    setVocabMode(activeMode);
   </script>
 </body>
 </html>

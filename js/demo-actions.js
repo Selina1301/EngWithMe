@@ -19,9 +19,6 @@
         <span class="demo-status-pill">${meta || "Đang cập nhật"}</span>
         <h2 id="demoModalTitle">${title}</h2>
         <p>${message}</p>
-        <div class="demo-progress">
-          <span style="width: 62%"></span>
-        </div>
         <button class="btn btn-primary" type="button" data-close-demo>Đã hiểu</button>
       </section>
     `;
@@ -42,11 +39,11 @@
 
     event.preventDefault();
     const isSchedule = button.hasAttribute("data-schedule-demo");
-    const title = button.dataset.demoTitle || (isSchedule ? "Lịch trình học đang cập nhật" : "Bài tập demo đang cập nhật");
+    const title = button.dataset.demoTitle || (isSchedule ? "Lịch trình học" : "Bài tập đang cập nhật");
     const message = button.dataset.demoMessage || (isSchedule
-      ? "Giao diện lịch trình sẽ hiển thị kế hoạch học theo ngày, thời lượng và phần cần ôn. Hiện tại đây là bản demo tạm."
-      : "Khi hoàn thiện, nút này sẽ mở bài luyện tập tương ứng với chủ điểm đã chọn. Hiện tại hệ thống chỉ hiển thị trạng thái demo.");
-    const meta = button.dataset.demoMeta || (isSchedule ? "Schedule demo" : "Practice demo");
+      ? "Giao diện lịch trình hiển thị kế hoạch học theo ngày, thời lượng và phần cần ôn tiếp theo."
+      : "Khi hoàn thiện, nút này sẽ mở bài luyện tập tương ứng với chủ điểm đã chọn.");
+    const meta = button.dataset.demoMeta || (isSchedule ? "Lịch học" : "Đang cập nhật");
 
     showDemoModal(title, message, meta);
   });

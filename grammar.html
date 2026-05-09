@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ngữ pháp - EnglishPath</title>
+  <title>Ngữ pháp - EngWithMe</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/pages/study.css">
   <link rel="stylesheet" href="css/pages/grammar.css">
@@ -13,7 +13,7 @@
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="index.html">EnglishPath</a>
+    <a class="brand" href="index.html">EngWithMe</a>
     <nav class="nav-links" aria-label="Menu chính">
       <a href="index.html">Trang chủ</a>
       <a href="vocabulary.html">Từ vựng</a>
@@ -23,6 +23,10 @@
       <a href="blog.html">Blog</a>
       <a href="pricing.html">Bảng giá</a>
     </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="login.html">Đăng nhập</a>
+      <a class="btn btn-primary" href="register.html">Đăng ký</a>
+    </div>
   </header>
 
   <main class="study-page grammar-study-page">
@@ -38,6 +42,34 @@
     </section>
 
     <section class="study-shell grammar-learning-shell">
+      <div class="study-mode-switch" role="tablist" aria-label="Chế độ ngữ pháp">
+        <button class="study-mode-tab is-active" type="button" data-grammar-mode="study">
+          <i class="ti-book"></i>
+          <span>Học</span>
+        </button>
+        <button class="study-mode-tab" type="button" data-grammar-mode="progress">
+          <i class="ti-bar-chart"></i>
+          <span>Tiến độ</span>
+        </button>
+      </div>
+
+      <section class="study-progress-view grammar-progress-view" data-grammar-progress-view hidden>
+        <article class="stat-card grammar-progress-hero">
+          <div>
+            <p class="eyebrow">Tiến độ ngữ pháp</p>
+            <strong data-grammar-progress-score>0%</strong>
+            <p data-grammar-progress-summary>Chưa có câu luyện tập nào được hoàn thành.</p>
+            <div class="progress-track"><span data-grammar-progress-bar style="width: 0%"></span></div>
+          </div>
+          <div class="grammar-progress-metrics">
+            <span><strong data-grammar-topic-complete>0/18</strong>Chủ đề hoàn thành</span>
+            <span><strong data-grammar-question-complete>0/54</strong>Câu đúng</span>
+            <span><strong data-grammar-question-remaining>54</strong>Câu còn lại</span>
+          </div>
+        </article>
+      </section>
+
+      <div class="grammar-study-view" data-grammar-study-view>
       <section class="grammar-topic-panel" aria-labelledby="grammarTopicHeading">
         <div class="grammar-topic-header">
           <div>
@@ -58,13 +90,14 @@
       </section>
 
       <section class="grammar-detail-view" data-grammar-detail aria-live="polite"></section>
+      </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div><strong>EnglishPath</strong><p>Học tiếng Anh theo lộ trình cá nhân.</p></div>
+    <div><strong>EngWithMe</strong><p>Học tiếng Anh theo lộ trình cá nhân.</p></div>
     <div class="footer-links"><a href="vocabulary.html">Từ vựng</a><a href="reading.html">Đọc</a><a href="quiz.html">Đề thi</a></div>
-    <p>&copy; <span data-current-year></span> EnglishPath.</p>
+    <p>&copy; <span data-current-year></span> EngWithMe.</p>
   </footer>
 
   <script src="js/core.js"></script>

@@ -670,3 +670,207 @@ const grammarTopics = [
     ]
   }
 ];
+
+const grammarTopicEnhancements = {
+  "danh-tu": {
+    theory: [
+      "Khi viết câu, hãy xác định danh từ đang là chủ ngữ, tân ngữ hay bổ ngữ để chọn đúng mạo từ, lượng từ và dạng số nhiều.",
+      "Danh từ tập hợp như team, family, staff có thể nhấn mạnh cả nhóm hoặc từng thành viên tùy ngữ cảnh."
+    ],
+    formulas: ["a/an + singular countable noun", "some/any + plural countable noun or uncountable noun", "noun + 's / of + noun"],
+    examples: [
+      { en: "The team is preparing its final report.", vi: "Team được xem như một đơn vị nên dùng is và its." },
+      { en: "I need two pieces of advice.", vi: "Advice không đếm được, cần dùng piece of advice khi muốn đếm." }
+    ],
+    mistakes: ["Không thêm s cho information, furniture, homework, equipment.", "Không dùng a/an với danh từ không đếm được."]
+  },
+  "dong-tu": {
+    theory: [
+      "Động từ quyết định khung câu: có động từ cần tân ngữ, có động từ cần tính từ bổ nghĩa, có động từ đi với V-ing hoặc to V.",
+      "Trợ động từ như do, be, have giúp tạo câu hỏi, phủ định, tiếp diễn và hoàn thành."
+    ],
+    formulas: ["Subject + transitive verb + object", "Subject + linking verb + adjective/noun", "Modal verb + base verb"],
+    examples: [
+      { en: "The soup tastes salty.", vi: "Taste là linking verb, phía sau dùng tính từ salty." },
+      { en: "She explained the rule clearly.", vi: "Explain là ngoại động từ, cần tân ngữ the rule." }
+    ],
+    mistakes: ["Không dùng to sau modal verbs: can go, must study.", "Không bỏ tân ngữ với các động từ cần tân ngữ như discuss, explain, attend."]
+  },
+  "tinh-tu": {
+    theory: [
+      "Tính từ nêu phẩm chất, trạng thái, kích thước, tuổi, màu sắc, nguồn gốc hoặc chất liệu của danh từ.",
+      "Một số tính từ kết thúc bằng -ed mô tả cảm xúc của người; -ing mô tả thứ gây ra cảm xúc đó."
+    ],
+    formulas: ["linking verb + adjective", "opinion + size + age + shape + color + origin + material + noun", "so/too/very + adjective"],
+    examples: [
+      { en: "The lesson was confusing, so I felt confused.", vi: "Confusing mô tả bài học; confused mô tả cảm xúc của người học." },
+      { en: "She bought a beautiful small wooden box.", vi: "Beautiful, small, wooden đứng theo thứ tự tự nhiên trước danh từ." }
+    ],
+    mistakes: ["Không dùng trạng từ sau linking verbs: feel happy, không phải feel happily.", "Không đặt nhiều tính từ tùy tiện trước danh từ."]
+  },
+  "trang-tu": {
+    theory: [
+      "Trạng từ có thể bổ nghĩa cho hành động, mức độ, tần suất, thời gian, nơi chốn hoặc thái độ của cả câu.",
+      "Vị trí trạng từ thay đổi theo loại: trạng từ tần suất thường đứng trước động từ thường, sau be."
+    ],
+    formulas: ["frequency adverb + main verb", "be + frequency adverb", "verb + manner adverb"],
+    examples: [
+      { en: "She usually studies after dinner.", vi: "Usually đứng trước động từ thường studies." },
+      { en: "He answered the question surprisingly well.", vi: "Surprisingly bổ nghĩa cho well, well bổ nghĩa cho answered." }
+    ],
+    mistakes: ["Hard là trạng từ nghĩa là chăm chỉ/mạnh, hardly nghĩa là hầu như không.", "Không phải trạng từ nào cũng thêm -ly: fast, late, well."]
+  },
+  "mao-tu": {
+    theory: [
+      "Mạo từ giúp người nghe biết danh từ đang được nói chung, nhắc lần đầu hay đã xác định.",
+      "Âm đầu quyết định a/an, không phải chữ cái đầu: an hour, a university."
+    ],
+    formulas: ["a/an + singular countable noun", "the + specific noun", "zero article + plural/general noun"],
+    examples: [
+      { en: "I saw a dog. The dog was very small.", vi: "A dùng khi nhắc lần đầu; the dùng khi người nghe đã biết con chó nào." },
+      { en: "Children need time to play.", vi: "Children nói chung nên không dùng the." }
+    ],
+    mistakes: ["Không dùng the khi nói khái quát về danh từ số nhiều.", "Không quên mạo từ trước danh từ đếm được số ít."]
+  },
+  "gioi-tu": {
+    theory: [
+      "Giới từ thường đi theo cụm cố định, vì vậy cần học theo cụm như interested in, good at, responsible for.",
+      "At nhấn điểm cụ thể, on nhấn bề mặt/ngày, in nhấn không gian hoặc khoảng thời gian rộng."
+    ],
+    formulas: ["adjective + preposition", "verb + preposition + object", "preposition + noun phrase"],
+    examples: [
+      { en: "She is responsible for the schedule.", vi: "Responsible thường đi với for." },
+      { en: "We met at the station on Friday in March.", vi: "At địa điểm cụ thể, on ngày, in tháng." }
+    ],
+    mistakes: ["Không dịch từng chữ giới từ từ tiếng Việt sang tiếng Anh.", "Không dùng in Monday; ngày trong tuần dùng on."]
+  },
+  "so-sanh": {
+    theory: [
+      "So sánh hơn nhấn sự khác biệt giữa hai đối tượng; so sánh nhất nhấn một đối tượng nổi bật trong một nhóm.",
+      "Tính từ ngắn thường thêm -er/-est; tính từ dài dùng more/most; một số từ bất quy tắc cần học riêng."
+    ],
+    formulas: ["comparative + than", "the + superlative + noun", "as + adjective/adverb + as"],
+    examples: [
+      { en: "This route is less crowded than the main road.", vi: "Less dùng để so sánh mức độ ít hơn." },
+      { en: "It is one of the most useful tools.", vi: "One of đi với the most và danh từ số nhiều." }
+    ],
+    mistakes: ["Không dùng more better hoặc most easiest.", "Sau than cần đối tượng được so sánh rõ ràng."]
+  },
+  "modal-verbs": {
+    theory: [
+      "Modal verbs thể hiện thái độ của người nói: khả năng, mức độ chắc chắn, lời khuyên, sự cho phép hoặc nghĩa vụ.",
+      "Modal verbs không chia theo chủ ngữ và động từ sau modal luôn ở dạng nguyên mẫu."
+    ],
+    formulas: ["modal + base verb", "modal + not + base verb", "modal + subject + base verb?"],
+    examples: [
+      { en: "You should review the notes before class.", vi: "Should đưa ra lời khuyên." },
+      { en: "The package might arrive today.", vi: "Might diễn tả khả năng không chắc chắn." }
+    ],
+    mistakes: ["Không dùng to sau should, must, can.", "Must not là cấm; don't have to là không cần, hai nghĩa khác nhau."]
+  },
+  "cau-dieu-kien": {
+    theory: [
+      "Câu điều kiện cần khớp giữa mức độ thật/giả định và thời gian của kết quả.",
+      "Nếu mệnh đề if đứng đầu câu, thường dùng dấu phẩy trước mệnh đề chính."
+    ],
+    formulas: ["If + present simple, will + base verb", "If + past simple, would + base verb", "If + past perfect, would have + V3"],
+    examples: [
+      { en: "If you heat water to 100°C, it boils.", vi: "Loại 0 nói về sự thật chung." },
+      { en: "If I had left earlier, I would have caught the bus.", vi: "Loại 3 nói về điều không xảy ra trong quá khứ." }
+    ],
+    mistakes: ["Không dùng will trong mệnh đề if của điều kiện loại 1.", "Không trộn loại 2 và loại 3 nếu không có ý mixed conditional rõ ràng."]
+  },
+  "cau-bi-dong": {
+    theory: [
+      "Câu bị động hữu ích khi đối tượng chịu tác động quan trọng hơn người thực hiện hành động.",
+      "By + agent chỉ dùng khi người thực hiện hành động thật sự cần thiết."
+    ],
+    formulas: ["object + be + V3/ed", "object + modal + be + V3/ed", "object + have/has been + V3/ed"],
+    examples: [
+      { en: "The report has been updated.", vi: "Hiện tại hoàn thành bị động: has been updated." },
+      { en: "The meeting can be moved to Friday.", vi: "Modal bị động: can be moved." }
+    ],
+    mistakes: ["Không quên chia be theo thì của câu.", "Không dùng bị động với động từ nội động không có tân ngữ như happen, arrive, sleep."]
+  },
+  "cau-tuong-thuat": {
+    theory: [
+      "Câu tường thuật cần đổi đại từ, trạng từ thời gian/nơi chốn và thường lùi thì khi động từ tường thuật ở quá khứ.",
+      "Câu hỏi gián tiếp dùng trật tự câu kể, không đảo trợ động từ như câu hỏi trực tiếp."
+    ],
+    formulas: ["said that + clause", "asked + object + if/whether + clause", "told + object + to V"],
+    examples: [
+      { en: "She said that she was working from home.", vi: "Am working lùi thành was working." },
+      { en: "He asked me where I lived.", vi: "Câu hỏi gián tiếp dùng I lived, không dùng did I live." }
+    ],
+    mistakes: ["Không giữ nguyên today, tomorrow, here nếu ngữ cảnh đã đổi.", "Không dùng said me; dùng told me hoặc said to me."]
+  },
+  "menh-de-quan-he": {
+    theory: [
+      "Mệnh đề quan hệ giúp nối câu và tránh lặp danh từ, nhưng cần phân biệt thông tin thiết yếu và thông tin bổ sung.",
+      "Mệnh đề không xác định cần dấu phẩy và không dùng that thay cho who/which."
+    ],
+    formulas: ["noun + who/which/that + verb", "noun + whose + noun", "place + where + clause"],
+    examples: [
+      { en: "The app that I use every day is simple.", vi: "That thay cho app và làm tân ngữ trong mệnh đề quan hệ." },
+      { en: "My brother, who lives in Hue, is a teacher.", vi: "Thông tin bổ sung nên đặt giữa hai dấu phẩy." }
+    ],
+    mistakes: ["Không dùng where cho người hoặc vật không phải nơi chốn.", "Không bỏ dấu phẩy trong mệnh đề quan hệ không xác định."]
+  },
+  "gerund-infinitive": {
+    theory: [
+      "Gerund nhấn hoạt động như một danh từ; infinitive thường nhấn mục đích, dự định hoặc hành động hướng tới.",
+      "Một số động từ đổi nghĩa khi đi với V-ing hoặc to V như remember, stop, try."
+    ],
+    formulas: ["verb + V-ing", "verb + to V", "preposition + V-ing"],
+    examples: [
+      { en: "I stopped smoking last year.", vi: "Stop + V-ing nghĩa là dừng hẳn việc hút thuốc." },
+      { en: "I stopped to call my mother.", vi: "Stop + to V nghĩa là dừng lại để làm việc khác." }
+    ],
+    mistakes: ["Sau giới từ dùng V-ing, không dùng to V.", "Không học máy móc mọi động từ; cần học theo cụm verb pattern."]
+  },
+  "cau-hoi": {
+    theory: [
+      "Câu hỏi tiếng Anh cần xác định có động từ be, trợ động từ, modal verb hay động từ thường để đảo đúng.",
+      "Câu hỏi lịch sự thường dùng indirect question với trật tự câu kể."
+    ],
+    formulas: ["auxiliary + subject + base verb?", "Wh-word + auxiliary + subject + verb?", "Could you tell me + clause?"],
+    examples: [
+      { en: "How long have you studied English?", vi: "How long đi với hiện tại hoàn thành khi hỏi khoảng thời gian đến hiện tại." },
+      { en: "Could you tell me where the station is?", vi: "Câu hỏi gián tiếp không đảo is ra trước chủ ngữ." }
+    ],
+    mistakes: ["Không dùng hai trợ động từ sai chỗ như Do you can...?", "Không quên trợ động từ do/does/did với động từ thường."]
+  },
+  "cau-phu-dinh": {
+    theory: [
+      "Phủ định cần đặt not đúng sau trợ động từ hoặc be; với động từ thường cần do/does/did.",
+      "Một số từ đã mang nghĩa phủ định như never, hardly, rarely nên tránh dùng thêm not gây double negative."
+    ],
+    formulas: ["subject + be + not", "subject + do/does/did + not + base verb", "subject + have/has + not + V3"],
+    examples: [
+      { en: "She does not agree with the plan.", vi: "Does not đi với động từ nguyên mẫu agree." },
+      { en: "I have never tried this dish.", vi: "Never đã mang nghĩa chưa bao giờ." }
+    ],
+    mistakes: ["Không viết she doesn't likes.", "Không dùng not never trong tiếng Anh chuẩn."]
+  },
+  "cau-truc-thong-dung": {
+    theory: [
+      "Các cấu trúc thông dụng giúp câu tự nhiên hơn nhưng cần phân biệt sắc thái: thói quen cũ, mức độ quá/đủ, kết quả và sở thích.",
+      "Nên học cấu trúc theo ví dụ trọn câu thay vì chỉ nhớ công thức rời."
+    ],
+    formulas: ["so + adjective + that + clause", "such + adjective + noun + that + clause", "would rather + base verb"],
+    examples: [
+      { en: "The room was so quiet that I could hear the clock.", vi: "So + adjective + that diễn tả kết quả." },
+      { en: "I would rather stay home tonight.", vi: "Would rather + V diễn tả lựa chọn muốn làm hơn." }
+    ],
+    mistakes: ["Không dùng would rather to stay.", "Phân biệt too tired to work và tired enough to sleep."]
+  }
+};
+
+grammarTopics.forEach((topic) => {
+  const extra = grammarTopicEnhancements[topic.id];
+  if (!extra) return;
+  topic.theory = [...topic.theory, ...(extra.theory || [])];
+  topic.formulas = [...topic.formulas, ...(extra.formulas || [])];
+  topic.examples = [...topic.examples, ...(extra.examples || [])];
+  topic.mistakes = [...topic.mistakes, ...(extra.mistakes || [])];
+});

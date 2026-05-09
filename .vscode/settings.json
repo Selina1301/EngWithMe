@@ -1,19 +1,20 @@
 {
-    "sqltools.connections": [
-        {
-            "mysqlOptions": {
-                "authProtocol": "default",
-                "enableSsl": "Disabled"
-            },
-            "ssh": "Disabled",
-            "previewLimit": 50,
-            "server": "localhost",
-            "port": 3306,
-            "driver": "MariaDB",
-            "name": "xampp-db",
-            "username": "tungduong1301",
-            "database": "testdb",
-            "askForPassword": true
-        }
-    ]
+  "sqltools.connections": [
+    {
+      "mysqlOptions": {
+        "authProtocol": "default",
+        "enableSsl": "Disabled"
+      },
+      "ssh": "Disabled",
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 3306,
+      "driver": "MariaDB",
+      "name": "xampp-db",
+      "username": "tungduong1301",
+      "database": "testdb",
+      "askForPassword": true
+    }
+  ],
+  "liveServer.settings.port": 5501
 }

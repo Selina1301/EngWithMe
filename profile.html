@@ -3,56 +3,164 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hồ sơ cá nhân - EnglishPath</title>
+  <title>Hồ sơ cá nhân - EngWithMe</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
 </head>
-<body>
+<body class="profile-page">
   <header class="site-header">
-    <a class="brand" href="index.html">EnglishPath</a>
-    <nav class="nav-links" aria-label="Menu học viên">
-      <a href="dashboard.html">Dashboard</a>
-      <a href="lessons.html">Lộ trình</a>
-      <a href="results.html">Kết quả</a>
-      <a href="profile.html">Hồ sơ</a>
-    </nav>
+    <a class="brand" href="index.html">EngWithMe</a>
+    <nav class="nav-links" aria-label="Menu học viên"></nav>
+    <div class="nav-actions"></div>
   </header>
 
   <main class="page-main">
     <section class="page-title">
       <p class="eyebrow">Profile</p>
       <h1>Hồ sơ cá nhân</h1>
-      <p>Thông tin tài khoản, trình độ hiện tại và mục tiêu học tập.</p>
+      <p>Thông tin tài khoản, ảnh đại diện, trình độ hiện tại và mục tiêu học tập của bạn.</p>
     </section>
 
     <section class="section compact">
-      <form class="auth-card profile-card">
-        <label>Họ tên <input type="text" value="Nguyễn Văn A"></label>
-        <label>Email <input type="email" value="student@example.com"></label>
-        <label>Trình độ hiện tại
-          <select>
-            <option>A1</option>
-            <option selected>A2</option>
-            <option>B1</option>
-            <option>B2</option>
-            <option>C1</option>
-          </select>
-        </label>
-        <label>Mục tiêu học <input type="text" value="Giao tiếp hằng ngày"></label>
-        <button class="btn btn-primary" type="button">Lưu thay đổi mẫu</button>
-      </form>
+      <div class="profile-layout">
+        <aside class="profile-summary">
+          <span class="profile-avatar" data-profile-avatar>U</span>
+          <h2 data-profile-name>Đang tải...</h2>
+          <p data-profile-email></p>
+          <div class="profile-summary-grid">
+            <span>Vai trò <strong data-profile-role>Học viên</strong></span>
+            <span>Trình độ <strong data-profile-level>A1</strong></span>
+            <span>Trạng thái <strong data-profile-status>Đang hoạt động</strong></span>
+            <span>Mục tiêu <strong data-profile-goal>Chưa đặt</strong></span>
+          </div>
+        </aside>
+
+        <form class="auth-card profile-card profile-form" data-profile-form enctype="multipart/form-data">
+          <div class="auth-card-heading">
+            <span class="auth-icon ti-pencil"></span>
+            <div>
+              <p class="eyebrow">Account details</p>
+              <h2>Cập nhật hồ sơ</h2>
+            </div>
+          </div>
+
+          <div class="avatar-upload-panel">
+            <span class="profile-avatar is-large" data-profile-form-avatar>U</span>
+            <label class="avatar-upload-control">Ảnh đại diện
+              <input type="file" name="avatar" accept="image/png,image/jpeg,image/webp,image/gif" data-avatar-input>
+              <small>JPG, PNG, WEBP hoặc GIF. Tối đa 2MB.</small>
+            </label>
+          </div>
+
+          <label>Họ tên
+            <input type="text" name="name" autocomplete="name" required>
+          </label>
+          <label>Email
+            <input type="email" name="email" autocomplete="email" readonly>
+          </label>
+          <div class="form-grid two">
+            <label>Trình độ hiện tại
+              <select name="level">
+                <option>A1</option>
+                <option>A2</option>
+                <option>B1</option>
+                <option>B2</option>
+                <option>C1</option>
+              </select>
+            </label>
+            <label>Mục tiêu học
+              <input type="text" name="goal" placeholder="Ví dụ: Giao tiếp hằng ngày">
+            </label>
+          </div>
+
+          <button class="btn btn-primary" type="submit"><span class="ti-save"></span> Lưu hồ sơ</button>
+          <p class="feedback" data-auth-feedback></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="section profile-dashboard-section" id="dashboard">
+      <div class="dashboard-hero profile-dashboard-hero">
+        <div>
+          <p class="eyebrow">Dashboard</p>
+          <h2>Tiến độ học tập</h2>
+          <p>Xin chào <strong data-student-name>Học viên</strong>. Trình độ hiện tại: <strong data-student-level>A1</strong>. Gợi ý hôm nay: luyện nghe 15 phút và ôn Present Simple.</p>
+        </div>
+        <a class="btn btn-primary" href="quiz.html"><span class="ti-pencil-alt"></span> Làm test hôm nay</a>
+      </div>
+
+      <div class="stat-grid">
+        <article class="stat-card">
+          <span>Tiến độ tuần này</span>
+          <strong data-dashboard-progress>0%</strong>
+          <div class="progress-track"><span style="width: 0%"></span></div>
+        </article>
+        <article class="stat-card">
+          <span>Streak</span>
+          <strong>5 ngày</strong>
+          <div class="progress-track"><span style="width: 71%"></span></div>
+        </article>
+        <article class="stat-card">
+          <span>Bài học tiếp theo</span>
+          <strong>Present Simple</strong>
+          <a href="grammar.html">Học ngay</a>
+        </article>
+        <article class="stat-card">
+          <span>Kỹ năng yếu</span>
+          <strong>Listening</strong>
+          <a href="listening.html">Luyện nghe</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section-muted profile-roadmap-section">
+      <div class="section-heading">
+        <p class="eyebrow">Lộ trình học</p>
+        <h2>4 tuần đầu tiên</h2>
+      </div>
+      <div class="roadmap">
+        <article>
+          <span>1</span>
+          <div>
+            <h3>Từ vựng giao tiếp cơ bản</h3>
+            <p>Greetings, introductions, classroom words.</p>
+          </div>
+        </article>
+        <article>
+          <span>2</span>
+          <div>
+            <h3>Present Simple</h3>
+            <p>Công thức, ví dụ đúng/sai và bài tập áp dụng.</p>
+          </div>
+        </article>
+        <article>
+          <span>3</span>
+          <div>
+            <h3>Luyện nghe hội thoại ngắn</h3>
+            <p>Audio, transcript, câu hỏi trắc nghiệm và điền từ.</p>
+          </div>
+        </article>
+        <article>
+          <span>4</span>
+          <div>
+            <h3>Kiểm tra tổng hợp</h3>
+            <p>Quiz cuối module và đề xuất bài nên ôn lại.</p>
+          </div>
+        </article>
+      </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div><strong>EnglishPath</strong><p>Học tiếng Anh theo lộ trình cá nhân.</p></div>
-    <div class="footer-links"><a href="dashboard.html">Dashboard</a><a href="results.html">Kết quả</a></div>
-    <p>&copy; <span data-current-year></span> EnglishPath.</p>
+    <div><strong>EngWithMe</strong><p>Học tiếng Anh theo lộ trình cá nhân.</p></div>
+    <div class="footer-links"><a href="profile.html#dashboard">Dashboard</a><a href="results.html">Kết quả</a></div>
+    <p>&copy; <span data-current-year></span> EngWithMe.</p>
   </footer>
 
   <script src="js/core.js"></script>
+  <script src="js/progress.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

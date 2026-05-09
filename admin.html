@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - EnglishPath</title>
+  <title>Admin - EngWithMe</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/pages/admin.css">
   <link rel="stylesheet" href="css/responsive/desktop.css">
@@ -12,150 +12,168 @@
 </head>
 <body class="admin-page">
   <header class="site-header">
-    <a class="brand" href="index.html">EnglishPath</a>
-    <nav class="nav-links" aria-label="Menu quản trị">
-      <a href="admin.html">Admin</a>
-      <a href="#users">Người dùng</a>
-      <a href="#courses">Khóa học</a>
-      <a href="#questions">Câu hỏi</a>
-      <a href="#settings">Cài đặt</a>
-    </nav>
+    <a class="brand" href="index.html">EngWithMe</a>
+    <nav class="nav-links" aria-label="Menu quản trị"></nav>
     <div class="nav-actions">
-      <a class="btn btn-ghost" href="dashboard.html">Học viên</a>
+      <a class="btn btn-ghost" href="dashboard.html"><span class="ti-dashboard"></span> Học viên</a>
+      <button class="btn btn-ghost" type="button" data-logout-button><span class="ti-power-off"></span> Đăng xuất</button>
     </div>
   </header>
 
-  <main class="page-main">
-    <section class="page-title">
-      <p class="eyebrow">Admin dashboard</p>
-      <h1>Quản lý nội dung học tiếng Anh</h1>
-      <p>Giao diện mẫu cho quản trị viên. Khi nối backend, các form này sẽ ghi dữ liệu vào MySQL.</p>
-    </section>
-
-    <section class="section compact">
-      <div class="stat-grid">
-        <article class="stat-card">
-          <span>Người học</span>
-          <strong>1,248</strong>
-        </article>
-        <article class="stat-card">
-          <span>Khóa học</span>
-          <strong>12</strong>
-        </article>
-        <article class="stat-card">
-          <span>Câu hỏi</span>
-          <strong>420</strong>
-        </article>
-        <article class="stat-card">
-          <span>Doanh thu tháng</span>
-          <strong>18.5M</strong>
-        </article>
+  <main class="page-main" data-admin-dashboard>
+    <section class="page-title admin-title">
+      <div>
+        <p class="eyebrow">Admin dashboard</p>
+        <h1>Quản lý người dùng</h1>
+        <p>Kiểm soát tài khoản đăng ký, phân quyền admin, khóa/mở khóa và theo dõi thời điểm đăng nhập.</p>
       </div>
-    </section>
-
-    <section class="section section-muted" id="courses">
-      <div class="admin-layout">
-        <form class="admin-form">
-          <h2>Thêm bài học</h2>
-          <label>Tên bài học <input type="text" value="Greetings and Introductions"></label>
-          <label>Loại bài học
-            <select>
-              <option>Vocabulary</option>
-              <option>Grammar</option>
-              <option>Listening</option>
-              <option>Speaking</option>
-              <option>Reading</option>
-            </select>
-          </label>
-          <label>Nội dung <textarea rows="5">Mục tiêu: chào hỏi và giới thiệu bản thân.</textarea></label>
-          <button class="btn btn-primary" type="button">Lưu bài học mẫu</button>
-        </form>
-        <div class="table-card" id="users">
-          <h2>Quản lý người dùng</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Tên</th>
-                <th>Email</th>
-                <th>Vai trò</th>
-                <th>Trạng thái</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Nguyễn Văn A</td>
-                <td>student@example.com</td>
-                <td>Student</td>
-                <td>Active</td>
-              </tr>
-              <tr>
-                <td>Admin Demo</td>
-                <td>admin@example.com</td>
-                <td>Admin</td>
-                <td>Active</td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="admin-current">
+        <span class="ti-shield"></span>
+        <div>
+          <strong data-admin-name>Admin</strong>
+          <small data-admin-email></small>
         </div>
       </div>
     </section>
 
-    <section class="section" id="questions">
-      <div class="table-card">
-        <h2>Ngân hàng câu hỏi mẫu</h2>
+    <section class="section compact">
+      <div class="stat-grid admin-stat-grid">
+        <article class="stat-card">
+          <div class="stat-icon-box total-users">
+            <span class="ti-user"></span>
+          </div>
+          <div class="stat-content">
+            <span>Tổng tài khoản</span>
+            <strong data-admin-stat="total">0</strong>
+          </div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon-box learners">
+            <span class="ti-book"></span>
+          </div>
+          <div class="stat-content">
+            <span>Học viên</span>
+            <strong data-admin-stat="learners">0</strong>
+          </div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon-box admins">
+            <span class="ti-shield"></span>
+          </div>
+          <div class="stat-content">
+            <span>Admin</span>
+            <strong data-admin-stat="admins">0</strong>
+          </div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon-box active">
+            <span class="ti-pulse"></span>
+          </div>
+          <div class="stat-content">
+            <span>Đang hoạt động</span>
+            <strong data-admin-stat="active">0</strong>
+          </div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon-box locked">
+            <span class="ti-lock"></span>
+          </div>
+          <div class="stat-content">
+            <span>Bị khóa</span>
+            <strong data-admin-stat="locked">0</strong>
+          </div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon-box new-today">
+            <span class="ti-calendar"></span>
+          </div>
+          <div class="stat-content">
+            <span>Đăng ký hôm nay</span>
+            <strong data-admin-stat="newToday">0</strong>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section-muted" id="users">
+      <div class="section-heading">
+        <p class="eyebrow">Users table</p>
+        <h2>Danh sách tài khoản</h2>
+        <p class="feedback" data-admin-feedback></p>
+      </div>
+
+      <div class="admin-filters-bar">
+        <div class="search-box">
+          <span class="ti-search search-icon"></span>
+          <input type="text" id="admin-search" placeholder="Tìm kiếm theo tên, email, level, mục tiêu...">
+        </div>
+        <div class="filter-group">
+          <div class="select-wrapper">
+            <span class="ti-filter select-icon"></span>
+            <select id="filter-role">
+              <option value="all">Tất cả vai trò</option>
+              <option value="admin">Admin</option>
+              <option value="user">Học viên</option>
+            </select>
+          </div>
+          <div class="select-wrapper">
+            <span class="ti-info-alt select-icon"></span>
+            <select id="filter-status">
+              <option value="all">Tất cả trạng thái</option>
+              <option value="active">Hoạt động (Active)</option>
+              <option value="locked">Bị khóa (Locked)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-card admin-users-card">
         <table>
           <thead>
             <tr>
-              <th>Câu hỏi</th>
-              <th>Loại</th>
-              <th>Đáp án đúng</th>
-              <th>Trình độ</th>
+              <th>Họ tên</th>
+              <th>Email</th>
+              <th>Vai trò</th>
+              <th>Level</th>
+              <th>Mục tiêu</th>
+              <th>Trạng thái</th>
+              <th>Ngày tạo</th>
+              <th>Lần đăng nhập</th>
+              <th>Thao tác</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody data-admin-users>
             <tr>
-              <td>She ___ to school every day.</td>
-              <td>Trắc nghiệm</td>
-              <td>goes</td>
-              <td>A2</td>
-            </tr>
-            <tr>
-              <td>Nice to meet you.</td>
-              <td>Dịch nghĩa</td>
-              <td>Rất vui được gặp bạn</td>
-              <td>A1</td>
+              <td colspan="9">Đang tải dữ liệu...</td>
             </tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <section class="section section-muted" id="settings">
-      <div class="section-heading">
-        <p class="eyebrow">Cài đặt hệ thống</p>
-        <h2>Những phần sẽ nối backend</h2>
-      </div>
-      <div class="feature-grid three">
-        <article class="feature-card"><h3>Gói học</h3><p>Free, Pro, Premium.</p></article>
-        <article class="feature-card"><h3>Thanh toán</h3><p>VNPay, MoMo, Stripe hoặc PayPal.</p></article>
-        <article class="feature-card"><h3>Email</h3><p>Xác thực tài khoản và nhắc lịch học.</p></article>
+    <section class="section" id="settings">
+      <div class="feature-grid three admin-note-grid">
+        <article class="feature-card"><span class="icon-box ti-lock"></span><h3>Bảo mật</h3><p>Mật khẩu được lưu ở dạng mã hóa một chiều.</p></article>
+        <article class="feature-card"><span class="icon-box ti-user"></span><h3>Phân quyền</h3><p>Admin quản trị hệ thống, học viên sử dụng khu học tập cá nhân.</p></article>
+        <article class="feature-card"><span class="icon-box ti-shield"></span><h3>Trạng thái</h3><p>Tài khoản bị khóa sẽ tạm dừng quyền đăng nhập.</p></article>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div>
-      <strong>EnglishPath</strong>
+      <strong>EngWithMe</strong>
       <p>Học tiếng Anh theo lộ trình cá nhân.</p>
     </div>
     <div class="footer-links">
       <a href="index.html">Trang chủ</a>
       <a href="dashboard.html">Dashboard học viên</a>
     </div>
-    <p>&copy; <span data-current-year></span> EnglishPath.</p>
+    <p>&copy; <span data-current-year></span> EngWithMe.</p>
   </footer>
 
   <script src="js/core.js"></script>
+  <script src="js/progress.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

@@ -3,33 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng ký - EnglishPath</title>
+  <title>Đăng ký - EngWithMe</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
 </head>
-<body>
+<body class="auth-body">
   <header class="site-header">
-    <a class="brand" href="index.html">EnglishPath</a>
-    <nav class="nav-links" aria-label="Menu chính">
-      <a href="index.html">Trang chủ</a>
-      <a href="lessons.html">Khóa học</a>
-      <a href="quiz.html">Kiểm tra</a>
-      <a href="vocabulary.html">Từ vựng</a>
-    </nav>
+    <a class="brand" href="index.html">EngWithMe</a>
+    <nav class="nav-links" aria-label="Menu chính"></nav>
     <div class="nav-actions">
-      <a class="btn btn-ghost" href="login.html">Đăng nhập</a>
+      <a class="btn btn-ghost" href="login.html"><span class="ti-shift-right"></span> Đăng nhập</a>
     </div>
   </header>
 
-  <main class="auth-page">
-    <form class="auth-card" data-register-form>
-      <p class="eyebrow">Start learning</p>
-      <h1>Tạo tài khoản học viên</h1>
-      <label>Họ tên <input type="text" name="name" placeholder="Nguyễn Văn A" required></label>
-      <label>Email <input type="email" name="email" placeholder="student@example.com" required></label>
-      <label>Mật khẩu <input type="password" name="password" placeholder="Tối thiểu 6 ký tự" minlength="6" required></label>
+  <main class="auth-page auth-split">
+    <section class="auth-copy" aria-labelledby="registerTitle">
+      <p class="eyebrow">Start Learning</p>
+      <h1 id="registerTitle">Tạo hồ sơ học tiếng Anh gọn gàng</h1>
+      <p>Bắt đầu với hồ sơ học tập rõ ràng và mục tiêu được lưu theo tài khoản.</p>
+      <div class="auth-highlights" aria-label="Điểm nổi bật">
+        <span><i class="ti-check"></i> Mật khẩu được mã hóa</span>
+        <span><i class="ti-check"></i> Có hồ sơ cá nhân</span>
+        <span><i class="ti-check"></i> Admin kiểm soát được user</span>
+      </div>
+    </section>
+
+    <form class="auth-card auth-panel" data-register-form>
+      <div class="auth-card-heading">
+        <span class="auth-icon ti-user"></span>
+        <div>
+          <p class="eyebrow">Create account</p>
+          <h2>Đăng ký học viên</h2>
+        </div>
+      </div>
+
+      <label>Họ tên
+        <input type="text" name="name" placeholder="Nguyễn Văn A" autocomplete="name" required>
+      </label>
+      <label>Email
+        <input type="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+      </label>
+      <div class="form-grid two">
+        <label>Mật khẩu
+          <input type="password" name="password" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password" minlength="6" required>
+        </label>
+        <label>Nhập lại mật khẩu
+          <input type="password" name="confirm_password" placeholder="Nhập lại mật khẩu" autocomplete="new-password" minlength="6" required>
+        </label>
+      </div>
       <label>Mục tiêu học
         <select name="goal">
           <option>Giao tiếp hằng ngày</option>
@@ -38,7 +61,8 @@
           <option>Ôn lại từ mất gốc</option>
         </select>
       </label>
-      <button class="btn btn-primary" type="submit">Đăng ký</button>
+
+      <button class="btn btn-primary" type="submit"><span class="ti-check"></span> Tạo tài khoản</button>
       <p class="form-note">Đã có tài khoản? <a href="login.html">Đăng nhập</a></p>
       <p class="feedback" data-auth-feedback></p>
     </form>

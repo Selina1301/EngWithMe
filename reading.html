@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Luyện đọc - EnglishPath</title>
+  <title>Luyện đọc - EngWithMe</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/pages/study.css">
   <link rel="stylesheet" href="css/pages/reading.css">
@@ -13,7 +13,7 @@
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="index.html">EnglishPath</a>
+    <a class="brand" href="index.html">EngWithMe</a>
     <nav class="nav-links" aria-label="Menu chính">
       <a href="index.html">Trang chủ</a>
       <a href="vocabulary.html">Từ vựng</a>
@@ -23,6 +23,10 @@
       <a href="blog.html">Blog</a>
       <a href="pricing.html">Bảng giá</a>
     </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="login.html">Đăng nhập</a>
+      <a class="btn btn-primary" href="register.html">Đăng ký</a>
+    </div>
   </header>
 
   <main class="study-page reading-study-page">
@@ -33,6 +37,34 @@
     </section>
 
     <section class="study-shell">
+      <div class="study-mode-switch" role="tablist" aria-label="Chế độ đọc">
+        <button class="study-mode-tab is-active" type="button" data-reading-mode="study">
+          <i class="ti-book"></i>
+          <span>Học</span>
+        </button>
+        <button class="study-mode-tab" type="button" data-reading-mode="progress">
+          <i class="ti-bar-chart"></i>
+          <span>Tiến độ</span>
+        </button>
+      </div>
+
+      <section class="study-progress-view reading-progress-view" data-reading-progress-view hidden>
+        <article class="stat-card reading-progress-hero">
+          <div>
+            <p class="eyebrow">Tiến độ đọc</p>
+            <strong data-reading-progress-score>0%</strong>
+            <p data-reading-progress-summary>Chưa có bài đọc nào được đánh dấu đã xem.</p>
+            <div class="progress-track"><span data-reading-progress-bar style="width: 0%"></span></div>
+          </div>
+          <div class="reading-progress-metrics">
+            <span><strong data-reading-viewed-count>0/9</strong>Bài đã xem</span>
+            <span><strong data-reading-current-level>Easy</strong>Cấp đang ưu tiên</span>
+            <span><strong data-reading-remaining>9</strong>Bài còn lại</span>
+          </div>
+        </article>
+      </section>
+
+      <div class="reading-study-view" data-reading-study-view>
       <div class="study-toolbar">
         <div class="level-tabs compact-tabs" aria-label="Ưu tiên cấp độ đọc">
           <button class="level-tab active" type="button" data-reading-level-tab="easy">Easy</button>
@@ -43,68 +75,80 @@
           <i class="ti-search"></i>
           <input type="search" placeholder="Tìm chủ đề hoặc câu hội thoại" data-reading-search>
         </label>
-        <button class="schedule-button" type="button" data-schedule-demo data-demo-title="Lịch trình đọc đang cập nhật" data-demo-message="Bản demo lịch trình đọc sẽ xếp 9 hội thoại theo ngày, đánh dấu bài đã xem và gợi ý bài cần ôn lại.">
-          <i class="ti-calendar"></i>
-          Lịch trình
+        <button class="schedule-button" type="button" data-schedule-demo data-demo-meta="Lịch đọc" data-demo-title="Lịch luyện đọc" data-demo-message="Lịch đọc sẽ xếp bài chưa đọc theo mức Easy, Medium, Hard và đưa bài đã đọc xuống sau để bạn tiếp tục đúng thứ tự.">
+          <span class="schedule-button-icon" aria-hidden="true"><i class="ti-calendar"></i></span>
+          <span class="schedule-button-copy">
+            <strong>Lịch đọc</strong>
+            <small>Theo cấp độ</small>
+          </span>
         </button>
       </div>
 
       <div class="reading-layout">
         <aside class="reading-topic-list" aria-label="Danh sách chủ đề đọc">
-          <button class="reading-topic-card is-active" type="button" data-reading-topic-link="morning-market" data-reading-level="easy" data-original-index="0">
+          <article class="reading-topic-card is-active" data-reading-topic-link="morning-market" data-reading-level="easy" data-original-index="0">
+            <button class="reading-topic-open" type="button" data-reading-topic-open aria-label="Mở bài A Morning Market"></button>
             <span>Easy</span>
             <strong>A Morning Market</strong>
             <small>6 câu thoại</small>
             <i class="topic-check ti-check" aria-hidden="true"></i>
-          </button>
-          <button class="reading-topic-card" type="button" data-reading-topic-link="small-room-chat" data-reading-level="easy" data-original-index="1">
+          </article>
+          <article class="reading-topic-card" data-reading-topic-link="small-room-chat" data-reading-level="easy" data-original-index="1">
+            <button class="reading-topic-open" type="button" data-reading-topic-open aria-label="Mở bài My Small Room"></button>
             <span>Easy</span>
             <strong>My Small Room</strong>
             <small>6 câu thoại</small>
             <i class="topic-check ti-check" aria-hidden="true"></i>
-          </button>
-          <button class="reading-topic-card" type="button" data-reading-topic-link="ordering-breakfast" data-reading-level="easy" data-original-index="2">
+          </article>
+          <article class="reading-topic-card" data-reading-topic-link="ordering-breakfast" data-reading-level="easy" data-original-index="2">
+            <button class="reading-topic-open" type="button" data-reading-topic-open aria-label="Mở bài Ordering Breakfast"></button>
             <span>Easy</span>
             <strong>Ordering Breakfast</strong>
             <small>6 câu thoại</small>
             <i class="topic-check ti-check" aria-hidden="true"></i>
-          </button>
-          <button class="reading-topic-card" type="button" data-reading-topic-link="asking-directions" data-reading-level="easy" data-original-index="3">
+          </article>
+          <article class="reading-topic-card" data-reading-topic-link="asking-directions" data-reading-level="easy" data-original-index="3">
+            <button class="reading-topic-open" type="button" data-reading-topic-open aria-label="Mở bài Asking for Directions"></button>
             <span>Easy</span>
             <strong>Asking for Directions</strong>
             <small>6 câu thoại</small>
             <i class="topic-check ti-check" aria-hidden="true"></i>
-          </button>
-          <button class="reading-topic-card" type="button" data-reading-topic-link="library-day" data-reading-level="medium" data-original-index="4">
+          </article>
+          <article class="reading-topic-card" data-reading-topic-link="library-day" data-reading-level="medium" data-original-index="4">
+            <button class="reading-topic-open" type="button" data-reading-topic-open aria-label="Mở bài A Quiet Day at the Library"></button>
             <span>Medium</span>
             <strong>A Quiet Day at the Library</strong>
             <small>7 câu thoại</small>
             <i class="topic-check ti-check" aria-hidden="true"></i>
-          </button>
-          <button class="reading-topic-card" type="button" data-reading-topic-link="rainy-commute" data-reading-level="medium" data-original-index="5">
+          </article>
+          <article class="reading-topic-card" data-reading-topic-link="rainy-commute" data-reading-level="medium" data-original-index="5">
+            <button class="reading-topic-open" type="button" data-reading-topic-open aria-label="Mở bài A Rainy Commute"></button>
             <span>Medium</span>
             <strong>A Rainy Commute</strong>
             <small>7 câu thoại</small>
             <i class="topic-check ti-check" aria-hidden="true"></i>
-          </button>
-          <button class="reading-topic-card" type="button" data-reading-topic-link="weekend-study" data-reading-level="medium" data-original-index="6">
+          </article>
+          <article class="reading-topic-card" data-reading-topic-link="weekend-study" data-reading-level="medium" data-original-index="6">
+            <button class="reading-topic-open" type="button" data-reading-topic-open aria-label="Mở bài Weekend Study Plan"></button>
             <span>Medium</span>
             <strong>Weekend Study Plan</strong>
             <small>7 câu thoại</small>
             <i class="topic-check ti-check" aria-hidden="true"></i>
-          </button>
-          <button class="reading-topic-card" type="button" data-reading-topic-link="job-interview" data-reading-level="hard" data-original-index="7">
+          </article>
+          <article class="reading-topic-card" data-reading-topic-link="job-interview" data-reading-level="hard" data-original-index="7">
+            <button class="reading-topic-open" type="button" data-reading-topic-open aria-label="Mở bài Job Interview Practice"></button>
             <span>Hard</span>
             <strong>Job Interview Practice</strong>
             <small>8 câu thoại</small>
             <i class="topic-check ti-check" aria-hidden="true"></i>
-          </button>
-          <button class="reading-topic-card" type="button" data-reading-topic-link="community-project" data-reading-level="hard" data-original-index="8">
+          </article>
+          <article class="reading-topic-card" data-reading-topic-link="community-project" data-reading-level="hard" data-original-index="8">
+            <button class="reading-topic-open" type="button" data-reading-topic-open aria-label="Mở bài Community Project"></button>
             <span>Hard</span>
             <strong>Community Project</strong>
             <small>8 câu thoại</small>
             <i class="topic-check ti-check" aria-hidden="true"></i>
-          </button>
+          </article>
         </aside>
 
         <div class="reading-passages" data-reading-passages>
@@ -314,19 +358,29 @@
           </article>
         </div>
       </div>
+      </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div><strong>EnglishPath</strong><p>Học tiếng Anh theo lộ trình cá nhân.</p></div>
+    <div><strong>EngWithMe</strong><p>Học tiếng Anh theo lộ trình cá nhân.</p></div>
     <div class="footer-links"><a href="grammar.html">Ngữ pháp</a><a href="quiz.html">Đề thi</a></div>
-    <p>&copy; <span data-current-year></span> EnglishPath.</p>
+    <p>&copy; <span data-current-year></span> EngWithMe.</p>
   </footer>
 
   <script src="js/core.js"></script>
   <script src="js/demo-actions.js"></script>
   <script src="js/main.js"></script>
   <script>
+    const readingModeTabs = document.querySelectorAll("[data-reading-mode]");
+    const readingStudyView = document.querySelector("[data-reading-study-view]");
+    const readingProgressView = document.querySelector("[data-reading-progress-view]");
+    const readingProgressScore = document.querySelector("[data-reading-progress-score]");
+    const readingProgressSummary = document.querySelector("[data-reading-progress-summary]");
+    const readingProgressBar = document.querySelector("[data-reading-progress-bar]");
+    const readingViewedCount = document.querySelector("[data-reading-viewed-count]");
+    const readingCurrentLevel = document.querySelector("[data-reading-current-level]");
+    const readingRemaining = document.querySelector("[data-reading-remaining]");
     const readingLevelTabs = document.querySelectorAll("[data-reading-level-tab]");
     const readingTopicList = document.querySelector(".reading-topic-list");
     const readingTopicCards = Array.from(document.querySelectorAll("[data-reading-topic-link]"));
@@ -334,20 +388,93 @@
     const readingPassages = Array.from(document.querySelectorAll("[data-reading-topic]"));
     const readingSearch = document.querySelector("[data-reading-search]");
     const levelOrder = ["easy", "medium", "hard"];
-    const viewedStorageKey = "englishPathViewedReadingTopics";
+    const modeStorageKey = "engWithMeReadingMode";
+    const viewedStorageKey = "engWithMeViewedReadingTopics";
     const viewedTopics = new Set(JSON.parse(localStorage.getItem(viewedStorageKey) || "[]"));
     let activeReadingLevel = "easy";
+    let activeReadingMode = localStorage.getItem(modeStorageKey) === "progress" ? "progress" : "study";
 
-    function getReadingSortValue(element) {
+    function getReadingSortValue(element, includeViewed = true) {
       const level = element.dataset.readingLevel;
       const base = level === activeReadingLevel ? 0 : levelOrder.indexOf(level) + 1;
-      return base * 100 + Number(element.dataset.originalIndex || 0);
+      const topicId = element.dataset.readingTopicLink || element.id;
+      const viewedOffset = includeViewed && viewedTopics.has(topicId) ? 50 : 0;
+      return base * 100 + viewedOffset + Number(element.dataset.originalIndex || 0);
+    }
+
+    function ensureReadingPassageControls() {
+      readingPassages.forEach((passage) => {
+        const translationButton = passage.querySelector("[data-toggle-translation]");
+        if (!translationButton || passage.querySelector("[data-reading-mark-read]")) return;
+
+        translationButton.insertAdjacentHTML("afterend", `
+          <button class="topic-view-toggle reading-read-toggle" type="button" data-reading-mark-read="${passage.id}" aria-pressed="false">
+            <span class="topic-view-toggle-track" aria-hidden="true"><span class="topic-view-toggle-thumb"></span></span>
+            <span class="topic-view-toggle-text">Đánh dấu đã đọc</span>
+          </button>
+        `);
+      });
     }
 
     function updateViewedCards() {
       readingTopicCards.forEach((card) => {
-        card.classList.toggle("is-viewed", viewedTopics.has(card.dataset.readingTopicLink));
+        const topicId = card.dataset.readingTopicLink;
+        const isViewed = viewedTopics.has(topicId);
+        const toggle = document.querySelector(`[data-reading-mark-read="${topicId}"]`);
+
+        card.classList.toggle("is-viewed", isViewed);
+        toggle?.classList.toggle("is-on", isViewed);
+        if (toggle) {
+          toggle.setAttribute("aria-pressed", String(isViewed));
+          const text = toggle.querySelector(".topic-view-toggle-text");
+          if (text) text.textContent = isViewed ? "Đã đọc" : "Đánh dấu đã đọc";
+        }
       });
+    }
+
+    function saveViewedTopics() {
+      localStorage.setItem(viewedStorageKey, JSON.stringify([...viewedTopics]));
+    }
+
+    function getReadingProgressSnapshot() {
+      const total = readingTopicCards.length;
+      const validTopicIds = new Set(readingTopicCards.map(card => card.dataset.readingTopicLink));
+      const viewedCount = Array.from(viewedTopics).filter(topicId => validTopicIds.has(topicId)).length;
+      const progress = total ? Math.round((viewedCount / total) * 100) : 0;
+
+      return {
+        total,
+        viewedCount,
+        progress,
+        remaining: Math.max(0, total - viewedCount)
+      };
+    }
+
+    function updateReadingProgress() {
+      const snapshot = getReadingProgressSnapshot();
+      readingProgressScore.textContent = `${snapshot.progress}%`;
+      readingProgressBar.style.width = `${snapshot.progress}%`;
+      readingViewedCount.textContent = `${snapshot.viewedCount}/${snapshot.total}`;
+      readingCurrentLevel.textContent = activeReadingLevel.charAt(0).toUpperCase() + activeReadingLevel.slice(1);
+      readingRemaining.textContent = snapshot.remaining;
+      readingProgressSummary.textContent = snapshot.total
+        ? `Bạn đã tự đánh dấu ${snapshot.viewedCount}/${snapshot.total} bài đọc. Điểm tiến độ tính trực tiếp từ bài đã đọc.`
+        : "Chưa có dữ liệu bài đọc.";
+    }
+
+    function syncReadingModeTabs() {
+      readingModeTabs.forEach((tab) => {
+        tab.classList.toggle("is-active", tab.dataset.readingMode === activeReadingMode);
+      });
+    }
+
+    function setReadingMode(mode) {
+      activeReadingMode = mode === "progress" ? "progress" : "study";
+      localStorage.setItem(modeStorageKey, activeReadingMode);
+      syncReadingModeTabs();
+      if (readingStudyView) readingStudyView.hidden = activeReadingMode !== "study";
+      if (readingProgressView) readingProgressView.hidden = activeReadingMode !== "progress";
+      if (activeReadingMode === "progress") updateReadingProgress();
     }
 
     function sortReadingItems() {
@@ -356,23 +483,17 @@
         .forEach((card) => readingTopicList.appendChild(card));
 
       [...readingPassages]
-        .sort((a, b) => getReadingSortValue(a) - getReadingSortValue(b))
+        .sort((a, b) => getReadingSortValue(a, false) - getReadingSortValue(b, false))
         .forEach((passage) => readingPassageList.appendChild(passage));
     }
 
-    function setActiveTopic(topicId, shouldScroll = false, markViewed = false) {
+    function setActiveTopic(topicId, shouldScroll = false) {
       const target = document.getElementById(topicId);
       const card = document.querySelector(`[data-reading-topic-link="${topicId}"]`);
       if (!target || !card) return;
 
       readingTopicCards.forEach((item) => item.classList.remove("is-active"));
       card.classList.add("is-active");
-
-      if (markViewed) {
-        viewedTopics.add(topicId);
-        localStorage.setItem(viewedStorageKey, JSON.stringify([...viewedTopics]));
-        updateViewedCards();
-      }
 
       if (shouldScroll) {
         target.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -412,12 +533,41 @@
         readingLevelTabs.forEach((item) => item.classList.remove("active"));
         tab.classList.add("active");
         syncReadingView(true);
+        updateReadingProgress();
       });
     });
 
     readingTopicCards.forEach((card) => {
-      card.addEventListener("click", () => {
-        setActiveTopic(card.dataset.readingTopicLink, true, true);
+      card.addEventListener("click", (event) => {
+        setActiveTopic(card.dataset.readingTopicLink, true);
+      });
+
+      card.querySelector("[data-reading-topic-open]")?.addEventListener("click", (event) => {
+        event.stopPropagation();
+        setActiveTopic(card.dataset.readingTopicLink, true);
+      });
+    });
+
+    ensureReadingPassageControls();
+
+    document.querySelectorAll("[data-reading-mark-read]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const topicId = button.dataset.readingMarkRead;
+        if (viewedTopics.has(topicId)) {
+          viewedTopics.delete(topicId);
+        } else {
+          viewedTopics.add(topicId);
+        }
+        saveViewedTopics();
+        updateViewedCards();
+        updateReadingProgress();
+        syncReadingView(false);
+      });
+    });
+
+    readingModeTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        setReadingMode(tab.dataset.readingMode);
       });
     });
 
@@ -435,7 +585,9 @@
 
     readingSearch.addEventListener("input", () => syncReadingView(true));
     updateViewedCards();
+    updateReadingProgress();
     syncReadingView(true);
+    setReadingMode(activeReadingMode);
   </script>
 </body>
 </html>
