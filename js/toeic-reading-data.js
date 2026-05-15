@@ -48,7 +48,11 @@ function buildToeicReadingQuestionBank() {
       question: item.question,
       options: item.options,
       answer: item.answer,
-      explain: item.explain
+      explain: item.explain,
+      fullQuestion: item.fullQuestion,
+      translate: item.translate,
+      wrongNote: item.wrongNote,
+      groupTranslation: item.groupTranslation
     }));
   });
 }
