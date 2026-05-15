@@ -16,6 +16,7 @@ function initGrammarLearning() {
   const modeKey = getAccountKey("engWithMeGrammarMode");
   let practiceState = getGrammarPracticeState(stateKey);
   let activeGrammarMode = localStorage.getItem(modeKey) === "progress" ? "progress" : "study";
+  if (window.location.hash) activeGrammarMode = "study";
 
   const getTopic = (topicId) => grammarTopics.find((topic) => topic.id === topicId) || grammarTopics[0];
   const getSolvedQuestions = (topicId) => new Set(practiceState[topicId] || []);
@@ -99,7 +100,7 @@ function initGrammarLearning() {
     if (!topic.sections?.length) return "";
 
     return `
-      <section class="grammar-theory-section grammar-tense-section">
+      <section class="grammar-theory-section grammar-tense-section" data-grammar-extra-memory-section>
         <h3>Bảng tổng hợp 12 thì</h3>
         <div class="grammar-tense-groups">
           ${topic.sections.map((section) => `
@@ -168,13 +169,18 @@ function initGrammarLearning() {
         </header>
 
         <div class="grammar-detail-grid">
-          <div class="grammar-theory-panel">
-            <section class="grammar-theory-section">
-              <h3>Lý thuyết trọng tâm</h3>
-              <ul>${topic.theory.map((item) => `<li>${item}</li>`).join("")}</ul>
+          <div class="grammar-theory-panel" data-grammar-theory-panel>
+            <section class="grammar-theory-section" data-theory-memory-section>
+              <div class="grammar-theory-title-row">
+                <h3>Lý thuyết trọng tâm</h3>
+                <button class="grammar-theory-toggle" type="button" data-toggle-grammar-theory aria-pressed="false">
+                  Che lý thuyết
+                </button>
+              </div>
+              <ul data-theory-memory-content>${topic.theory.map((item) => `<li>${item}</li>`).join("")}</ul>
             </section>
 
-            <section class="grammar-theory-section">
+            <section class="grammar-theory-section" data-formula-memory-section>
               <h3>Công thức cần nhớ</h3>
               <div class="grammar-formula-list">${topic.formulas.map((formula) => `<code>${formula}</code>`).join("")}</div>
             </section>
@@ -239,6 +245,15 @@ function initGrammarLearning() {
     const backButton = event.target.closest("[data-grammar-back]");
     if (backButton) {
       rail.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    const theoryToggle = event.target.closest("[data-toggle-grammar-theory]");
+    if (theoryToggle) {
+      const panel = theoryToggle.closest("[data-grammar-theory-panel]");
+      const isHidden = panel?.classList.toggle("is-theory-hidden");
+      theoryToggle.setAttribute("aria-pressed", String(Boolean(isHidden)));
+      theoryToggle.textContent = isHidden ? "Hiện lý thuyết" : "Che lý thuyết";
       return;
     }
 

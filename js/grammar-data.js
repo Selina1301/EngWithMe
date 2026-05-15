@@ -33,9 +33,16 @@ const grammarTopics = [
       "Không chỉ nhìn đuôi từ. Friendly là tính từ dù kết thúc bằng -ly."
     ],
     exercises: [
-      ex("Trong câu She runs quickly every morning, quickly thuộc từ loại nào?", ["Danh từ", "Động từ", "Tính từ", "Trạng từ"], 3, "Từ này bổ nghĩa cho động từ runs.", "Quickly bổ nghĩa cho cách cô ấy chạy, nên là trạng từ."),
-      ex("Từ nào là tính từ trong câu The lesson is useful?", ["lesson", "is", "useful", "the"], 2, "Tính từ có thể đứng sau linking verb is.", "Useful mô tả lesson và đứng sau is."),
-      ex("Chọn từ đúng: We need a ___ answer.", ["quick", "quickly", "quickerly", "quickness"], 0, "Chỗ trống bổ nghĩa cho danh từ answer.", "Quick là tính từ, phù hợp để bổ nghĩa cho answer.")
+      ex("All employees must submit the ___ form by noon.", ["revise","revised","revision","revising"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - revised."),
+      ex("The manager spoke ___ about the new company policy.", ["confident","confidence","confidently","confide"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - confidently."),
+      ex("The hotel offers ___ rates for corporate clients.", ["compete","competition","competitive","competitively"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - competitive."),
+      ex("Please check the ___ of each invoice before approving it.", ["accurate","accuracy","accurately","accurateness"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - accuracy."),
+      ex("Ms. Park is responsible for the ___ of new staff members.", ["train","trained","training","trainer"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - training."),
+      ex("The technician repaired the printer ___ and efficiently.", ["quick","quickly","quicker","quickness"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - quickly."),
+      ex("The company announced a significant ___ in operating costs.", ["reduce","reduced","reduction","reducing"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - reduction."),
+      ex("The proposal was ___ accepted by the board of directors.", ["wide","widely","widen","width"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - widely."),
+      ex("We need a detailed ___ of last quarter's sales performance.", ["analyze","analyst","analytical","analysis"], 3, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: D - analysis."),
+      ex("The new software is designed to improve employee ___.", ["productive","productivity","productively","produce"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - productivity.")
     ]
   },
   {
@@ -227,9 +234,16 @@ const grammarTopics = [
       "Sau did, do/does, will dùng động từ nguyên mẫu; không chia V2 hoặc thêm s/es."
     ],
     exercises: [
-      ex("She ___ English every day.", ["study", "studies", "is study", "studying"], 1, "Every day diễn tả thói quen ở hiện tại.", "Chủ ngữ she ở Present Simple cần studies."),
-      ex("At 8 last night, I ___ dinner.", ["cook", "cooked", "was cooking", "have cooked"], 2, "At 8 last night là một thời điểm cụ thể trong quá khứ.", "Past Continuous dùng was/were + V-ing."),
-      ex("By next June, they ___ the course.", ["finish", "finished", "will finish", "will have finished"], 3, "By next June nhấn mạnh hoàn tất trước một mốc tương lai.", "Future Perfect dùng will have + V3/ed.")
+      ex("By the time Ms. Lee arrived, the meeting ___ already ___.", ["has / begun","had / begun","was / beginning","will / begin"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - had / begun."),
+      ex("The sales team ___ the new product line next month.", ["launches","launched","will launch","has launched"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - will launch."),
+      ex("Mr. Carter ___ for this company since 2018.", ["works","worked","has worked","is working"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - has worked."),
+      ex("The receptionist ___ a phone call when the visitor arrived.", ["answers","answered","was answering","has answered"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - was answering."),
+      ex("Our department usually ___ its weekly report on Friday.", ["submits","submitted","is submitting","has submitted"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - submits."),
+      ex("The shipment ___ at the warehouse yesterday afternoon.", ["arrives","arrived","has arrived","will arrive"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - arrived."),
+      ex("We ___ the contract before the client requested changes.", ["finalize","finalized","had finalized","will finalize"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - had finalized."),
+      ex("The company ___ a new branch in Manila next year.", ["opened","has opened","opens","will open"], 3, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: D - will open."),
+      ex("I ___ the budget figures right now, so I cannot join the call.", ["review","reviewed","am reviewing","have reviewed"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - am reviewing."),
+      ex("The training session ___ by the time you return from lunch.", ["ends","ended","will have ended","has ended"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - will have ended.")
     ]
   },
   {
@@ -254,9 +268,16 @@ const grammarTopics = [
       "Một số danh từ số nhiều bất quy tắc: child -> children, person -> people, knife -> knives."
     ],
     exercises: [
-      ex("Chọn dạng số nhiều đúng của knife.", ["knifes", "knives", "knifees", "knivs"], 1, "Knife đổi f thành ves khi ở số nhiều.", "Số nhiều của knife là knives."),
-      ex("Chọn câu đúng.", ["I need an advice.", "I need some advice.", "I need advices.", "I need many advice."], 1, "Advice không đếm được.", "Some advice là cách dùng tự nhiên và đúng."),
-      ex("The ___ room is clean.", ["children", "children's", "childrens", "childrens'"], 1, "Cần sở hữu cách.", "Children là số nhiều bất quy tắc; sở hữu là children's.")
+      ex("The company received several ___ from customers after the update.", ["complaint","complaints","complain","complaining"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - complaints."),
+      ex("We need more ___ before making a final decision.", ["information","informations","informative","inform"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - information."),
+      ex("The ___ suggestions were discussed during the meeting.", ["employees","employee's","employees'","employee"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - employees'."),
+      ex("Please send me two ___ of the signed agreement.", ["copy","copies","copying","copied"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - copies."),
+      ex("The restaurant's new menu includes several vegetarian ___.", ["option","options","optional","optionally"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - options."),
+      ex("Ms. Brown has ten years of ___ in project management.", ["experience","experiences","experienced","experiencing"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - experience."),
+      ex("The marketing team prepared a list of potential ___.", ["client","clients","client's","cliented"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - clients."),
+      ex("The ___ report must be submitted before the end of the month.", ["accountant","accounting","account","accounted"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - accounting."),
+      ex("The director reviewed the ___ performance carefully.", ["department","departments","department's","departmental"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - department's."),
+      ex("All ___ must wear identification badges in the building.", ["visitor","visitors","visiting","visits"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - visitors.")
     ]
   },
   {
@@ -281,9 +302,16 @@ const grammarTopics = [
       "Sau modal verbs dùng động từ nguyên mẫu không to."
     ],
     exercises: [
-      ex("She ___ a new phone yesterday.", ["buy", "buys", "bought", "buying"], 2, "Yesterday cần quá khứ đơn.", "Buy ở quá khứ là bought."),
-      ex("Can you ___ me?", ["help", "helps", "to help", "helping"], 0, "Sau can dùng V nguyên mẫu.", "Can + help là đúng."),
-      ex("Trong câu They arrived late, arrived là loại động từ nào?", ["Ngoại động từ", "Nội động từ", "Trợ động từ", "Modal verb"], 1, "Arrive không cần tân ngữ trực tiếp.", "Arrived là nội động từ.")
+      ex("The manager ___ the final report before sending it to headquarters.", ["reviewed","review","reviewing","reviews to"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - reviewed."),
+      ex("Please ___ the attached document carefully.", ["read","reading","to read","reads"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - read."),
+      ex("The new policy will ___ all full-time employees.", ["apply","affect","happen","arrive"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - affect."),
+      ex("The technician ___ the broken scanner this morning.", ["fixed","fixing","fixes to","was fixed"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - fixed."),
+      ex("Our team ___ a solution to the delivery problem.", ["came up with","came over","came across","came down"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - came up with."),
+      ex("The CEO ___ the importance of customer satisfaction.", ["emphasized","emphasized on","emphasized to","emphasized about"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - emphasized."),
+      ex("The company ___ several candidates for the position.", ["interviewed","interviewed with","interviewed to","was interviewed"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - interviewed."),
+      ex("The meeting ___ at exactly 9 a.m.", ["began","was begun","beginning","begins to"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - began."),
+      ex("The supplier failed to ___ the goods on time.", ["delivery","deliver","delivered","delivering"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - deliver."),
+      ex("Employees are encouraged to ___ any safety concerns immediately.", ["report","reporting","reported","reports"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - report.")
     ]
   },
   {
@@ -308,9 +336,16 @@ const grammarTopics = [
       "Không dùng trạng từ sau linking verb nếu cần mô tả chủ ngữ: She looks happy."
     ],
     exercises: [
-      ex("The flowers are ___.", ["beauty", "beautiful", "beautifully", "beautify"], 1, "Sau are cần tính từ mô tả chủ ngữ.", "Beautiful là tính từ."),
-      ex("Chọn cụm đúng.", ["a red small car", "a small red car", "a car red small", "a small car red"], 1, "Kích thước thường đứng trước màu sắc.", "A small red car là thứ tự tự nhiên."),
-      ex("She looks ___ today.", ["happily", "happy", "happiness", "happierly"], 1, "Look là linking verb trong câu này.", "Happy mô tả trạng thái của she.")
+      ex("The new office furniture is both comfortable and ___.", ["durability","durable","durably","endure"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - durable."),
+      ex("The report provides a ___ summary of the company's performance.", ["brief","briefly","briefing","briefness"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - brief."),
+      ex("Customers were pleased with the ___ service.", ["prompt","promptly","promptness","prompted"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - prompt."),
+      ex("This is the most ___ proposal we have received so far.", ["impress","impressive","impressively","impression"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - impressive."),
+      ex("The conference room looks ___ after the renovation.", ["modern","modernly","modernize","modernity"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - modern."),
+      ex("We ordered three ___ leather office chairs.", ["black large Italian","Italian black large","large black Italian","black Italian large"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - large black Italian."),
+      ex("The instructions were clear and easy to ___.", ["follow","following","followed","follows"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - follow."),
+      ex("The new manager seems ___ with the team's progress.", ["satisfy","satisfied","satisfaction","satisfactorily"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - satisfied."),
+      ex("The company is looking for a ___ candidate with strong communication skills.", ["qualify","qualified","qualification","qualifyingly"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - qualified."),
+      ex("The delay was caused by ___ weather conditions.", ["severe","severely","severity","severeness"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - severe.")
     ]
   },
   {
@@ -335,9 +370,16 @@ const grammarTopics = [
       "Không dùng good thay cho well khi bổ nghĩa cho động từ."
     ],
     exercises: [
-      ex("He drives ___.", ["careful", "carefully", "care", "carefulness"], 1, "Cần trạng từ bổ nghĩa cho drives.", "Carefully là trạng từ."),
-      ex("She ___ eats breakfast at home.", ["usual", "usually", "useful", "using"], 1, "Cần trạng từ tần suất.", "Usually đứng trước động từ thường eats."),
-      ex("The test was ___ difficult.", ["extreme", "extremely", "extremity", "extremer"], 1, "Cần trạng từ bổ nghĩa cho tính từ difficult.", "Extremely bổ nghĩa cho difficult.")
+      ex("The finance team reviewed the budget ___ before approval.", ["careful","carefully","care","carefulness"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - carefully."),
+      ex("The package arrived ___ than expected.", ["early","earlier","earliest","earliness"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - earlier."),
+      ex("Mr. Johnson responded ___ to the client's complaint.", ["immediate","immediately","immediacy","more immediate"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - immediately."),
+      ex("The new software runs ___ on older computers.", ["smoothly","smooth","smoothness","smoother"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - smoothly."),
+      ex("Employees must dress ___ for client meetings.", ["professional","professionally","profession","professionalism"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - professionally."),
+      ex("The marketing campaign was ___ successful.", ["high","height","highly","higher"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - highly."),
+      ex("Please speak ___ during the presentation so everyone can hear you.", ["clear","clearly","clarity","clearing"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - clearly."),
+      ex("The shipment was ___ delayed due to bad weather.", ["unexpected","unexpectedly","expecting","expectation"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - unexpectedly."),
+      ex("The director ___ approved the revised proposal.", ["final","finally","finalize","finality"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - finally."),
+      ex("The receptionist handled the situation very ___.", ["calm","calmly","calming","calmness"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - calmly.")
     ]
   },
   {
@@ -362,9 +404,16 @@ const grammarTopics = [
       "Không dùng the khi nói chung: I like music."
     ],
     exercises: [
-      ex("She is ___ honest person.", ["a", "an", "the", "no article"], 1, "Honest bắt đầu bằng âm nguyên âm.", "An honest person là đúng."),
-      ex("___ sun rises in the east.", ["A", "An", "The", "No article"], 2, "Sun là đối tượng duy nhất.", "The sun là cách dùng chuẩn."),
-      ex("I like ___ coffee.", ["a", "an", "the", "no article"], 3, "Coffee đang được nói chung.", "Không dùng mạo từ khi nói chung.")
+      ex("Ms. Adams is ___ experienced consultant in international trade.", ["a","an","the","no article"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - an."),
+      ex("The company opened ___ new branch near the airport.", ["a","an","the","no article"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - a."),
+      ex("Please send the file to ___ accounting department.", ["a","an","the","no article"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - the."),
+      ex("We need to hire ___ engineer for the new project.", ["a","an","the","no article"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - an."),
+      ex("___ information you requested is attached to this email.", ["A","An","The","No article"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - The."),
+      ex("Our office is located on ___ third floor.", ["a","an","the","no article"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - the."),
+      ex("Employees must wear ___ uniform during working hours.", ["a","an","the","no article"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - a."),
+      ex("Mr. Wilson gave us ___ useful advice about the presentation.", ["a","an","the","no article"], 3, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: D - no article."),
+      ex("The meeting will be held in ___ Room 204.", ["a","an","the","no article"], 3, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: D - no article."),
+      ex("She is ___ best candidate for the position.", ["a","an","the","no article"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - the.")
     ]
   },
   {
@@ -389,9 +438,16 @@ const grammarTopics = [
       "Arrive dùng arrive in với thành phố/quốc gia và arrive at với địa điểm cụ thể."
     ],
     exercises: [
-      ex("The class starts ___ Monday.", ["at", "on", "in", "to"], 1, "Ngày trong tuần dùng on.", "On Monday là đúng."),
-      ex("He arrived ___ the airport early.", ["in", "on", "at", "for"], 2, "Airport là địa điểm cụ thể.", "Arrive at the airport là đúng."),
-      ex("My birthday is ___ July.", ["at", "on", "in", "by"], 2, "Tháng dùng in.", "In July là đúng.")
+      ex("The meeting is scheduled ___ Monday morning.", ["in","on","at","by"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - on."),
+      ex("Please submit your report ___ the end of the day.", ["on","at","by","in"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - by."),
+      ex("The office is located ___ the second floor.", ["at","in","on","to"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - on."),
+      ex("We are interested ___ expanding into new markets.", ["in","on","at","for"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - in."),
+      ex("The manager is responsible ___ training new employees.", ["with","for","to","about"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - for."),
+      ex("The package was delivered ___ the wrong address.", ["in","at","to","on"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - to."),
+      ex("The seminar will take place ___ 9 a.m. and noon.", ["among","between","during","through"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - between."),
+      ex("Sales increased ___ 15 percent last quarter.", ["by","to","with","from"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - by."),
+      ex("The report must be completed ___ Friday.", ["until","by","since","during"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - by."),
+      ex("The company has been in business ___ more than twenty years.", ["since","during","for","at"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - for.")
     ]
   },
   {
@@ -416,9 +472,16 @@ const grammarTopics = [
       "Một số dạng bất quy tắc: good -> better -> best, bad -> worse -> worst."
     ],
     exercises: [
-      ex("This exercise is ___ than the last one.", ["easy", "easier", "more easier", "easiest"], 1, "Easy đổi y thành i rồi thêm er.", "Easier than là đúng."),
-      ex("She is ___ student in the group.", ["good", "better", "the best", "best than"], 2, "Cần so sánh nhất.", "The best student là đúng."),
-      ex("My bag is as heavy ___ yours.", ["than", "as", "more", "like"], 1, "So sánh bằng dùng as...as.", "As heavy as là đúng.")
+      ex("This year's sales figures are ___ than last year's.", ["high","higher","highest","highly"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - higher."),
+      ex("The new printer is ___ efficient than the old one.", ["more","most","much","many"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - more."),
+      ex("This is the ___ conference room in the building.", ["large","larger","largest","largely"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - largest."),
+      ex("Ms. Green speaks English ___ than anyone else on the team.", ["fluently","more fluently","most fluently","fluent"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - more fluently."),
+      ex("The revised proposal is ___ as detailed as the original version.", ["so","as","more","most"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - as."),
+      ex("The second interview was much ___ than the first one.", ["difficult","more difficult","most difficult","difficulty"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - more difficult."),
+      ex("This model is less expensive ___ the previous one.", ["as","than","from","to"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - than."),
+      ex("Of all the applicants, Mr. Chen has the ___ qualifications.", ["strong","stronger","strongest","strongly"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - strongest."),
+      ex("The new system works ___ than we expected.", ["well","better","best","good"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - better."),
+      ex("The earlier you submit the form, the ___ it can be processed.", ["fast","faster","fastest","more fast"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - faster.")
     ]
   },
   {
@@ -443,9 +506,16 @@ const grammarTopics = [
       "Must not là cấm làm; do not have to là không cần làm."
     ],
     exercises: [
-      ex("You ___ wear a helmet here. It is required.", ["can", "must", "might", "would"], 1, "Có yêu cầu bắt buộc.", "Must diễn tả nghĩa vụ mạnh."),
-      ex("She ___ play the piano when she was six.", ["can", "could", "must", "should"], 1, "Khả năng trong quá khứ dùng could.", "Could play là đúng."),
-      ex("He should ___ harder.", ["studies", "study", "to study", "studying"], 1, "Sau should dùng V nguyên mẫu.", "Should study là đúng.")
+      ex("Employees ___ wear their ID badges at all times.", ["must","might","would","could"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - must."),
+      ex("You ___ submit the application online or in person.", ["may","must to","should to","can to"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - may."),
+      ex("The delivery ___ arrive later than expected because of heavy traffic.", ["must","might","should","would"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - might."),
+      ex("We ___ review the contract before signing it.", ["should","may to","can to","must to"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - should."),
+      ex("Mr. Lee ___ attend the meeting yesterday because he was sick.", ["cannot","could not","must not","may not"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - could not."),
+      ex("Visitors ___ enter the laboratory without permission.", ["must not","would not","might not","could not"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - must not."),
+      ex("The manager said we ___ leave early after finishing the report.", ["could","must","should to","can to"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - could."),
+      ex("You ___ contact customer service if the problem continues.", ["had better","would better","must better","may better"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - had better."),
+      ex("The figures ___ be correct because they match the accounting records.", ["must","might","could","would"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - must."),
+      ex("___ you please send me the updated schedule?", ["Must","Should","Could","May to"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - Could.")
     ]
   },
   {
@@ -470,9 +540,16 @@ const grammarTopics = [
       "Were thường dùng với mọi chủ ngữ trong giả định trang trọng: If I were you."
     ],
     exercises: [
-      ex("If I ___ enough money, I would buy a car.", ["have", "had", "will have", "had had"], 1, "Would buy gợi ý điều kiện loại 2.", "If + Past Simple, would + V."),
-      ex("If it rains tomorrow, we ___ inside.", ["stay", "stayed", "will stay", "would stay"], 2, "Tomorrow và điều kiện thật dùng loại 1.", "Will stay là đúng."),
-      ex("If she had called me, I ___ her.", ["help", "helped", "will help", "would have helped"], 3, "Had called là Past Perfect.", "Điều kiện loại 3 dùng would have + V3.")
+      ex("If the shipment arrives today, we ___ it to the client immediately.", ["send","sent","will send","would send"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - will send."),
+      ex("If employees have questions, they ___ contact the HR department.", ["can","could have","would have","had"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - can."),
+      ex("If we had ordered more supplies, we ___ enough folders for everyone.", ["have","had","would have had","will have"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - would have had."),
+      ex("If I were the manager, I ___ the meeting schedule.", ["change","changed","would change","will change"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - would change."),
+      ex("If customers are dissatisfied, they usually ___ a refund.", ["request","requested","will requested","would requested"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - request."),
+      ex("If the printer stops working again, ___ the IT department.", ["call","called","calling","to call"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - call."),
+      ex("If the company had invested earlier, it ___ more competitive now.", ["is","will be","would be","would have been"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - would be."),
+      ex("Unless the report is submitted today, it ___ included in the review.", ["is not","will not be","would not","has not"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - will not be."),
+      ex("If I ___ your email earlier, I would have replied sooner.", ["see","saw","had seen","have seen"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - had seen."),
+      ex("If the weather improves, the outdoor event ___ as planned.", ["continues","continued","will continue","would continue"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - will continue.")
     ]
   },
   {
@@ -497,9 +574,16 @@ const grammarTopics = [
       "Không dùng bị động với nội động từ không có tân ngữ trực tiếp."
     ],
     exercises: [
-      ex("The bridge ___ in 2020.", ["build", "built", "was built", "is building"], 2, "In 2020 là quá khứ và bridge chịu tác động.", "Was built là bị động quá khứ đơn."),
-      ex("English ___ by many people.", ["speaks", "is spoken", "is speaking", "spoke"], 1, "English là đối tượng được nói.", "Is spoken là bị động hiện tại đơn."),
-      ex("The work must ___ today.", ["finish", "be finished", "finished", "being finished"], 1, "Sau modal trong bị động dùng be + V3.", "Must be finished là đúng.")
+      ex("The annual report ___ by the finance department.", ["prepared","was prepared","preparing","has preparing"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - was prepared."),
+      ex("All applications must ___ by Friday.", ["submit","submitted","be submitted","submitting"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - be submitted."),
+      ex("The meeting room ___ every morning.", ["cleans","cleaned","is cleaned","cleaning"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - is cleaned."),
+      ex("The new software ___ next week.", ["will install","will be installed","installed","installing"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - will be installed."),
+      ex("The invitations have already ___ to all participants.", ["sent","been sent","sending","send"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - been sent."),
+      ex("The damaged items ___ from the warehouse yesterday.", ["removed","were removed","removing","have removing"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - were removed."),
+      ex("The contract is being ___ by our legal team.", ["review","reviewed","reviewing","reviews"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - reviewed."),
+      ex("The final decision ___ after the board meeting.", ["will make","will be made","made","has made"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - will be made."),
+      ex("Customers are ___ to complete a short survey.", ["encourage","encouraged","encouraging","encouragement"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - encouraged."),
+      ex("The equipment should ___ carefully before use.", ["inspect","inspected","be inspected","inspecting"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - be inspected.")
     ]
   },
   {
@@ -524,9 +608,16 @@ const grammarTopics = [
       "Tell cần tân ngữ: told me, told him."
     ],
     exercises: [
-      ex("He said, 'I am busy.' -> He said that he ___ busy.", ["is", "was", "were", "has been"], 1, "Lùi thì hiện tại đơn về quá khứ đơn.", "Am đổi thành was."),
-      ex("She asked, 'Do you like tea?' -> She asked me ___ I liked tea.", ["what", "if", "where", "that"], 1, "Yes/No question dùng if/whether.", "If I liked tea là đúng."),
-      ex("Mom told me ___ quiet.", ["be", "being", "to be", "was"], 2, "Mệnh lệnh gián tiếp dùng told + O + to V.", "Told me to be quiet là đúng.")
+      ex("Mr. Adams said that he ___ the report by Friday.", ["finishes","will finish","would finish","finish"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - would finish."),
+      ex("She asked whether the meeting ___ been postponed.", ["has","had","have","having"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - had."),
+      ex("The manager told us ___ late for the conference.", ["not be","not to be","do not be","not being"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - not to be."),
+      ex("Ms. Taylor said she ___ the client the previous day.", ["meets","met","had met","has met"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - had met."),
+      ex("He asked me where I ___ the files.", ["store","stored","storing","stores"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - stored."),
+      ex("The supervisor said that the office ___ closed on Monday.", ["is","was","has","will"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - was."),
+      ex("They asked if we ___ available for a meeting the next morning.", ["are","were","will be","have been"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - were."),
+      ex("The director told employees ___ their passwords regularly.", ["update","updating","to update","updated"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - to update."),
+      ex("Sarah said that she ___ working on the budget at that moment.", ["is","was","has been","will be"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - was."),
+      ex("The client asked when the shipment ___.", ["arrives","arrived","would arrive","arriving"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - would arrive.")
     ]
   },
   {
@@ -551,9 +642,16 @@ const grammarTopics = [
       "Whose đi với danh từ phía sau: whose car, whose idea."
     ],
     exercises: [
-      ex("The man ___ helped me is my teacher.", ["which", "who", "where", "whose"], 1, "The man là người và làm chủ ngữ.", "Who là đúng."),
-      ex("This is the city ___ I was born.", ["who", "which", "where", "whose"], 2, "City là nơi chốn.", "Where thay cho in which."),
-      ex("The girl ___ bag was lost is crying.", ["who", "whom", "whose", "which"], 2, "Cần chỉ sở hữu.", "Whose bag là đúng.")
+      ex("The employee ___ submitted the report early received praise.", ["who","which","where","when"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - who."),
+      ex("The laptop ___ I purchased last month has already stopped working.", ["who","whose","which","where"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - which."),
+      ex("The hotel ___ we stayed during the conference was excellent.", ["when","where","which","whose"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - where."),
+      ex("The manager ___ office is on the fifth floor is unavailable today.", ["who","whom","whose","which"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - whose."),
+      ex("The restaurant ___ opened downtown is already very popular.", ["who","that","where","whose"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - that."),
+      ex("The applicant ___ we interviewed yesterday has strong experience.", ["whom","which","whose","where"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - whom."),
+      ex("The day ___ the product was launched was extremely busy.", ["where","when","which","whose"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - when."),
+      ex("The company has hired a consultant ___ specializes in digital marketing.", ["who","which","where","when"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - who."),
+      ex("The document ___ you requested is attached to this email.", ["who","whose","that","where"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - that."),
+      ex("The city ___ our new branch is located has excellent transportation.", ["which","where","when","whose"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - where.")
     ]
   },
   {
@@ -578,9 +676,16 @@ const grammarTopics = [
       "Một số động từ đổi nghĩa theo dạng sau: remember doing khác remember to do."
     ],
     exercises: [
-      ex("I avoid ___ late.", ["arrive", "to arrive", "arriving", "arrived"], 2, "Avoid đi với V-ing.", "Avoid arriving late là đúng."),
-      ex("She hopes ___ a scholarship.", ["get", "getting", "to get", "got"], 2, "Hope đi với to V.", "Hopes to get là đúng."),
-      ex("He is interested in ___ English.", ["learn", "to learn", "learning", "learned"], 2, "Sau giới từ in dùng V-ing.", "Interested in learning là đúng.")
+      ex("We decided ___ the conference until next month.", ["postpone","postponing","to postpone","postponed"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - to postpone."),
+      ex("Ms. Rivera enjoys ___ with international clients.", ["work","working","to work","worked"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - working."),
+      ex("The manager agreed ___ the proposal again.", ["review","reviewing","to review","reviewed"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - to review."),
+      ex("Employees are responsible for ___ their passwords secure.", ["keep","keeping","to keep","kept"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - keeping."),
+      ex("The company plans ___ a new branch overseas.", ["open","opening","to open","opened"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - to open."),
+      ex("Please avoid ___ confidential information by email.", ["send","sending","to send","sent"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - sending."),
+      ex("Mr. Kim offered ___ us with the presentation.", ["help","helping","to help","helped"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - to help."),
+      ex("The director suggested ___ the budget before approval.", ["revise","revising","to revise","revised"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - revising."),
+      ex("We look forward to ___ you at the annual conference.", ["see","seeing","to see","saw"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - seeing."),
+      ex("The technician refused ___ the equipment without proper authorization.", ["repair","repairing","to repair","repaired"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - to repair.")
     ]
   },
   {
@@ -605,9 +710,16 @@ const grammarTopics = [
       "Không đảo từ trong câu hỏi gián tiếp: Do you know where he lives?"
     ],
     exercises: [
-      ex("___ you finished your homework?", ["Do", "Are", "Have", "Did"], 2, "Finished đi với hiện tại hoàn thành.", "Have you finished là đúng."),
-      ex("Where ___ she live?", ["do", "does", "is", "has"], 1, "She ở Present Simple cần does.", "Where does she live là đúng."),
-      ex("Do you know where he ___?", ["live", "lives", "does live", "is live"], 1, "Câu hỏi gián tiếp dùng trật tự câu kể.", "Where he lives là đúng.")
+      ex("___ the marketing team finished the campaign plan?", ["Has","Does","Is","Did"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - Has."),
+      ex("Where ___ the conference be held this year?", ["does","is","will","has"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - will."),
+      ex("___ you send me the updated invoice, please?", ["Could","Must","Should","May to"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - Could."),
+      ex("How often ___ the company hold training sessions?", ["do","does","is","has"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - does."),
+      ex("You attended yesterday's meeting, ___?", ["did you","didn't you","do you","aren't you"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - didn't you."),
+      ex("Could you tell me where the nearest copy room ___?", ["is","does","has","be"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - is."),
+      ex("Why ___ the shipment delayed?", ["did","was","has","does"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - was."),
+      ex("Who ___ responsible for booking the venue?", ["are","is","do","have"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - is."),
+      ex("The report is complete, ___?", ["is it","isn't it","does it","didn't it"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - isn't it."),
+      ex("Do you know when Mr. Carter ___ back from his business trip?", ["returns","does return","returning","return"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - returns.")
     ]
   },
   {
@@ -632,9 +744,16 @@ const grammarTopics = [
       "Tránh phủ định kép trong tiếng Anh chuẩn: I don't know anything, không phải I don't know nothing."
     ],
     exercises: [
-      ex("She ___ like coffee.", ["don't", "doesn't", "isn't", "not"], 1, "She ở Present Simple cần does.", "Doesn't + base verb là dạng phủ định đúng."),
-      ex("I have ___ been to London.", ["not never", "never", "no", "none"], 1, "Never tự mang nghĩa phủ định.", "Have never been là cấu trúc đúng."),
-      ex("Chọn câu phủ định đúng.", ["He didn't went home.", "He didn't go home.", "He not went home.", "He doesn't went home."], 1, "Sau did not dùng động từ nguyên mẫu.", "Didn't go là đúng; không dùng went sau didn't.")
+      ex("The manager did ___ approve the revised budget.", ["no","not","never","none"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - not."),
+      ex("We have ___ received confirmation from the supplier.", ["not","no","none","nothing"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - not."),
+      ex("There are ___ available seats for the morning session.", ["no","not","never","neither"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - no."),
+      ex("Employees should ___ share their passwords with anyone.", ["no","not","none","nothing"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - not."),
+      ex("The client has ___ complained about our service before.", ["never","no","none","not ever"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - never."),
+      ex("The printer is ___ working properly today.", ["no","not","none","never"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - not."),
+      ex("We found ___ errors in the final version of the report.", ["no","not","never","nothing"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - no."),
+      ex("Mr. Han hardly ___ misses a team meeting.", ["ever","never","no","not"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - ever."),
+      ex("The company does ___ allow smoking inside the building.", ["not","no","never","none"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - not."),
+      ex("There is ___ reason to delay the project any further.", ["no","not","none","never"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - no.")
     ]
   },
   {
@@ -664,9 +783,16 @@ const grammarTopics = [
       "Enough đứng sau tính từ/trạng từ nhưng trước danh từ: old enough, enough time."
     ],
     exercises: [
-      ex("I ___ live near the beach when I was a child.", ["am used to", "used to", "use to", "was used"], 1, "Câu nói về thói quen trong quá khứ.", "Used to + V diễn tả thói quen quá khứ."),
-      ex("She is used to ___ early.", ["wake up", "wakes up", "waking up", "to wake up"], 2, "Be used to đi với V-ing hoặc danh từ.", "Is used to waking up nghĩa là đã quen với việc dậy sớm."),
-      ex("The box is ___ heavy to carry.", ["enough", "so", "too", "such"], 2, "Mẫu câu diễn tả quá mức để làm gì.", "Too + adjective + to V: too heavy to carry.")
+      ex("I used to ___ by train before I bought a car.", ["commute","commuting","commuted","to commute"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - commute."),
+      ex("Ms. Park is used to ___ under pressure.", ["work","working","worked","to work"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - working."),
+      ex("The meeting room is too small ___ forty people.", ["accommodate","accommodating","to accommodate","accommodated"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - to accommodate."),
+      ex("The instructions are clear enough ___ without assistance.", ["follow","following","to follow","followed"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - to follow."),
+      ex("The presentation was so informative ___ everyone stayed until the end.", ["that","such","enough","too"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - that."),
+      ex("It was such a successful event ___ the company decided to hold it again.", ["so","that","enough","too"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - that."),
+      ex("I would rather ___ the report today than wait until Monday.", ["finish","finishing","to finish","finished"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - finish."),
+      ex("The company had better ___ the issue immediately.", ["address","addressing","to address","addressed"], 0, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: A - address."),
+      ex("The new software makes it easier ___ customer information.", ["manage","managing","to manage","managed"], 2, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: C - to manage."),
+      ex("The manager asked us to keep ___ the project until it is completed.", ["work on","working on","to work on","worked on"], 1, "Look at the words around the blank and choose the correct grammar form.", "Correct answer: B - working on.")
     ]
   }
 ];

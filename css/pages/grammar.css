@@ -139,25 +139,32 @@
   gap: 14px;
   overflow-x: auto;
   overscroll-behavior-x: contain;
-  padding: 4px 4px 18px;
+  padding: 4px 4px 22px;
   scroll-padding: 4px;
   scroll-snap-type: x mandatory;
   scrollbar-color: rgba(112, 245, 157, 0.78) rgba(125, 211, 252, 0.14);
-  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  scrollbar-width: auto;
 }
 
 .grammar-topic-rail::-webkit-scrollbar {
-  height: 10px;
+  height: 14px;
 }
 
 .grammar-topic-rail::-webkit-scrollbar-track {
+  border: 1px solid rgba(125, 211, 252, 0.12);
   border-radius: 999px;
   background: rgba(125, 211, 252, 0.14);
 }
 
 .grammar-topic-rail::-webkit-scrollbar-thumb {
+  border: 3px solid rgba(2, 6, 23, 0.88);
   border-radius: 999px;
   background: linear-gradient(90deg, #2ee878, #48cfff);
+}
+
+.grammar-topic-rail::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #70f59d, #9be8ff);
 }
 
 .grammar-topic-card {
@@ -287,6 +294,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) 360px;
   gap: 0;
+  align-items: start;
 }
 
 .grammar-theory-panel,
@@ -295,8 +303,34 @@
 }
 
 .grammar-practice-panel {
+  position: sticky;
+  top: 92px;
+  max-height: calc(100vh - 112px);
+  overflow-y: auto;
   border-left: 1px solid rgba(125, 211, 252, 0.16);
   background: rgba(2, 6, 23, 0.22);
+  scrollbar-color: rgba(112, 245, 157, 0.76) rgba(125, 211, 252, 0.12);
+  scrollbar-gutter: stable;
+  scrollbar-width: auto;
+}
+
+.grammar-practice-panel::-webkit-scrollbar {
+  width: 12px;
+}
+
+.grammar-practice-panel::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(125, 211, 252, 0.12);
+}
+
+.grammar-practice-panel::-webkit-scrollbar-thumb {
+  border: 3px solid rgba(2, 6, 23, 0.88);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #2ee878, #48cfff);
+}
+
+.grammar-practice-panel::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #70f59d, #9be8ff);
 }
 
 .grammar-theory-section + .grammar-theory-section,
@@ -312,6 +346,42 @@
   color: #ffffff;
   font-size: 1.35rem;
   line-height: 1.25;
+}
+
+.grammar-theory-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 13px;
+}
+
+.grammar-theory-title-row h3 {
+  margin: 0;
+}
+
+.grammar-theory-toggle {
+  flex: 0 0 auto;
+  border: 1px solid rgba(125, 211, 252, 0.32);
+  border-radius: 999px;
+  background: rgba(2, 6, 23, 0.72);
+  color: #9be8ff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 900;
+  padding: 8px 12px;
+}
+
+.grammar-theory-toggle:hover {
+  border-color: rgba(112, 245, 157, 0.58);
+  color: #ffffff;
+}
+
+.grammar-theory-panel.is-theory-hidden [data-theory-memory-content],
+.grammar-theory-panel.is-theory-hidden [data-formula-memory-section],
+.grammar-theory-panel.is-theory-hidden [data-grammar-extra-memory-section] {
+  display: none;
 }
 
 .grammar-theory-section ul,
@@ -575,6 +645,9 @@
   }
 
   .grammar-practice-panel {
+    position: static;
+    max-height: none;
+    overflow: visible;
     border-left: 0;
     border-top: 1px solid rgba(125, 211, 252, 0.16);
   }

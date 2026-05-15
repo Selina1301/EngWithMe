@@ -51,6 +51,39 @@
     0 0 28px rgba(255, 45, 85, 0.28);
 }
 
+.today-task-panel {
+  display: grid;
+  gap: 12px;
+  max-width: 560px;
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid rgba(125, 211, 252, 0.24);
+  border-radius: var(--radius);
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.today-task-panel[hidden] {
+  display: none;
+}
+
+.today-task-panel h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.15rem;
+}
+
+.today-task-panel ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+.today-task-panel .btn {
+  width: fit-content;
+}
+
 .btn:hover,
 .feature-card:hover,
 .course-card:hover,
@@ -601,15 +634,20 @@
 }
 
 .faq-list details summary::before {
-  content: "▾";
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-right: 3px solid currentColor;
+  border-bottom: 3px solid currentColor;
   margin-right: 12px;
   color: var(--primary);
-  font-size: 1.2rem;
+  flex: 0 0 auto;
+  transform: rotate(45deg);
   transition: transform 0.2s ease;
 }
 
 .faq-list details[open] summary::before {
-  transform: rotate(-180deg);
+  transform: rotate(225deg);
 }
 
 .faq-list details p {

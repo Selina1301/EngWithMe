@@ -33,63 +33,43 @@
       <div>
         <p class="eyebrow">Xin chào</p>
         <h1 data-student-name>Nguyễn Văn A</h1>
-        <p>Trình độ hiện tại: <strong data-student-level>A2</strong>. Gợi ý hôm nay: luyện nghe 15 phút và ôn Present Simple.</p>
+        <p>Trình độ hiện tại: <strong data-student-level>A2</strong>. <span data-dashboard-today-summary>Hôm nay học theo lộ trình 15 ngày.</span></p>
       </div>
-      <a class="btn btn-primary" href="quiz.html">Làm test hôm nay</a>
+      <a class="btn btn-primary" href="vocabulary.html" data-dashboard-today-link>Nhiệm vụ hôm nay</a>
     </section>
 
     <section class="section compact">
       <div class="stat-grid">
         <article class="stat-card">
-          <span>Tiến độ tuần này</span>
+          <span>Tiến độ lộ trình</span>
           <strong data-dashboard-progress>0%</strong>
           <div class="progress-track"><span style="width: 0%"></span></div>
         </article>
         <article class="stat-card">
           <span>Streak</span>
-          <strong>5 ngày</strong>
-          <div class="progress-track"><span style="width: 71%"></span></div>
+          <strong data-dashboard-streak>1 ngày</strong>
+          <div class="progress-track"><span data-dashboard-streak-bar style="width: 7%"></span></div>
         </article>
         <article class="stat-card">
-          <span>Bài học tiếp theo</span>
-          <strong>Present Simple</strong>
-          <a href="grammar.html">Học ngay</a>
+          <span>Bài học hôm nay</span>
+          <strong data-dashboard-today-skill>Vocabulary</strong>
+          <a href="vocabulary.html" data-dashboard-today-study-link>Học ngay</a>
         </article>
         <article class="stat-card">
-          <span>Kỹ năng yếu</span>
-          <strong>Listening</strong>
-          <a href="listening.html">Luyện nghe</a>
+          <span>Ngày hiện tại</span>
+          <strong data-dashboard-plan-day>Ngày 1/15</strong>
+          <a href="#dashboard-roadmap">Xem lộ trình</a>
         </article>
       </div>
     </section>
 
-    <section class="section section-muted">
+    <section class="section section-muted" id="dashboard-roadmap">
       <div class="section-heading">
         <p class="eyebrow">Lộ trình học</p>
-        <h2>4 tuần đầu tiên</h2>
+        <h2>17 ngày đầu tiên</h2>
+        <p>7 ngày học từ vựng, 3 ngày luyện đọc và 7 ngày ôn ngữ pháp. Bài sau chỉ mở khi bài trước được hoàn thành thật trong từng khu học.</p>
       </div>
-      <div class="roadmap">
-        <article>
-          <span>Tuần 1</span>
-          <h3>Từ vựng giao tiếp cơ bản</h3>
-          <p>Greetings, introductions, classroom words.</p>
-        </article>
-        <article>
-          <span>Tuần 2</span>
-          <h3>Present Simple</h3>
-          <p>Công thức, ví dụ đúng/sai và bài tập áp dụng.</p>
-        </article>
-        <article>
-          <span>Tuần 3</span>
-          <h3>Luyện nghe hội thoại ngắn</h3>
-          <p>Audio, transcript, câu hỏi trắc nghiệm và điền từ.</p>
-        </article>
-        <article>
-          <span>Tuần 4</span>
-          <h3>Kiểm tra tổng hợp</h3>
-          <p>Quiz cuối module và đề xuất bài nên ôn lại.</p>
-        </article>
-      </div>
+      <div class="roadmap" data-dashboard-roadmap></div>
     </section>
   </main>
 
@@ -107,6 +87,11 @@
   </footer>
 
   <script src="js/core.js"></script>
+  <script src="js/vocabulary/easy.js"></script>
+  <script src="js/vocabulary/medium.js"></script>
+  <script src="js/vocabulary/hard.js"></script>
+  <script src="js/vocabulary-data.js"></script>
+  <script src="js/grammar-data.js"></script>
   <script src="js/progress.js"></script>
   <script src="js/main.js"></script>
 </body>

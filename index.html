@@ -122,22 +122,23 @@
     <section class="section split-section today-section" data-today-suggestion>
       <div>
         <p class="eyebrow">Gợi ý hôm nay</p>
-        <h2>Học 25 phút mỗi ngày</h2>
-        <p>Một buổi học mẫu gồm 10 phút từ vựng, 10 phút ngữ pháp hoặc đọc, 5 phút xem lại dạng đề. Khi hoàn thành, tiến độ được lưu để dashboard cập nhật.</p>
-        <a class="btn btn-primary" href="dashboard.html">Xem dashboard mẫu</a>
+        <h2 data-today-title>Ngày học hôm nay</h2>
+        <p data-today-description>Lộ trình 17 ngày gồm 7 ngày học từ vựng, 3 ngày luyện đọc và 7 ngày ôn ngữ pháp. Tiến độ được tính theo bài hoàn thành thật.</p>
+        <a class="btn btn-primary" href="dashboard.html" data-today-task-toggle>Nhiệm vụ hôm nay</a>
+        <div class="today-task-panel" data-today-tasks hidden></div>
       </div>
       <div class="stat-panel">
-        <div>
-          <strong>65%</strong>
-          <span>Tiến độ tuần này</span>
+        <div data-plan-progress-card>
+          <strong>7%</strong>
+          <span>0/17 ngày hoàn thành</span>
         </div>
-        <div>
-          <strong>5 ngày</strong>
+        <div data-streak-card>
+          <strong>1 ngày</strong>
           <span>Streak học tập</span>
         </div>
-        <div>
-          <strong>Listening</strong>
-          <span>Kỹ năng cần ôn</span>
+        <div data-skill-card>
+          <strong>Vocabulary</strong>
+          <span>Ngày 1: Từ vựng</span>
         </div>
       </div>
     </section>
