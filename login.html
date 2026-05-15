@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng nhập - EngWithMe</title>
-  <link rel="stylesheet" href="css/base.css">
+  <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
+  <link rel="stylesheet" href="css/base.css?v=1.2">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
@@ -43,8 +44,15 @@
         <input type="email" name="email" placeholder="you@example.com" autocomplete="email" required>
       </label>
       <label>Mật khẩu
-        <input type="password" name="password" placeholder="Nhập mật khẩu" autocomplete="current-password" required>
+        <div class="password-wrapper">
+          <input type="password" name="password" placeholder="Nhập mật khẩu" autocomplete="current-password" required>
+          <span class="toggle-password ti-eye" aria-label="Hiện mật khẩu" role="button" tabindex="0"></span>
+        </div>
       </label>
+
+      <div class="form-actions-row">
+        <a href="forgot-password.html" class="forgot-password-link">Quên mật khẩu?</a>
+      </div>
 
       <button class="btn btn-primary" type="submit"><span class="ti-arrow-right"></span> Vào tài khoản</button>
       <p class="form-note">Chưa có tài khoản? <a href="register.html">Tạo tài khoản mới</a></p>
@@ -53,7 +61,7 @@
   </main>
 
   <script src="js/core.js"></script>
-  <script src="js/progress.js"></script>
+  <script src="js/progress.js?v=1.2"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

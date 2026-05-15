@@ -106,33 +106,69 @@ body.modal-open {
 }
 
 .nav-links {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   flex: 1;
   gap: 8px;
   flex-wrap: wrap;
+  isolation: isolate;
+  --nav-indicator-x: 0px;
+  --nav-indicator-y: 0px;
+  --nav-indicator-w: 0px;
+  --nav-indicator-h: 0px;
+  --nav-indicator-opacity: 0;
+}
+
+.nav-links::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  width: var(--nav-indicator-w);
+  height: var(--nav-indicator-h);
+  border: 1px solid rgba(72, 207, 255, 0.38);
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, rgba(46, 232, 120, 0.26), rgba(72, 207, 255, 0.16)),
+    rgba(15, 118, 110, 0.22);
+  box-shadow:
+    inset 0 0 0 1px rgba(72, 207, 255, 0.24),
+    0 0 24px rgba(46, 232, 120, 0.18);
+  opacity: var(--nav-indicator-opacity);
+  pointer-events: none;
+  transform: translate3d(var(--nav-indicator-x), var(--nav-indicator-y), 0);
+  transition:
+    transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
+    width 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.18s ease;
 }
 
 .nav-links a {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
   border: 1px solid transparent;
   border-radius: var(--radius);
   color: #c7d2e5;
   font-size: 14px;
   font-weight: 800;
-  padding: 8px 10px;
+  line-height: 1;
+  padding: 0 12px;
   transform-origin: center;
-  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+  transition: color 0.18s ease, text-shadow 0.18s ease;
 }
 
 .nav-links a:hover,
 .nav-links a.is-active {
-  transform: translateY(-1px);
-  background: rgba(46, 232, 120, 0.16);
   color: #ffffff;
-  box-shadow:
-    inset 0 0 0 1px rgba(72, 207, 255, 0.36),
-    0 0 22px rgba(46, 232, 120, 0.18);
+  text-shadow: 0 0 12px rgba(46, 232, 120, 0.24);
 }
 
 .nav-actions {
@@ -1616,4 +1652,69 @@ th {
 .spinner {
   display: inline-block;
   animation: spin 1s linear infinite;
+}
+
+/* Password Toggle & Auth Utilities */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.password-wrapper input {
+  width: 100% !important;
+  padding-right: 40px !important; /* Force space for eye icon */
+}
+.toggle-password {
+  position: absolute !important;
+  right: 12px !important;
+  color: rgba(56, 189, 248, 0.6) !important; /* Soft cyber cyan/blue matching --secondary */
+  cursor: pointer !important;
+  font-size: 1.1rem !important;
+  transition: color 0.25s, text-shadow 0.25s !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10 !important;
+}
+.toggle-password:hover {
+  color: var(--secondary) !important; /* Fully bright cyan */
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important; /* Cyber glow cyan */
+}
+.toggle-password.slashed {
+  color: rgba(46, 232, 120, 0.6) !important; /* Soft cyber green matching --primary */
+}
+.toggle-password.slashed:hover {
+  color: var(--primary) !important; /* Fully bright green */
+  text-shadow: 0 0 8px rgba(46, 232, 120, 0.6) !important; /* Cyber glow green */
+}
+.toggle-password.slashed::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 1.5px;
+  background: rgba(46, 232, 120, 0.8); /* matching slash to the icon color */
+  transform: rotate(45deg);
+  transform-origin: center;
+  transition: background 0.25s !important;
+}
+.toggle-password.slashed:hover::after {
+  background: var(--primary);
+}
+.form-actions-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
+.forgot-password-link {
+  color: var(--secondary);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.forgot-password-link:hover {
+  color: var(--primary);
+  text-decoration: underline;
 }

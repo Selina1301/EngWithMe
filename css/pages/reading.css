@@ -297,6 +297,11 @@
   padding: 0;
 }
 
+/* Prevent hover flicker loop when card translates up */
+.reading-topic-card:hover .reading-topic-open {
+  bottom: -20px;
+}
+
 .reading-topic-card > *:not(.reading-topic-open) {
   position: relative;
   z-index: 1;
@@ -650,6 +655,19 @@
   user-select: none;
 }
 
+.translations-muted .sentence-vi.is-revealed {
+  min-width: auto;
+  min-height: auto;
+  border: none;
+  background: none;
+  animation: none;
+  color: #a7fbc0 !important;
+  box-shadow: none;
+  padding: 0;
+  user-select: auto;
+  cursor: pointer;
+}
+
 @keyframes shimmer-spoiler {
   0% {
     background-position: 200% 0;
@@ -672,6 +690,10 @@
   white-space: nowrap;
   letter-spacing: 0.01em;
   transition: color 0.3s ease;
+}
+
+.translations-muted .sentence-row .sentence-vi.is-revealed::after {
+  display: none;
 }
 
 .translations-muted .sentence-row:hover .sentence-vi::after {

@@ -14,6 +14,10 @@ CREATE TABLE IF NOT EXISTS users (
   learning_goal VARCHAR(255) NULL,
   avatar_path VARCHAR(255) NULL,
   status ENUM('active', 'locked') NOT NULL DEFAULT 'active',
+  login_attempts INT NOT NULL DEFAULT 0,
+  attempt_lock_until DATETIME NULL,
+  reset_token VARCHAR(255) NULL,
+  reset_token_expires_at DATETIME NULL,
   last_login_at DATETIME NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -23,7 +27,11 @@ ALTER TABLE users
   ADD COLUMN IF NOT EXISTS learning_goal VARCHAR(255) NULL AFTER level,
   ADD COLUMN IF NOT EXISTS avatar_path VARCHAR(255) NULL AFTER learning_goal,
   ADD COLUMN IF NOT EXISTS status ENUM('active', 'locked') NOT NULL DEFAULT 'active' AFTER learning_goal,
-  ADD COLUMN IF NOT EXISTS last_login_at DATETIME NULL AFTER status;
+  ADD COLUMN IF NOT EXISTS login_attempts INT NOT NULL DEFAULT 0 AFTER status,
+  ADD COLUMN IF NOT EXISTS attempt_lock_until DATETIME NULL AFTER login_attempts,
+  ADD COLUMN IF NOT EXISTS reset_token VARCHAR(255) NULL AFTER attempt_lock_until,
+  ADD COLUMN IF NOT EXISTS reset_token_expires_at DATETIME NULL AFTER reset_token,
+  ADD COLUMN IF NOT EXISTS last_login_at DATETIME NULL AFTER reset_token_expires_at;
 
 INSERT INTO users (full_name, email, password, role, level, learning_goal, status)
 VALUES
@@ -36,3 +44,14 @@ ON DUPLICATE KEY UPDATE
   level = VALUES(level),
   learning_goal = VALUES(learning_goal),
   status = VALUES(status);
+
+CREATE TABLE IF NOT EXISTS blogs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  content TEXT NOT NULL,
+  rating INT NOT NULL,
+  status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

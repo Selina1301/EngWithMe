@@ -308,17 +308,51 @@
 }
 
 .vocab-progress-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.vocab-progress-grid .stat-card small {
+  color: #94a3b8;
+  font-weight: 800;
 }
 
 .vocab-progress-summary {
   display: grid;
-  gap: 8px;
+  gap: 12px;
 }
 
 .vocab-progress-summary p {
   margin: 0;
   color: #cbd5e1;
+}
+
+.vocab-progress-breakdown {
+  display: grid;
+  gap: 10px;
+}
+
+.vocab-progress-breakdown-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(125, 211, 252, 0.14);
+  border-radius: 14px;
+  background: rgba(2, 6, 23, 0.36);
+  padding: 12px 14px;
+}
+
+.vocab-progress-breakdown-row span {
+  color: #cbd5e1;
+  font-weight: 800;
+}
+
+.vocab-progress-summary .vocab-progress-breakdown-row strong {
+  color: #9be8ff;
+  font-size: 1rem;
+  line-height: 1.2;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .vocab-topbar {
@@ -852,6 +886,11 @@
   padding: 0;
 }
 
+/* Prevent hover flicker loop when card translates up */
+.topic-card:hover .topic-card-open {
+  bottom: -20px;
+}
+
 .topic-card > *:not(.topic-card-open) {
   position: relative;
   z-index: 1;
@@ -1371,9 +1410,9 @@ body.modal-open {
 
 .vocab-workspace.mode-study {
   grid-template-rows: auto auto auto minmax(0, 1fr);
-  gap: 12px;
+  gap: 18px;
   height: 100%;
-  max-width: 1040px;
+  max-width: 900px;
   min-height: 0;
 }
 
@@ -1462,54 +1501,7 @@ body.modal-open {
   line-height: 1.7;
 }
 
-.mode-study .workspace-title {
-  position: relative;
-  display: grid;
-  gap: 10px;
-  overflow: hidden;
-  border: 1px solid rgba(125, 211, 252, 0.18);
-  border-radius: 22px;
-  background:
-    radial-gradient(circle at top left, rgba(46, 232, 120, 0.12), transparent 34%),
-    linear-gradient(135deg, rgba(15, 23, 42, 0.58), rgba(2, 6, 23, 0.24));
-  padding: 18px 20px;
-}
 
-.mode-study .workspace-title::after {
-  content: "";
-  position: absolute;
-  inset: auto 18px 0 auto;
-  width: 180px;
-  height: 80px;
-  pointer-events: none;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.16), transparent 66%);
-}
-
-.mode-study .workspace-title .modal-level-pill {
-  margin: 0;
-}
-
-.mode-study .workspace-title h2 {
-  margin: 0;
-  font-size: clamp(2rem, 3.4vw, 3.1rem);
-  line-height: 1.04;
-  text-shadow:
-    0 0 1px rgba(255, 255, 255, 0.7),
-    0 0 18px rgba(56, 189, 248, 0.18);
-}
-
-.mode-study .workspace-title h2 span {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.mode-study .workspace-title p {
-  grid-column: 1 / -1;
-  max-width: none;
-  color: #b8c6d8;
-  font-size: 0.98rem;
-  line-height: 1.35;
-}
 
 .workspace-tabs,
 .study-mode-tabs {
@@ -1528,9 +1520,70 @@ body.modal-open {
   margin: 4px 0 8px;
 }
 
-.mode-study .workspace-tabs {
-  margin: 0;
+.workspace-tabs {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(104px, 1fr));
+  gap: 0;
+  padding: 5px;
+  border-color: rgba(125, 211, 252, 0.22);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.88), rgba(2, 6, 23, 0.82)),
+    radial-gradient(circle at 20% 0%, rgba(34, 211, 238, 0.22), transparent 38%),
+    radial-gradient(circle at 85% 100%, rgba(34, 197, 94, 0.18), transparent 42%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -18px 32px rgba(2, 6, 23, 0.28),
+    0 18px 42px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
 }
+
+.workspace-tabs::before {
+  content: "";
+  position: absolute;
+  inset: 5px auto 5px 5px;
+  width: calc((100% - 10px) / 3);
+  border-radius: 17px;
+  background:
+    linear-gradient(135deg, rgba(34, 211, 238, 0.98), rgba(34, 197, 94, 0.96)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent);
+  box-shadow:
+    0 14px 30px rgba(34, 211, 238, 0.22),
+    0 8px 22px rgba(34, 197, 94, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transform: translateX(0);
+  transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.2s ease;
+  z-index: 0;
+}
+
+.mode-study .workspace-tabs::before {
+  transform: translateX(100%);
+}
+
+.mode-play .workspace-tabs::before {
+  transform: translateX(200%);
+}
+
+.mode-view .workspace-tabs::before {
+  background:
+    linear-gradient(135deg, rgba(34, 211, 238, 0.98), rgba(34, 197, 94, 0.96)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent);
+}
+
+.mode-study .workspace-tabs::before {
+  background:
+    linear-gradient(135deg, rgba(45, 212, 191, 0.98), rgba(46, 232, 120, 0.96)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent);
+}
+
+.mode-play .workspace-tabs::before {
+  background:
+    linear-gradient(135deg, rgba(56, 189, 248, 0.98), rgba(45, 212, 191, 0.96)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent);
+}
+
 
 .workspace-tab,
 .study-mode-tab,
@@ -1550,6 +1603,22 @@ body.modal-open {
   transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
+.workspace-tab {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  min-height: 50px;
+  border-radius: 17px;
+  color: #b9c7db;
+  text-shadow: 0 1px 12px rgba(2, 6, 23, 0.2);
+}
+
+.workspace-tab i {
+  color: #7dd3fc;
+  font-size: 1.05em;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
 .workspace-tab:hover,
 .study-mode-tab:hover,
 .study-settings-btn:hover {
@@ -1566,6 +1635,25 @@ body.modal-open {
   box-shadow: 0 12px 28px rgba(14, 165, 233, 0.24);
 }
 
+.workspace-tab:hover {
+  background: rgba(15, 23, 42, 0.36);
+  box-shadow: inset 0 0 0 1px rgba(125, 211, 252, 0.16);
+}
+
+.workspace-tab:hover i {
+  transform: translateY(-1px);
+}
+
+.workspace-tab.is-active {
+  background: transparent;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.workspace-tab.is-active i {
+  color: #ffffff;
+}
+
 .workspace-panel {
   display: grid;
   gap: 20px;
@@ -1573,7 +1661,6 @@ body.modal-open {
 
 .mode-study .workspace-panel {
   align-content: start;
-  gap: 10px;
   min-height: 0;
 }
 
@@ -1610,14 +1697,16 @@ body.modal-open {
   font-size: 1.08rem;
 }
 
-.word-view-card .meaning {
+.word-view-card .meaning,
+.flashcard-step .meaning {
   margin: 0 0 14px;
   color: #ffffff;
   font-size: clamp(2rem, 4vw, 3.2rem);
   font-weight: 900;
 }
 
-.word-view-card .example {
+.word-view-card .example,
+.flashcard-step .example {
   max-width: 760px;
   margin: 0 auto 18px;
   color: #dbeafe;
@@ -1739,9 +1828,16 @@ body.modal-open {
 
 .word-list-card {
   display: grid;
-  grid-template-columns: 1.1fr minmax(0, 1.4fr);
-  gap: 14px;
-  padding: 18px;
+  grid-template-columns: 1fr 1.3fr auto;
+  gap: 20px;
+  align-items: center;
+  padding: 20px 24px;
+}
+
+.word-save-col {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .word-list-card h4 {
@@ -2066,28 +2162,26 @@ body.modal-open {
     grid-template-columns: 1fr;
   }
 
+  .workspace-tabs {
+    gap: 6px;
+  }
+
+  .workspace-tabs::before {
+    display: none;
+  }
+
+  .workspace-tab.is-active {
+    background: linear-gradient(135deg, #22d3ee, #22c55e);
+    box-shadow: 0 12px 28px rgba(14, 165, 233, 0.24);
+  }
+
   .topic-modal-content[data-workspace-mode="study"] {
     height: auto;
     max-height: calc(100vh - 18px);
     overflow-y: auto;
   }
 
-  .mode-study .workspace-title {
-    padding: 16px;
-  }
 
-  .mode-study .workspace-title h2,
-  .mode-study .workspace-title p {
-    width: 100%;
-  }
-
-  .mode-study .workspace-title .modal-level-pill {
-    width: fit-content;
-  }
-
-  .mode-study .workspace-title h2 {
-    font-size: clamp(1.85rem, 8vw, 2.55rem);
-  }
 
   .mode-study .study-card {
     height: auto;
@@ -2383,14 +2477,66 @@ body.modal-open {
 
 /* Dedicated vocabulary study page */
 .vocab-study-page {
+  position: relative;
   min-height: 100vh;
   padding: 28px 24px 34px;
   border-top: 1px solid rgba(148, 163, 184, 0.16);
-  background:
-    radial-gradient(circle at 16% 8%, rgba(46, 232, 120, 0.13), transparent 22%),
-    radial-gradient(circle at 86% 2%, rgba(14, 165, 233, 0.16), transparent 24%),
-    linear-gradient(135deg, #020617 0%, #061324 48%, #020617 100%);
+  background: linear-gradient(135deg, #020617 0%, #061324 48%, #020617 100%);
   color: #ffffff;
+  overflow: hidden;
+}
+
+/* Ensure children elements stack above the pseudo-element glow */
+.vocab-study-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Dynamic green glow circle that moves when switching modes */
+.vocab-study-page::before {
+  content: "";
+  position: absolute;
+  top: -400px;
+  left: -400px;
+  width: 800px;
+  height: 800px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(46, 232, 120, 0.25) 0%, rgba(46, 232, 120, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1); /* Premium out-expo transition */
+  /* Default (Read) is left */
+  transform: translate(20vw, 12vh);
+}
+
+.vocab-study-page[data-mode="view"]::before {
+  /* Read (left tab) -> Glow moves to the left */
+  transform: translate(20vw, 12vh);
+}
+
+.vocab-study-page[data-mode="study"]::before {
+  /* Study (middle tab) -> Glow moves to the center */
+  transform: translate(50vw, 12vh);
+}
+
+.vocab-study-page[data-mode="play"]::before {
+  /* Play (right tab) -> Glow moves to the right */
+  transform: translate(88vw, 12vh);
+}
+
+/* Dynamic blue glow circle that sits on the right */
+.vocab-study-page::after {
+  content: "";
+  position: absolute;
+  top: -400px;
+  right: -400px;
+  width: 800px;
+  height: 800px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.22) 0%, rgba(14, 165, 233, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-10vw, 8vh);
 }
 
 .vocab-study-shell {

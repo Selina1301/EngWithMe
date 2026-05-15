@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - EngWithMe</title>
+  <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/pages/admin.css">
   <link rel="stylesheet" href="css/responsive/desktop.css">
@@ -151,6 +152,36 @@
       </div>
     </section>
 
+    <section class="section" id="blog-approval" style="border-top: 1px solid var(--line); padding-top: 40px; margin-top: 40px;">
+      <div class="section-heading">
+        <p class="eyebrow">Blog Approval</p>
+        <h2>Duyệt cảm nhận học viên</h2>
+        <p>Xem xét, phê duyệt hoặc từ chối các cảm nhận cá nhân/bài viết của học viên gửi lên.</p>
+        <p class="feedback" id="blog-admin-feedback" style="min-height: 20px; font-weight: 800; font-size: 14px; margin: 0;"></p>
+      </div>
+
+      <div class="table-card admin-blog-card">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 14%;">Blogger</th>
+              <th style="width: 10%; text-align: center;">Đánh giá</th>
+              <th style="width: 12%;">Tiêu đề</th>
+              <th style="width: 22%;">Nội dung</th>
+              <th style="width: 11%; text-align: center;">Trạng thái</th>
+              <th style="width: 11%;">Ngày gửi</th>
+              <th style="width: 20%;">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="admin-pending-blogs">
+            <tr>
+              <td colspan="7">Đang tải danh sách bài viết từ máy chủ...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
     <section class="section" id="settings">
       <div class="feature-grid three admin-note-grid">
         <article class="feature-card"><span class="icon-box ti-lock"></span><h3>Bảo mật</h3><p>Mật khẩu được lưu ở dạng mã hóa một chiều.</p></article>
@@ -173,7 +204,7 @@
   </footer>
 
   <script src="js/core.js"></script>
-  <script src="js/progress.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/progress.js?v=1.2"></script>
+  <script src="js/main.js?v=1.2"></script>
 </body>
 </html>

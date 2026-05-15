@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
   [
     "setCurrentYear",
     "setActiveNav",
@@ -19,9 +19,16 @@
     "initHomeSuggestion",
     "initHomeInteractions",
     "initContactForm",
-    "updateHomeFaq"
+    "updateHomeFaq",
+    "initBlogPage"
   ].forEach((initializerName) => {
     const initializer = window[initializerName];
-    if (typeof initializer === "function") initializer();
+    if (typeof initializer === "function") {
+      try {
+        initializer();
+      } catch (error) {
+        console.warn(`Initializer "${initializerName}" failed to execute:`, error);
+      }
+    }
   });
 });

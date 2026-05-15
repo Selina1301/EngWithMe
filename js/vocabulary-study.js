@@ -5,7 +5,7 @@ function initVocabularyStudy() {
   const params = new URLSearchParams(window.location.search);
   let activeLevel = vocabularyData[params.get("level")] ? params.get("level") : "easy";
   let currentTopicId = params.get("topic") || vocabularyData[activeLevel].topics[0]?.id;
-  let currentWorkspaceMode = ["view", "study", "play"].includes(params.get("mode")) ? params.get("mode") : "study";
+  let currentWorkspaceMode = ["view", "study", "play"].includes(params.get("mode")) ? params.get("mode") : "view";
   let currentStudyMode = "flashcard";
   const studyModeOrder = ["flashcard", "quiz", "type"];
   const enabledStudyModes = new Set(studyModeOrder);
@@ -17,7 +17,7 @@ function initVocabularyStudy() {
   let matchedPairs = new Set();
   let gameScore = 0;
   let pendingSaveWord = null;
-  const savedWordsKey = "engWithMeSavedVocabularyWords";
+  const savedWordsKey = getAccountKey("engWithMeSavedVocabularyWords");
   let savedWordRecords = normalizeSavedWordRecords(JSON.parse(localStorage.getItem(savedWordsKey) || "[]"));
   let savedWords = new Set(savedWordRecords.keys());
 
@@ -238,6 +238,10 @@ function initVocabularyStudy() {
     }
 
     root.dataset.workspaceMode = currentWorkspaceMode;
+    const pageContainer = document.querySelector(".vocab-study-page");
+    if (pageContainer) {
+      pageContainer.setAttribute("data-mode", currentWorkspaceMode);
+    }
     root.innerHTML = `
       <div class="vocab-workspace mode-${currentWorkspaceMode}">
         <div class="workspace-topline">
@@ -255,9 +259,9 @@ function initVocabularyStudy() {
         </div>
 
         <div class="workspace-tabs" aria-label="Chức năng học chủ đề">
-          ${workspaceTabTemplate("view", "ti-eye", "Xem từ")}
-          ${workspaceTabTemplate("study", "ti-book", "Học")}
-          ${workspaceTabTemplate("play", "ti-game", "Chơi")}
+          ${workspaceTabTemplate("view", "ti-eye", "Read")}
+          ${workspaceTabTemplate("study", "ti-book", "Study")}
+          ${workspaceTabTemplate("play", "ti-game", "Play")}
         </div>
 
         <div class="workspace-panel">
@@ -293,6 +297,8 @@ function initVocabularyStudy() {
           <div>
             <p><strong>${word.meaning}</strong></p>
             <p>${word.example}</p>
+          </div>
+          <div class="word-save-col">
             <button class="save-word-btn ${isSaved ? "saved" : ""}" type="button" data-save-word="${wordKey}">
               ${isSaved ? `Đã lưu (${(savedWordRecords.get(wordKey)?.studyLevel || "easy").toUpperCase()})` : "Lưu từ"}
             </button>
@@ -334,6 +340,25 @@ function initVocabularyStudy() {
   }
 
   function renderSaveLevelDialog() {
+    if (pendingSaveWord.requireLogin) {
+      return `
+        <div class="save-level-dialog" role="dialog" aria-modal="true" aria-labelledby="saveLevelTitle">
+          <div class="save-level-backdrop" data-cancel-save-level></div>
+          <section class="save-level-panel">
+            <p class="eyebrow">Yêu cầu đăng nhập</p>
+            <h3 id="saveLevelTitle">Vui lòng đăng nhập</h3>
+            <p>Bạn cần phải đăng nhập trước mới có thể lưu từ mới <strong>${pendingSaveWord.word.word}</strong> vào danh sách học tập.</p>
+            <div style="margin-top: 20px; display: flex; justify-content: center;">
+              <a href="login.html" class="btn btn-primary" style="text-decoration: none; display: inline-block;">Đăng nhập ngay</a>
+            </div>
+            <button class="saved-words-close" type="button" data-cancel-save-level aria-label="Đóng">
+              <i class="ti-close"></i>
+            </button>
+          </section>
+        </div>
+      `;
+    }
+
     return `
       <div class="save-level-dialog" role="dialog" aria-modal="true" aria-labelledby="saveLevelTitle">
         <div class="save-level-backdrop" data-cancel-save-level></div>
@@ -431,7 +456,7 @@ function initVocabularyStudy() {
         <span class="study-step-pill"><i class="ti-reload"></i> Flashcard</span>
         ${isWordRevealed ? `
           <p class="meaning">${item.meaning}</p>
-          <p>${item.example}</p>
+          <p class="example">${item.example}</p>
         ` : `
           <h3>${item.word}</h3>
           <p>${item.phonetic}</p>
@@ -600,6 +625,15 @@ function initVocabularyStudy() {
       button.addEventListener("click", () => {
         const wordKey = button.dataset.saveWord;
         if (!wordKey) return;
+
+        const isLoggedIn = !!localStorage.getItem("engWithMeUserId");
+        if (!isLoggedIn) {
+          const word = topic.words.find(item => getWordKey(topic, item) === wordKey);
+          if (!word) return;
+          pendingSaveWord = { key: wordKey, word, requireLogin: true };
+          render();
+          return;
+        }
 
         if (savedWords.has(wordKey)) {
           savedWordRecords.delete(wordKey);
@@ -771,6 +805,25 @@ function initVocabularyStudy() {
 
     if (fallbackLevel) activeLevel = fallbackLevel;
     if (!getTopic()) currentTopicId = vocabularyData[activeLevel].topics[0]?.id;
+  }
+
+  // Record topic as viewed
+  try {
+    const viewedKey = getAccountKey("engWithMeViewedTopics");
+    let viewedList = [];
+    try {
+      const parsed = JSON.parse(localStorage.getItem(viewedKey) || "[]");
+      viewedList = Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      viewedList = [];
+    }
+    const topicRecord = { level: activeLevel, id: currentTopicId, timestamp: Date.now() };
+    // Remove duplicate if already exists to move it to the end (most recently viewed)
+    viewedList = viewedList.filter(item => item && typeof item === "object" && !(item.level === activeLevel && item.id === currentTopicId));
+    viewedList.push(topicRecord);
+    localStorage.setItem(viewedKey, JSON.stringify(viewedList));
+  } catch (err) {
+    console.error("Error writing to viewedList:", err);
   }
 
   render();

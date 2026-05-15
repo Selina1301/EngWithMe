@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng ký - EngWithMe</title>
-  <link rel="stylesheet" href="css/base.css">
+  <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
+  <link rel="stylesheet" href="css/base.css?v=1.2">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
@@ -47,10 +48,16 @@
       </label>
       <div class="form-grid two">
         <label>Mật khẩu
-          <input type="password" name="password" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password" minlength="6" required>
+          <div class="password-wrapper">
+            <input type="password" name="password" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password" minlength="6" required>
+            <span class="toggle-password ti-eye" aria-label="Hiện mật khẩu" role="button" tabindex="0"></span>
+          </div>
         </label>
         <label>Nhập lại mật khẩu
-          <input type="password" name="confirm_password" placeholder="Nhập lại mật khẩu" autocomplete="new-password" minlength="6" required>
+          <div class="password-wrapper">
+            <input type="password" name="confirm_password" placeholder="Nhập lại mật khẩu" autocomplete="new-password" minlength="6" required>
+            <span class="toggle-password ti-eye" aria-label="Hiện mật khẩu" role="button" tabindex="0"></span>
+          </div>
         </label>
       </div>
       <label>Mục tiêu học
@@ -69,7 +76,7 @@
   </main>
 
   <script src="js/core.js"></script>
-  <script src="js/progress.js"></script>
+  <script src="js/progress.js?v=1.2"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

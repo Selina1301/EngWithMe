@@ -221,7 +221,7 @@ function clearAuthUser() {
 function redirectAuthPages(user) {
   const currentPage = getCurrentPage();
   if (!["login.html", "register.html"].includes(currentPage)) return;
-  window.location.href = user.role === "admin" ? "admin.html" : "profile.html#dashboard";
+  window.location.href = "index.html";
 }
 
 function getCurrentPage() {
@@ -261,11 +261,16 @@ function getInitials(name) {
   return `${first}${last}`.toUpperCase();
 }
 
+function getAccountKey(baseKey) {
+  const userId = localStorage.getItem("engWithMeUserId");
+  return userId ? `${baseKey}_user_${userId}` : `${baseKey}_guest`;
+}
+
 function getSavedWords() {
-  return JSON.parse(localStorage.getItem("engWithMeSavedWords") || "[]");
+  return JSON.parse(localStorage.getItem(getAccountKey("engWithMeSavedWords")) || "[]");
 }
 function setSavedWords(words) {
-  localStorage.setItem("engWithMeSavedWords", JSON.stringify(words));
+  localStorage.setItem(getAccountKey("engWithMeSavedWords"), JSON.stringify(words));
 }
 function updateSavedCount() {
   const count = getSavedWords().length;

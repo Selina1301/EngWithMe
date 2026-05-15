@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Từ vựng - EngWithMe</title>
-
+  <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/pages/vocabulary.css" />
   <link rel="stylesheet" href="css/responsive/desktop.css">
@@ -92,6 +92,11 @@
               <a href="#" data-saved-words-open>Xem danh sách</a>
             </article>
             <article class="stat-card">
+              <span>Chủ đề đã xem</span>
+              <strong data-vocab-viewed-topics>0/0</strong>
+              <small data-vocab-viewed-topics-note>Chưa mở chủ đề nào</small>
+            </article>
+            <article class="stat-card">
               <span>Câu sai cần ôn</span>
               <strong data-vocab-wrong-total>0</strong>
               <a href="#" data-vocab-focus-quiz>Ôn lại quiz</a>
@@ -106,7 +111,20 @@
           <article class="stat-card vocab-progress-summary">
             <span>Tiến độ tổng quan</span>
             <strong data-vocab-progress-score-large>0%</strong>
-            <p data-vocab-progress-detail>Hãy lưu từ quan trọng và làm thêm bài nhanh để tăng điểm.</p>
+            <div class="vocab-progress-breakdown" data-vocab-progress-detail>
+              <div class="vocab-progress-breakdown-row">
+                <span>Chủ đề đã xem</span>
+                <strong data-vocab-viewed-contribution>0%</strong>
+              </div>
+              <div class="vocab-progress-breakdown-row">
+                <span>Từ đã lưu</span>
+                <strong data-vocab-saved-contribution>0%</strong>
+              </div>
+              <div class="vocab-progress-breakdown-row">
+                <span>Chất lượng quiz nhanh</span>
+                <strong data-vocab-quiz-contribution>0%</strong>
+              </div>
+            </div>
             <div class="progress-track"><span data-vocab-progress-bar-large style="width: 0%"></span></div>
           </article>
         </section>
@@ -156,12 +174,24 @@
           <div class="topic-rail-block">
             <div class="topic-rail-header">
               <div>
-                <h3>Chủ đề từ vựng</h3>
+                <h3>Chủ đề chưa học</h3>
                 <p>Trượt ngang để chọn chủ đề muốn học.</p>
               </div>
               <span data-unseen-count>0 chủ đề</span>
             </div>
             <div class="topic-rail" data-unseen-track></div>
+          </div>
+
+          <!-- Visited topics block -->
+          <div class="topic-rail-block visited-topics-block" data-visited-block style="margin-top: 32px; display: none;">
+            <div class="topic-rail-header">
+              <div>
+                <h3 style="color: #cbd5e1; font-weight: 700;">Chủ đề đã xem</h3>
+                <p>Các chủ đề bạn đã bấm vào học gần đây.</p>
+              </div>
+              <span data-visited-count style="color: #94a3b8;">0 chủ đề</span>
+            </div>
+            <div class="topic-rail" data-visited-track></div>
           </div>
         </div>
       </div>
@@ -215,6 +245,9 @@
 
   <script src="js/core.js"></script>
   <script src="js/demo-actions.js"></script>
+  <script src="js/vocabulary/easy.js"></script>
+  <script src="js/vocabulary/medium.js"></script>
+  <script src="js/vocabulary/hard.js"></script>
   <script src="js/vocabulary-data.js"></script>
   <script src="js/main.js"></script>
 
@@ -228,6 +261,9 @@
     const levelIntro = document.querySelector("[data-level-intro]");
     const unseenTrack = document.querySelector("[data-unseen-track]");
     const unseenCount = document.querySelector("[data-unseen-count]");
+    const visitedBlock = document.querySelector("[data-visited-block]");
+    const visitedTrack = document.querySelector("[data-visited-track]");
+    const visitedCount = document.querySelector("[data-visited-count]");
     const savedCount = document.querySelector("[data-saved-count]");
     const topicSearch = document.querySelector("[data-topic-search]");
     const quizQuestion = document.querySelector("[data-quiz-question]");
@@ -241,11 +277,15 @@
     const progressSavedWords = document.querySelector("[data-vocab-saved-words]");
     const progressQuizTotal = document.querySelector("[data-vocab-quiz-total]");
     const progressSavedWordsTotal = document.querySelector("[data-vocab-saved-words-total]");
+    const progressViewedTopics = document.querySelector("[data-vocab-viewed-topics]");
+    const progressViewedTopicsNote = document.querySelector("[data-vocab-viewed-topics-note]");
     const progressWrongTotal = document.querySelector("[data-vocab-wrong-total]");
     const progressQuizDone = document.querySelector("[data-vocab-quiz-done]");
     const progressScoreLarge = document.querySelector("[data-vocab-progress-score-large]");
     const progressBarLarge = document.querySelector("[data-vocab-progress-bar-large]");
-    const progressDetail = document.querySelector("[data-vocab-progress-detail]");
+    const progressViewedContribution = document.querySelector("[data-vocab-viewed-contribution]");
+    const progressSavedContribution = document.querySelector("[data-vocab-saved-contribution]");
+    const progressQuizContribution = document.querySelector("[data-vocab-quiz-contribution]");
     const focusQuizButton = document.querySelector("[data-vocab-focus-quiz]");
     const randomTopicButton = document.querySelector("[data-vocab-random-topic]");
     const savedWordsOpenButtons = document.querySelectorAll("[data-saved-words-open]");
@@ -257,10 +297,10 @@
     const myVocabTotal = document.querySelector("[data-my-vocab-total]");
 
     const initialLevel = new URLSearchParams(window.location.search).get("level");
-    const modeStorageKey = "engWithMeVocabMode";
-    const savedStorageKey = "engWithMeSavedVocabularyWords";
-    const quizStatsKey = "engWithMeVocabQuizStats";
-    const activityStorageKey = "engWithMeVocabActivityDays";
+    const modeStorageKey = getAccountKey("engWithMeVocabMode");
+    const savedStorageKey = getAccountKey("engWithMeSavedVocabularyWords");
+    const quizStatsKey = getAccountKey("engWithMeVocabQuizStats");
+    const activityStorageKey = getAccountKey("engWithMeVocabActivityDays");
     let activeLevel = vocabularyData[initialLevel] ? initialLevel : "easy";
     let activeMode = ["study", "progress", "my-vocab"].includes(localStorage.getItem(modeStorageKey)) ? localStorage.getItem(modeStorageKey) : "study";
     let activeMyVocabLevel = "easy";
@@ -407,12 +447,55 @@
       return quizStats.total ? Math.round((quizStats.correct / quizStats.total) * 100) : 0;
     }
 
+    function getAllTopicEntries() {
+      return Object.entries(vocabularyData).flatMap(([levelKey, levelData]) =>
+        levelData.topics.map(topic => ({
+          key: `${levelKey}-${topic.id}`,
+          levelKey,
+          id: topic.id
+        }))
+      );
+    }
+
+    function getViewedTopicStats() {
+      let viewedList = [];
+      try {
+        const parsed = JSON.parse(localStorage.getItem(getAccountKey("engWithMeViewedTopics")) || "[]");
+        viewedList = Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        viewedList = [];
+      }
+
+      const allTopicKeys = new Set(getAllTopicEntries().map(topic => topic.key));
+      const viewedKeys = new Set(
+        viewedList
+          .filter(item => item && typeof item === "object")
+          .map(item => `${item.level}-${item.id}`)
+          .filter(key => allTopicKeys.has(key))
+      );
+      const totalTopics = allTopicKeys.size;
+      const viewedTopicCount = viewedKeys.size;
+      const viewedPercent = totalTopics ? Math.round((viewedTopicCount / totalTopics) * 100) : 0;
+
+      return { totalTopics, viewedTopicCount, viewedPercent };
+    }
+
     function getProgressSnapshot() {
       const totalWords = getAllWordEntries().length;
       const savedWordCount = getSavedWordEntries().length;
       const savedPercent = totalWords ? Math.round((savedWordCount / totalWords) * 100) : 0;
+      const viewedTopics = getViewedTopicStats();
       const accuracy = getQuizAccuracy();
-      const progressScoreValue = Math.round((savedPercent * 0.45) + (accuracy * 0.55));
+      const quizPracticePercent = Math.min(100, Math.round((quizStats.total / 30) * 100));
+      const quizScore = quizStats.total ? Math.round((accuracy * 0.7) + (quizPracticePercent * 0.3)) : 0;
+      const viewedContribution = Math.round(viewedTopics.viewedPercent * 0.3);
+      const savedContribution = Math.round(savedPercent * 0.4);
+      const quizContribution = Math.round(quizScore * 0.3);
+      const progressScoreValue = Math.round(
+        viewedContribution +
+        savedContribution +
+        quizContribution
+      );
       const activityDays = JSON.parse(localStorage.getItem(activityStorageKey) || "[]");
       const streak = calculateStreak(activityDays);
       const wrongTotal = Math.max(0, quizStats.total - quizStats.correct);
@@ -422,7 +505,13 @@
         totalWords,
         savedWordCount,
         savedPercent,
+        viewedTopics,
         accuracy,
+        quizPracticePercent,
+        quizScore,
+        viewedContribution,
+        savedContribution,
+        quizContribution,
         progressScoreValue,
         streak,
         wrongTotal,
@@ -445,17 +534,23 @@
       progressSavedWords.textContent = savedWordText;
       progressQuizTotal.textContent = quizStats.total;
       progressSavedWordsTotal.textContent = snapshot.savedWordCount;
+      progressViewedTopics.textContent = `${snapshot.viewedTopics.viewedTopicCount}/${snapshot.viewedTopics.totalTopics}`;
+      progressViewedTopicsNote.textContent = `${snapshot.viewedTopics.viewedPercent}% chủ đề đã mở`;
       progressWrongTotal.textContent = wrongReviewCount;
       progressQuizDone.textContent = quizStats.total;
 
       progressSummary.textContent = snapshot.totalWords
-        ? `Bạn đã lưu ${savedWordText} từ. Độ chính xác bài nhanh hiện tại là ${snapshot.accuracy}%.`
+        ? `Bạn đã xem ${snapshot.viewedTopics.viewedTopicCount}/${snapshot.viewedTopics.totalTopics} chủ đề, lưu ${savedWordText} từ và đạt ${snapshot.accuracy}% độ chính xác quiz.`
         : "Chưa có dữ liệu học tập.";
-      progressDetail.textContent = "Điểm tiến độ lấy từ số từ đã lưu và kết quả bài tập nhanh.";
+      progressViewedContribution.textContent = `${snapshot.viewedContribution}% / 30%`;
+      progressSavedContribution.textContent = `${snapshot.savedContribution}% / 40%`;
+      progressQuizContribution.textContent = `${snapshot.quizContribution}% / 30%`;
     }
 
     function renderSavedWordsList() {
       const entries = getSavedWordEntries();
+
+      const isLoggedIn = !!localStorage.getItem("engWithMeUserId");
 
       savedWordsList.innerHTML = entries.length
         ? entries.map(entry => `
@@ -469,12 +564,20 @@
               <button type="button" data-remove-saved-word="${entry.key}">Bỏ lưu</button>
             </article>
           `).join("")
-        : `
+        : (!isLoggedIn
+          ? `
+            <article class="saved-word-empty">
+              <h3>Bạn chưa đăng nhập</h3>
+              <p>Vui lòng đăng nhập tài khoản trước mới có thể lưu và ôn tập các từ vựng mới.</p>
+              <a href="login.html" class="btn btn-primary" style="display: inline-block; margin-top: 15px; text-decoration: none;">Đăng nhập ngay</a>
+            </article>
+          `
+          : `
             <article class="saved-word-empty">
               <h3>Chưa có từ nào được lưu</h3>
-              <p>Vào phần Xem từ trong từng chủ đề và bấm Lưu từ để tạo danh sách ôn nhanh.</p>
+              <p>Vao phần Xem từ trong từng chủ đề và bấm Lưu từ để tạo danh sách ôn nhanh.</p>
             </article>
-          `;
+          `);
 
       savedWordsList.querySelectorAll("[data-remove-saved-word]").forEach(button => {
         button.addEventListener("click", () => {
@@ -498,6 +601,8 @@
         tab.classList.toggle("active", tab.dataset.myVocabLevel === activeMyVocabLevel);
       });
 
+      const isLoggedIn = !!localStorage.getItem("engWithMeUserId");
+
       myVocabList.innerHTML = filteredEntries.length
         ? filteredEntries.map(entry => `
             <article class="my-vocab-card ${entry.studyLevel}">
@@ -510,12 +615,20 @@
               <button type="button" data-remove-my-vocab="${entry.key}">Bỏ lưu</button>
             </article>
           `).join("")
-        : `
+        : (!isLoggedIn
+          ? `
+            <article class="saved-word-empty my-vocab-empty">
+              <h3>Bạn chưa đăng nhập</h3>
+              <p>Vui lòng đăng nhập tài khoản trước mới có thể lưu và ôn tập các từ vựng mới.</p>
+              <a href="login.html" class="btn btn-primary" style="display: inline-block; margin-top: 15px; text-decoration: none;">Đăng nhập ngay</a>
+            </article>
+          `
+          : `
             <article class="saved-word-empty my-vocab-empty">
               <h3>Chưa có từ mức ${activeMyVocabLevel.toUpperCase()}</h3>
               <p>Khi bấm Lưu từ, hãy chọn mức Easy, Medium hoặc Hard để đưa từ vào danh sách này.</p>
             </article>
-          `;
+          `);
 
       myVocabList.querySelectorAll("[data-remove-my-vocab]").forEach(button => {
         button.addEventListener("click", () => {
@@ -638,24 +751,87 @@
     }
 
     function renderTopics() {
-      const searchQuery = topicSearch?.value.trim().toLowerCase() || "";
-      const topics = vocabularyData[activeLevel].topics.filter(topic => {
-        if (!searchQuery) return true;
-        return [topic.name, topic.desc, ...topic.words.map(word => `${word.word} ${word.meaning}`)]
-          .join(" ")
-          .toLowerCase()
-          .includes(searchQuery);
-      });
-      const emptyType = searchQuery ? "search" : "done";
+      try {
+        const searchQuery = topicSearch?.value.trim().toLowerCase() || "";
+        const topics = vocabularyData[activeLevel].topics.filter(topic => {
+          if (!searchQuery) return true;
+          return [topic.name, topic.desc, ...topic.words.map(word => `${word.word} ${word.meaning}`)]
+            .join(" ")
+            .toLowerCase()
+            .includes(searchQuery);
+        });
+        const emptyType = searchQuery ? "search" : "done";
 
-      unseenTrack.innerHTML = topics.length
-        ? topics.map(topicCardTemplate).join("")
-        : doneCardTemplate("Chủ đề", emptyType);
-      unseenTrack.dataset.remainder = topics.length % 4;
+        // Split into unseen and visited topics
+        const viewedKey = getAccountKey("engWithMeViewedTopics");
+        let viewedList = [];
+        try {
+          const parsed = JSON.parse(localStorage.getItem(viewedKey) || "[]");
+          viewedList = Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+          viewedList = [];
+        }
+        const viewedSet = new Set(
+          viewedList
+            .filter(item => item && typeof item === "object" && item.level === activeLevel)
+            .map(item => item.id)
+        );
 
-      unseenCount.textContent = `${topics.length} chủ đề`;
+        const unseenTopics = topics.filter(t => !viewedSet.has(t.id));
+        const visitedTopics = topics.filter(t => viewedSet.has(t.id));
 
-      attachTopicEvents();
+        console.log("=== [DEBUG] renderTopics ===");
+        console.log("activeLevel:", activeLevel);
+        console.log("viewedKey:", viewedKey);
+        console.log("viewedSet size:", viewedSet.size);
+        console.log("unseenTopics count:", unseenTopics.length);
+        console.log("visitedTopics count:", visitedTopics.length);
+
+        // Sort visited topics by most recently viewed first
+        const viewedOrder = viewedList
+          .filter(item => item && typeof item === "object" && item.level === activeLevel)
+          .reduce((map, item, index) => {
+            map.set(item.id, index);
+            return map;
+          }, new Map());
+
+        visitedTopics.sort((a, b) => {
+          const indexA = viewedOrder.has(a.id) ? viewedOrder.get(a.id) : -1;
+          const indexB = viewedOrder.has(b.id) ? viewedOrder.get(b.id) : -1;
+          return indexB - indexA;
+        });
+
+        // Render unseen track
+        unseenTrack.innerHTML = unseenTopics.length
+          ? unseenTopics.map(topicCardTemplate).join("")
+          : doneCardTemplate("Chủ đề", emptyType);
+        unseenTrack.dataset.remainder = unseenTopics.length % 4;
+        unseenCount.textContent = `${unseenTopics.length} chủ đề`;
+
+        // Robust dynamic selectors for visited elements
+        const vBlock = visitedBlock || document.querySelector("[data-visited-block]");
+        const vTrack = visitedTrack || document.querySelector("[data-visited-track]");
+        const vCount = visitedCount || document.querySelector("[data-visited-count]");
+
+        console.log("Visited elements in DOM:", { vBlock, vTrack, vCount });
+
+        // Render visited track
+        if (vBlock && vTrack) {
+          if (visitedTopics.length > 0) {
+            vBlock.style.display = "block";
+            vTrack.innerHTML = visitedTopics.map(topicCardTemplate).join("");
+            vTrack.dataset.remainder = visitedTopics.length % 4;
+            if (vCount) vCount.textContent = `${visitedTopics.length} chủ đề`;
+          } else {
+            vBlock.style.display = "none";
+            vTrack.innerHTML = "";
+          }
+        }
+
+        attachTopicEvents();
+      } catch (err) {
+        console.error("Error inside renderTopics:", err);
+      }
     }
 
     levelTabs.forEach(tab => {

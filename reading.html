@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Luyện đọc - EngWithMe</title>
+  <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/pages/study.css">
   <link rel="stylesheet" href="css/pages/reading.css">
@@ -388,8 +389,8 @@
     const readingPassages = Array.from(document.querySelectorAll("[data-reading-topic]"));
     const readingSearch = document.querySelector("[data-reading-search]");
     const levelOrder = ["easy", "medium", "hard"];
-    const modeStorageKey = "engWithMeReadingMode";
-    const viewedStorageKey = "engWithMeViewedReadingTopics";
+    const modeStorageKey = getAccountKey("engWithMeReadingMode");
+    const viewedStorageKey = getAccountKey("engWithMeViewedReadingTopics");
     const viewedTopics = new Set(JSON.parse(localStorage.getItem(viewedStorageKey) || "[]"));
     let activeReadingLevel = "easy";
     let activeReadingMode = localStorage.getItem(modeStorageKey) === "progress" ? "progress" : "study";
@@ -576,10 +577,24 @@
         const target = document.getElementById(button.dataset.toggleTranslation);
         if (!target) return;
         const isHidden = target.classList.toggle("translations-muted");
+
+        // Luôn dọn dẹp class is-revealed của các câu đơn lẻ khi bật/tắt toàn bộ
+        target.querySelectorAll(".sentence-vi").forEach(el => el.classList.remove("is-revealed"));
+
         button.classList.toggle("is-showing", !isHidden);
         button.innerHTML = isHidden
           ? '<i class="ti-eye"></i> Bật dịch'
           : '<i class="ti-eye"></i> Tắt dịch';
+      });
+    });
+
+    // Lắng nghe click trực tiếp trên từng câu dịch tiếng Việt
+    document.querySelectorAll(".sentence-vi").forEach((sentence) => {
+      sentence.addEventListener("click", () => {
+        // Chỉ cho phép click toggle khi toàn bộ bài đang ở chế độ che (translations-muted)
+        if (sentence.closest(".translations-muted")) {
+          sentence.classList.toggle("is-revealed");
+        }
       });
     });
 

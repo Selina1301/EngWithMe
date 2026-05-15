@@ -12,8 +12,8 @@ function initGrammarLearning() {
   const grammarTopicComplete = document.querySelector("[data-grammar-topic-complete]");
   const grammarQuestionComplete = document.querySelector("[data-grammar-question-complete]");
   const grammarQuestionRemaining = document.querySelector("[data-grammar-question-remaining]");
-  const stateKey = "engWithMeGrammarPractice";
-  const modeKey = "engWithMeGrammarMode";
+  const stateKey = getAccountKey("engWithMeGrammarPractice");
+  const modeKey = getAccountKey("engWithMeGrammarMode");
   let practiceState = getGrammarPracticeState(stateKey);
   let activeGrammarMode = localStorage.getItem(modeKey) === "progress" ? "progress" : "study";
 

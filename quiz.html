@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đề thi - EngWithMe</title>
+  <title>Đề thi TOEIC Reading - EngWithMe</title>
+  <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/pages/study.css">
   <link rel="stylesheet" href="css/pages/exam.css">
@@ -31,101 +32,110 @@
 
   <main class="study-page exam-study-page">
     <section class="study-hero exam-hero">
-      <p class="eyebrow">Exam</p>
-      <h1>Đề thi thử đang ở bản demo</h1>
-      <p>Phần “Kiểm tra” được đổi thành khu “Đề thi”. Hiện tại giao diện cho xem trước cấu trúc đề, trạng thái và các phần sẽ triển khai sau.</p>
+      <p class="eyebrow">TOEIC Reading</p>
+      <h1>Đề thi TOEIC theo năm</h1>
+      <p>Bấm vào card của từng năm để chọn Part 5, 6, 7 và thời gian làm bài trước khi bắt đầu.</p>
     </section>
 
     <section class="study-shell">
       <div class="exam-dashboard">
         <article class="exam-preview-panel">
-          <span class="demo-status-pill">Demo preview</span>
-          <h2>TOEIC Mini Test 01</h2>
-          <p>Giao diện đề thi sẽ có đồng hồ, câu hỏi theo part, bảng đáp án và trang kết quả. Bản này chỉ mô phỏng bố cục để chờ dữ liệu đề thật.</p>
+          <span class="exam-status-pill">Reading only</span>
+          <h2>TOEIC Reading 2017-2025</h2>
+          <p>Mỗi bộ đề có đúng cấu trúc Reading: Part 5 gồm 30 câu, Part 6 gồm 16 câu, Part 7 gồm 54 câu. Bạn có thể làm một hoặc nhiều Part trong cùng một lượt.</p>
           <div class="exam-part-list">
-            <span>Part 1: Listening</span>
-            <span>Part 2: Grammar</span>
-            <span>Part 3: Reading</span>
-            <span>Part 4: Vocabulary</span>
+            <span>Part 5: 101-130</span>
+            <span>Part 6: 131-146</span>
+            <span>Part 7: 147-200</span>
           </div>
-          <button class="btn btn-primary" type="button" data-demo-action data-demo-title="Đề thi TOEIC Mini đang cập nhật" data-demo-message="Khi hoàn thiện, đề thi này sẽ mở màn hình làm bài thật, có chấm điểm và lưu lịch sử kết quả.">
-            <i class="ti-control-play"></i>
-            Xem demo đề thi
-          </button>
+          <p class="exam-part-note" data-exam-part-note>Chọn một năm bên dưới để cấu hình bài làm.</p>
         </article>
 
         <aside class="exam-status-panel">
-          <h3>Trạng thái triển khai</h3>
-          <div class="status-row"><span>Giao diện đề</span><strong>70%</strong></div>
-          <div class="status-row"><span>Ngân hàng câu hỏi</span><strong>Đang nhập</strong></div>
-          <div class="status-row"><span>Chấm điểm</span><strong>Chưa mở</strong></div>
-          <div class="status-row"><span>Lưu kết quả</span><strong>Chờ backend</strong></div>
+          <h3>Thông tin bài làm</h3>
+          <div class="status-row"><span>Phần Listening</span><strong>Bỏ qua</strong></div>
+          <div class="status-row"><span>Thời gian nhanh</span><strong>15 / 30 / 60 phút</strong></div>
+          <div class="status-row"><span>Tùy chỉnh</span><strong>Tự nhập phút</strong></div>
+          <div class="status-row"><span>Lưu kết quả</span><strong>Trên trình duyệt</strong></div>
         </aside>
       </div>
 
       <section class="exam-section">
         <div class="section-heading">
           <p class="eyebrow">Danh sách đề</p>
-          <h2>Chọn đề để xem trạng thái demo</h2>
+          <h2>Chọn đề luyện tập</h2>
         </div>
         <div class="exam-card-grid">
-          <article class="exam-card">
-            <div>
-              <span class="level-chip easy">Easy</span>
-              <h3>Foundation Exam</h3>
-              <p>Đề nền tảng cho người mới: từ vựng đời sống, thì cơ bản và đọc câu ngắn.</p>
-            </div>
-            <button class="practice-link" type="button" data-demo-action data-demo-title="Foundation Exam đang cập nhật">Xem demo <span>=&gt;</span></button>
+          <article class="exam-card" data-exam-set="y2017" data-exam-year="2017">
+            <div><span class="level-chip easy">2017</span><h3>TOEIC Reading Test 2017</h3><p>Hành chính văn phòng, công tác, hội thảo bán hàng và dịch vụ thư tín nội bộ.</p></div>
           </article>
-          <article class="exam-card">
-            <div>
-              <span class="level-chip medium">Medium</span>
-              <h3>Grammar & Reading Test</h3>
-              <p>Đề tập trung vào ngữ pháp, đọc hiểu đoạn ngắn và chọn đáp án theo ngữ cảnh.</p>
-            </div>
-            <button class="practice-link" type="button" data-demo-action data-demo-title="Grammar & Reading Test đang cập nhật">Xem demo <span>=&gt;</span></button>
+          <article class="exam-card" data-exam-set="y2018" data-exam-year="2018">
+            <div><span class="level-chip medium">2018</span><h3>TOEIC Reading Test 2018</h3><p>Sản xuất, an toàn lao động, thông báo nhà cung cấp và lịch bảo trì thiết bị.</p></div>
           </article>
-          <article class="exam-card">
-            <div>
-              <span class="level-chip hard">TOEIC</span>
-              <h3>TOEIC Practice Set</h3>
-              <p>Mô phỏng đề TOEIC rút gọn với listening, reading và bảng phân tích lỗi.</p>
-            </div>
-            <button class="practice-link" type="button" data-demo-action data-demo-title="TOEIC Practice Set đang cập nhật">Xem demo <span>=&gt;</span></button>
+          <article class="exam-card" data-exam-set="y2019" data-exam-year="2019">
+            <div><span class="level-chip hard">2019</span><h3>TOEIC Reading Test 2019</h3><p>Đặt vé, lịch trình du lịch, tư vấn khách hàng và nền tảng đặt chỗ.</p></div>
           </article>
-        </div>
-      </section>
-
-      <section class="exam-section">
-        <div class="exam-wireframe" aria-label="Bản xem trước màn hình làm đề">
-          <div class="wireframe-top">
-            <span>00:45:00</span>
-            <strong>Question 1 / 40</strong>
-            <button type="button" data-demo-action data-demo-title="Bộ điều hướng câu hỏi đang cập nhật">Nộp bài demo</button>
-          </div>
-          <div class="wireframe-body">
-            <div class="wireframe-question">
-              <p class="eyebrow">Preview question</p>
-              <h3>The full exam screen will appear here.</h3>
-              <p>Người học sẽ đọc câu hỏi, chọn đáp án, đánh dấu câu cần xem lại và chuyển part ngay trong màn hình này.</p>
-            </div>
-            <div class="wireframe-answers">
-              <span>A. Answer option</span>
-              <span>B. Answer option</span>
-              <span>C. Answer option</span>
-              <span>D. Answer option</span>
-            </div>
-          </div>
+          <article class="exam-card" data-exam-set="y2020" data-exam-year="2020">
+            <div><span class="level-chip easy">2020</span><h3>TOEIC Reading Test 2020</h3><p>Văn phòng, lịch làm việc, thông báo nội bộ, đơn hàng và email khách hàng.</p></div>
+          </article>
+          <article class="exam-card" data-exam-set="y2021" data-exam-year="2021">
+            <div><span class="level-chip medium">2021</span><h3>TOEIC Reading Test 2021</h3><p>Làm việc từ xa, chính sách nhân sự, đặt lịch họp và dịch vụ giao nhận.</p></div>
+          </article>
+          <article class="exam-card" data-exam-set="y2022" data-exam-year="2022">
+            <div><span class="level-chip hard">2022</span><h3>TOEIC Reading Test 2022</h3><p>Tuyển dụng, sự kiện doanh nghiệp, hóa đơn, đặt phòng và thư phản hồi.</p></div>
+          </article>
+          <article class="exam-card" data-exam-set="y2023" data-exam-year="2023">
+            <div><span class="level-chip easy">2023</span><h3>TOEIC Reading Test 2023</h3><p>Hội nghị, nâng cấp hệ thống, khảo sát khách hàng và thông cáo ngắn.</p></div>
+          </article>
+          <article class="exam-card" data-exam-set="y2024" data-exam-year="2024">
+            <div><span class="level-chip medium">2024</span><h3>TOEIC Reading Test 2024</h3><p>Mua sắm, chuỗi cung ứng, chính sách đặt vé và thông báo bảo trì.</p></div>
+          </article>
+          <article class="exam-card is-selected" data-exam-set="y2025" data-exam-year="2025">
+            <div><span class="level-chip hard">2025</span><h3>TOEIC Reading Test 2025</h3><p>Nền tảng số, phân tích dữ liệu, đăng ký sự kiện và dịch vụ khách hàng.</p></div>
+          </article>
         </div>
       </section>
     </section>
   </main>
 
+  <dialog class="exam-config-modal" data-exam-config-modal>
+    <form method="dialog" class="exam-config-panel" data-exam-config-form>
+      <div class="exam-config-head">
+        <div>
+          <p class="eyebrow">Cấu hình bài làm</p>
+          <h2 data-exam-config-title>TOEIC Reading Test 2025</h2>
+        </div>
+        <button type="button" class="exam-modal-close" data-exam-modal-close aria-label="Đóng">×</button>
+      </div>
+
+      <div class="exam-config-section">
+        <h3>Chọn Part</h3>
+        <label><input type="checkbox" name="part" value="5" checked> <span>Part 5 - 30 câu (101-130)</span></label>
+        <label><input type="checkbox" name="part" value="6"> <span>Part 6 - 16 câu (131-146)</span></label>
+        <label><input type="checkbox" name="part" value="7"> <span>Part 7 - 54 câu (147-200)</span></label>
+      </div>
+
+      <div class="exam-config-section">
+        <h3>Thời gian</h3>
+        <div class="exam-time-grid">
+          <label><input type="radio" name="minutes" value="15"> <span>15 phút</span></label>
+          <label><input type="radio" name="minutes" value="30" checked> <span>30 phút</span></label>
+          <label><input type="radio" name="minutes" value="60"> <span>60 phút</span></label>
+          <label><input type="radio" name="minutes" value="custom"> <span>Tự nhập</span></label>
+        </div>
+        <input class="exam-custom-time" type="number" min="1" max="180" step="1" name="customMinutes" data-custom-minutes placeholder="Nhập số phút">
+      </div>
+
+      <p class="exam-config-error" data-exam-config-error hidden>Hãy chọn ít nhất một Part và thời gian hợp lệ.</p>
+      <div class="exam-config-actions">
+        <button type="button" class="btn btn-ghost" data-exam-modal-close>Hủy</button>
+        <button type="submit" class="btn btn-primary">Bắt đầu làm bài</button>
+      </div>
+    </form>
+  </dialog>
+
   <footer class="site-footer">
-    <div>
-      <strong>EngWithMe</strong>
-      <p>Học tiếng Anh theo lộ trình cá nhân.</p>
-    </div>
+    <div><strong>EngWithMe</strong><p>Học tiếng Anh theo lộ trình cá nhân.</p></div>
     <div class="footer-links">
       <a href="vocabulary.html">Từ vựng</a>
       <a href="reading.html">Đọc</a>
@@ -135,7 +145,17 @@
   </footer>
 
   <script src="js/core.js"></script>
-  <script src="js/demo-actions.js"></script>
+  <script src="js/toeic/2017.js"></script>
+  <script src="js/toeic/2018.js"></script>
+  <script src="js/toeic/2019.js"></script>
+  <script src="js/toeic/2020.js"></script>
+  <script src="js/toeic/2021.js"></script>
+  <script src="js/toeic/2022.js"></script>
+  <script src="js/toeic/2023.js"></script>
+  <script src="js/toeic/2024.js"></script>
+  <script src="js/toeic/2025.js"></script>
+  <script src="js/toeic-reading-data.js"></script>
+  <script src="js/quiz.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

@@ -555,3 +555,103 @@
     padding: 12px;
   }
 }
+
+/* ==========================================================================
+   Admin Blog Approval Table Overhaul (Pullup Hover & Scrollbar Elimination)
+   ========================================================================== */
+.admin-blog-card {
+  overflow: visible !important; /* Allow the popup to hover outside the card */
+  padding: 0;
+  border-color: rgba(112, 245, 157, 0.28);
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(6, 13, 25, 0.98));
+  box-shadow: 0 0 0 1px rgba(46, 232, 120, 0.08), 0 28px 78px rgba(0, 0, 0, 0.44);
+}
+
+.admin-blog-card table {
+  width: 100%;
+  min-width: auto; /* Fit container perfectly to avoid scrollbar */
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.admin-blog-card th,
+.admin-blog-card td {
+  padding: 16px 14px;
+}
+
+.admin-blog-card th {
+  background: rgba(10, 18, 32, 0.98);
+  color: #d7ecff;
+}
+
+.admin-blog-card tbody tr {
+  transition: background 0.18s ease;
+}
+
+.admin-blog-card tbody tr:hover {
+  background: rgba(46, 232, 120, 0.04);
+}
+
+/* Hover Pullup content style */
+.admin-blog-content-cell {
+  position: relative;
+}
+
+.admin-blog-content-cell .content-preview {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px; /* Truncated preview */
+  color: #a6b4c9;
+  cursor: help;
+  transition: color 0.2s ease;
+}
+
+.admin-blog-content-cell:hover .content-preview {
+  color: var(--primary);
+}
+
+.admin-blog-content-cell .content-full-popup {
+  display: block;
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: 80%;
+  left: 30px;
+  width: 340px;
+  background: linear-gradient(135deg, #0f172a 0%, #090f1d 100%);
+  border: 1px solid rgba(46, 232, 120, 0.5);
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: 
+    0 12px 32px rgba(0, 0, 0, 0.7),
+    0 0 20px rgba(46, 232, 120, 0.25);
+  color: #f8fbff;
+  font-size: 13.5px;
+  line-height: 1.6;
+  z-index: 999;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.95);
+  transition: all 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: normal;
+  text-align: left;
+}
+
+.admin-blog-content-cell:hover .content-full-popup {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(-8px) scale(1);
+}
+
+/* Little arrow for the popup speech bubble */
+.admin-blog-content-cell .content-full-popup::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 40px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: rgba(46, 232, 120, 0.5) transparent transparent transparent;
+}
+

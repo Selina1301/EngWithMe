@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blog học tiếng Anh - EngWithMe</title>
+  <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/pages/blog.css">
   <link rel="stylesheet" href="css/responsive/desktop.css">
@@ -29,12 +30,51 @@
 
   <main class="page-main">
     <section class="page-title">
-      <p class="eyebrow">Blog</p>
-      <h1>Mẹo học tiếng Anh thực tế</h1>
-      <p>Các bài viết ngắn giúp người học duy trì thói quen, ôn từ vựng và luyện nghe hiệu quả hơn.</p>
+      <p class="eyebrow">Blog & Community</p>
+      <h1>Mẹo học & Cảm nhận học viên</h1>
+      <p>Nơi chia sẻ mẹo học tiếng Anh thực tế và đóng góp ý kiến từ cộng đồng EngWithMe.</p>
     </section>
 
-    <section class="section compact">
+    <!-- Blogger / Review Form & Community Feed Section -->
+    <section class="section compact" style="margin-top: 20px;">
+      <div class="split-section" style="display: grid; grid-template-columns: 1fr; gap: 32px; width: 100%; margin-bottom: 40px;">
+
+        <!-- Blogger Writing Card -->
+        <div class="auth-card auth-panel" id="review-card" style="width: 100%; max-width: 100%; box-sizing: border-box; margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);">
+          <div class="auth-card-heading">
+            <span class="auth-icon ti-pencil-alt"></span>
+            <div>
+              <p class="eyebrow" id="blogger-username" style="color: var(--muted);">Blogger: Đang xác thực...</p>
+              <h2>Chia sẻ cảm nhận của bạn</h2>
+            </div>
+          </div>
+
+          <div id="review-form-wrapper" style="margin-top: 15px;">
+            <div style="text-align: center; padding: 20px 10px;">Đang tải thông tin...</div>
+          </div>
+        </div>
+
+        <!-- Community Feed Container -->
+        <div>
+          <div class="section-heading" style="margin-bottom: 24px;">
+            <p class="eyebrow">Community Reviews</p>
+            <h2>Cảm nhận từ học viên</h2>
+          </div>
+          <div id="approved-blogs-feed" class="article-grid">
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--muted);">
+              Đang tải cảm nhận cộng đồng...
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section compact" style="border-top: 1px solid var(--line); padding-top: 40px;">
+      <div class="section-heading" style="margin-bottom: 30px;">
+        <p class="eyebrow">Official Blog</p>
+        <h2>Bài viết hữu ích từ EngWithMe</h2>
+      </div>
       <div class="article-grid">
         <article class="article-card">
           <span>Study tips</span>
@@ -80,6 +120,7 @@
   </footer>
 
   <script src="js/core.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/progress.js?v=1.2"></script>
+  <script src="js/main.js?v=1.2"></script>
 </body>
 </html>
