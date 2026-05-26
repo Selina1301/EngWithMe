@@ -1,0 +1,58 @@
+/* FAQ Section Custom Layout */
+.faq-section .section-heading {
+  max-width: 900px; /* Nới rộng container cha */
+}
+
+.faq-section .section-heading p {
+  max-width: 900px; /* Nới rộng đoạn văn bản */
+  font-size: 17px;
+}
+
+.faq-section .faq-list {
+  max-width: none; /* Khớp với tiêu đề bạn vừa chỉnh */
+  margin-top: 40px;
+}
+
+/* Xóa padding bên ngoài để summary có thể mở rộng sát mép */
+.faq-section .faq-list details {
+  padding: 0;
+}
+
+/* Cải thiện vùng nhấp chuột cho FAQ */
+.faq-section .faq-list details summary {
+  padding: 15px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 700;
+  list-style: none; /* Ẩn mũi tên mặc định nếu muốn tự tùy chỉnh */
+  display: flex;
+  align-items: center;
+  transition: background 0.2s ease;
+}
+
+.faq-section .faq-list details summary::-webkit-details-marker {
+  display: none; /* Ẩn mũi tên mặc định trên Chrome/Safari */
+}
+
+.faq-section .faq-list details summary::before {
+  content: "\25BE";
+  margin-right: 12px;
+  color: var(--primary);
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+
+.faq-section .faq-list details[open] summary::before {
+  transform: rotate(-180deg);
+}
+
+.faq-section .faq-list details p {
+  padding: 0 24px 2px 50px;
+  margin-top: -8px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.faq-section .faq-list details:hover {
+  background: rgba(46, 232, 120, 0.05);
+}

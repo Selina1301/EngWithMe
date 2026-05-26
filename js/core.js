@@ -29,15 +29,38 @@ function setActiveNav() {
     nav.innerHTML = navItems
       .map((item) => `<a href="${item.href}">${item.label}</a>`)
       .join("");
-  });
 
-  const activePage = currentPage === "vocabulary-study.html" ? "vocabulary.html" : currentPage;
-  document.querySelectorAll(".nav-links a").forEach((link) => {
-    const href = link.getAttribute("href");
-    const linkPage = href.split("#")[0];
-    if (href === activePage || linkPage === activePage) {
-      link.classList.add("is-active");
-    }
+    const links = nav.querySelectorAll("a");
+    let activeLink = null;
+    const activePage = currentPage === "vocabulary-study.html" ? "vocabulary.html" : currentPage;
+
+    const updateIndicator = (target) => {
+      if (target) {
+        nav.style.setProperty("--nav-indicator-x", `${target.offsetLeft}px`);
+        nav.style.setProperty("--nav-indicator-y", `${target.offsetTop}px`);
+        nav.style.setProperty("--nav-indicator-w", `${target.offsetWidth}px`);
+        nav.style.setProperty("--nav-indicator-h", `${target.offsetHeight}px`);
+        nav.style.setProperty("--nav-indicator-opacity", "1");
+      } else {
+        nav.style.setProperty("--nav-indicator-opacity", "0");
+      }
+    };
+
+    links.forEach((link) => {
+      const href = link.getAttribute("href");
+      const linkPage = href.split("#")[0];
+      if (href === activePage || linkPage === activePage) {
+        link.classList.add("is-active");
+        activeLink = link;
+      }
+
+      link.addEventListener("mouseenter", () => updateIndicator(link));
+    });
+
+    nav.addEventListener("mouseleave", () => updateIndicator(activeLink));
+
+    // Initial position
+    setTimeout(() => updateIndicator(activeLink), 50);
   });
 }
 
@@ -60,11 +83,82 @@ function initAuthNav() {
       persistAuthUser(result.user);
       renderAuthenticatedNav(result.user);
       redirectAuthPages(result.user);
+      syncUserDataFromServer().then(() => {
+        const page = getCurrentPage();
+        if (page === "vocabulary.html" && typeof updateProgressView === "function") {
+          // Re-load variables and re-draw views
+          const savedStorageKey = getAccountKey("engWithMeSavedVocabularyWords");
+          const quizStatsKey = getAccountKey("engWithMeVocabQuizStats");
+          if (typeof normalizeSavedWordRecords === "function") {
+            savedWordRecords = normalizeSavedWordRecords(JSON.parse(localStorage.getItem(savedStorageKey) || "[]"));
+            savedWords = new Set(savedWordRecords.keys());
+          }
+          if (typeof normalizeQuizStats === "function") {
+            const rawQuiz = JSON.parse(localStorage.getItem(quizStatsKey) || "null");
+            Object.assign(quizStats, normalizeQuizStats(rawQuiz));
+          }
+          updateSavedCount();
+          updateProgressView();
+          renderTopics();
+          renderMyVocab();
+        } else if (page === "dashboard.html" && typeof initDashboard === "function") {
+          initDashboard();
+        }
+      });
     })
     .catch(() => {
       clearAuthUser();
       renderGuestNav();
     });
+}
+
+async function syncUserDataFromServer() {
+  const userId = localStorage.getItem("engWithMeUserId");
+  if (!userId) return;
+
+  try {
+    // 1. Sync Vocab & Viewed Topics
+    const vocabRes = await fetch("api/sync_vocab.php", { credentials: "same-origin" });
+    if (vocabRes.ok) {
+      const vocabData = await vocabRes.json();
+      if (vocabData.ok) {
+        localStorage.setItem(
+          `engWithMeSavedVocabularyWords_user_${userId}`,
+          JSON.stringify(vocabData.saved || [])
+        );
+        localStorage.setItem(
+          `engWithMeViewedTopics_user_${userId}`,
+          JSON.stringify(vocabData.viewed || [])
+        );
+      }
+    }
+
+    // 2. Sync Course Progress
+    const progRes = await fetch("api/sync_progress.php", { credentials: "same-origin" });
+    if (progRes.ok) {
+      const progData = await progRes.json();
+      if (progData.ok) {
+        localStorage.setItem(
+          `engWithMeProgress_user_${userId}`,
+          JSON.stringify(progData.progress || [])
+        );
+      }
+    }
+
+    // 3. Sync Vocabulary Quiz Stats
+    const quizRes = await fetch("api/sync_quiz.php", { credentials: "same-origin" });
+    if (quizRes.ok) {
+      const quizData = await quizRes.json();
+      if (quizData.ok && quizData.stats) {
+        localStorage.setItem(
+          `engWithMeVocabQuizStats_user_${userId}`,
+          JSON.stringify(quizData.stats)
+        );
+      }
+    }
+  } catch (error) {
+    console.error("Failed to sync user data from server:", error);
+  }
 }
 
 function ensureNavActions(header) {

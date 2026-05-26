@@ -1,0 +1,451 @@
+/* Horizontal topic rails */
+.topic-rail-block {
+  grid-column: 1;
+  width: 100%;
+  max-width: 1120px;
+  justify-self: center;
+  margin-top: 24px;
+  margin-bottom: 30px;
+}
+
+.topic-rail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 14px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.topic-rail-header h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #ffffff;
+}
+
+.topic-rail-header p {
+  margin: 5px 0 0;
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.topic-rail-header span {
+  color: #93c5fd;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.topic-rail {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(220px, 250px));
+  gap: 16px;
+  justify-content: center;
+  overflow: visible;
+  padding: 8px 0 0;
+  scroll-behavior: smooth;
+}
+
+.topic-rail:has(.topic-card:last-child:nth-child(4n + 1)) .topic-card:last-child {
+  grid-column: 2 / span 1;
+}
+
+.topic-rail:has(.topic-card:nth-last-child(2):nth-child(4n + 1)) .topic-card:nth-last-child(2) {
+  grid-column: 2 / span 1;
+}
+
+.topic-rail[data-remainder="1"] .topic-card:last-child {
+  grid-column: 2 / span 1;
+}
+
+.topic-rail[data-remainder="2"] .topic-card:nth-last-child(2) {
+  grid-column: 2 / span 1;
+}
+
+.topic-rail[data-remainder="0"] .topic-done-card {
+  grid-column: 2 / span 2;
+}
+
+.topic-done-card {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 200px;
+  padding: 32px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.06), transparent 40%),
+    linear-gradient(145deg, rgba(15, 23, 42, 0.8) 0%, rgba(2, 6, 23, 0.95) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #ffffff;
+  text-align: center;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.05),
+    0 20px 50px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.topic-done-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(56, 189, 248, 0.3);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+    0 0 20px rgba(56, 189, 248, 0.15),
+    0 25px 60px rgba(0, 0, 0, 0.5);
+}
+
+.topic-done-card.easy {
+  --done-color: #2ee878;
+}
+
+.topic-done-card.medium {
+  --done-color: #facc15;
+}
+
+.topic-done-card.hard {
+  --done-color: #ef4444;
+}
+
+.topic-done-card.no-hope {
+  --done-color: #38bdf8;
+}
+
+.topic-done-card h3 {
+  margin: 14px 0 8px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.topic-done-card p {
+  margin: 0 auto;
+  max-width: 420px;
+  color: #cbd5e1;
+  line-height: 1.6;
+  font-size: 0.94rem;
+}
+
+.done-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 86px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94)) padding-box,
+    linear-gradient(135deg, var(--done-color), #ffffff, var(--done-color)) border-box;
+  color: #ffffff;
+  font-weight: 900;
+  padding: 8px 14px;
+  box-shadow: 0 0 24px color-mix(in srgb, var(--done-color) 32%, transparent);
+}
+
+.topic-rail::-webkit-scrollbar {
+  height: 10px;
+}
+
+.topic-rail::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.8);
+  border-radius: 999px;
+}
+
+.topic-rail::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, rgba(46, 232, 120, 0.85), rgba(59, 130, 246, 0.85));
+  border-radius: 999px;
+}
+
+/* Topic cards */
+.topic-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  min-height: 180px;
+  padding: 56px 18px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at 80% 20%, rgba(var(--card-accent-rgb), 0.1), transparent 45%),
+    linear-gradient(145deg, rgba(15, 23, 42, 0.65) 0%, rgba(3, 7, 18, 0.95) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+/* Accent themes by level */
+.topic-card.easy {
+  --card-accent: #2ee878;
+  --card-accent-rgb: 46, 232, 120;
+}
+
+.topic-card.medium {
+  --card-accent: #facc15;
+  --card-accent-rgb: 250, 204, 21;
+}
+
+.topic-card.hard {
+  --card-accent: #ef4444;
+  --card-accent-rgb: 239, 68, 68;
+}
+
+.topic-card-open {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  padding: 0;
+}
+
+/* Prevent hover flicker loop when card translates up */
+.topic-card:hover .topic-card-open {
+  bottom: -20px;
+}
+
+.topic-card > *:not(.topic-card-open) {
+  position: relative;
+  z-index: 1;
+}
+
+.topic-card-open:focus-visible {
+  outline: 3px solid var(--card-accent);
+  outline-offset: -5px;
+}
+
+.rail-card {
+  width: 100%;
+}
+
+/* Beautiful moving reflection on hover */
+.topic-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  transform: skewX(-25deg);
+  transition: 0.75s;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.topic-card:hover::before {
+  left: 150%;
+}
+
+/* Expanding accent line at bottom */
+.topic-card::after {
+  content: "";
+  position: absolute;
+  inset: auto 24px 0 24px;
+  height: 3px;
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(90deg, transparent, var(--card-accent), transparent);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.topic-card:hover::after {
+  opacity: 1;
+  inset: auto 12px 0 12px;
+}
+
+.topic-card:hover {
+  z-index: 2;
+  transform: translateY(-6px) scale(1.015);
+  border-color: rgba(var(--card-accent-rgb), 0.6);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.15),
+    0 0 30px rgba(var(--card-accent-rgb), 0.25),
+    0 16px 36px rgba(0, 0, 0, 0.55);
+}
+
+/* Explicitly specify !important for absolute positioning to override generic relative rules */
+.topic-card .topic-icon {
+  position: absolute !important;
+  top: 10px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 1.12rem;
+  color: var(--card-accent);
+  background: rgba(var(--card-accent-rgb), 0.12);
+  border: 1px solid rgba(var(--card-accent-rgb), 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.topic-card:hover .topic-icon {
+  transform: scale(1.15) rotate(8deg);
+  background: rgba(var(--card-accent-rgb), 0.22);
+  border-color: rgba(var(--card-accent-rgb), 0.5);
+  box-shadow: 0 0 12px rgba(var(--card-accent-rgb), 0.35);
+}
+
+.topic-card .topic-level-chip {
+  position: absolute !important;
+  top: 14px;
+  left: 14px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  max-width: calc(100% - 76px);
+  border: 1px solid rgba(var(--card-accent-rgb), 0.25);
+  border-radius: 999px;
+  background: rgba(var(--card-accent-rgb), 0.08);
+  color: var(--card-accent);
+  font-size: 0.74rem;
+  font-weight: 800;
+  line-height: 1;
+  padding: 4px 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  letter-spacing: 0.02em;
+}
+
+/* Pulsing live status dot */
+.topic-card .topic-level-chip::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--card-accent);
+  box-shadow: 0 0 6px var(--card-accent);
+  animation: pulse-dot 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+    box-shadow: 0 0 10px var(--card-accent);
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+}
+
+.topic-card-body {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  margin-top: 10px;
+}
+
+.topic-card h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.18rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+  transition: color 0.3s ease;
+}
+
+.topic-card:hover h3 {
+  color: var(--card-accent);
+}
+
+.topic-card p {
+  margin: 0;
+  line-height: 1.5;
+  color: #cbd5e1;
+  font-size: 0.86rem;
+  font-weight: 400;
+  transition: color 0.3s ease;
+}
+
+.topic-card:hover p {
+  color: #f1f5f9;
+}
+
+.topic-card-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.topic-card-footer small {
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s ease;
+}
+
+.topic-card-footer small::before {
+  content: "📚";
+  font-size: 0.85rem;
+}
+
+.topic-card:hover .topic-card-footer small {
+  color: #cffafe;
+}
+
+.topic-card-footer > i {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.topic-card:hover .topic-card-footer > i {
+  transform: translateX(4px);
+  border-color: rgba(var(--card-accent-rgb), 0.5);
+  background: rgba(var(--card-accent-rgb), 0.15);
+  color: var(--card-accent);
+  box-shadow: 0 0 12px rgba(var(--card-accent-rgb), 0.3);
+}

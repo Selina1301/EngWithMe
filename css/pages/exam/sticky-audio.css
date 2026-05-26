@@ -1,0 +1,185 @@
+/* Keep the answer sheet pinned to the viewport on desktop. */
+.exam-practice-shell .exam-wireframe {
+  overflow: visible;
+}
+
+.exam-practice-shell .wireframe-body {
+  overflow: visible;
+}
+
+.exam-practice-shell .wireframe-question {
+  align-self: start;
+  position: sticky;
+  top: 88px;
+  height: auto;
+  max-height: calc(100vh - 104px);
+  overflow-y: auto;
+}
+
+@media (max-width: 980px) {
+  .exam-practice-shell .exam-wireframe {
+    overflow: hidden;
+  }
+
+  .exam-practice-shell .wireframe-question {
+    position: static;
+    top: auto;
+    height: auto;
+    max-height: none;
+  }
+}
+
+/* Audio and browser TTS controls. */
+.exam-practice-shell .exam-audio-box {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  margin: 0 auto 24px;
+  border: 1px solid rgba(139, 92, 246, 0.36);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(30, 58, 138, 0.98), rgba(49, 46, 129, 0.98) 48%, rgba(59, 7, 100, 0.98)),
+    #1e3a8a;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 16px 36px rgba(59, 7, 100, 0.34);
+  color: #e0e7ff;
+  padding: 4px;
+}
+
+.exam-practice-shell .exam-audio-box.exam-audio-tts,
+.exam-practice-shell .exam-audio-box.is-missing {
+  border-radius: 18px;
+  padding: 12px 20px;
+}
+
+.exam-practice-shell .exam-audio-box audio {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  border-radius: 999px;
+  color-scheme: dark;
+}
+
+.exam-practice-shell .exam-audio-box audio::-webkit-media-controls-panel {
+  background:
+    linear-gradient(135deg, rgba(59, 130, 246, 0.14), rgba(139, 92, 246, 0.16)),
+    transparent;
+}
+
+.exam-practice-shell details.exam-audio-speed {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 12px;
+  margin-top: -38px;
+  margin-bottom: 20px;
+  z-index: 10;
+}
+
+.exam-practice-shell details.exam-audio-speed summary {
+  list-style: none;
+  cursor: pointer;
+  color: #bfdbfe;
+  font-size: 0.75rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  padding: 6px 12px;
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 999px;
+  user-select: none;
+  margin-left: auto;
+  display: inline-flex;
+}
+
+.exam-practice-shell details.exam-audio-speed summary::-webkit-details-marker {
+  display: none;
+}
+
+.exam-practice-shell .exam-audio-speed-popup {
+  position: absolute;
+  top: 100%;
+  right: 12px;
+  z-index: 10;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+}
+
+.exam-practice-shell .exam-audio-speed-popup > span,
+.exam-practice-shell .exam-audio-tts small,
+.exam-practice-shell .exam-tts-player span {
+  color: #bfdbfe;
+  font-size: 0.75rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.exam-practice-shell .exam-audio-speed-popup .speed-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.exam-practice-shell .exam-audio-speed-popup button,
+.exam-practice-shell .exam-tts-player button {
+  min-height: 32px;
+  border: 1px solid rgba(96, 165, 250, 0.24);
+  border-radius: 999px;
+  background: rgba(2, 6, 23, 0.22);
+  color: #dbeafe;
+  font-size: 0.8rem;
+  font-weight: 900;
+  padding: 6px 11px;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.exam-practice-shell .exam-audio-speed-popup button:hover,
+.exam-practice-shell .exam-tts-player button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(59, 130, 246, 0.62);
+  background: rgba(59, 130, 246, 0.16);
+  color: #ffffff;
+}
+
+.exam-practice-shell .exam-audio-speed-popup button.is-active {
+  border-color: rgba(59, 130, 246, 0.84);
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: #ffffff;
+}
+
+.exam-practice-shell .exam-tts-player {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.exam-practice-shell .exam-tts-player button {
+  min-height: 40px;
+  border-color: rgba(59, 130, 246, 0.76);
+  background: linear-gradient(135deg, #3b82f6, #4f46e5);
+  color: #ffffff;
+  padding: 9px 16px;
+}
+
+.exam-practice-shell .exam-tts-player button.is-playing {
+  border-color: rgba(252, 165, 165, 0.8);
+  background: linear-gradient(135deg, #fecaca, #f97316);
+  color: #431407;
+}
+
+@media (max-width: 680px) {
+  .exam-practice-shell .exam-audio-speed-popup .speed-options {
+    justify-content: flex-start;
+  }
+}

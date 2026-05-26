@@ -1,0 +1,73 @@
+/* Home page visual polish */
+:root {
+  --primary: #2ee878;
+  --primary-dark: #18bd62;
+  --secondary: #48cfff;
+  --accent: #c8ff4f;
+  --success: #70f59d;
+  --glow: 0 0 0 1px rgba(46, 232, 120, 0.26), 0 24px 58px rgba(72, 207, 255, 0.2);
+}
+
+.brand {
+  transition: transform 0.22s ease, text-shadow 0.22s ease, filter 0.22s ease;
+}
+
+.brand::before {
+  width: 34px;
+  height: 34px;
+  flex-basis: 34px;
+  background-image: url("../../../assets/icons/theme/four-leaf-mark.svg");
+  filter: drop-shadow(0 0 13px rgba(46, 232, 120, 0.9));
+}
+
+.brand:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+  text-shadow:
+    0 0 17px rgba(46, 232, 120, 0.72),
+    0 0 24px rgba(72, 207, 255, 0.45);
+}
+
+.nav-links {
+  gap: 10px;
+}
+
+.nav-links a {
+  transform-origin: center;
+  transition: color 0.18s ease, text-shadow 0.18s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.is-active {
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(46, 232, 120, 0.24);
+}
+
+.hero p.hero-slogan {
+  border-left: 4px solid #ff5c8a;
+  border-radius: 0 8px 8px 0;
+  background: linear-gradient(90deg, rgba(255, 92, 138, 0.18), rgba(255, 45, 85, 0.08), transparent);
+  color: #2ee878;
+  filter: drop-shadow(0 0 10px rgba(255, 92, 138, 0.34));
+  font-size: 1.04rem;
+  font-weight: 900;
+  line-height: 1.7;
+  margin: 18px 0 0;
+  max-width: 760px;
+  padding: 8px 14px;
+  position: relative;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.55),
+    0 0 18px rgba(255, 92, 138, 0.38),
+    0 0 28px rgba(255, 45, 85, 0.28);
+}
+
+.btn:hover,
+.feature-card:hover,
+.course-card:hover,
+.article-card:hover,
+.pricing-card:hover,
+.stat-card:hover,
+.faq-section .faq-list details:hover {
+  filter: brightness(1.08) saturate(1.12);
+}

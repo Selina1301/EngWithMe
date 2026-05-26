@@ -1,4 +1,22 @@
 @import url("../assets/icons/theme/themify-icons/themify-icons.css");
+<<<<<<< HEAD
+@import url("./base/theme.css");
+@import url("./base/reset.css");
+@import url("./components/site-header.css");
+@import url("./components/buttons.css");
+@import url("./components/study-controls.css");
+@import url("./base/layout.css");
+@import url("./components/forms-quiz.css");
+@import url("./components/data-tables.css");
+@import url("./components/form-cards.css");
+@import url("./pages/auth.css");
+@import url("./pages/profile.css");
+@import url("./pages/speaking.css");
+@import url("./components/footer.css");
+@import url("./base/responsive.css");
+@import url("./base/utilities.css");
+@import url("./pages/auth-utilities.css");
+=======
 
 :root {
   --bg: #05080d;
@@ -82,9 +100,9 @@ body.modal-open {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: #ecfeff;
-  font-size: 22px;
+  font-size: 26px; /* Tăng kích thước chữ */
   font-weight: 800;
   text-shadow: 0 0 14px rgba(46, 232, 120, 0.5), 0 0 20px rgba(56, 189, 248, 0.32);
   transition: transform 0.22s ease, text-shadow 0.22s ease, filter 0.22s ease;
@@ -93,17 +111,14 @@ body.modal-open {
 
 .brand::before {
   content: "";
-  width: 30px;
-  height: 30px;
-  flex: 0 0 30px;
+  width: 36px; /* Tăng kích thước logo */
+  height: 36px;
+  flex: 0 0 36px;
   background: url("../assets/icons/theme/four-leaf-mark.svg") center/contain no-repeat;
-  filter: drop-shadow(0 0 10px rgba(46, 232, 120, 0.75));
+  filter: drop-shadow(0 0 13px rgba(46, 232, 120, 0.9));
 }
 
-.brand:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.08);
-}
+
 
 .nav-links {
   position: relative;
@@ -581,7 +596,7 @@ body.modal-open {
   font-size: 13px;
   font-weight: 900;
   letter-spacing: 0;
-  margin: 0 0 10px;
+  margin: 30px 0 10px;
   text-transform: uppercase;
 }
 
@@ -627,25 +642,9 @@ body.modal-open {
   text-align: center;
 }
 
+/* Contact Section - Placeholder for base layout if needed */
 .contact-section {
-  padding-top: 72px;
-}
-
-.contact-layout {
-  max-width: 900px;
-}
-
-.contact-section .section-heading {
-  max-width: 900px;
-}
-
-.contact-section .section-heading h2 {
-  font-size: clamp(3rem, 5vw, 3.8rem);
-  line-height: 1.02;
-}
-
-.contact-section .section-heading p {
-  max-width: 900px;
+  position: relative;
 }
 
 .contact-badges {
@@ -1013,8 +1012,6 @@ body.modal-open {
 .admin-form textarea,
 .profile-card input,
 .profile-card select,
-.contact-form input,
-.contact-form textarea,
 .type-answer {
   width: 100%;
   border: 1px solid rgba(125, 211, 252, 0.24);
@@ -1022,11 +1019,6 @@ body.modal-open {
   background: rgba(2, 6, 23, 0.72);
   color: #f8fbff;
   padding: 11px 12px;
-}
-
-.contact-section .contact-form input,
-.contact-section .contact-form textarea {
-  padding: 15px 16px;
 }
 
 .toolbar select {
@@ -1148,17 +1140,16 @@ th {
 .auth-card,
 .contact-form {
   display: grid;
-  gap: 16px;
+  gap: 5px;
   padding: 24px;
 }
 
-.contact-section .contact-form {
+/* .contact-section .contact-form {
   margin-top: 44px;
-}
+} */
 
 .admin-form label,
-.auth-card label,
-.contact-form label {
+.auth-card label {
   display: grid;
   gap: 7px;
   color: #f8fbff;
@@ -1718,3 +1709,4 @@ th {
   color: var(--primary);
   text-decoration: underline;
 }
+>>>>>>> 3ffe208 (update_Navi&Exam)

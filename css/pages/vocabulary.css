@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+@import url("./vocabulary/page-shell.css");
+@import url("./vocabulary/topic-rails.css");
+@import url("./vocabulary/modal-words.css");
+@import url("./vocabulary/workspace-game.css");
+@import url("./vocabulary/responsive.css");
+@import url("./vocabulary/quiz.css");
+@import url("./vocabulary/study-page.css");
+=======
 .vocab-page {
   min-height: 100vh;
   background:
@@ -2456,15 +2465,22 @@ body.modal-open {
   margin-top: 18px;
   line-height: 1.7;
   color: #e2e8f0;
+}
+
+.quiz-feedback-main {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
 }
 
 .feedback-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  font-size: 1.15rem;
-  line-height: 1.4;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .feedback-icon.success {
@@ -2579,3 +2595,4 @@ body.modal-open {
     min-height: auto;
   }
 }
+>>>>>>> 3ffe208 (update_Navi&Exam)

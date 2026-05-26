@@ -1,0 +1,14 @@
+.admin-form,
+.auth-card {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+}
+
+.admin-form label,
+.auth-card label {
+  display: grid;
+  gap: 7px;
+  color: #f8fbff;
+  font-weight: 800;
+}

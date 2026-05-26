@@ -1,0 +1,11 @@
+.speaking-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 22px;
+  align-items: center;
+}
+
+.recorder-box {
+  display: grid;
+  gap: 12px;
+}

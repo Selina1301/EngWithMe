@@ -24,9 +24,28 @@ function initVocabularyStudy() {
   const getTopic = () => vocabularyData[activeLevel]?.topics.find(topic => topic.id === currentTopicId);
   const getListHref = () => `vocabulary.html?level=${activeLevel}`;
   const getWordKey = (topic, word) => `${activeLevel}-${topic.id}-${word.word}`;
-  const saveSavedWords = () => {
+  const saveSavedWords = (action, vocabKey, studyLevel) => {
     savedWords = new Set(savedWordRecords.keys());
     localStorage.setItem(savedWordsKey, JSON.stringify(Array.from(savedWordRecords.values())));
+
+    const userId = localStorage.getItem("engWithMeUserId");
+    if (userId && action && vocabKey) {
+      try {
+        const body = new FormData();
+        body.append("action", action);
+        body.append("vocab_key", vocabKey);
+        if (studyLevel) {
+          body.append("study_level", studyLevel);
+        }
+        fetch("api/sync_vocab.php", {
+          method: "POST",
+          body,
+          credentials: "same-origin"
+        });
+      } catch (e) {
+        console.error("Failed to sync vocab action to server:", e);
+      }
+    }
   };
   const syncUrl = () => {
     window.history.replaceState(null, "", `vocabulary-study.html?level=${activeLevel}&topic=${currentTopicId}&mode=${currentWorkspaceMode}`);
@@ -637,7 +656,7 @@ function initVocabularyStudy() {
 
         if (savedWords.has(wordKey)) {
           savedWordRecords.delete(wordKey);
-          saveSavedWords();
+          saveSavedWords("remove", wordKey);
           render();
         } else {
           const word = topic.words.find(item => getWordKey(topic, item) === wordKey);
@@ -651,12 +670,14 @@ function initVocabularyStudy() {
     root.querySelectorAll("[data-save-level]").forEach(button => {
       button.addEventListener("click", () => {
         if (!pendingSaveWord) return;
-        savedWordRecords.set(pendingSaveWord.key, {
-          key: pendingSaveWord.key,
-          studyLevel: button.dataset.saveLevel
+        const key = pendingSaveWord.key;
+        const lvl = button.dataset.saveLevel;
+        savedWordRecords.set(key, {
+          key: key,
+          studyLevel: lvl
         });
         pendingSaveWord = null;
-        saveSavedWords();
+        saveSavedWords("save", key, lvl);
         render();
       });
     });
@@ -822,6 +843,20 @@ function initVocabularyStudy() {
     viewedList = viewedList.filter(item => item && typeof item === "object" && !(item.level === activeLevel && item.id === currentTopicId));
     viewedList.push(topicRecord);
     localStorage.setItem(viewedKey, JSON.stringify(viewedList));
+
+    // Sync to DB
+    const userId = localStorage.getItem("engWithMeUserId");
+    if (userId) {
+      const body = new FormData();
+      body.append("action", "view_topic");
+      body.append("level_key", activeLevel);
+      body.append("topic_id", currentTopicId);
+      fetch("api/sync_vocab.php", {
+        method: "POST",
+        body,
+        credentials: "same-origin"
+      }).catch(e => console.error("Failed to sync viewed topic to database:", e));
+    }
   } catch (err) {
     console.error("Error writing to viewedList:", err);
   }

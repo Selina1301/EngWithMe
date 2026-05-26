@@ -24,7 +24,7 @@ function initProgressButtons() {
       button.classList.add("btn-primary");
     }
 
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       const current = JSON.parse(localStorage.getItem(getAccountKey("engWithMeProgress")) || "[]");
       const next = current.includes(id) ? current : [...current, id];
       localStorage.setItem(getAccountKey("engWithMeProgress"), JSON.stringify(next));
@@ -32,6 +32,22 @@ function initProgressButtons() {
       button.classList.remove("btn-secondary");
       button.classList.add("btn-primary");
       updateDashboardProgressDisplay(getCourseProgressPercent(next));
+
+      // Sync to database if logged in
+      const userId = localStorage.getItem("engWithMeUserId");
+      if (userId) {
+        try {
+          const body = new FormData();
+          body.append("progress_id", id);
+          await fetch("api/sync_progress.php", {
+            method: "POST",
+            body,
+            credentials: "same-origin"
+          });
+        } catch (e) {
+          console.error("Failed to sync progress to database:", e);
+        }
+      }
     });
   });
 }
@@ -588,7 +604,7 @@ function formatDateTime(value) {
   });
 }
 
-function initResults() {
+async function initResults() {
   const lastScore = localStorage.getItem(getAccountKey("engWithMeLastScore"));
   const savedWords = getSavedWords().length;
 
@@ -599,6 +615,38 @@ function initResults() {
   document.querySelectorAll("[data-saved-words-result]").forEach((element) => {
     element.textContent = savedWords;
   });
+
+  const tbody = document.querySelector("[data-results-tbody]");
+  const userId = localStorage.getItem("engWithMeUserId");
+  if (tbody && userId) {
+    try {
+      const response = await fetch("api/test_results.php", { credentials: "same-origin" });
+      if (response.ok) {
+        const result = await response.json();
+        if (result.ok && Array.isArray(result.results) && result.results.length > 0) {
+          tbody.innerHTML = result.results.map((row) => {
+            let testName = "TOEIC Reading Test";
+            if (row.test_set === "placement") {
+              testName = "Placement Test (Đánh giá năng lực)";
+            } else if (row.test_set.startsWith("y")) {
+              testName = `TOEIC Practice Set ${row.test_set.substring(1)} (Part ${row.test_parts})`;
+            }
+
+            return `
+              <tr>
+                <td><strong>${escapeHtml(testName)}</strong></td>
+                <td>${escapeHtml(row.score)}</td>
+                <td><span class="modal-level-pill ${escapeHtml(row.recommended_level)}" style="padding: 2px 8px; border-radius: 4px; font-weight: bold;">${escapeHtml(row.recommended_level)}</span></td>
+                <td>${formatDateTime(row.submitted_at)}</td>
+              </tr>
+            `;
+          }).join("");
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load test history from server:", e);
+    }
+  }
 }
 
 function initRecorder() {

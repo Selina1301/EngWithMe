@@ -1,0 +1,64 @@
+/* Password Toggle & Auth Utilities */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.password-wrapper input {
+  width: 100% !important;
+  padding-right: 40px !important; /* Force space for eye icon */
+}
+.toggle-password {
+  position: absolute !important;
+  right: 12px !important;
+  color: rgba(56, 189, 248, 0.6) !important; /* Soft cyber cyan/blue matching --secondary */
+  cursor: pointer !important;
+  font-size: 1.1rem !important;
+  transition: color 0.25s, text-shadow 0.25s !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10 !important;
+}
+.toggle-password:hover {
+  color: var(--secondary) !important; /* Fully bright cyan */
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important; /* Cyber glow cyan */
+}
+.toggle-password.slashed {
+  color: rgba(46, 232, 120, 0.6) !important; /* Soft cyber green matching --primary */
+}
+.toggle-password.slashed:hover {
+  color: var(--primary) !important; /* Fully bright green */
+  text-shadow: 0 0 8px rgba(46, 232, 120, 0.6) !important; /* Cyber glow green */
+}
+.toggle-password.slashed::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 1.5px;
+  background: rgba(46, 232, 120, 0.8); /* matching slash to the icon color */
+  transform: rotate(45deg);
+  transform-origin: center;
+  transition: background 0.25s !important;
+}
+.toggle-password.slashed:hover::after {
+  background: var(--primary);
+}
+.form-actions-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
+.forgot-password-link {
+  color: var(--secondary);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.forgot-password-link:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}

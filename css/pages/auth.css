@@ -1,0 +1,117 @@
+.auth-page {
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - 72px);
+  padding: 38px 24px;
+  background:
+    linear-gradient(rgba(5, 8, 13, 0.9), rgba(5, 8, 13, 0.92)),
+    url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=80") center/cover;
+}
+
+.auth-card {
+  width: min(100%, 440px);
+}
+
+.profile-card {
+  max-width: 620px;
+}
+
+.auth-page.auth-split {
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 460px);
+  gap: 42px;
+  align-items: center;
+  justify-items: stretch;
+  padding: 72px max(24px, calc((100% - var(--container)) / 2));
+}
+
+.auth-copy {
+  max-width: 660px;
+}
+
+.auth-copy h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(2.4rem, 5vw, 4.6rem);
+  line-height: 1.04;
+  text-shadow:
+    0 0 1px rgba(255, 255, 255, 0.9),
+    0 0 18px rgba(56, 189, 248, 0.25),
+    0 0 28px rgba(46, 232, 120, 0.16);
+}
+
+.auth-copy p {
+  color: #c7d2e5;
+  font-size: 18px;
+  max-width: 560px;
+}
+
+.auth-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.auth-highlights span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(125, 211, 252, 0.22);
+  border-radius: var(--radius);
+  background: rgba(2, 6, 23, 0.66);
+  color: #e6f6ff;
+  font-weight: 800;
+  padding: 9px 12px;
+}
+
+.auth-highlights i {
+  color: var(--success);
+}
+
+.auth-panel {
+  width: 100%;
+  padding: 28px;
+  border-color: rgba(125, 211, 252, 0.32);
+  box-shadow: var(--glow), var(--shadow);
+}
+
+.auth-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.auth-card-heading h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 30px;
+  line-height: 1.12;
+}
+
+.auth-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border: 1px solid rgba(112, 245, 157, 0.34);
+  border-radius: var(--radius);
+  background: rgba(46, 232, 120, 0.15);
+  color: #d0ffd8;
+  font-size: 22px;
+}
+
+.form-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.form-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.auth-card input[readonly] {
+  color: #bfdbfe;
+  background: rgba(15, 23, 42, 0.84);
+}

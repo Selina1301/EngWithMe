@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "initAuthNav",
     "initDemoActions",
     "initQuiz",
+    "initLegacyQuizForm",
     "initMiniQuizzes",
     "initVocabularyStudy",
     "initGrammarLearning",
@@ -19,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
     "initHomeSuggestion",
     "initHomeInteractions",
     "initContactForm",
-    "updateHomeFaq",
     "initBlogPage"
   ].forEach((initializerName) => {
     const initializer = window[initializerName];

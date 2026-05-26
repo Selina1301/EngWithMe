@@ -124,12 +124,4 @@ function initContactForm() {
   });
 }
 
-function updateHomeFaq() {
-  const thirdFaq = document.querySelector(".faq-list details:nth-of-type(3)");
-  if (!thirdFaq) return;
 
-  const summary = thirdFaq.querySelector("summary");
-  const answer = thirdFaq.querySelector("p");
-  if (summary) summary.textContent = "Tôi nên học bao lâu mỗi ngày để thấy tiến bộ?";
-  if (answer) answer.textContent = "Bạn có thể bắt đầu với 10 phút nếu bận, duy trì 25 phút để học đều, hoặc chọn 40 phút khi muốn tăng tốc trước kỳ kiểm tra.";
-}

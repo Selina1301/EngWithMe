@@ -1,0 +1,226 @@
+@media (max-width: 760px) {
+  .workspace-tabs,
+  .study-mode-tabs,
+  .study-toolbar,
+  .study-settings-wrap {
+    width: 100%;
+  }
+
+  .workspace-tabs,
+  .study-mode-tabs {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .workspace-tabs {
+    gap: 6px;
+  }
+
+  .workspace-tabs::before {
+    display: none;
+  }
+
+  .workspace-tab.is-active {
+    background: linear-gradient(135deg, #22d3ee, #22c55e);
+    box-shadow: 0 12px 28px rgba(14, 165, 233, 0.24);
+  }
+
+  .topic-modal-content[data-workspace-mode="study"] {
+    height: auto;
+    max-height: calc(100vh - 18px);
+    overflow-y: auto;
+  }
+
+
+
+  .mode-study .study-card {
+    height: auto;
+    min-height: 260px;
+  }
+
+  .word-list-card,
+  .game-menu,
+  .game-board,
+  .blast-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1180px) {
+  .topic-rail {
+    grid-template-columns: repeat(2, minmax(220px, 250px));
+  }
+
+  .topic-rail[data-remainder="0"] .topic-done-card {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 1100px) {
+  .vocab-section .vocab-container {
+    display: block;
+  }
+
+  .vocab-study-view {
+    display: block;
+  }
+
+  .vocab-mode-switch {
+    margin-bottom: 16px;
+  }
+
+  .vocab-progress-hero,
+  .vocab-progress-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vocab-topbar {
+    width: 100%;
+    max-width: none;
+    margin: 0 0 16px;
+  }
+
+  .vocab-topbar .vocab-search {
+    max-width: none;
+  }
+
+  .level-heading {
+    min-height: auto;
+    padding: 32px 28px;
+    margin-bottom: 18px;
+  }
+
+  .saved-count {
+    display: inline-flex;
+    width: fit-content;
+    margin: 0 0 18px;
+  }
+}
+
+@media (max-width: 760px) {
+  .topic-rail {
+    grid-template-columns: minmax(0, 280px);
+  }
+
+  .topic-rail[data-remainder="0"] .topic-done-card {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 680px) {
+  .vocab-hero {
+    padding-top: 48px;
+  }
+
+  .vocab-section .vocab-container {
+    display: block;
+  }
+
+  .vocab-study-view {
+    display: block;
+  }
+
+  .vocab-mode-switch {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .vocab-mode-tab {
+    min-width: 0;
+  }
+
+  .my-vocab-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .my-vocab-level-tabs {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .my-vocab-level-tab {
+    width: 100%;
+  }
+
+  .my-vocab-list {
+    grid-template-columns: 1fr;
+  }
+
+  .vocab-topbar {
+    grid-column: auto;
+    grid-row: auto;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: auto;
+    margin: 0 0 12px;
+    max-width: none;
+    padding: 10px;
+    border-right: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 18px;
+  }
+
+  .vocab-topbar .study-search,
+  .vocab-topbar .schedule-button {
+    width: 100%;
+  }
+
+  .level-heading {
+    min-height: auto;
+    padding: 24px 18px;
+    border-radius: 24px;
+    border-left-width: 1px;
+    margin-bottom: 22px;
+  }
+
+  .saved-count {
+    position: static;
+    width: 100%;
+    margin-top: 2px;
+  }
+
+  .level-tabs {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .level-tab {
+    flex: 1;
+    text-align: center;
+  }
+
+  .rail-card {
+    width: 100%;
+  }
+
+  .topic-rail-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .topic-card-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .saved-word-item {
+    grid-template-columns: 1fr;
+  }
+
+  .saved-word-item button {
+    justify-self: start;
+  }
+
+  .topic-modal-content {
+    width: calc(100% - 18px);
+    margin: 9px auto;
+    padding: 18px;
+    max-height: calc(100vh - 18px);
+  }
+
+  .topic-modal-header h2 {
+    font-size: 2rem;
+  }
+}

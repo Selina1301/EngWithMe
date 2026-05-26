@@ -1,0 +1,26 @@
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 32px max(24px, calc((100% - var(--container)) / 2));
+  background: #020617;
+  border-top: 1px solid rgba(125, 211, 252, 0.16);
+  color: #ffffff;
+}
+
+.site-footer p {
+  color: rgba(255, 255, 255, 0.72);
+  margin: 4px 0;
+}
+
+.footer-links {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: #a7f3d0;
+  font-weight: 800;
+}

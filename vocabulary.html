@@ -411,6 +411,23 @@
 
     function saveQuizStats() {
       localStorage.setItem(quizStatsKey, JSON.stringify(quizStats));
+
+      const userId = localStorage.getItem("engWithMeUserId");
+      if (userId) {
+        try {
+          const body = new FormData();
+          body.append("correct", quizStats.correct || 0);
+          body.append("total", quizStats.total || 0);
+          body.append("wrong_words", JSON.stringify(quizStats.wrongWords || {}));
+          fetch("api/sync_quiz.php", {
+            method: "POST",
+            body,
+            credentials: "same-origin"
+          });
+        } catch (e) {
+          console.error("Failed to sync quiz stats to database:", e);
+        }
+      }
     }
 
     function updateSavedCount() {
@@ -581,12 +598,26 @@
 
       savedWordsList.querySelectorAll("[data-remove-saved-word]").forEach(button => {
         button.addEventListener("click", () => {
-          savedWordRecords.delete(button.dataset.removeSavedWord);
+          const vocabKey = button.dataset.removeSavedWord;
+          savedWordRecords.delete(vocabKey);
           saveSavedWordRecords();
           updateSavedCount();
           renderSavedWordsList();
           renderMyVocab();
           updateProgressView();
+
+          // Sync to DB
+          const userId = localStorage.getItem("engWithMeUserId");
+          if (userId) {
+            const body = new FormData();
+            body.append("action", "remove");
+            body.append("vocab_key", vocabKey);
+            fetch("api/sync_vocab.php", {
+              method: "POST",
+              body,
+              credentials: "same-origin"
+            }).catch(e => console.error("Failed to sync vocab removal:", e));
+          }
         });
       });
     }
@@ -632,11 +663,25 @@
 
       myVocabList.querySelectorAll("[data-remove-my-vocab]").forEach(button => {
         button.addEventListener("click", () => {
-          savedWordRecords.delete(button.dataset.removeMyVocab);
+          const vocabKey = button.dataset.removeMyVocab;
+          savedWordRecords.delete(vocabKey);
           saveSavedWordRecords();
           updateSavedCount();
           renderMyVocab();
           updateProgressView();
+
+          // Sync to DB
+          const userId = localStorage.getItem("engWithMeUserId");
+          if (userId) {
+            const body = new FormData();
+            body.append("action", "remove");
+            body.append("vocab_key", vocabKey);
+            fetch("api/sync_vocab.php", {
+              method: "POST",
+              body,
+              credentials: "same-origin"
+            }).catch(e => console.error("Failed to sync my-vocab removal:", e));
+          }
         });
       });
     }
@@ -893,23 +938,28 @@
       const wrongAnswers = shuffle(wrongPool).slice(0, 3).map(item => item.meaning);
 
       const options = shuffle([
-        { text: correctWord.meaning, correct: true },
-        ...wrongAnswers.map(text => ({ text, correct: false }))
+        { word: correctWord, correct: true },
+        ...wrongPool.slice(0, 3).map(item => ({ word: item, correct: false }))
       ]);
 
       quizQuestion.innerHTML = `
         <p><strong>${correctWord.word}</strong> có nghĩa là gì?</p>
-        <small>Chủ đề: ${correctWord.topicName} | Cấp độ từ: ${correctWord.difficulty}</small>
       `;
 
       quizOptions.innerHTML = options.map(option => `
-        <button
-          type="button"
-          class="quiz-option-btn"
-          data-correct="${option.correct}"
-        >
-          ${option.text}
-        </button>
+        <div class="quiz-option-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <button
+            type="button"
+            class="quiz-option-btn"
+            style="width: 100%;"
+            data-correct="${option.correct}"
+          >
+            ${option.word.meaning}
+          </button>
+          <span class="option-word" style="display: block; font-size: 0.95rem; font-weight: 700; color: #70f59d; opacity: 0; transform: translateY(-5px); transition: all 0.4s ease;">
+            ${option.word.word}
+          </span>
+        </div>
       `).join("");
 
       quizFeedback.textContent = "";
@@ -917,7 +967,7 @@
       quizOptions.querySelectorAll(".quiz-option-btn").forEach(button => {
         button.addEventListener("click", () => {
           const isCorrect = button.dataset.correct === "true";
-          const buttons = quizOptions.querySelectorAll(".quiz-option-btn");
+          const wrappers = quizOptions.querySelectorAll(".quiz-option-wrapper");
 
           quizStats.total += 1;
           if (isCorrect) {
@@ -929,33 +979,42 @@
           recordVocabActivity();
           updateProgressView();
 
-          buttons.forEach(btn => {
+          wrappers.forEach(wrapper => {
+            const btn = wrapper.querySelector(".quiz-option-btn");
+            const wordSpan = wrapper.querySelector(".option-word");
+            const isBtnCorrect = btn.dataset.correct === "true";
+            
             btn.disabled = true;
-
-            if (btn.dataset.correct === "true") {
-              btn.classList.add("correct");
-            }
-
-            if (btn === button && !isCorrect) {
-              btn.classList.add("wrong");
+            if (isBtnCorrect) btn.classList.add("correct");
+            if (btn === button && !isCorrect) btn.classList.add("wrong");
+            
+            // Show the English word below the button with conditional color
+            if (wordSpan) {
+              wordSpan.style.color = isBtnCorrect ? "#70f59d" : "#f87171";
+              wordSpan.style.opacity = "1";
+              wordSpan.style.transform = "translateY(0)";
             }
           });
 
           if (isCorrect) {
             quizFeedback.innerHTML = `
-              <span class="feedback-icon success">⭕</span>
-              <span><strong>${correctWord.word}</strong> ${correctWord.phonetic} - ${correctWord.meaning}. Ví dụ: ${correctWord.example}</span>
+              <div class="quiz-feedback-main">
+                <span class="feedback-icon success"><i class="ti-check"></i></span>
+                <span><strong>${correctWord.word}</strong> ${correctWord.phonetic} - ${correctWord.meaning}. Ví dụ: ${correctWord.example}</span>
+              </div>
             `;
           } else {
             quizFeedback.innerHTML = `
-              <span class="feedback-icon error">❌</span>
-              <span><strong>${correctWord.word}</strong> ${correctWord.phonetic} - ${correctWord.meaning}. Ví dụ: ${correctWord.example}</span>
+              <div class="quiz-feedback-main">
+                <span class="feedback-icon error"><i class="ti-close"></i></span>
+                <span><strong>${correctWord.word}</strong> ${correctWord.phonetic} - ${correctWord.meaning}. Ví dụ: ${correctWord.example}</span>
+              </div>
             `;
           }
 
           quizTimer = setTimeout(() => {
             createQuiz();
-          }, 5000);
+          }, 8000);
         });
       });
     }

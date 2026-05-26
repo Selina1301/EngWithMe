@@ -1,0 +1,130 @@
+.profile-layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.profile-summary {
+  position: sticky;
+  top: 96px;
+  display: grid;
+  gap: 14px;
+  border: 1px solid rgba(125, 211, 252, 0.24);
+  border-radius: var(--radius);
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(8, 16, 29, 0.98));
+  box-shadow: var(--shadow);
+  padding: 24px;
+}
+
+.profile-avatar {
+  width: 62px;
+  height: 62px;
+  font-size: 28px;
+}
+
+.profile-avatar.is-large {
+  width: 92px;
+  height: 92px;
+  flex: 0 0 92px;
+  font-size: 34px;
+}
+
+.profile-summary h2 {
+  margin: 4px 0 0;
+  color: #ffffff;
+  font-size: 26px;
+  line-height: 1.15;
+}
+
+.profile-summary p {
+  margin: 0;
+  color: #bfdbfe;
+  overflow-wrap: anywhere;
+}
+
+.profile-summary-grid {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.profile-summary-grid span {
+  display: grid;
+  gap: 2px;
+  border-top: 1px solid rgba(125, 211, 252, 0.16);
+  color: var(--muted);
+  font-size: 13px;
+  padding-top: 10px;
+}
+
+.profile-summary-grid strong {
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.profile-form {
+  max-width: none;
+}
+
+.profile-dashboard-section {
+  padding-top: 14px;
+}
+
+.profile-dashboard-hero {
+  max-width: none;
+  margin: 0 0 24px;
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-radius: var(--radius);
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.7), rgba(8, 16, 29, 0.84));
+  padding: 24px;
+}
+
+.profile-dashboard-hero h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.profile-dashboard-hero p {
+  color: var(--muted);
+  margin-bottom: 0;
+}
+
+.profile-roadmap-section {
+  margin-top: 8px;
+}
+
+.avatar-upload-panel {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid rgba(125, 211, 252, 0.2);
+  border-radius: var(--radius);
+  background: rgba(2, 6, 23, 0.44);
+  padding: 16px;
+}
+
+.avatar-upload-control {
+  display: grid;
+  gap: 8px;
+  color: #f8fbff;
+  font-weight: 800;
+}
+
+.avatar-upload-control input[type="file"] {
+  border-style: dashed;
+  cursor: pointer;
+}
+
+.avatar-upload-control small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.form-note {
+  margin: 0;
+  color: var(--muted);
+}

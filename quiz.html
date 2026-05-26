@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đề thi TOEIC Reading - EngWithMe</title>
+  <title>Đề thi TOEIC - EngWithMe</title>
   <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/pages/study.css">
@@ -32,18 +32,22 @@
 
   <main class="study-page exam-study-page">
     <section class="study-hero exam-hero">
-      <p class="eyebrow">TOEIC Reading</p>
+      <p class="eyebrow">TOEIC Practice</p>
       <h1>Đề thi TOEIC theo năm</h1>
-      <p>Bấm vào card của từng năm để chọn Part 5, 6, 7 và thời gian làm bài trước khi bắt đầu.</p>
+      <p>Bấm vào card của từng năm để chọn Part phù hợp và thời gian làm bài trước khi bắt đầu.</p>
     </section>
 
     <section class="study-shell">
       <div class="exam-dashboard">
         <article class="exam-preview-panel">
-          <span class="exam-status-pill">Reading only</span>
-          <h2>TOEIC Reading 2017-2025</h2>
-          <p>Mỗi bộ đề có đúng cấu trúc Reading: Part 5 gồm 30 câu, Part 6 gồm 16 câu, Part 7 gồm 54 câu. Bạn có thể làm một hoặc nhiều Part trong cùng một lượt.</p>
+          <span class="exam-status-pill">Listening + Reading</span>
+          <h2>TOEIC Practice 2017-2025</h2>
+          <p>Đề 2017 có đủ Listening Part 1-4 và Reading Part 5-7. Các năm còn lại giữ cấu trúc Reading hiện có.</p>
           <div class="exam-part-list">
+            <span>Part 1: 1-6</span>
+            <span>Part 2: 7-31</span>
+            <span>Part 3: 32-70</span>
+            <span>Part 4: 71-100</span>
             <span>Part 5: 101-130</span>
             <span>Part 6: 131-146</span>
             <span>Part 7: 147-200</span>
@@ -53,7 +57,7 @@
 
         <aside class="exam-status-panel">
           <h3>Thông tin bài làm</h3>
-          <div class="status-row"><span>Phần Listening</span><strong>Bỏ qua</strong></div>
+          <div class="status-row"><span>Phần Listening</span><strong>2017 Part 1-4</strong></div>
           <div class="status-row"><span>Thời gian nhanh</span><strong>15 / 30 / 60 phút</strong></div>
           <div class="status-row"><span>Tùy chỉnh</span><strong>Tự nhập phút</strong></div>
           <div class="status-row"><span>Lưu kết quả</span><strong>Trên trình duyệt</strong></div>
@@ -67,7 +71,7 @@
         </div>
         <div class="exam-card-grid">
           <article class="exam-card" data-exam-set="y2017" data-exam-year="2017">
-            <div><span class="level-chip easy">2017</span><h3>TOEIC Reading Test 2017</h3><p>Hành chính văn phòng, công tác, hội thảo bán hàng và dịch vụ thư tín nội bộ.</p></div>
+            <div><span class="level-chip easy">2017</span><h3>TOEIC Test 2017</h3><p>Listening Part 1-4 và Reading Part 5-7: văn phòng, công tác, hội thảo bán hàng và dịch vụ thư tín nội bộ.</p></div>
           </article>
           <article class="exam-card" data-exam-set="y2018" data-exam-year="2018">
             <div><span class="level-chip medium">2018</span><h3>TOEIC Reading Test 2018</h3><p>Sản xuất, an toàn lao động, thông báo nhà cung cấp và lịch bảo trì thiết bị.</p></div>
@@ -110,9 +114,11 @@
 
       <div class="exam-config-section">
         <h3>Chọn Part</h3>
-        <label><input type="checkbox" name="part" value="5" checked> <span>Part 5 - 30 câu (101-130)</span></label>
-        <label><input type="checkbox" name="part" value="6"> <span>Part 6 - 16 câu (131-146)</span></label>
-        <label><input type="checkbox" name="part" value="7"> <span>Part 7 - 54 câu (147-200)</span></label>
+        <div data-exam-part-options>
+          <label><input type="checkbox" name="part" value="5" checked> <span>Part 5 - 30 câu (101-130)</span></label>
+          <label><input type="checkbox" name="part" value="6"> <span>Part 6 - 16 câu (131-146)</span></label>
+          <label><input type="checkbox" name="part" value="7"> <span>Part 7 - 54 câu (147-200)</span></label>
+        </div>
       </div>
 
       <div class="exam-config-section">
@@ -146,6 +152,7 @@
 
   <script src="js/core.js"></script>
   <script src="js/toeic/2017.js"></script>
+  <script src="js/toeic/2017-listening.js"></script>
   <script src="js/toeic/2018.js"></script>
   <script src="js/toeic/2019.js"></script>
   <script src="js/toeic/2020.js"></script>
@@ -155,7 +162,9 @@
   <script src="js/toeic/2024.js"></script>
   <script src="js/toeic/2025.js"></script>
   <script src="js/toeic-reading-data.js"></script>
-  <script src="js/quiz.js"></script>
+  <script src="js/toeic/exam-core.js"></script>
+  <script src="js/toeic/exam-overview.js"></script>
+  <script src="js/toeic/exam-app.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

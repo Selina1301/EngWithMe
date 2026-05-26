@@ -1,0 +1,507 @@
+.exam-practice-shell {
+  max-width: 1480px;
+  padding-top: 28px;
+}
+
+.exam-study-page {
+  background: linear-gradient(180deg, #020617 0%, #050b14 100%);
+}
+
+.exam-practice-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.exam-practice-head > div {
+  text-align: right;
+}
+
+.workspace-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: #dbeafe;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 900;
+  padding: 9px 12px;
+  transition: transform 0.2s ease, color 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.workspace-back:hover {
+  transform: translateX(-3px);
+  border-color: rgba(125, 211, 252, 0.32);
+  background: rgba(56, 189, 248, 0.10);
+  color: #ffffff;
+  box-shadow: 0 12px 26px rgba(56, 189, 248, 0.12);
+}
+
+.exam-practice-head h1 {
+  margin: 6px 0 0;
+  color: #ffffff;
+  font-size: clamp(1.65rem, 2.8vw, 2.6rem);
+  line-height: 1.12;
+  max-width: 920px;
+  background: linear-gradient(135deg, #ffffff 30%, #bae6fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 4px 15px rgba(186, 230, 253, 0.18));
+}
+
+.exam-practice-shell .exam-section {
+  margin-top: 20px;
+}
+
+.exam-practice-shell .exam-wireframe {
+  overflow: hidden;
+  border-color: rgba(125, 211, 252, 0.22);
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.94), rgba(2, 6, 23, 0.96));
+  color: #f8fbff;
+  padding: 0;
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.45);
+}
+
+.exam-practice-shell .wireframe-body {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
+  gap: 0;
+  align-items: start;
+  margin-top: 0;
+}
+
+.exam-practice-shell .wireframe-answers {
+  min-height: calc(100vh - 240px);
+  padding: 32px;
+  background: transparent;
+}
+
+.exam-practice-shell .exam-part-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(125, 211, 252, 0.16);
+}
+
+.exam-practice-shell .exam-part-tab {
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.6);
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 1rem;
+  border: 1px solid rgba(125, 211, 252, 0.15);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.exam-practice-shell .exam-part-tab:hover {
+  background: rgba(15, 23, 42, 0.9);
+  color: #e2e8f0;
+  border-color: rgba(125, 211, 252, 0.3);
+  transform: translateY(-1px);
+}
+
+.exam-practice-shell .exam-part-tab.is-active {
+  background: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.08);
+}
+
+.exam-practice-shell .wireframe-question {
+  position: sticky;
+  top: 88px;
+  grid-column: 2;
+  grid-row: 1;
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+  border: 0;
+  border-left: 1px solid rgba(125, 211, 252, 0.16);
+  border-radius: 0;
+  background: rgba(248, 250, 252, 0.02);
+  color: #f8fbff;
+  box-shadow: none;
+  padding: 17px 24px 24px;
+}
+
+.exam-practice-shell .wireframe-question h3,
+.exam-practice-shell .wireframe-question p {
+  color: #f8fbff;
+}
+
+.exam-practice-shell .wireframe-question [data-exam-explain] {
+  color: #a6b4c9;
+  font-size: 0.92rem;
+}
+
+.exam-practice-shell .exam-question-card {
+  border-color: rgba(125, 211, 252, 0.18);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.4);
+  color: #f8fbff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 32px 24px 24px;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.exam-practice-shell .exam-question-card legend {
+  border: 1px solid rgba(125, 211, 252, 0.22);
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.95);
+  color: #a7fbc0;
+  font-size: 0.95rem;
+  font-weight: 800;
+  padding: 8px 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-left: -8px;
+}
+
+.exam-practice-shell .exam-question-body,
+.exam-practice-shell .exam-question-text {
+  color: #f8fbff;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.exam-practice-shell .exam-passage {
+  border: 1px solid rgba(125, 211, 252, 0.12);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.4);
+  color: #e2e8f0;
+  font-weight: 400;
+  padding: 20px;
+  line-height: 1.7;
+}
+
+.exam-practice-shell .exam-audio-box {
+  background: linear-gradient(135deg, #1e3a8a, #3b0764);
+  padding: 8px;
+  margin: 0 auto 24px;
+  width: 100%;
+  max-width: 900px;
+  border-radius: 40px;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.exam-practice-shell .exam-audio-box audio {
+  width: 100%;
+  display: block;
+  outline: none;
+  border-radius: 30px;
+  color-scheme: dark;
+}
+
+.exam-practice-shell .exam-audio-box audio::-webkit-media-controls-panel {
+  background: transparent;
+}
+
+.exam-practice-shell .exam-audio-box audio::-webkit-media-controls-volume-slider-container {
+  transform: translateY(-12px);
+}
+
+.exam-practice-shell .exam-listening-image {
+  display: block;
+  width: 100%;
+  max-width: 540px;
+  max-height: 380px;
+  margin: 12px auto 24px;
+  border: 1px solid rgba(125, 211, 252, 0.22);
+  border-radius: 12px;
+  background: #020617;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  object-fit: contain;
+}
+
+/* Part 1 Vertical Layout - Flex Grouped */
+.exam-practice-shell .exam-question-card:has(.exam-listening-image) {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 48px;
+  padding: 32px 24px;
+}
+.exam-practice-shell .exam-question-card:has(.exam-listening-image) .exam-question-body {
+  flex: 0 1 540px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 0;
+}
+.exam-practice-shell .exam-question-card:has(.exam-listening-image) .exam-answer-sheet {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  margin: 0;
+  position: static;
+  transform: none;
+}
+
+.exam-practice-shell .exam-listening-note,
+.exam-practice-shell .exam-review-meta {
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.exam-practice-shell .exam-option-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+  margin-left: 15px;
+}
+
+.exam-practice-shell .exam-option-list label {
+  border: 1px solid rgba(125, 211, 252, 0.16);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.6);
+  color: #e2e8f0;
+  font-weight: 500;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.exam-practice-shell .exam-option-list label:hover {
+  border-color: rgba(46, 232, 120, 0.4);
+  background: rgba(46, 232, 120, 0.08);
+  transform: translateY(-1px);
+}
+
+.exam-practice-shell .exam-option-list label.is-selected {
+  border-color: #2ee878;
+  background: rgba(46, 232, 120, 0.12);
+  color: #ffffff;
+  box-shadow: inset 4px 0 0 #2ee878, 0 4px 12px rgba(46, 232, 120, 0.1);
+}
+
+/* Specific styles for bubbles in answer sheets (Part 1/2) */
+.exam-practice-shell .exam-answer-sheet label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.8);
+  color: #cbd5e1;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border: 2px solid rgba(125, 211, 252, 0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.exam-practice-shell .exam-answer-sheet label:hover {
+  border-color: #2ee878;
+  background: rgba(46, 232, 120, 0.15);
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+.exam-practice-shell .exam-answer-sheet label.is-selected {
+  background: #2ee878;
+  border-color: #2ee878;
+  color: #0f172a;
+  box-shadow: 0 4px 15px rgba(46, 232, 120, 0.4);
+}
+
+.exam-practice-shell .exam-answer-sheet input {
+  display: none;
+}
+
+.exam-practice-shell .exam-option-letter {
+  display: inline-block;
+  line-height: 1;
+  font-weight: 700;
+}
+
+/* Fallback flex layout for Part 2 answer sheets */
+.exam-practice-shell .exam-answer-sheet {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.exam-practice-shell .exam-side-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-bottom: 1px solid rgba(125, 211, 252, 0.16);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.exam-practice-shell .exam-side-head > span {
+  color: #ffffff;
+  font-size: clamp(1.1rem, 1.2vw, 1.3rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.exam-practice-shell .exam-side-head small {
+  color: #9be8ff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.exam-practice-shell .exam-side-tools {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.exam-practice-shell .exam-side-timer,
+.exam-practice-shell .exam-side-progress,
+.exam-practice-shell .exam-side-submit {
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-align: center;
+  font-weight: 800;
+  border: 1px solid;
+  transition: all 0.2s ease;
+}
+
+.exam-practice-shell .exam-side-timer {
+  border-color: rgba(248, 113, 113, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #fca5a5;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+}
+
+.exam-practice-shell .exam-side-progress {
+  border-color: rgba(125, 211, 252, 0.2);
+  background: rgba(56, 189, 248, 0.08);
+  color: #bae6fd;
+  font-size: 0.95rem;
+}
+
+.exam-practice-shell .exam-side-submit {
+  border-color: rgba(46, 232, 120, 0.4);
+  background: rgba(34, 197, 94, 0.15);
+  color: #a7fbc0;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.exam-practice-shell .exam-side-submit:hover {
+  background: rgba(34, 197, 94, 0.25);
+  border-color: rgba(46, 232, 120, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(34, 197, 94, 0.2);
+}
+
+.exam-practice-shell .exam-minimap {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(38px, 1fr));
+  gap: 8px;
+}
+
+.exam-practice-shell .exam-minimap button {
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.6);
+  color: #94a3b8;
+  font-weight: 600;
+  height: 38px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exam-practice-shell .exam-minimap button:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  background: rgba(56, 189, 248, 0.15);
+  color: #ffffff;
+}
+
+.exam-practice-shell .exam-minimap button.is-done {
+  border-color: rgba(46, 232, 120, 0.5);
+  background: rgba(34, 197, 94, 0.2);
+  color: #a7fbc0;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.15);
+}
+
+.exam-practice-shell .exam-minimap-status {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  justify-content: center;
+}
+
+.exam-practice-shell .exam-minimap-status span {
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.exam-practice-shell .exam-minimap-status span::before {
+  content: "";
+  display: block;
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-radius: 4px;
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.exam-practice-shell .exam-minimap-status .is-done::before {
+  border-color: rgba(46, 232, 120, 0.5);
+  background: rgba(34, 197, 94, 0.2);
+}
+
+.exam-practice-shell .exam-result-panel {
+  margin-top: 0;
+  border: 0;
+  border-top: 1px solid rgba(125, 211, 252, 0.22);
+  border-radius: 0 0 20px 20px;
+  background: rgba(15, 23, 42, 0.98);
+  color: #f8fbff;
+  padding: 32px;
+}
+
+.exam-practice-shell .exam-result-panel h3,
+.exam-practice-shell .exam-result-panel p,
+.exam-practice-shell .exam-review-list summary {
+  color: #f8fbff;
+}
+
+.exam-practice-shell .exam-review-list details,
+.exam-practice-shell .exam-score-grid div {
+  border-color: rgba(125, 211, 252, 0.18);
+  border-radius: 12px;
+  background: rgba(2, 6, 23, 0.6);
+  color: #e2e8f0;
+}
+
+.exam-practice-shell .exam-score-grid strong,
+.exam-practice-shell .exam-finished-title {
+  color: #a7fbc0;
+}

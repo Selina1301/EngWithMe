@@ -1,0 +1,104 @@
+/* Dedicated vocabulary study page */
+.vocab-study-page {
+  position: relative;
+  min-height: 100vh;
+  padding: 28px 24px 34px;
+  border-top: 1px solid rgba(148, 163, 184, 0.16);
+  background: linear-gradient(135deg, #020617 0%, #061324 48%, #020617 100%);
+  color: #ffffff;
+  overflow: hidden;
+}
+
+/* Ensure children elements stack above the pseudo-element glow */
+.vocab-study-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Dynamic green glow circle that moves when switching modes */
+.vocab-study-page::before {
+  content: "";
+  position: absolute;
+  top: -400px;
+  left: -400px;
+  width: 800px;
+  height: 800px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(46, 232, 120, 0.25) 0%, rgba(46, 232, 120, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1); /* Premium out-expo transition */
+  /* Default (Read) is left */
+  transform: translate(20vw, 12vh);
+}
+
+.vocab-study-page[data-mode="view"]::before {
+  /* Read (left tab) -> Glow moves to the left */
+  transform: translate(20vw, 12vh);
+}
+
+.vocab-study-page[data-mode="study"]::before {
+  /* Study (middle tab) -> Glow moves to the center */
+  transform: translate(50vw, 12vh);
+}
+
+.vocab-study-page[data-mode="play"]::before {
+  /* Play (right tab) -> Glow moves to the right */
+  transform: translate(88vw, 12vh);
+}
+
+/* Dynamic blue glow circle that sits on the right */
+.vocab-study-page::after {
+  content: "";
+  position: absolute;
+  top: -400px;
+  right: -400px;
+  width: 800px;
+  height: 800px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.22) 0%, rgba(14, 165, 233, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-10vw, 8vh);
+}
+
+.vocab-study-shell {
+  width: min(1300px, 100%);
+  margin: 0 auto;
+}
+
+.vocab-study-content,
+.vocab-study-content[data-workspace-mode="study"] {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  overflow: visible;
+  margin: 0 auto;
+  padding: 28px 34px 36px;
+  border-radius: 30px;
+}
+
+.vocab-study-content .vocab-workspace.mode-study {
+  min-height: 720px;
+}
+
+.vocab-study-content .workspace-topline a {
+  text-decoration: none;
+}
+
+@media (max-width: 760px) {
+  .vocab-study-page {
+    padding: 14px 10px 24px;
+  }
+
+  .vocab-study-content,
+  .vocab-study-content[data-workspace-mode="study"] {
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .vocab-study-content .vocab-workspace.mode-study {
+    min-height: auto;
+  }
+}
