@@ -121,10 +121,108 @@
   padding: 10px 12px;
 }
 
+.exam-review-passage,
+.exam-review-translation {
+  border: 1px dashed rgba(125, 211, 252, 0.18);
+  border-radius: 10px;
+  background: rgba(2, 6, 23, 0.26);
+  margin-top: 10px;
+  padding: 12px;
+  white-space: pre-line;
+}
+
+.exam-review-grouped-items {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.exam-review-item {
+  border-left: 3px solid rgba(148, 163, 184, 0.45);
+  padding: 4px 0 4px 12px;
+}
+
+.exam-review-item.is-correct {
+  border-left-color: rgba(34, 197, 94, 0.85);
+}
+
+.exam-review-item.is-wrong,
+.exam-review-item.is-missing {
+  border-left-color: rgba(248, 113, 113, 0.85);
+}
+
+.exam-review-item h4 {
+  color: #ffffff;
+  font-size: 0.94rem;
+  margin: 0 0 6px;
+}
+
+.exam-review-item p {
+  margin: 6px 0 0;
+}
+
+.exam-review-options {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+  margin: 10px 0;
+}
+
+.exam-review-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  border: 1px solid rgba(125, 211, 252, 0.16);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.38);
+  color: #dbeafe;
+  max-width: 100%;
+  padding: 8px 10px;
+  width: fit-content;
+}
+
+.exam-review-option.is-answer {
+  border-color: rgba(110, 245, 165, 0.8);
+  background: rgba(187, 247, 208, 0.18);
+  color: #ecfdf5;
+}
+
+.exam-review-option.is-selected-wrong {
+  border-color: rgba(248, 113, 113, 0.78);
+  background: rgba(127, 29, 29, 0.22);
+}
+
+.exam-review-option strong {
+  color: #a7fbc0;
+  font-size: 0.76rem;
+  white-space: nowrap;
+}
+
+.exam-review-option.is-selected-wrong strong {
+  color: #fecaca;
+}
+
 .exam-review-list summary {
   color: #ffffff;
   cursor: pointer;
   font-weight: 800;
+  display: block;
+  width: fit-content;
+}
+
+.exam-review-list summary.is-correct {
+  background: linear-gradient(90deg, #6ef5a5 0%, #ffffff 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.exam-review-list summary.is-wrong {
+  background: linear-gradient(90deg, #f87171 0%, #ffffff 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 @media (max-width: 980px) {

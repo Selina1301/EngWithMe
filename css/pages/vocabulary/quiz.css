@@ -84,6 +84,12 @@
   gap: 10px;
 }
 
+.quiz-feedback-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .feedback-icon {
   flex-shrink: 0;
   font-size: 1.15rem;
