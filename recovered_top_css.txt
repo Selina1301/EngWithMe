@@ -1,0 +1,82 @@
+/* Listening Lab */
+
+.audio-lab-page {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 72px;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(46, 232, 120, 0.12), transparent 34%),
+    radial-gradient(circle at 88% 16%, rgba(250, 204, 21, 0.09), transparent 30%),
+    linear-gradient(180deg, #05080d 0%, #08111d 48%, #05080d 100%);
+}
+
+.audio-lab-page [hidden] {
+  display: none !important;
+}
+
+.listening-command {
+  padding-top: 54px;
+}
+
+.command-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 26px;
+  align-items: stretch;
+  margin-bottom: 20px;
+}
+
+.command-copy,
+.diagnostic-panel,
+.mission-map,
+.insight-panel,
+.mission-context,
+.player-panel,
+.stage-card,
+.result-panel {
+  border: 1px solid rgba(125, 211, 252, 0.2);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(145deg, rgba(15, 23, 42, 0.94), rgba(7, 15, 28, 0.96)),
+    #0b1220;
+  box-shadow: var(--shadow);
+}
+
+.command-copy {
+  min-height
+  margin-bottom: 18px;
+}
+
+.mission-shell {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.mission-context {
+  position: sticky;
+  top: 86px;
+  padding: 22px;
+}
+
+.mission-context h2 {
+  color: #ffffff;
+  font-size: 32px;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.mission-story {
+  color: #cbd5e1;
+  line-height: 1.58;
+  margin: 14px 0 18px;
+}
+
+.mission-meta {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.mission-meta div {

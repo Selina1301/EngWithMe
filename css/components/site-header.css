@@ -1,12 +1,13 @@
 .site-header {
+  --brand-mark-size: 34px;
   position: sticky;
   top: 0;
   z-index: 20;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
   gap: 24px;
-  padding: 14px max(24px, calc((100% - var(--container)) / 2));
+  padding: 14px 24px;
   background: rgba(5, 8, 13, 0.88);
   border-bottom: 1px solid rgba(125, 211, 252, 0.2);
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
@@ -14,6 +15,7 @@
 }
 
 .brand {
+  justify-self: start;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -27,15 +29,14 @@
 
 .brand::before {
   content: "";
-  width: 30px;
-  height: 30px;
-  flex: 0 0 30px;
+  width: var(--brand-mark-size);
+  height: var(--brand-mark-size);
+  flex: 0 0 var(--brand-mark-size);
   background: url("../../assets/icons/theme/four-leaf-mark.svg") center/contain no-repeat;
-  filter: drop-shadow(0 0 10px rgba(46, 232, 120, 0.75));
+  filter: drop-shadow(0 0 13px rgba(46, 232, 120, 0.9));
 }
 
 .brand:hover {
-  transform: translateY(-1px);
   filter: brightness(1.08);
 }
 
@@ -106,9 +107,12 @@
 }
 
 .nav-actions {
+  justify-self: end;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 10px;
+  margin-left: auto;
   white-space: nowrap;
 }
 

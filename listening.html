@@ -3,80 +3,284 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Luyện nghe - EngWithMe</title>
+  <title>Listening Lab - EngWithMe</title>
   <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
 </head>
-<body>
+<body class="listening-page">
   <header class="site-header">
     <a class="brand" href="index.html">EngWithMe</a>
-    <nav class="nav-links" aria-label="Menu học viên">
-      <a href="dashboard.html">Dashboard</a>
-      <a href="lessons.html">Lộ trình</a>
-      <a href="vocabulary.html">Từ vựng</a>
-      <a href="grammar.html">Ngữ pháp</a>
-      <a href="listening.html">Nghe</a>
-      <a href="speaking.html">Nói</a>
-      <a href="reading.html">Đọc</a>
+    <nav class="nav-links" aria-label="Menu chính">
+      <a href="index.html">Home</a>
+      <a href="vocabulary.html">Vocabulary</a>
+      <a href="listening.html">Listening</a>
+      <a href="reading.html">Reading</a>
+      <a href="grammar.html">Grammar</a>
+      <a href="exam-practice.html">Exam</a>
+      <a href="blog.html">Blog</a>
+      <a href="pricing.html">Premium</a>
     </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="login.html">Đăng nhập</a>
+      <a class="btn btn-primary" href="register.html">Đăng ký</a>
+    </div>
   </header>
 
-  <main class="page-main">
-    <section class="page-title">
-      <p class="eyebrow">Listening</p>
-      <h1>Nghe hội thoại ngắn</h1>
-      <p>Bài luyện nghe MVP gồm audio mẫu, transcript, từ khóa và câu hỏi kiểm tra.</p>
+  <main class="page-main audio-lab-page">
+    <section class="section listening-command" id="lab-dashboard">
+      <div class="command-hero">
+        <div class="command-copy">
+          <p class="eyebrow">Listening Lab</p>
+          <h1>Không chỉ nghe đúng sai. Biết chính xác vì sao bạn nghe không ra.</h1>
+          <p class="real-situation" data-opening-scenario>Bạn vừa bước vào một quán cà phê ở New York. Nhân viên hỏi rất nhanh, phía sau có tiếng máy pha cà phê. Bạn có hiểu kịp không?</p>
+          <div class="command-actions">
+            <button class="btn btn-primary" type="button" data-start-featured><span class="ti-control-play"></span> Bắt đầu session đầu tiên</button>
+            <button class="btn btn-ghost" type="button" data-daily-challenge><span class="ti-timer"></span> Thử thách 30 giây</button>
+          </div>
+        </div>
+
+        <aside class="diagnostic-panel" aria-label="Báo cáo nghe cá nhân">
+          <div class="score-ring">
+            <svg viewBox="0 0 36 36" aria-hidden="true">
+              <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+              <path class="circle" data-score-ring stroke-dasharray="72, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+              <text x="18" y="20.35" data-native-score>72%</text>
+            </svg>
+            <span>Native comprehension</span>
+          </div>
+          <div class="diagnostic-list">
+            <div>
+              <strong data-listening-level>Level 3: Sentence Decoder</strong>
+              <span>Mục tiêu kế tiếp: 85% để mở khóa Native Mode nâng cao.</span>
+            </div>
+            <div>
+              <strong data-streak-count>Streak 3 ngày</strong>
+              <span>Hôm nay có session thật sẵn sàng để luyện ngay.</span>
+            </div>
+            <div>
+              <strong data-weakness-summary>Hay miss: nối âm</strong>
+              <span data-next-drill>Luyện did you -> didja, want to -> wanna, let me -> lemme.</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="goal-selector" aria-label="Chọn chủ đề luyện nghe">
+        <span>Chủ đề nghe:</span>
+        <button class="goal-chip active" type="button" data-goal="self-introduction">Giới thiệu bản thân</button>
+        <button class="goal-chip" type="button" data-goal="family-friends">Gia đình & bạn bè</button>
+        <button class="goal-chip" type="button" data-goal="work-career">Công việc</button>
+        <button class="goal-chip" type="button" data-goal="study-school">Học tập</button>
+        <button class="goal-chip" type="button" data-goal="daily-routine">Thói quen</button>
+        <button class="goal-chip" type="button" data-goal="shopping-prices">Mua sắm</button>
+        <button class="goal-chip" type="button" data-goal="food-restaurant">Ăn uống</button>
+        <button class="goal-chip" type="button" data-goal="travel-directions">Du lịch</button>
+        <button class="goal-chip" type="button" data-goal="health-doctor">Sức khỏe</button>
+        <button class="goal-chip" type="button" data-goal="weather-seasons">Thời tiết</button>
+        <button class="goal-chip" type="button" data-goal="hobbies-free-time">Sở thích</button>
+        <button class="goal-chip" type="button" data-goal="news-society">Tin tức</button>
+        <button class="goal-chip" type="button" data-goal="tech-internet">Công nghệ</button>
+      </div>
+
+      <div class="lab-dashboard-grid">
+        <section class="mission-map" aria-labelledby="mission-map-title">
+          <div class="section-heading">
+            <p class="eyebrow">Listening Map</p>
+            <h2 id="mission-map-title">Chọn một tình huống thật để luyện</h2>
+            <p>Mỗi tình huống là một session luyện nghe hoàn chỉnh. Bạn nghe 3 lần, mỗi lần mở khóa thêm dữ kiện: nghe thô, từ khóa, gap transcript, rồi mới xem breakdown.</p>
+          </div>
+          <div class="mission-toolbar" aria-label="Bộ lọc session">
+            <label class="mission-search">
+              <span class="ti-search"></span>
+              <input type="search" data-mission-search placeholder="Tìm session, accent, bối cảnh...">
+            </label>
+            <span class="mission-count" data-mission-count>78 sessions</span>
+          </div>
+          <div class="mission-grid" data-mission-grid></div>
+        </section>
+
+        <aside class="lab-insights" aria-label="Thông tin luyện nghe">
+          <article class="insight-panel">
+            <span class="panel-icon ti-bolt"></span>
+            <h3>Today's 3-minute Challenge</h3>
+            <p>Nghe một session ngắn trong bối cảnh đời thật. Web sẽ chấm phần trăm hiểu ở Natural Mode.</p>
+            <div class="mini-stats"><span>+40 XP</span><span>Fast Listener</span></div>
+            <button class="btn btn-secondary" type="button" data-daily-challenge>Start daily</button>
+          </article>
+
+          <article class="insight-panel">
+            <span class="panel-icon ti-pulse"></span>
+            <h3>Personal Weakness Report</h3>
+            <ul class="mistake-bank" data-mistake-bank></ul>
+          </article>
+
+          <article class="insight-panel">
+            <span class="panel-icon ti-headphone-alt"></span>
+            <h3>Smart Speed Modes</h3>
+            <div class="mode-preview-list">
+              <span><strong>Slow</strong> nghe rõ từng chữ</span>
+              <span><strong>Natural</strong> tốc độ thực tế</span>
+              <span><strong>Native</strong> nuốt âm, nối âm nhanh</span>
+              <span><strong>Chaos</strong> có tiếng nền</span>
+            </div>
+          </article>
+        </aside>
+      </div>
     </section>
 
-    <section class="section compact lesson-layout">
-      <article class="lesson-content">
-        <div class="media-placeholder">
-          <span>Audio: Greeting conversation</span>
-          <p>Thêm file audio vào thư mục assets/audio rồi gắn vào đây khi có bản thu thật.</p>
-        </div>
-        <h2>Transcript</h2>
-        <p>A: Good morning. My name is Anna. What is your name?</p>
-        <p>B: My name is Minh. Nice to meet you.</p>
-        <p>A: Nice to meet you too.</p>
-        <h2>Câu hỏi</h2>
-        <div class="mini-quiz">
-          <p>What is the woman's name?</p>
-          <button data-answer="correct">Anna</button>
-          <button data-answer="wrong">Minh</button>
-          <button data-answer="wrong">John</button>
-          <p class="feedback"></p>
-        </div>
-      </article>
-      <aside class="lesson-sidebar">
-        <h3>Cấp độ</h3>
-        <a href="#">Easy: hội thoại ngắn</a>
-        <a href="#">Medium: đời sống</a>
-        <a href="#">Hard: podcast, tin tức</a>
-      </aside>
+    <section class="section compact lab-workspace" id="lab-workspace" hidden>
+      <button class="btn btn-ghost btn-back" id="back-to-map" type="button"><span class="ti-arrow-left"></span> Quay lại Listening Map</button>
+
+      <div class="mission-shell">
+        <aside class="mission-context">
+          <p class="eyebrow" data-mission-kicker>Session</p>
+          <h2 data-mission-title>Session title</h2>
+          <p class="mission-story" data-mission-story></p>
+          <dl class="mission-meta">
+            <div><dt>Vai của bạn</dt><dd data-mission-role></dd></div>
+            <div><dt>Accent</dt><dd data-mission-accent></dd></div>
+            <div><dt>Noise</dt><dd data-mission-noise></dd></div>
+            <div><dt>Mục tiêu</dt><dd data-mission-target></dd></div>
+          </dl>
+
+          <div class="challenge-clock" data-challenge-box hidden>
+            <span class="ti-timer"></span>
+            <strong data-challenge-timer>30s</strong>
+            <small>Quick Listen challenge</small>
+          </div>
+
+          <div class="listen-pass">
+            <h3>Nghe 3 lần, mỗi lần mở khóa thêm</h3>
+            <ol>
+              <li data-layer-step="1" class="active">Lần 1: chỉ nghe audio</li>
+              <li data-layer-step="2">Lần 2: hiện từ khóa</li>
+              <li data-layer-step="3">Lần 3: gap transcript</li>
+            </ol>
+            <p><strong data-listen-count>0</strong>/3 lượt nghe đã dùng trong session này.</p>
+          </div>
+          <div class="session-audit" data-session-audit aria-label="Session quality check"></div>
+        </aside>
+
+        <section class="audio-workbench" aria-label="Khu luyện nghe">
+          <div class="player-panel">
+            <div class="player-topline">
+              <div>
+                <p class="eyebrow">Audio Lab</p>
+                <h3 data-player-title>Listen without subtitles first.</h3>
+              </div>
+            </div>
+            <div class="waveform" id="waveform" aria-hidden="true"></div>
+            <div class="mode-tabs" aria-label="Chọn chế độ nghe">
+              <button class="mode-tab" type="button" data-mode="slow">Slow Mode<span>0.78x</span></button>
+              <button class="mode-tab active" type="button" data-mode="natural">Natural Mode<span>1x</span></button>
+              <button class="mode-tab" type="button" data-mode="native">Native Mode<span>1.25x</span></button>
+              <button class="mode-tab chaos" type="button" data-mode="chaos">Chaos Mode<span>noise</span></button>
+            </div>
+          </div>
+
+          <div class="stage-card question-stage" id="stage-1">
+            <span class="stage-label">Tầng 1: Nghe thô</span>
+            <div class="stage-heading">
+              <h3 data-question-title>Bạn nghĩ người nói đang hỏi gì?</h3>
+              <p data-question-context>Chọn phản hồi phù hợp với vai của bạn.</p>
+            </div>
+            <div class="roleplay-options" id="roleplay-options"></div>
+            <div class="confidence-row" aria-label="Mức tự tin">
+              <span>Confidence:</span>
+              <label><input type="radio" name="confidence" value="high"> Tôi chắc chắn</label>
+              <label><input type="radio" name="confidence" value="medium" checked> Tôi hơi đoán</label>
+              <label><input type="radio" name="confidence" value="low"> Tôi không chắc</label>
+            </div>
+            <p class="answer-feedback" data-answer-feedback aria-live="polite"></p>
+          </div>
+
+          <div class="stage-card stage-locked" id="stage-2">
+            <span class="stage-label">Tầng 2-3: Từ khóa + gap transcript</span>
+            <div class="stage-heading">
+              <h3>Ẩn phụ đề từng phần</h3>
+              <p>Nghe lại, nhìn từ khóa bị che một phần, rồi điền phần còn thiếu.</p>
+            </div>
+            <div class="keyword-strip" data-keyword-hints aria-label="Từ khóa gợi ý"></div>
+            <div class="fill-blanks" id="fill-blanks" data-dictation></div>
+            <div class="hint-actions">
+              <button class="btn btn-ghost" id="reveal-letter" type="button" disabled>Reveal first letter</button>
+              <button class="btn btn-ghost" id="play-slower" type="button" disabled>Play slower</button>
+              <button class="btn btn-ghost" id="show-connected" type="button" disabled>Show connected speech</button>
+              <button class="btn btn-ghost" id="show-answer" type="button" disabled>Show full answer</button>
+              <button class="btn btn-secondary" id="check-blanks" type="button" disabled>Kiểm tra</button>
+            </div>
+            <div class="connected-panel" data-connected-panel hidden>
+              <strong>Nghe như người bản xứ:</strong>
+              <p data-connected-speech></p>
+            </div>
+          </div>
+
+          <div class="stage-card stage-locked" id="stage-3">
+            <span class="stage-label">Tầng 4: Bóc tách âm thanh</span>
+            <div class="stage-heading">
+              <h3>Why did I miss it?</h3>
+              <p>Không chỉ hiện đáp án, lab chỉ ra phần bạn dễ nghe sai.</p>
+            </div>
+            <p class="transcript" data-transcript></p>
+            <div class="native-line"><span>Native speech</span><strong data-native-line></strong></div>
+            <div class="sound-timeline" data-phrase-timeline></div>
+            <div class="breakdown-grid">
+              <div><h4>Vì sao khó nghe?</h4><ul data-why-hard></ul></div>
+              <div><h4>Lỗi nghe cá nhân</h4><p data-miss-reason></p></div>
+            </div>
+            <button class="btn btn-primary" id="finish-mission" type="button" disabled><span class="ti-medall"></span> Hoàn thành session</button>
+          </div>
+
+          <div class="result-panel" data-result-panel hidden>
+            <div>
+              <p class="eyebrow">Session Result</p>
+              <h3 data-result-title>Bạn hiểu được 72% đoạn hội thoại ở tốc độ tự nhiên.</h3>
+              <p data-result-copy>Mục tiêu tiếp theo: đạt 85% để mở khóa Native Mode nâng cao.</p>
+            </div>
+            <div class="earned-badges" data-earned-badges></div>
+          </div>
+        </section>
+
+        <aside class="session-player-card" aria-label="Nghe lại session">
+          <div class="session-player-head">
+            <span class="session-player-icon ti-headphone-alt" aria-hidden="true"></span>
+            <div>
+              <p class="eyebrow">Listen anytime</p>
+              <strong data-sticky-session-title>Session audio</strong>
+            </div>
+          </div>
+          <div class="session-player-meta">
+            <span class="mode-status" data-current-mode>Natural Mode</span>
+            <span data-voice-route>Auto voice</span>
+          </div>
+          <div class="player-actions session-player-actions">
+            <button class="btn btn-primary" id="master-play" type="button"><span class="ti-control-play"></span> Play session audio</button>
+            <button class="btn btn-ghost" id="replay-hard" type="button"><span class="ti-loop"></span> Replay hard part</button>
+          </div>
+          <p class="player-note" data-audio-note>Tốc độ hội thoại thực tế.</p>
+        </aside>
+      </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div><strong>EngWithMe</strong><p>Học tiếng Anh theo lộ trình cá nhân.</p></div>
-    <div class="footer-links"><a href="speaking.html">Luyện nói</a><a href="quiz.html">Quiz</a></div>
+    <div>
+      <strong>EngWithMe</strong>
+      <p>Học tiếng Anh theo lộ trình cá nhân.</p>
+    </div>
+    <div class="footer-links">
+      <a href="speaking.html">Luyện nói</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="profile.html">Hồ sơ</a>
+    </div>
     <p>&copy; <span data-current-year></span> EngWithMe.</p>
   </footer>
 
   <script src="js/core.js"></script>
-  <script src="js/toeic/2017.js"></script>
-  <script src="js/toeic/2018.js"></script>
-  <script src="js/toeic/2019.js"></script>
-  <script src="js/toeic/2020.js"></script>
-  <script src="js/toeic/2021.js"></script>
-  <script src="js/toeic/2022.js"></script>
-  <script src="js/toeic/2023.js"></script>
-  <script src="js/toeic/2024.js"></script>
-  <script src="js/toeic/2025.js"></script>
-  <script src="js/toeic-reading-data.js"></script>
-  <script src="js/legacy-quiz.js"></script>
+  <script src="js/listening-lab.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

@@ -4,6 +4,7 @@ window.TOEIC_LISTENING_EXAMS = window.TOEIC_LISTENING_EXAMS || {};
 (() => {
   const questions = [];
   const labels = ["A", "B", "C", "D"];
+  const audioVersion = "english-v2";
 
   function formatTranscript(question, options) {
     return [
@@ -14,15 +15,15 @@ window.TOEIC_LISTENING_EXAMS = window.TOEIC_LISTENING_EXAMS || {};
 
   function getDefaultAudioUrl(partNumber, questionNo, group) {
     if (partNumber === 1 || partNumber === 2) {
-      return `audio/toeic/2017/part${partNumber}/question-${String(questionNo).padStart(3, "0")}.mp3`;
+      return `audio/toeic/2017/part${partNumber}/question-${String(questionNo).padStart(3, "0")}.mp3?v=${audioVersion}`;
     }
 
     const range = String(group || "").match(/(\d+)-(\d+)/);
     if (range) {
-      return `audio/toeic/2017/part${partNumber}/questions-${String(range[1]).padStart(3, "0")}-${String(range[2]).padStart(3, "0")}.mp3`;
+      return `audio/toeic/2017/part${partNumber}/questions-${String(range[1]).padStart(3, "0")}-${String(range[2]).padStart(3, "0")}.mp3?v=${audioVersion}`;
     }
 
-    return `audio/toeic/2017/part${partNumber}/question-${String(questionNo).padStart(3, "0")}.mp3`;
+    return `audio/toeic/2017/part${partNumber}/question-${String(questionNo).padStart(3, "0")}.mp3?v=${audioVersion}`;
   }
 
   function add(partNumber, questionNo, question, options, answerIndex, extras = {}) {

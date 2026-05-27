@@ -12,36 +12,16 @@
   transition: transform 0.22s ease, text-shadow 0.22s ease, filter 0.22s ease;
 }
 
-.brand::before {
-  width: 34px;
-  height: 34px;
-  flex-basis: 34px;
-  background-image: url("../../../assets/icons/theme/four-leaf-mark.svg");
-  filter: drop-shadow(0 0 13px rgba(46, 232, 120, 0.9));
-}
+
 
 .brand:hover {
-  transform: translateY(-1px);
   filter: brightness(1.08);
   text-shadow:
     0 0 17px rgba(46, 232, 120, 0.72),
     0 0 24px rgba(72, 207, 255, 0.45);
 }
 
-.nav-links {
-  gap: 10px;
-}
 
-.nav-links a {
-  transform-origin: center;
-  transition: color 0.18s ease, text-shadow 0.18s ease;
-}
-
-.nav-links a:hover,
-.nav-links a.is-active {
-  color: #ffffff;
-  text-shadow: 0 0 12px rgba(46, 232, 120, 0.24);
-}
 
 .hero p.hero-slogan {
   border-left: 4px solid #ff5c8a;

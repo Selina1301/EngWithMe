@@ -20,7 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
     "initHomeSuggestion",
     "initHomeInteractions",
     "initContactForm",
-    "initBlogPage"
+    "initBlogPage",
+    "initListeningLab"
   ].forEach((initializerName) => {
     const initializer = window[initializerName];
     if (typeof initializer === "function") {

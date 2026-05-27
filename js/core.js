@@ -6,14 +6,16 @@ function setCurrentYear() {
 function setActiveNav() {
   const currentPage = window.location.pathname.split("/").pop() || "index.html";
   const mainNavItems = [
-    { href: "index.html", label: "Trang chủ" },
-    { href: "vocabulary.html", label: "Từ vựng" },
-    { href: "reading.html", label: "Đọc" },
-    { href: "grammar.html", label: "Ngữ pháp" },
-    { href: "quiz.html", label: "Đề thi" },
+    { href: "index.html", label: "Home" },
+    { href: "vocabulary.html", label: "Vocabulary" },
+    { href: "listening.html", label: "Listening" },
+    { href: "reading.html", label: "Reading" },
+    { href: "grammar.html", label: "Grammar" },
+    { href: "exam-practice.html", label: "Exam" },
     { href: "blog.html", label: "Blog" },
-    { href: "pricing.html", label: "Bảng giá" }
+    { href: "pricing.html", label: "Premium" }
   ];
+
   const adminNavItems = [
     { href: "admin.html", label: "Tổng quan" },
     { href: "admin.html#users", label: "Người dùng" },

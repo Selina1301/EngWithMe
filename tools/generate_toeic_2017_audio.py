@@ -1,10 +1,11 @@
-"""Generate TOEIC 2017 Listening MP3 files from js/toeic/2017-listening.js.
+"""Generate TOEIC Listening MP3 files from js/toeic/<year>-listening.js.
 
 This script uses edge-tts neural voices and writes browser-ready MP3 files into:
-audio/toeic/2017/part1..part4/
+audio/toeic/<year>/part1..part4/
 
 Usage:
   python tools/generate_toeic_2017_audio.py
+  python tools/generate_toeic_2017_audio.py --year 2018
   python tools/generate_toeic_2017_audio.py --force
   python tools/generate_toeic_2017_audio.py --parts 1,2
 """
@@ -34,6 +35,7 @@ except ImportError as exc:  # pragma: no cover - developer setup guard
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 YEAR = "2017"
+SUPPORTED_YEAR_PATTERN = re.compile(r"^\d{4}$")
 DEFAULT_RATE = "+0%"
 DEFAULT_VOICE_COUNT = 30
 PREFERRED_ENGLISH_LOCALES = (
@@ -41,49 +43,40 @@ PREFERRED_ENGLISH_LOCALES = (
     "en-GB",
     "en-AU",
     "en-CA",
-    "en-IN",
     "en-IE",
     "en-NZ",
-    "en-ZA",
-    "en-SG",
-    "en-HK",
-    "en-PH",
-    "en-KE",
-    "en-NG",
-    "en-TZ",
-    "en-GH",
 )
 PINNED_ENGLISH_VOICE_POOL = (
     "en-US-AnaNeural",
-    "en-GB-LibbyNeural",
-    "en-AU-NatashaNeural",
-    "en-CA-ClaraNeural",
-    "en-IN-NeerjaExpressiveNeural",
-    "en-IE-EmilyNeural",
-    "en-NZ-MollyNeural",
-    "en-ZA-LeahNeural",
-    "en-SG-LunaNeural",
-    "en-HK-YanNeural",
-    "en-PH-RosaNeural",
-    "en-KE-AsiliaNeural",
-    "en-NG-EzinneNeural",
-    "en-TZ-ImaniNeural",
     "en-US-AriaNeural",
-    "en-GB-MaisieNeural",
-    "en-AU-WilliamMultilingualNeural",
-    "en-CA-LiamNeural",
-    "en-IN-NeerjaNeural",
-    "en-IE-ConnorNeural",
-    "en-NZ-MitchellNeural",
-    "en-ZA-LukeNeural",
-    "en-SG-WayneNeural",
-    "en-HK-SamNeural",
-    "en-PH-JamesNeural",
-    "en-KE-ChilembaNeural",
-    "en-NG-AbeoNeural",
-    "en-TZ-ElimuNeural",
     "en-US-AvaMultilingualNeural",
+    "en-US-AvaNeural",
+    "en-US-EmmaMultilingualNeural",
+    "en-US-EmmaNeural",
+    "en-US-JennyNeural",
+    "en-US-MichelleNeural",
+    "en-US-AndrewMultilingualNeural",
+    "en-US-AndrewNeural",
+    "en-US-BrianMultilingualNeural",
+    "en-US-BrianNeural",
+    "en-US-ChristopherNeural",
+    "en-US-EricNeural",
+    "en-US-GuyNeural",
+    "en-US-RogerNeural",
+    "en-US-SteffanNeural",
+    "en-GB-LibbyNeural",
+    "en-GB-MaisieNeural",
     "en-GB-SoniaNeural",
+    "en-GB-RyanNeural",
+    "en-GB-ThomasNeural",
+    "en-AU-NatashaNeural",
+    "en-AU-WilliamMultilingualNeural",
+    "en-CA-ClaraNeural",
+    "en-CA-LiamNeural",
+    "en-IE-EmilyNeural",
+    "en-IE-ConnorNeural",
+    "en-NZ-MollyNeural",
+    "en-NZ-MitchellNeural",
 )
 
 
@@ -119,18 +112,18 @@ def run_node_json(script: str) -> object:
 
 
 def load_questions() -> list[dict]:
-    script = r"""
+    script = f"""
 const fs = require("fs");
 const vm = require("vm");
-const context = { window: {} };
+const context = {{ window: {{}} }};
 context.window.window = context.window;
 vm.createContext(context);
-vm.runInContext(fs.readFileSync("js/toeic/2017-listening.js", "utf8"), context);
-console.log(JSON.stringify(context.window.TOEIC_LISTENING_EXAMS.y2017.questions));
+vm.runInContext(fs.readFileSync("js/toeic/{YEAR}-listening.js", "utf8"), context);
+console.log(JSON.stringify(context.window.TOEIC_LISTENING_EXAMS.y{YEAR}.questions));
 """
     data = run_node_json(script)
     if not isinstance(data, list):
-      raise SystemExit("Could not load TOEIC Listening 2017 question data.")
+      raise SystemExit(f"Could not load TOEIC Listening {YEAR} question data.")
     return data
 
 
@@ -150,12 +143,18 @@ def normalize_tts_text(text: str) -> str:
         "Dr.": "Doctor",
         "St.": "Saint",
         "555-0186": "five five five, zero one eight six",
+        "555-0147": "five five five, zero one four seven",
         "8:15": "eight fifteen",
+        "8:20": "eight twenty",
         "8:30": "eight thirty",
         "10:00": "ten o'clock",
+        "5:45": "five forty five",
+        "7:00": "seven o'clock",
+        "1:00": "one o'clock",
         "3:00": "three o'clock",
         "15 percent": "fifteen percent",
         "20 percent": "twenty percent",
+        "25 percent": "twenty five percent",
         "12 percent": "twelve percent",
         "Room 204": "Room two oh four",
         "$8": "eight dollars",
@@ -439,6 +438,7 @@ async def generate(jobs: list[AudioJob], force: bool, rate: str, dry_run: bool) 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--year", default=YEAR, help="TOEIC listening year, for example 2017 or 2018.")
     parser.add_argument("--parts", default="1,2,3,4", help="Comma-separated parts to generate.")
     parser.add_argument("--force", action="store_true", help="Overwrite existing MP3 files.")
     parser.add_argument("--dry-run", action="store_true", help="Print files without generating audio.")
@@ -449,7 +449,11 @@ def parse_args() -> argparse.Namespace:
 
 
 async def async_main() -> int:
+    global YEAR
     args = parse_args()
+    if not SUPPORTED_YEAR_PATTERN.fullmatch(args.year):
+        raise SystemExit("--year must be a four-digit year, for example 2018.")
+    YEAR = args.year
     selected_parts = {part.strip() for part in args.parts.split(",") if part.strip()}
     invalid_parts = selected_parts - {"1", "2", "3", "4"}
     if invalid_parts:
