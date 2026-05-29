@@ -68,11 +68,6 @@
 
       <div class="reading-study-view" data-reading-study-view>
       <div class="study-toolbar">
-        <div class="level-tabs compact-tabs" aria-label="Ưu tiên cấp độ đọc">
-          <button class="level-tab active" type="button" data-reading-level-tab="easy">Easy</button>
-          <button class="level-tab" type="button" data-reading-level-tab="medium">Medium</button>
-          <button class="level-tab" type="button" data-reading-level-tab="hard">Hard</button>
-        </div>
         <label class="study-search">
           <i class="ti-search"></i>
           <input type="search" placeholder="Tìm chủ đề hoặc câu hội thoại" data-reading-search>
@@ -87,6 +82,13 @@
       </div>
 
       <div class="reading-layout">
+        <div class="reading-level-rail">
+          <div class="level-tabs compact-tabs reading-level-tabs" aria-label="Ưu tiên cấp độ đọc">
+            <button class="level-tab active" type="button" data-reading-level-tab="easy">Easy</button>
+            <button class="level-tab" type="button" data-reading-level-tab="medium">Medium</button>
+            <button class="level-tab" type="button" data-reading-level-tab="hard">Hard</button>
+          </div>
+        </div>
         <aside class="reading-topic-list" aria-label="Danh sách chủ đề đọc"></aside>
 
         <div class="reading-passages" data-reading-passages></div>
