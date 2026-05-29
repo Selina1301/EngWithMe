@@ -190,6 +190,102 @@
       </div>
     </section>
 
+    <section class="section section-muted" id="learning-content">
+      <div class="section-heading">
+        <p class="eyebrow">Learning content</p>
+        <h2>Quản lý Reading, Listening & Grammar</h2>
+        <p>Thêm, sửa, ẩn hoặc xóa nội dung trong bảng <code>learning_content_items</code>. Người học sẽ nhận dữ liệu qua API, còn dữ liệu cũ vẫn là fallback.</p>
+        <p class="feedback" data-content-feedback></p>
+      </div>
+
+      <div class="admin-content-toolbar">
+        <div class="admin-content-tabs" role="tablist" aria-label="Chọn loại nội dung">
+          <button class="admin-content-tab is-active" type="button" data-content-section="reading">Reading</button>
+          <button class="admin-content-tab" type="button" data-content-section="listening">Listening</button>
+          <button class="admin-content-tab" type="button" data-content-section="grammar">Grammar</button>
+        </div>
+        <label class="admin-content-search">
+          <span class="ti-search"></span>
+          <input type="search" data-content-search placeholder="Tìm key, title, level, goal...">
+        </label>
+        <div class="admin-content-actions">
+          <button class="admin-action success" type="button" data-content-new><span class="ti-plus"></span>Thêm mới</button>
+          <button class="admin-action" type="button" data-content-reload><span class="ti-reload"></span>Tải lại</button>
+        </div>
+      </div>
+
+      <div class="admin-content-layout">
+        <aside class="admin-content-list" data-content-list>
+          <p class="admin-content-empty">Đang tải nội dung...</p>
+        </aside>
+
+        <form class="admin-content-editor" data-content-editor>
+          <div class="admin-content-editor-head">
+            <div>
+              <p class="eyebrow">Editor</p>
+              <h3 data-content-editor-title>Chọn một nội dung để sửa</h3>
+            </div>
+            <span class="status-pill" data-content-editor-status>Draft</span>
+          </div>
+
+          <div class="admin-content-form-grid">
+            <label>
+              <span>Section</span>
+              <select data-content-field="section">
+                <option value="reading">reading</option>
+                <option value="listening">listening</option>
+                <option value="grammar">grammar</option>
+              </select>
+            </label>
+            <label>
+              <span>Content key</span>
+              <input type="text" data-content-field="key" placeholder="schedule-change">
+            </label>
+            <label>
+              <span>Level</span>
+              <input type="text" data-content-field="level" placeholder="easy / B1 / B2">
+            </label>
+            <label>
+              <span>Goal</span>
+              <input type="text" data-content-field="goal" placeholder="work-career">
+            </label>
+            <label>
+              <span>Sort order</span>
+              <input type="number" data-content-field="sortOrder" min="0" step="1">
+            </label>
+            <label>
+              <span>Status</span>
+              <select data-content-field="status">
+                <option value="published">published</option>
+                <option value="draft">draft</option>
+                <option value="archived">archived</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            <span>Title</span>
+            <input type="text" data-content-field="title" placeholder="Schedule Change">
+          </label>
+
+          <label>
+            <span>Description</span>
+            <textarea data-content-field="description" rows="3" placeholder="Mô tả ngắn cho bài học/session"></textarea>
+          </label>
+
+          <label>
+            <span>Payload JSON</span>
+            <textarea class="admin-content-json" data-content-field="payload" rows="18" spellcheck="false" placeholder='{"id":"schedule-change","level":"easy","title":"Schedule Change"}'></textarea>
+          </label>
+
+          <div class="admin-content-editor-actions">
+            <button class="admin-action success" type="submit"><span class="ti-save"></span>Lưu nội dung</button>
+            <button class="admin-action danger" type="button" data-content-delete><span class="ti-trash"></span>Xóa</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
     <section class="section" id="settings">
       <div class="feature-grid three admin-note-grid">
         <article class="feature-card"><span class="icon-box ti-lock"></span><h3>Bảo mật</h3><p>Mật khẩu được lưu ở dạng mã hóa một chiều.</p></article>

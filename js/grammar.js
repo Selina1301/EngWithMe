@@ -1,7 +1,12 @@
-function initGrammarLearning() {
+async function initGrammarLearning() {
+  try {
   const rail = document.querySelector("[data-grammar-topic-rail]");
   const detail = document.querySelector("[data-grammar-detail]");
   if (!rail || !detail || typeof grammarTopics === "undefined") return;
+  if (typeof window.loadGrammarTopicsFromApi === "function") {
+    await window.loadGrammarTopicsFromApi();
+  }
+  if (!Array.isArray(grammarTopics) || !grammarTopics.length) return;
 
   const grammarModeTabs = document.querySelectorAll("[data-grammar-mode]");
   const grammarStudyView = document.querySelector("[data-grammar-study-view]");
@@ -319,6 +324,9 @@ function initGrammarLearning() {
   renderTopic(window.location.hash.replace("#", "") || grammarTopics[0].id, false, false);
   updateGrammarProgress();
   setGrammarMode(activeGrammarMode);
+  } catch (error) {
+    console.warn("Grammar learning failed to initialize:", error);
+  }
 }
 
 function getGrammarPracticeState(stateKey) {

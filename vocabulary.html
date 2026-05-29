@@ -305,9 +305,9 @@
     let activeLevel = vocabularyData[initialLevel] ? initialLevel : "easy";
     let activeMode = ["study", "progress", "my-vocab"].includes(localStorage.getItem(modeStorageKey)) ? localStorage.getItem(modeStorageKey) : "study";
     let activeMyVocabLevel = "easy";
-    let savedWordRecords = normalizeSavedWordRecords(JSON.parse(localStorage.getItem(savedStorageKey) || "[]"));
+    let savedWordRecords = normalizeSavedWordRecords(readLocalArray(savedStorageKey));
     let savedWords = new Set(savedWordRecords.keys());
-    const quizStats = normalizeQuizStats(JSON.parse(localStorage.getItem(quizStatsKey) || "null"));
+    const quizStats = normalizeQuizStats(readLocalObject(quizStatsKey));
     let quizTimer = null;
 
     function normalizeQuizStats(value) {
@@ -404,8 +404,26 @@
       return { current, best };
     }
 
+    function readLocalArray(key) {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(key) || "[]");
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function readLocalObject(key) {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(key) || "null");
+        return parsed && typeof parsed === "object" ? parsed : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
     function recordVocabActivity() {
-      const days = new Set(JSON.parse(localStorage.getItem(activityStorageKey) || "[]"));
+      const days = new Set(readLocalArray(activityStorageKey));
       days.add(todayKey());
       localStorage.setItem(activityStorageKey, JSON.stringify(Array.from(days).sort()));
     }
@@ -420,6 +438,7 @@
           body.append("correct", quizStats.correct || 0);
           body.append("total", quizStats.total || 0);
           body.append("wrong_words", JSON.stringify(quizStats.wrongWords || {}));
+          body.append("activity_day", todayKey());
           fetch("api/sync_quiz.php", {
             method: "POST",
             body,
@@ -514,7 +533,7 @@
         savedContribution +
         quizContribution
       );
-      const activityDays = JSON.parse(localStorage.getItem(activityStorageKey) || "[]");
+      const activityDays = readLocalArray(activityStorageKey);
       const streak = calculateStreak(activityDays);
       const wrongTotal = Math.max(0, quizStats.total - quizStats.correct);
       const wrongUnique = Object.keys(quizStats.wrongWords || {}).length;
@@ -565,6 +584,19 @@
       progressQuizContribution.textContent = `${snapshot.quizContribution}% / 30%`;
     }
 
+    function refreshVocabularyStateFromStorage() {
+      savedWordRecords = normalizeSavedWordRecords(readLocalArray(savedStorageKey));
+      savedWords = new Set(savedWordRecords.keys());
+      Object.assign(quizStats, normalizeQuizStats(readLocalObject(quizStatsKey)));
+
+      updateSavedCount();
+      renderTopics();
+      renderMyVocab();
+      updateProgressView();
+    }
+
+    window.refreshVocabularyStateFromStorage = refreshVocabularyStateFromStorage;
+
     function renderSavedWordsList() {
       const entries = getSavedWordEntries();
 
@@ -602,6 +634,7 @@
           const vocabKey = button.dataset.removeSavedWord;
           savedWordRecords.delete(vocabKey);
           saveSavedWordRecords();
+          recordVocabActivity();
           updateSavedCount();
           renderSavedWordsList();
           renderMyVocab();
@@ -613,6 +646,7 @@
             const body = new FormData();
             body.append("action", "remove");
             body.append("vocab_key", vocabKey);
+            body.append("activity_day", todayKey());
             fetch("api/sync_vocab.php", {
               method: "POST",
               body,
@@ -667,6 +701,7 @@
           const vocabKey = button.dataset.removeMyVocab;
           savedWordRecords.delete(vocabKey);
           saveSavedWordRecords();
+          recordVocabActivity();
           updateSavedCount();
           renderMyVocab();
           updateProgressView();
@@ -677,6 +712,7 @@
             const body = new FormData();
             body.append("action", "remove");
             body.append("vocab_key", vocabKey);
+            body.append("activity_day", todayKey());
             fetch("api/sync_vocab.php", {
               method: "POST",
               body,

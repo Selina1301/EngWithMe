@@ -106,8 +106,8 @@
   <script src="js/core.js"></script>
   <script src="js/demo-actions.js"></script>
   <script src="js/main.js"></script>
-  <script>
-    const readingLessons = [
+  <script type="module">
+    let readingLessons = [
       {
         id: "schedule-change",
         level: "easy",
@@ -417,37 +417,88 @@
       }
     ];
 
+    async function loadReadingLessonsFromApi(fallbackLessons) {
+      try {
+        const response = await fetch("api/learning_content.php?section=reading", {
+          credentials: "same-origin",
+          cache: "no-store"
+        });
+        if (!response.ok) return fallbackLessons;
+
+        const result = await response.json();
+        const loaded = Array.isArray(result.items)
+          ? result.items.map(normalizeReadingLesson).filter(Boolean)
+          : [];
+
+        return loaded.length ? loaded : fallbackLessons;
+      } catch (error) {
+        console.warn("Reading content API unavailable; using bundled lessons.", error);
+        return fallbackLessons;
+      }
+    }
+
+    function normalizeReadingLesson(item) {
+      const payload = item?.payload && typeof item.payload === "object" ? item.payload : item;
+      if (!payload || typeof payload !== "object") return null;
+
+      const lesson = {
+        ...payload,
+        id: item.key || payload.id,
+        level: payload.level || item.level || "easy",
+        title: payload.title || item.title || item.key,
+        description: payload.description || item.description || "",
+        lines: Array.isArray(payload.lines) ? payload.lines : [],
+        vocab: Array.isArray(payload.vocab) ? payload.vocab : []
+      };
+
+      return lesson.id && lesson.title && lesson.lines.length ? lesson : null;
+    }
+
+    function safeText(value) {
+      return typeof escapeHtml === "function"
+        ? escapeHtml(value)
+        : String(value).replace(/[&<>"']/g, (char) => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+          }[char]));
+    }
+
+    readingLessons = await loadReadingLessonsFromApi(readingLessons);
+
     function renderReadingLessons() {
       const topicList = document.querySelector(".reading-topic-list");
       const passageList = document.querySelector("[data-reading-passages]");
       if (!topicList || !passageList) return;
 
       topicList.innerHTML = readingLessons.map((lesson, index) => `
-        <article class="reading-topic-card${index === 0 ? " is-active" : ""}" data-reading-topic-link="${lesson.id}" data-reading-level="${lesson.level}" data-original-index="${index}">
-          <button class="reading-topic-open" type="button" data-reading-topic-open aria-label="Mở bài ${lesson.title}"></button>
-          <span>${lesson.level.charAt(0).toUpperCase() + lesson.level.slice(1)}</span>
-          <strong>${lesson.title}</strong>
+        <article class="reading-topic-card${index === 0 ? " is-active" : ""}" data-reading-topic-link="${safeText(lesson.id)}" data-reading-level="${safeText(lesson.level)}" data-original-index="${index}">
+          <button class="reading-topic-open" type="button" data-reading-topic-open aria-label="Mở bài ${safeText(lesson.title)}"></button>
+          <span>${safeText(lesson.level.charAt(0).toUpperCase() + lesson.level.slice(1))}</span>
+          <strong>${safeText(lesson.title)}</strong>
           <small>${lesson.lines.length} dòng đọc</small>
           <i class="topic-check ti-check" aria-hidden="true"></i>
         </article>
       `).join("");
 
       passageList.innerHTML = readingLessons.map((lesson, index) => `
-        <article class="reading-passage translations-muted" id="${lesson.id}" data-reading-level="${lesson.level}" data-original-index="${index}" data-reading-topic>
+        <article class="reading-passage translations-muted" id="${safeText(lesson.id)}" data-reading-level="${safeText(lesson.level)}" data-original-index="${index}" data-reading-topic>
           <div class="reading-passage-head">
             <div>
-              <span class="level-chip ${lesson.level}">${lesson.level.charAt(0).toUpperCase() + lesson.level.slice(1)}</span>
-              <h2>${lesson.title}</h2>
-              <p>${lesson.description}</p>
+              <span class="level-chip ${safeText(lesson.level)}">${safeText(lesson.level.charAt(0).toUpperCase() + lesson.level.slice(1))}</span>
+              <h2>${safeText(lesson.title)}</h2>
+              <p>${safeText(lesson.description)}</p>
             </div>
-            <button class="translation-toggle" type="button" data-toggle-translation="${lesson.id}">
+            <button class="translation-toggle" type="button" data-toggle-translation="${safeText(lesson.id)}">
               <i class="ti-eye"></i>
               Bật dịch
             </button>
           </div>
           <div class="sentence-stack dialogue-card">
-            ${lesson.lines.map(([en, vi]) => `<div class="sentence-row"><p class="sentence-en">${en}</p><p class="sentence-vi">${vi}</p></div>`).join("")}
-            <div class="sentence-row"><p class="sentence-en">Key vocabulary: ${lesson.vocab.map((item) => item.split(" = ")[0]).join("; ")}</p><p class="sentence-vi">Từ hay: ${lesson.vocab.join("; ")}</p></div>
+            ${lesson.lines.map(([en, vi]) => `<div class="sentence-row"><p class="sentence-en">${safeText(en)}</p><p class="sentence-vi">${safeText(vi)}</p></div>`).join("")}
+            <div class="sentence-row"><p class="sentence-en">Key vocabulary: ${safeText(lesson.vocab.map((item) => item.split(" = ")[0]).join("; "))}</p><p class="sentence-vi">Từ hay: ${safeText(lesson.vocab.join("; "))}</p></div>
           </div>
         </article>
       `).join("");

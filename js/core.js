@@ -19,6 +19,7 @@ function setActiveNav() {
   const adminNavItems = [
     { href: "admin.html", label: "Tổng quan" },
     { href: "admin.html#users", label: "Người dùng" },
+    { href: "admin.html#learning-content", label: "Nội dung" },
     { href: "admin.html#settings", label: "Cài đặt" }
   ];
 
@@ -66,6 +67,101 @@ function setActiveNav() {
   });
 }
 
+function initEnhancedFooter() {
+  document.querySelectorAll(".site-footer").forEach((footer) => {
+    footer.innerHTML = getEnhancedFooterMarkup();
+  });
+
+  setCurrentYear();
+}
+
+function getEnhancedFooterMarkup() {
+  return `
+    <section class="footer-main" aria-label="Liên kết chính">
+      <div class="footer-brand-panel">
+        <a class="footer-logo" href="index.html">
+          <span class="footer-logo-mark" aria-hidden="true"></span>
+          <span>EngWithMe</span>
+        </a>
+        <p>Học tiếng Anh theo lộ trình cá nhân, luyện từ vựng, nghe, đọc và ngữ pháp.</p>
+        <div class="footer-socials" aria-label="Mạng xã hội">
+          <a href="blog.html" aria-label="Facebook"><span class="ti-facebook"></span></a>
+          <a href="blog.html" aria-label="YouTube"><span class="ti-youtube"></span></a>
+          <a href="blog.html" aria-label="Instagram"><span class="ti-instagram"></span></a>
+        </div>
+      </div>
+
+      ${getFooterColumnMarkup("Học tập", [
+        ["vocabulary.html", "ti-bookmark-alt", "Từ vựng"],
+        ["listening.html", "ti-headphone-alt", "Listening"],
+        ["reading.html", "ti-book", "Reading"],
+        ["grammar.html", "ti-pencil-alt", "Grammar"]
+      ])}
+
+      ${getFooterColumnMarkup("Cộng đồng", [
+        ["blog.html", "ti-comments", "Blog học viên"],
+        ["speaking.html", "ti-microphone", "Luyện nói"],
+        ["dashboard.html", "ti-dashboard", "Dashboard"]
+      ])}
+
+      ${getFooterColumnMarkup("Hỗ trợ", [
+        ["about.html#support", "ti-help-alt", "Trung tâm hỗ trợ"],
+        ["pricing.html", "ti-credit-card", "Gói Premium"],
+        ["about.html#contact", "ti-email", "Liên hệ"]
+      ])}
+    </section>
+
+    <section class="footer-trust" aria-label="Thông tin đáng tin cậy">
+      <div class="footer-trust-item">
+        <span class="ti-lock"></span>
+        <strong>SSL mã hóa</strong>
+      </div>
+      <div class="footer-trust-item">
+        <span class="ti-shield"></span>
+        <strong>PDPA-ready</strong>
+      </div>
+      <div class="footer-trust-item">
+        <span class="ti-heart"></span>
+        <strong>Hoàn tiền 7 ngày</strong>
+      </div>
+      <div class="footer-trust-item">
+        <span class="ti-headphone-alt"></span>
+        <strong>Hỗ trợ 24/7</strong>
+      </div>
+      <div class="footer-trust-item">
+        <span class="ti-user"></span>
+        <strong>1301+ học viên</strong>
+      </div>
+    </section>
+
+    <section class="footer-bottom" aria-label="Thông tin pháp lý">
+      <nav aria-label="Liên kết pháp lý">
+        <a href="about.html#terms">Điều khoản</a>
+        <a href="about.html#privacy">Bảo mật</a>
+        <a href="about.html#contact">Liên hệ</a>
+      </nav>
+      <p class="footer-made">© <span data-current-year></span> EngWithMe. Made in Vietnam.</p>
+    </section>
+  `;
+}
+
+function getFooterColumnMarkup(title, links) {
+  return `
+    <div class="footer-column">
+      <h3>${title}</h3>
+      <nav aria-label="${title}">
+        ${links.map(([href, icon, label, badge]) => `
+          <a href="${href}">
+            <span class="${icon}"></span>${label}
+            ${badge ? `<em>${badge}</em>` : ""}
+          </a>
+        `).join("")}
+      </nav>
+    </div>
+  `;
+}
+
+
 function initAuthNav() {
   const header = document.querySelector(".site-header");
   if (!header) return;
@@ -86,32 +182,51 @@ function initAuthNav() {
       renderAuthenticatedNav(result.user);
       redirectAuthPages(result.user);
       syncUserDataFromServer().then(() => {
-        const page = getCurrentPage();
-        if (page === "vocabulary.html" && typeof updateProgressView === "function") {
-          // Re-load variables and re-draw views
-          const savedStorageKey = getAccountKey("engWithMeSavedVocabularyWords");
-          const quizStatsKey = getAccountKey("engWithMeVocabQuizStats");
-          if (typeof normalizeSavedWordRecords === "function") {
-            savedWordRecords = normalizeSavedWordRecords(JSON.parse(localStorage.getItem(savedStorageKey) || "[]"));
-            savedWords = new Set(savedWordRecords.keys());
-          }
-          if (typeof normalizeQuizStats === "function") {
-            const rawQuiz = JSON.parse(localStorage.getItem(quizStatsKey) || "null");
-            Object.assign(quizStats, normalizeQuizStats(rawQuiz));
-          }
-          updateSavedCount();
-          updateProgressView();
-          renderTopics();
-          renderMyVocab();
-        } else if (page === "dashboard.html" && typeof initDashboard === "function") {
-          initDashboard();
-        }
+        refreshPageAfterUserDataSync();
       });
     })
     .catch(() => {
       clearAuthUser();
       renderGuestNav();
     });
+}
+
+function refreshPageAfterUserDataSync() {
+  const page = getCurrentPage();
+
+  if (page === "vocabulary.html") {
+    if (typeof window.refreshVocabularyStateFromStorage === "function") {
+      window.refreshVocabularyStateFromStorage();
+      return;
+    }
+
+    if (typeof updateProgressView === "function") {
+      const savedStorageKey = getAccountKey("engWithMeSavedVocabularyWords");
+      const quizStatsKey = getAccountKey("engWithMeVocabQuizStats");
+      if (typeof normalizeSavedWordRecords === "function") {
+        savedWordRecords = normalizeSavedWordRecords(JSON.parse(localStorage.getItem(savedStorageKey) || "[]"));
+        savedWords = new Set(savedWordRecords.keys());
+      }
+      if (typeof normalizeQuizStats === "function") {
+        const rawQuiz = JSON.parse(localStorage.getItem(quizStatsKey) || "null");
+        Object.assign(quizStats, normalizeQuizStats(rawQuiz));
+      }
+      updateSavedCount();
+      updateProgressView();
+      renderTopics();
+      renderMyVocab();
+    }
+    return;
+  }
+
+  if (page === "vocabulary-study.html" && typeof window.refreshVocabularyStudyState === "function") {
+    window.refreshVocabularyStudyState();
+    return;
+  }
+
+  if (page === "dashboard.html" && typeof initDashboard === "function") {
+    initDashboard();
+  }
 }
 
 async function syncUserDataFromServer() {
@@ -152,10 +267,25 @@ async function syncUserDataFromServer() {
     if (quizRes.ok) {
       const quizData = await quizRes.json();
       if (quizData.ok && quizData.stats) {
+        const { activityDays, ...quizStats } = quizData.stats;
         localStorage.setItem(
           `engWithMeVocabQuizStats_user_${userId}`,
-          JSON.stringify(quizData.stats)
+          JSON.stringify(quizStats)
         );
+        if (Array.isArray(activityDays)) {
+          const activityKey = `engWithMeVocabActivityDays_user_${userId}`;
+          let localActivityDays = [];
+          try {
+            const parsed = JSON.parse(localStorage.getItem(activityKey) || "[]");
+            localActivityDays = Array.isArray(parsed) ? parsed : [];
+          } catch (error) {
+            localActivityDays = [];
+          }
+          localStorage.setItem(
+            activityKey,
+            JSON.stringify(Array.from(new Set([...localActivityDays, ...activityDays])).sort())
+          );
+        }
       }
     }
   } catch (error) {

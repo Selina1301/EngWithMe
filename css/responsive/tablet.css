@@ -17,8 +17,11 @@
   .article-grid,
   .pricing-grid,
   .stat-grid,
-  .home-feature-grid,
   .admin-page .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-feature-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 

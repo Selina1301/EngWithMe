@@ -9,6 +9,50 @@ $user = require_current_user();
 $userId = (int) $user['id'];
 $pdo = db();
 
+function ensure_vocab_activity_table(PDO $pdo): void
+{
+    $pdo->exec(
+        'CREATE TABLE IF NOT EXISTS user_vocab_activity_days (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            activity_day DATE NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE KEY unique_user_vocab_activity_day (user_id, activity_day),
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB'
+    );
+}
+
+function normalize_day_key(string $value): ?string
+{
+    $value = trim($value);
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+        return null;
+    }
+
+    $date = DateTimeImmutable::createFromFormat('!Y-m-d', $value);
+    return $date && $date->format('Y-m-d') === $value ? $value : null;
+}
+
+function normalize_wrong_words(array $input): array
+{
+    $normalized = [];
+    foreach ($input as $wordKey => $count) {
+        $wordKey = trim((string) $wordKey);
+        $count = max(0, (int) $count);
+        if ($wordKey === '' || strlen($wordKey) > 180 || $count <= 0) {
+            continue;
+        }
+
+        $normalized[$wordKey] = $count;
+        if (count($normalized) >= 500) {
+            break;
+        }
+    }
+
+    return $normalized;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $stmt = $pdo->prepare('SELECT correct_count, total_count FROM user_vocab_quiz_stats WHERE user_id = ?');
@@ -27,12 +71,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $wrongWords[$row['word_key']] = (int) $row['wrong_count'];
         }
 
+        $activityDays = [];
+        try {
+            ensure_vocab_activity_table($pdo);
+            $stmt = $pdo->prepare('SELECT activity_day FROM user_vocab_activity_days WHERE user_id = ? ORDER BY activity_day ASC');
+            $stmt->execute([$userId]);
+            foreach ($stmt->fetchAll() as $row) {
+                $activityDays[] = (string) $row['activity_day'];
+            }
+        } catch (Throwable $e) {
+            $activityDays = [];
+        }
+
         json_response([
             'ok' => true,
             'stats' => [
                 'correct' => $correct,
                 'total' => $total,
-                'wrongWords' => $wrongWords
+                'wrongWords' => $wrongWords,
+                'activityDays' => $activityDays
             ]
         ]);
     } catch (Throwable $e) {
@@ -41,13 +98,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $correct = (int) ($_POST['correct'] ?? 0);
-    $total = (int) ($_POST['total'] ?? 0);
+    $correct = max(0, (int) ($_POST['correct'] ?? 0));
+    $total = max(0, (int) ($_POST['total'] ?? 0));
+    if ($correct > $total) {
+        $correct = $total;
+    }
     
     $wrongWordsInput = $_POST['wrong_words'] ?? '{}';
     $wrongWords = json_decode((string) $wrongWordsInput, true);
     if (!is_array($wrongWords)) {
         $wrongWords = [];
+    }
+    $wrongWords = normalize_wrong_words($wrongWords);
+    $activityDay = normalize_day_key((string) ($_POST['activity_day'] ?? ''));
+    $canSyncActivity = false;
+
+    if ($activityDay) {
+        try {
+            ensure_vocab_activity_table($pdo);
+            $canSyncActivity = true;
+        } catch (Throwable $e) {
+            $canSyncActivity = false;
+        }
     }
 
     try {
@@ -66,6 +138,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->execute([$userId, trim((string) $wordKey), (int) $count]);
                 }
             }
+        }
+
+        if ($activityDay && $canSyncActivity) {
+            $stmt = $pdo->prepare('INSERT IGNORE INTO user_vocab_activity_days (user_id, activity_day) VALUES (?, ?)');
+            $stmt->execute([$userId, $activityDay]);
         }
 
         $pdo->commit();

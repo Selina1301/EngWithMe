@@ -1,6 +1,6 @@
 .learning-path {
   display: grid;
-  gap: 34px;
+  gap: 12px;
 }
 
 .path-guide {
@@ -9,7 +9,7 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
   min-height: 74px;
-  margin: 8px 0 8px;
+  margin: 8px 0 0;
   padding: 0;
 }
 
@@ -280,6 +280,12 @@
   height: 44px;
   border-radius: var(--radius);
   font-size: 21px;
+}
+
+.home-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
 }
 
 .home-feature-grid .feature-card {

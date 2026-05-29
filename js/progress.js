@@ -699,6 +699,8 @@ async function initAdminDashboard() {
     loadPendingBlogs(pendingBlogsContainer);
     setupBlogApprovalListener(pendingBlogsContainer);
   }
+
+  setupLearningContentAdmin(root);
 }
 
 function renderAdminDashboard(root, data) {
@@ -842,6 +844,407 @@ function actionButton(action, userId, label, disabled = false, tone = "") {
 
 function showAdminFeedback(root, message, isSuccess = true) {
   const feedback = root.querySelector("[data-admin-feedback]");
+  if (!feedback) return;
+  feedback.textContent = message;
+  feedback.style.color = isSuccess ? "var(--success)" : "var(--danger)";
+}
+
+function setupLearningContentAdmin(root) {
+  const list = root.querySelector("[data-content-list]");
+  const editor = root.querySelector("[data-content-editor]");
+  if (!list || !editor || root.learningContentBound) return;
+
+  root.learningContentBound = true;
+  root.learningContentState = {
+    section: "reading",
+    items: [],
+    selectedKey: "",
+    search: ""
+  };
+
+  root.querySelectorAll("[data-content-section]").forEach((button) => {
+    button.addEventListener("click", () => {
+      root.learningContentState.section = button.dataset.contentSection || "reading";
+      root.learningContentState.selectedKey = "";
+      syncLearningContentTabs(root);
+      loadLearningContentItems(root);
+    });
+  });
+
+  root.querySelector("[data-content-search]")?.addEventListener("input", (event) => {
+    root.learningContentState.search = event.target.value.trim().toLowerCase();
+    renderLearningContentList(root);
+  });
+
+  root.querySelector("[data-content-new]")?.addEventListener("click", () => {
+    selectLearningContentItem(root, createBlankLearningContent(root.learningContentState.section));
+  });
+
+  root.querySelector("[data-content-reload]")?.addEventListener("click", () => {
+    loadLearningContentItems(root);
+  });
+
+  list.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-content-key]");
+    if (!button) return;
+    const item = root.learningContentState.items.find((entry) => entry.key === button.dataset.contentKey);
+    if (item) selectLearningContentItem(root, item);
+  });
+
+  editor.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await saveLearningContentItem(root);
+  });
+
+  root.querySelector("[data-content-delete]")?.addEventListener("click", async () => {
+    await deleteLearningContentItem(root);
+  });
+
+  loadLearningContentItems(root);
+}
+
+async function loadLearningContentItems(root) {
+  const state = root.learningContentState;
+  const feedback = root.querySelector("[data-content-feedback]");
+  const list = root.querySelector("[data-content-list]");
+  if (!state || !list) return;
+
+  list.innerHTML = '<p class="admin-content-empty">Đang tải nội dung...</p>';
+  if (feedback) {
+    feedback.textContent = "";
+    feedback.style.color = "";
+  }
+
+  try {
+    const response = await fetch(`api/learning_content.php?section=${encodeURIComponent(state.section)}&include_drafts=1`, {
+      credentials: "same-origin"
+    });
+    if (response.status === 401) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    const result = await response.json();
+    if (!response.ok || !result.ok) {
+      showLearningContentFeedback(root, result.message || "Không tải được nội dung.", false);
+      list.innerHTML = '<p class="admin-content-empty">Không tải được nội dung.</p>';
+      return;
+    }
+
+    state.items = (result.items || []).map(normalizeLearningContentItem);
+    state.selectedKey = state.items[0]?.key || "";
+    renderLearningContentList(root);
+    if (state.selectedKey) {
+      selectLearningContentItem(root, state.items[0]);
+    } else {
+      selectLearningContentItem(root, createBlankLearningContent(state.section));
+    }
+  } catch (error) {
+    showLearningContentFeedback(root, "Không gọi được API nội dung học.", false);
+    list.innerHTML = '<p class="admin-content-empty">API nội dung học chưa sẵn sàng.</p>';
+  }
+}
+
+function normalizeLearningContentItem(item) {
+  const payload = item?.payload && typeof item.payload === "object" ? item.payload : {};
+  return {
+    section: item.section || "reading",
+    key: item.key || payload.id || "",
+    title: item.title || payload.title || item.key || "",
+    description: item.description || payload.description || "",
+    level: item.level || payload.level || "",
+    goal: item.goal || payload.goal || "",
+    sortOrder: Number(item.sortOrder || 0),
+    status: item.status || "published",
+    updatedAt: item.updatedAt || "",
+    payload
+  };
+}
+
+function renderLearningContentList(root) {
+  const state = root.learningContentState;
+  const list = root.querySelector("[data-content-list]");
+  if (!state || !list) return;
+
+  const query = state.search || "";
+  const items = state.items.filter((item) => {
+    if (!query) return true;
+    return [
+      item.key,
+      item.title,
+      item.description,
+      item.level,
+      item.goal,
+      item.status
+    ].join(" ").toLowerCase().includes(query);
+  });
+
+  if (!items.length) {
+    list.innerHTML = '<p class="admin-content-empty">Không có nội dung phù hợp.</p>';
+    return;
+  }
+
+  list.innerHTML = items.map((item) => `
+    <button class="admin-content-item ${item.key === state.selectedKey ? "is-active" : ""}" type="button" data-content-key="${escapeHtml(item.key)}">
+      <strong>${escapeHtml(item.title || item.key)}</strong>
+      <small>${escapeHtml(item.key)}</small>
+      <span class="admin-content-item-meta">
+        <span>${escapeHtml(item.status)}</span>
+        ${item.level ? `<span>${escapeHtml(item.level)}</span>` : ""}
+        ${item.goal ? `<span>${escapeHtml(item.goal)}</span>` : ""}
+        <span>#${Number(item.sortOrder || 0)}</span>
+      </span>
+    </button>
+  `).join("");
+}
+
+function selectLearningContentItem(root, item) {
+  const normalized = normalizeLearningContentItem(item);
+  const state = root.learningContentState;
+  if (state) state.selectedKey = normalized.key;
+
+  setContentField(root, "section", normalized.section);
+  setContentField(root, "key", normalized.key);
+  setContentField(root, "level", normalized.level);
+  setContentField(root, "goal", normalized.goal);
+  setContentField(root, "sortOrder", normalized.sortOrder);
+  setContentField(root, "status", normalized.status);
+  setContentField(root, "title", normalized.title);
+  setContentField(root, "description", normalized.description);
+  setContentField(root, "payload", JSON.stringify(normalized.payload || {}, null, 2));
+
+  setText("[data-content-editor-title]", normalized.title || "Nội dung mới");
+  setText("[data-content-editor-status]", normalized.status || "draft");
+  renderLearningContentList(root);
+}
+
+function createBlankLearningContent(section) {
+  if (section === "grammar") {
+    const payload = {
+      id: "new-grammar-topic",
+      order: "99",
+      title: "New Grammar Topic",
+      level: "Core",
+      time: "20 phút",
+      summary: "Short grammar topic summary.",
+      theory: [
+        "Explain the grammar point in a short, practical way."
+      ],
+      formulas: [
+        "Subject + Verb + Object"
+      ],
+      examples: [
+        { en: "She checks the report every morning.", vi: "Câu ví dụ minh họa cách dùng." }
+      ],
+      mistakes: [
+        "Common mistake to avoid."
+      ],
+      exercises: [
+        {
+          prompt: "Choose the correct answer.",
+          options: ["A", "B", "C", "D"],
+          answer: 0,
+          hint: "Look at the grammar form around the blank.",
+          explanation: "Correct answer: A."
+        }
+      ]
+    };
+
+    return normalizeLearningContentItem({
+      section,
+      key: payload.id,
+      title: payload.title,
+      description: payload.summary,
+      level: payload.level,
+      goal: "",
+      sortOrder: Number(payload.order),
+      status: "draft",
+      payload
+    });
+  }
+
+  if (section === "listening") {
+    const payload = {
+      id: "new-listening-session",
+      title: "New Listening Session",
+      goal: "work-career",
+      level: "B1",
+      tone: "green",
+      icon: "ti-headphone-alt",
+      accent: "American",
+      noise: "None",
+      badge: "Listener",
+      baseScore: 72,
+      opening: "Short real-life listening context.",
+      story: "Listen and choose the best response.",
+      role: "Learner",
+      target: "Understand the main idea.",
+      transcript: "Could you send me the updated report before lunch?",
+      nativeLine: "Couldja send me the updated report before lunch?",
+      connectedSpeech: "Could you -> Couldja",
+      hardPart: "updated report before lunch",
+      questionTitle: "What does the speaker ask for?",
+      context: "Choose the correct response.",
+      options: [
+        { key: "A", text: "Send the updated report before lunch.", correct: true },
+        { key: "B", text: "Cancel the meeting tomorrow.", correct: false },
+        { key: "C", text: "Buy lunch for the team.", correct: false }
+      ],
+      keywords: ["send", "updated", "report", "lunch"],
+      gapParts: ["Could you send me the updated ", { answer: "report" }, " before ", { answer: "lunch" }, "?"],
+      phrases: ["Could you send me", "the updated report", "before lunch"],
+      whyHard: ["Could you often links into Couldja.", "Updated report carries the key information."],
+      missReason: "Focus on the object after send.",
+      mistakes: ["connected", "fast"]
+    };
+    return normalizeLearningContentItem({
+      section,
+      key: payload.id,
+      title: payload.title,
+      description: payload.opening,
+      level: payload.level,
+      goal: payload.goal,
+      sortOrder: 0,
+      status: "draft",
+      payload
+    });
+  }
+
+  const payload = {
+    id: "new-reading-lesson",
+    level: "easy",
+    title: "New Reading Lesson",
+    description: "Short reading lesson description.",
+    lines: [
+      ["The team will review the new schedule this afternoon.", "Nhóm sẽ xem lại lịch mới vào chiều nay."]
+    ],
+    vocab: ["review = xem lại", "schedule = lịch trình"]
+  };
+
+  return normalizeLearningContentItem({
+    section: "reading",
+    key: payload.id,
+    title: payload.title,
+    description: payload.description,
+    level: payload.level,
+    goal: "",
+    sortOrder: 0,
+    status: "draft",
+    payload
+  });
+}
+
+async function saveLearningContentItem(root) {
+  const section = getContentField(root, "section");
+  const key = getContentField(root, "key").trim();
+  const title = getContentField(root, "title").trim();
+  const description = getContentField(root, "description").trim();
+  const level = getContentField(root, "level").trim();
+  const goal = getContentField(root, "goal").trim();
+  const sortOrder = Number(getContentField(root, "sortOrder") || 0);
+  const status = getContentField(root, "status") || "published";
+  let payload = null;
+
+  if (!/^[a-z0-9][a-z0-9-]*$/i.test(key)) {
+    showLearningContentFeedback(root, "Content key chỉ nên dùng chữ, số và dấu gạch ngang.", false);
+    return;
+  }
+
+  try {
+    payload = JSON.parse(getContentField(root, "payload") || "{}");
+  } catch (error) {
+    showLearningContentFeedback(root, "Payload JSON đang sai cú pháp.", false);
+    return;
+  }
+
+  payload.id = key;
+  if (title) payload.title = title;
+  if (description) payload.description = description;
+  if (level) payload.level = level;
+  if (goal) payload.goal = goal;
+
+  try {
+    const response = await fetch("api/learning_content.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        action: "upsert",
+        section,
+        key,
+        title,
+        description,
+        level,
+        goal,
+        sortOrder,
+        status,
+        payload
+      })
+    });
+    const result = await response.json();
+    if (!response.ok || !result.ok) {
+      showLearningContentFeedback(root, result.message || "Không lưu được nội dung.", false);
+      return;
+    }
+
+    root.learningContentState.section = section;
+    root.learningContentState.selectedKey = key;
+    syncLearningContentTabs(root);
+    await loadLearningContentItems(root);
+    const saved = root.learningContentState.items.find((item) => item.key === key);
+    if (saved) selectLearningContentItem(root, saved);
+    showLearningContentFeedback(root, result.message || "Đã lưu nội dung.", true);
+  } catch (error) {
+    showLearningContentFeedback(root, "Không gọi được API lưu nội dung.", false);
+  }
+}
+
+async function deleteLearningContentItem(root) {
+  const section = getContentField(root, "section");
+  const key = getContentField(root, "key").trim();
+  if (!key) return;
+  if (!confirm(`Xóa vĩnh viễn nội dung "${key}"?`)) return;
+
+  try {
+    const response = await fetch("api/learning_content.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ action: "delete", section, key })
+    });
+    const result = await response.json();
+    if (!response.ok || !result.ok) {
+      showLearningContentFeedback(root, result.message || "Không xóa được nội dung.", false);
+      return;
+    }
+
+    root.learningContentState.section = section;
+    root.learningContentState.selectedKey = "";
+    await loadLearningContentItems(root);
+    showLearningContentFeedback(root, result.message || "Đã xóa nội dung.", true);
+  } catch (error) {
+    showLearningContentFeedback(root, "Không gọi được API xóa nội dung.", false);
+  }
+}
+
+function syncLearningContentTabs(root) {
+  const section = root.learningContentState?.section || "reading";
+  root.querySelectorAll("[data-content-section]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.contentSection === section);
+  });
+}
+
+function getContentField(root, name) {
+  return root.querySelector(`[data-content-field="${name}"]`)?.value || "";
+}
+
+function setContentField(root, name, value) {
+  const field = root.querySelector(`[data-content-field="${name}"]`);
+  if (field) field.value = value ?? "";
+}
+
+function showLearningContentFeedback(root, message, isSuccess = true) {
+  const feedback = root.querySelector("[data-content-feedback]");
   if (!feedback) return;
   feedback.textContent = message;
   feedback.style.color = isSuccess ? "var(--success)" : "var(--danger)";

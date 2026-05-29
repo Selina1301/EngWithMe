@@ -30,55 +30,168 @@
   </header>
 
   <main class="page-main">
-    <section class="page-title">
-      <p class="eyebrow">Về dự án</p>
-      <h1>Nền tảng học tiếng Anh theo tiến độ cá nhân</h1>
-      <p>EngWithMe được thiết kế để người học biết mình đang ở đâu, cần học gì tiếp theo và luyện tập đều mỗi ngày.</p>
+    <!-- Hero Section -->
+    <section class="hero hero-about">
+      <div class="hero-content">
+        <p class="eyebrow">Về EngWithMe</p>
+        <h1>Học tiếng Anh thành thạo với lộ trình cá nhân</h1>
+        <p>Nền tảng học tập thông minh kết hợp AI, luyện tập hằng ngày và theo dõi tiến độ chi tiết để bạn đạt mục tiêu nhanh nhất.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="quiz.html">Kiểm tra trình độ miễn phí</a>
+          <a class="btn btn-light" href="register.html">Đăng ký ngay</a>
+        </div>
+      </div>
     </section>
 
+    <!-- How It Works Section -->
     <section class="section compact">
+      <div class="section-heading">
+        <p class="eyebrow">Cách thức hoạt động</p>
+        <h2>4 bước để bắt đầu hành trình học tiếng Anh</h2>
+      </div>
       <div class="timeline">
-        <article>
-          <span>1</span>
-          <h2>Kiểm tra đầu vào</h2>
-          <p>Bài test ngắn phân loại người học theo A1, A2, B1, B2 hoặc C1.</p>
+        <article class="timeline-step">
+          <div class="step-number">1</div>
+          <h3>Đánh giá trình độ</h3>
+          <p>Bài kiểm tra nhanh 10 phút phân loại bạn từ A1 đến C1 theo tiêu chuẩn CEFR quốc tế.</p>
         </article>
-        <article>
-          <span>2</span>
-          <h2>Đề xuất lộ trình</h2>
-          <p>Hệ thống gợi ý bài học, thời lượng, mức độ khó và quiz theo từng tuần.</p>
+        <article class="timeline-step">
+          <div class="step-number">2</div>
+          <h3>Nhận lộ trình cá nhân</h3>
+          <p>Hệ thống AI tạo kế hoạch học tuần theo mức độ, thời gian rảnh rỗi và mục tiêu của bạn.</p>
         </article>
-        <article>
-          <span>3</span>
-          <h2>Luyện tập hằng ngày</h2>
-          <p>Học từ vựng, ngữ pháp, nghe, nói, đọc và làm bài kiểm tra ngắn.</p>
+        <article class="timeline-step">
+          <div class="step-number">3</div>
+          <h3>Học mỗi ngày</h3>
+          <p>Luyện từ vựng, ngữ pháp, nghe, nói, đọc và writing với nội dung được cập nhật liên tục.</p>
         </article>
-        <article>
-          <span>4</span>
-          <h2>Theo dõi kết quả</h2>
-          <p>Dashboard hiển thị tiến độ, streak, điểm số và kỹ năng cần cải thiện.</p>
+        <article class="timeline-step">
+          <div class="step-number">4</div>
+          <h3>Theo dõi tiến bộ</h3>
+          <p>Dashboard chi tiết hiển thị streak, điểm số, kỹ năng mạnh/yếu và gợi ý ôn lại.</p>
         </article>
       </div>
     </section>
 
+    <!-- Features Section -->
     <section class="section section-muted">
       <div class="section-heading">
-        <p class="eyebrow">Phân quyền</p>
-        <h2>Ba nhóm người dùng chính</h2>
+        <p class="eyebrow">Tính năng nổi bật</p>
+        <h2>Công cụ toàn diện cho người học tiếng Anh</h2>
       </div>
-      <div class="feature-grid three">
+      <div class="feature-grid">
         <article class="feature-card">
-          <h3>Guest</h3>
-          <p>Xem trang chủ, danh sách khóa học, blog, bảng giá và làm test miễn phí.</p>
+          <span class="card-icon ti-book"></span>
+          <h3>Từ vựng theo chủ đề</h3>
+          <p>4000+ từ vựng được sắp xếp theo lĩnh vực: kinh doanh, du lịch, học tập, công nghệ...</p>
         </article>
         <article class="feature-card">
-          <h3>Student</h3>
-          <p>Học bài, làm bài tập, lưu từ vựng, làm kiểm tra và xem tiến độ.</p>
+          <span class="card-icon ti-ruler-pencil"></span>
+          <h3>Ngữ pháp chi tiết</h3>
+          <p>Từ cơ bản đến nâng cao, mỗi quy tắc có ví dụ, bài tập và kiểm tra vận dụng.</p>
         </article>
         <article class="feature-card">
+          <span class="card-icon ti-headphone-alt"></span>
+          <h3>Listening tập trung</h3>
+          <p>Nghe từ các podcast, bài hội thoại, video và bài thi TOEIC thực tế với transcript.</p>
+        </article>
+        <article class="feature-card">
+          <span class="card-icon ti-read"></span>
+          <h3>Reading comprehension</h3>
+          <p>Bài đọc từ tin tức, truyện ngắn, tiểu luận với câu hỏi trắc nghiệm kèm lời giải.</p>
+        </article>
+        <article class="feature-card">
+          <span class="card-icon ti-microphone"></span>
+          <h3>Speaking practice</h3>
+          <p>Luyện phát âm, đọc to và nói chuyện qua công cụ nhận diện giọng nói AI.</p>
+        </article>
+        <article class="feature-card">
+          <span class="card-icon ti-bar-chart"></span>
+          <h3>Analytics đầy đủ</h3>
+          <p>Biểu đồ chi tiết về tiến độ, thời gian học, kỹ năng mạnh/yếu và dự báo đạt mục tiêu.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- User Roles Section -->
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Người dùng</p>
+        <h2>EngWithMe phục vụ ba nhóm chính</h2>
+      </div>
+      <div class="roles-grid">
+        <article class="role-card">
+          <div class="role-icon guest-icon">
+            <span class="ti-user"></span>
+          </div>
+          <h3>Khách (Guest)</h3>
+          <p>Xem trang chủ, khóa học, blog, bảng giá và làm bài kiểm tra trình độ miễn phí để tìm hiểu nền tảng.</p>
+          <ul class="role-features">
+            <li><span class="ti-check"></span> Xem khóa học</li>
+            <li><span class="ti-check"></span> Kiểm tra trình độ</li>
+            <li><span class="ti-check"></span> Đọc blog</li>
+          </ul>
+        </article>
+
+        <article class="role-card">
+          <div class="role-icon student-icon">
+            <span class="ti-book"></span>
+          </div>
+          <h3>Học viên (Student)</h3>
+          <p>Học bài, làm bài tập, lưu từ vựng, làm kiểm tra toàn bộ nội dung và xem bảng điểm chi tiết.</p>
+          <ul class="role-features">
+            <li><span class="ti-check"></span> Học toàn bộ nội dung</li>
+            <li><span class="ti-check"></span> Lưu tiến độ</li>
+            <li><span class="ti-check"></span> Dashboard & Analytics</li>
+          </ul>
+        </article>
+
+        <article class="role-card">
+          <div class="role-icon admin-icon">
+            <span class="ti-settings"></span>
+          </div>
           <h3>Admin</h3>
-          <p>Quản lý người dùng, khóa học, bài học, câu hỏi, blog và thống kê.</p>
+          <p>Quản lý người dùng, nội dung khóa học, bài học, câu hỏi, bài viết blog và xem thống kê hệ thống.</p>
+          <ul class="role-features">
+            <li><span class="ti-check"></span> Quản lý người dùng</li>
+            <li><span class="ti-check"></span> Quản lý nội dung</li>
+            <li><span class="ti-check"></span> Analytics hệ thống</li>
+          </ul>
         </article>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="section section-muted">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">1,301+</div>
+          <p>Học viên hoạt động</p>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">4,000+</div>
+          <p>Từ vựng</p>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">500+</div>
+          <p>Bài học</p>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">98%</div>
+          <p>Hài lòng</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section cta-section">
+      <div class="cta-content">
+        <h2>Bắt đầu học tiếng Anh hôm nay</h2>
+        <p>Kiểm tra trình độ miễn phí và nhận lộ trình cá nhân của bạn</p>
+        <div class="cta-actions">
+          <a class="btn btn-primary btn-large" href="register.html">Đăng ký miễn phí</a>
+          <a class="btn btn-ghost btn-large" href="quiz.html">Kiểm tra trình độ</a>
+        </div>
       </div>
     </section>
   </main>

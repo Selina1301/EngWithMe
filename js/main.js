@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   [
+    "initEnhancedFooter",
     "setCurrentYear",
     "setActiveNav",
     "initAuthNav",

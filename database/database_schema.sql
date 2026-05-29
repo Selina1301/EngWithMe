@@ -9,8 +9,10 @@ USE engwithme_db;
 
 -- Clear legacy tables if existing (preserving foreign key constraints order)
 DROP TABLE IF EXISTS user_viewed_topics;
+DROP TABLE IF EXISTS user_vocab_activity_days;
 DROP TABLE IF EXISTS user_vocab_wrong_words;
 DROP TABLE IF EXISTS user_vocab_quiz_stats;
+DROP TABLE IF EXISTS learning_content_items;
 DROP TABLE IF EXISTS test_results;
 DROP TABLE IF EXISTS user_progress;
 DROP TABLE IF EXISTS user_saved_vocab;
@@ -213,4 +215,34 @@ CREATE TABLE user_viewed_topics (
   viewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY unique_user_viewed (user_id, level_key, topic_id),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- 17. User Vocabulary Activity Days for streak/progress sync
+CREATE TABLE user_vocab_activity_days (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  activity_day DATE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY unique_user_vocab_activity_day (user_id, activity_day),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- 18. Long-term learning content store for Reading, Listening and Grammar pages
+CREATE TABLE learning_content_items (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  section ENUM('reading', 'listening', 'grammar') NOT NULL,
+  content_key VARCHAR(150) NOT NULL,
+  level_key VARCHAR(50) NULL,
+  goal_key VARCHAR(100) NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT NULL,
+  payload_json LONGTEXT NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  status ENUM('draft', 'published', 'archived') NOT NULL DEFAULT 'published',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY unique_learning_content (section, content_key),
+  KEY idx_learning_content_section_status (section, status),
+  KEY idx_learning_content_level (section, level_key),
+  KEY idx_learning_content_goal (section, goal_key)
 ) ENGINE=InnoDB;

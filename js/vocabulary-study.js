@@ -17,8 +17,8 @@ function initVocabularyStudy() {
   let matchedPairs = new Set();
   let gameScore = 0;
   let pendingSaveWord = null;
-  const savedWordsKey = getAccountKey("engWithMeSavedVocabularyWords");
-  let savedWordRecords = normalizeSavedWordRecords(JSON.parse(localStorage.getItem(savedWordsKey) || "[]"));
+  const getSavedWordsKey = () => getAccountKey("engWithMeSavedVocabularyWords");
+  let savedWordRecords = normalizeSavedWordRecords(readLocalArray(getSavedWordsKey()));
   let savedWords = new Set(savedWordRecords.keys());
 
   const getTopic = () => vocabularyData[activeLevel]?.topics.find(topic => topic.id === currentTopicId);
@@ -26,7 +26,8 @@ function initVocabularyStudy() {
   const getWordKey = (topic, word) => `${activeLevel}-${topic.id}-${word.word}`;
   const saveSavedWords = (action, vocabKey, studyLevel) => {
     savedWords = new Set(savedWordRecords.keys());
-    localStorage.setItem(savedWordsKey, JSON.stringify(Array.from(savedWordRecords.values())));
+    localStorage.setItem(getSavedWordsKey(), JSON.stringify(Array.from(savedWordRecords.values())));
+    recordVocabActivity();
 
     const userId = localStorage.getItem("engWithMeUserId");
     if (userId && action && vocabKey) {
@@ -37,19 +38,52 @@ function initVocabularyStudy() {
         if (studyLevel) {
           body.append("study_level", studyLevel);
         }
+        body.append("activity_day", todayKey());
         fetch("api/sync_vocab.php", {
           method: "POST",
           body,
           credentials: "same-origin"
-        });
+        }).catch(e => console.error("Failed to sync vocab action to server:", e));
       } catch (e) {
         console.error("Failed to sync vocab action to server:", e);
       }
     }
   };
+  const reloadSavedWordsFromStorage = () => {
+    savedWordRecords = normalizeSavedWordRecords(readLocalArray(getSavedWordsKey()));
+    savedWords = new Set(savedWordRecords.keys());
+  };
+  window.refreshVocabularyStudyState = () => {
+    reloadSavedWordsFromStorage();
+    recordCurrentTopicView();
+    render();
+  };
   const syncUrl = () => {
     window.history.replaceState(null, "", `vocabulary-study.html?level=${activeLevel}&topic=${currentTopicId}&mode=${currentWorkspaceMode}`);
   };
+
+  function readLocalArray(key) {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(key) || "[]");
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function todayKey(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  function recordVocabActivity() {
+    const activityKey = getAccountKey("engWithMeVocabActivityDays");
+    const days = new Set(readLocalArray(activityKey));
+    days.add(todayKey());
+    localStorage.setItem(activityKey, JSON.stringify(Array.from(days).sort()));
+  }
 
   function shuffle(array) {
     const arr = [...array];
@@ -828,38 +862,35 @@ function initVocabularyStudy() {
     if (!getTopic()) currentTopicId = vocabularyData[activeLevel].topics[0]?.id;
   }
 
-  // Record topic as viewed
-  try {
-    const viewedKey = getAccountKey("engWithMeViewedTopics");
-    let viewedList = [];
+  function recordCurrentTopicView() {
     try {
-      const parsed = JSON.parse(localStorage.getItem(viewedKey) || "[]");
-      viewedList = Array.isArray(parsed) ? parsed : [];
-    } catch (e) {
-      viewedList = [];
-    }
-    const topicRecord = { level: activeLevel, id: currentTopicId, timestamp: Date.now() };
-    // Remove duplicate if already exists to move it to the end (most recently viewed)
-    viewedList = viewedList.filter(item => item && typeof item === "object" && !(item.level === activeLevel && item.id === currentTopicId));
-    viewedList.push(topicRecord);
-    localStorage.setItem(viewedKey, JSON.stringify(viewedList));
+      const viewedKey = getAccountKey("engWithMeViewedTopics");
+      let viewedList = readLocalArray(viewedKey);
+      const topicRecord = { level: activeLevel, id: currentTopicId, timestamp: Date.now() };
+      viewedList = viewedList.filter(item => item && typeof item === "object" && !(item.level === activeLevel && item.id === currentTopicId));
+      viewedList.push(topicRecord);
+      localStorage.setItem(viewedKey, JSON.stringify(viewedList));
+      recordVocabActivity();
 
-    // Sync to DB
-    const userId = localStorage.getItem("engWithMeUserId");
-    if (userId) {
-      const body = new FormData();
-      body.append("action", "view_topic");
-      body.append("level_key", activeLevel);
-      body.append("topic_id", currentTopicId);
-      fetch("api/sync_vocab.php", {
-        method: "POST",
-        body,
-        credentials: "same-origin"
-      }).catch(e => console.error("Failed to sync viewed topic to database:", e));
+      const userId = localStorage.getItem("engWithMeUserId");
+      if (userId) {
+        const body = new FormData();
+        body.append("action", "view_topic");
+        body.append("level_key", activeLevel);
+        body.append("topic_id", currentTopicId);
+        body.append("activity_day", todayKey());
+        fetch("api/sync_vocab.php", {
+          method: "POST",
+          body,
+          credentials: "same-origin"
+        }).catch(e => console.error("Failed to sync viewed topic to database:", e));
+      }
+    } catch (err) {
+      console.error("Error writing to viewedList:", err);
     }
-  } catch (err) {
-    console.error("Error writing to viewedList:", err);
   }
+
+  recordCurrentTopicView();
 
   render();
 }

@@ -2301,6 +2301,62 @@
 
   missions.push(...[...missionExpansions, ...supplementalSessionExpansions].map((spec, index) => createMissionFromSpec(spec, index + 7)));
   assignSessionVoiceRoutes();
+  window.LISTENING_MISSIONS_FALLBACK = cloneContentList(missions);
+
+  async function loadListeningMissionsFromApi() {
+    try {
+      const response = await fetch("api/learning_content.php?section=listening", {
+        credentials: "same-origin",
+        cache: "no-store"
+      });
+      if (!response.ok) return false;
+
+      const result = await response.json();
+      const loaded = Array.isArray(result.items)
+        ? result.items.map((item, index) => normalizeListeningMission(item, index)).filter(Boolean)
+        : [];
+
+      if (!loaded.length) return false;
+      missions.splice(0, missions.length, ...loaded);
+      assignSessionVoiceRoutes();
+      window.LISTENING_MISSIONS_SOURCE = result.source || "database";
+      return true;
+    } catch (error) {
+      console.warn("Listening content API unavailable; using bundled sessions.", error);
+      return false;
+    }
+  }
+
+  function normalizeListeningMission(item, index) {
+    const payload = item?.payload && typeof item.payload === "object" ? item.payload : item;
+    if (!payload || typeof payload !== "object") return null;
+
+    const mission = {
+      ...payload,
+      id: item.key || payload.id,
+      title: payload.title || item.title || item.key,
+      goal: payload.goal || item.goal || defaultGoal,
+      level: payload.level || item.level || "B1",
+      opening: payload.opening || payload.description || item.description || "",
+      story: payload.story || payload.description || item.description || "",
+      tone: payload.tone || "green",
+      icon: payload.icon || "ti-headphone-alt"
+    };
+
+    if (!mission.id || !mission.title || !mission.transcript) return null;
+
+    return mission.options?.length
+      ? mission
+      : createMissionFromSpec(mission, index + 1);
+  }
+
+  function cloneContentList(items) {
+    try {
+      return JSON.parse(JSON.stringify(items));
+    } catch (error) {
+      return items.map((item) => ({ ...item }));
+    }
+  }
 
   function createMissionFromSpec(spec, number) {
     const mission = { ...spec };
@@ -2388,9 +2444,11 @@
     });
   }
 
-  window.initListeningLab = function initListeningLab() {
+  window.initListeningLab = async function initListeningLab() {
     const page = document.querySelector(".audio-lab-page");
     if (!page) return;
+
+    await loadListeningMissionsFromApi();
 
     const state = loadState();
     if (!goalText[state.goal]) state.goal = defaultGoal;

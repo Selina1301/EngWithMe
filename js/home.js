@@ -190,7 +190,7 @@ function initContactForm() {
     };
 
     try {
-      const response = await fetch("https://formsubmit.co/ajax/efd4322bff58b17e507bbc634769ef5a", {
+      const response = await fetch("api/send_contact.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -201,9 +201,9 @@ function initContactForm() {
 
       const result = await response.json();
 
-      if (response.ok && result.success === "true") {
+      if (response.ok && result.success) {
         if (feedback) {
-          feedback.textContent = "Gửi góp ý thành công! Thông tin đã được gửi trực tiếp đến email của Admin.";
+          feedback.textContent = result.message || "Gửi góp ý thành công! Chúng tôi sẽ phản hồi sớm nhất có thể.";
           feedback.style.color = "var(--success)";
         }
         form.reset();
