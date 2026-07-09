@@ -5,6 +5,7 @@ require_once __DIR__ . '/helpers.php';
 
 start_app_session();
 
+log_user_activity('logout');
 $_SESSION = [];
 
 if (ini_get('session.use_cookies')) {

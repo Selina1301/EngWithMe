@@ -41,6 +41,11 @@ try {
     ]);
 
     $user = require_current_user();
+    log_user_activity('profile_updated', [
+        'name' => $name,
+        'level' => $level,
+        'has_avatar_changed' => (isset($_FILES['avatar']) && $_FILES['avatar']['error'] !== UPLOAD_ERR_NO_FILE)
+    ]);
     json_response([
         'ok' => true,
         'message' => 'Đã lưu hồ sơ cá nhân.',
@@ -85,6 +90,44 @@ function save_avatar_upload(array $file, int $userId): string
         throw new RuntimeException('Chỉ hỗ trợ ảnh JPG, PNG, WEBP hoặc GIF.');
     }
 
+    // Tích hợp Cloudinary nếu có cấu hình trong file .env
+    $cloudinaryCloud = trim($_ENV['CLOUDINARY_CLOUD_NAME'] ?? getenv('CLOUDINARY_CLOUD_NAME') ?: '');
+    $cloudinaryPreset = trim($_ENV['CLOUDINARY_UPLOAD_PRESET'] ?? getenv('CLOUDINARY_UPLOAD_PRESET') ?: '');
+
+    if ($cloudinaryCloud !== '' && $cloudinaryPreset !== '') {
+        try {
+            $url = 'https://api.cloudinary.com/v1_1/' . urlencode($cloudinaryCloud) . '/image/upload';
+            $cfile = new CURLFile($tmpPath, $mime, basename($tmpPath));
+            
+            $postData = [
+                'file' => $cfile,
+                'upload_preset' => $cloudinaryPreset,
+                'public_id' => 'user-' . $userId . '-' . bin2hex(random_bytes(4))
+            ];
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Tránh lỗi chứng chỉ SSL trên XAMPP local
+            
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            if ($httpCode === 200) {
+                $data = json_decode($response ?: '', true);
+                if (!empty($data['secure_url'])) {
+                    return (string) $data['secure_url'];
+                }
+            }
+        } catch (Throwable $e) {
+            // Nếu upload cloud lỗi, tự động trượt về phương án lưu local phía dưới
+        }
+    }
+
+    // Phương án dự phòng (Fallback): Lưu trữ cục bộ
     $uploadDir = dirname(__DIR__) . '/uploads/avatars';
     if (!is_dir($uploadDir) && !mkdir($uploadDir, 0775, true)) {
         throw new RuntimeException('Không thể tạo thư mục lưu ảnh.');

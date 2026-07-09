@@ -53,7 +53,12 @@ try {
                 $inc->execute([$attempts, (int) $user['id']]);
             }
         }
+        log_user_activity('login_failed', ['email' => $email, 'reason' => 'invalid_credentials']);
         json_response(['ok' => false, 'message' => 'Email hoặc mật khẩu không đúng.'], 401);
+    }
+
+    if (($user['status'] ?? 'active') === 'pending') {
+        json_response(['ok' => false, 'message' => 'Tài khoản chưa được kích hoạt email. Vui lòng xác thực qua liên kết kích hoạt đã gửi tới email của bạn.'], 403);
     }
 
     if (($user['status'] ?? 'active') !== 'active') {
@@ -68,6 +73,8 @@ try {
     $loginTime = db()->prepare('SELECT last_login_at FROM users WHERE id = ? LIMIT 1');
     $loginTime->execute([(int) $user['id']]);
     $user['last_login_at'] = $loginTime->fetch()['last_login_at'] ?? null;
+
+    log_user_activity('login_success', ['email' => $email, 'role' => $user['role'] ?? 'user']);
 
     json_response([
         'ok' => true,

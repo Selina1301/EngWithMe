@@ -19,11 +19,14 @@
 }
 
 .hero h1,
+.study-hero h1,
+.vocab-hero h1,
+.command-copy h1,
 .page-title h1,
 .dashboard-hero h1,
+.hero-about h1,
 .section h2 {
   color: #ffffff;
-  line-height: 1.08;
   margin: 0;
   text-shadow:
     0 0 1px rgba(255, 255, 255, 0.9),
@@ -31,8 +34,22 @@
     0 0 24px rgba(46, 232, 120, 0.16);
 }
 
+/* Typography Unified Scale */
 .hero h1 {
-  font-size: 72px;
+  font-size: clamp(2.4rem, 5vw, 4.2rem);
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+.study-hero h1,
+.vocab-hero h1,
+.command-copy h1,
+.page-title h1,
+.dashboard-hero h1,
+.hero-about h1 {
+  font-size: clamp(2rem, 4vw, 3rem) !important;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
 }
 
 .hero p {
@@ -105,9 +122,12 @@
 }
 
 .section h2,
-.page-title h1,
-.dashboard-hero h1 {
-  font-size: 44px;
+.exam-preview-panel h2,
+.vocab-progress-copy h2,
+.my-vocab-head h2,
+.demo-modal-panel h2 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem) !important;
+  line-height: 1.2;
 }
 
 .section h3,
@@ -261,9 +281,15 @@
   line-height: 1.2;
 }
 
+.feature-card h3,
 .course-card h2,
-.course-card h3 {
-  font-size: 1.45rem;
+.course-card h3,
+.article-card h2,
+.pricing-card h2,
+.module-card h3,
+.my-vocab-card h3,
+.saved-word-item h3 {
+  font-size: clamp(1.15rem, 2vw, 1.38rem) !important;
   margin: 12px 0 10px;
   line-height: 1.25;
 }

@@ -125,6 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare('INSERT INTO user_saved_vocab (user_id, vocab_key, study_level) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE study_level = VALUES(study_level)');
             $stmt->execute([$userId, $vocabKey, $studyLevel]);
             record_vocab_activity_day($pdo, $userId, $_POST['activity_day'] ?? null);
+            log_user_activity('vocabulary_saved', ['word' => $vocabKey, 'level' => $studyLevel]);
 
             json_response(['ok' => true, 'message' => 'Đã lưu từ vựng vào tài khoản.']);
         } elseif ($action === 'remove') {
@@ -137,6 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare('DELETE FROM user_saved_vocab WHERE user_id = ? AND vocab_key = ?');
             $stmt->execute([$userId, $vocabKey]);
             record_vocab_activity_day($pdo, $userId, $_POST['activity_day'] ?? null);
+            log_user_activity('vocabulary_removed', ['word' => $vocabKey]);
 
             json_response(['ok' => true, 'message' => 'Đã bỏ lưu từ vựng.']);
         } elseif ($action === 'view_topic') {
@@ -150,6 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare('INSERT INTO user_viewed_topics (user_id, level_key, topic_id) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE viewed_at = CURRENT_TIMESTAMP');
             $stmt->execute([$userId, $levelKey, $topicId]);
             record_vocab_activity_day($pdo, $userId, $_POST['activity_day'] ?? null);
+            log_user_activity('vocabulary_topic_viewed', ['level' => $levelKey, 'topic' => $topicId]);
 
             json_response(['ok' => true, 'message' => 'Đã ghi nhận chủ đề đã học.']);
         } else {

@@ -64,14 +64,14 @@ function loadListeningMissions() {
 }
 
 function loadGrammarTopics() {
-  const source = fs.readFileSync(path.join(root, "js", "grammar-data.js"), "utf8");
+  const source = fs.readFileSync(path.join(root, "js", "grammar-data-fallback.js"), "utf8");
   const sandbox = {
     window: {},
     console,
     JSON,
     Math
   };
-  vm.runInNewContext(source, sandbox, { filename: "grammar-data.js" });
+  vm.runInNewContext(source, sandbox, { filename: "grammar-data-fallback.js" });
   return sandbox.window.GRAMMAR_TOPICS_FALLBACK || [];
 }
 

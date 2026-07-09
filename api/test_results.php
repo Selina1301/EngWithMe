@@ -61,6 +61,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $pdo->commit();
 
+        log_user_activity('toeic_test_submitted', [
+            'test_set' => $testSet,
+            'test_parts' => $testParts,
+            'score' => $score,
+            'correct_count' => $correctCount,
+            'total_questions' => $totalQuestions,
+            'recommended_level' => $recommendedLevel
+        ]);
+
         json_response([
             'ok' => true,
             'message' => 'Đã lưu kết quả bài thi thành công!'

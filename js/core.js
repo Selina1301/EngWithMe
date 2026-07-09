@@ -169,6 +169,14 @@ function initAuthNav() {
   ensureNavActions(header);
   bindAuthNavInteractions();
 
+  // Kiểm tra nhanh cookie đăng nhập trước khi gọi API để tiết kiệm tài nguyên
+  const hasCookie = document.cookie.split(';').some((item) => item.trim().startsWith('ewm_logged_in='));
+  if (!hasCookie) {
+    clearAuthUser();
+    renderGuestNav();
+    return;
+  }
+
   const cachedUser = getCachedAuthUser();
   if (cachedUser) {
     renderAuthenticatedNav(cachedUser);
@@ -518,4 +526,6 @@ function escapeHtml(value) {
 function escapeAttribute(value) {
   return escapeHtml(value).replace(/`/g, "&#096;");
 }
-
+function initLogoutButtons() {
+  if (typeof bindAuthNavInteractions === "function") bindAuthNavInteractions();
+}

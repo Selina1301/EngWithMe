@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kích hoạt tài khoản - EngWithMe</title>
+  <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/pages/auth.css">
+  <style>
+    .verify-container {
+      max-width: 480px;
+      margin: 80px auto;
+      padding: 40px;
+      background: var(--surface);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+    .verify-icon {
+      font-size: 48px;
+      margin-bottom: 24px;
+      display: inline-block;
+    }
+    .verify-icon.loading {
+      animation: spin 1s linear infinite;
+    }
+    .verify-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .verify-msg {
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">EngWithMe</a>
+  </header>
+
+  <main class="page-main">
+    <div class="verify-container">
+      <div id="verify-status-icon" class="verify-icon loading">⏳</div>
+      <h1 id="verify-status-title" class="verify-title">Đang xác thực tài khoản</h1>
+      <p id="verify-status-msg" class="verify-msg">Vui lòng đợi trong giây lát, chúng tôi đang xác thực tài khoản của bạn...</p>
+      <div id="verify-action-btn" style="display: none;">
+        <a class="btn btn-primary" href="login.html">Đăng nhập ngay</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span data-current-year></span> EngWithMe.</p>
+  </footer>
+
+  <script src="js/core.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const iconEl = document.getElementById("verify-status-icon");
+      const titleEl = document.getElementById("verify-status-title");
+      const msgEl = document.getElementById("verify-status-msg");
+      const btnEl = document.getElementById("verify-action-btn");
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get("token");
+
+      if (!token) {
+        iconEl.classList.remove("loading");
+        iconEl.textContent = "❌";
+        titleEl.textContent = "Thiếu mã xác thực";
+        msgEl.textContent = "Đường dẫn kích hoạt không đúng định dạng. Vui lòng kiểm tra lại email của bạn.";
+        return;
+      }
+
+      try {
+        const response = await fetch(`api/verify.php?token=${encodeURIComponent(token)}`);
+        const result = await response.json();
+
+        iconEl.classList.remove("loading");
+        if (response.ok && result.ok) {
+          iconEl.textContent = "✅";
+          titleEl.textContent = "Kích hoạt thành công";
+          msgEl.textContent = result.message || "Tài khoản của bạn đã được xác thực thành công. Bạn có thể đăng nhập ngay bây giờ.";
+          btnEl.style.display = "block";
+        } else {
+          iconEl.textContent = "❌";
+          titleEl.textContent = "Xác thực thất bại";
+          msgEl.textContent = result.message || "Liên kết kích hoạt đã hết hạn hoặc không hợp lệ. Vui lòng yêu cầu lại.";
+        }
+      } catch (error) {
+        iconEl.classList.remove("loading");
+        iconEl.textContent = "⚠️";
+        titleEl.textContent = "Lỗi kết nối";
+        msgEl.textContent = "Không thể kết nối đến máy chủ. Vui lòng tải lại trang hoặc thử lại sau.";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "demo-study-english",
+  "version": "1.0.0",
+  "description": "TOEIC Study English Demo Application",
+  "main": "index.html",
+  "scripts": {
+    "generate-audio": "node tools/generate_toeic_2017_audio.js"
+  },
+  "dependencies": {
+    "edge-tts-universal": "^1.4.0"
+  }
+}

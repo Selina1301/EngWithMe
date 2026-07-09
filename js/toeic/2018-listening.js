@@ -67,7 +67,7 @@ window.TOEIC_LISTENING_EXAMS = window.TOEIC_LISTENING_EXAMS || {};
     "A man is hanging a picture on a wall.",
     "Several documents are being placed in a drawer."
   ], 1, {
-    imageUrl: "images/toeic/2018/part1/question-001.png",
+    imageUrl: "images/toeic/2018/part1/question-001.webp",
     topic: "Two office workers looking at a laptop in a meeting room",
     skill: "photo description",
     explain: "The picture shows people looking at a computer screen."
@@ -79,7 +79,7 @@ window.TOEIC_LISTENING_EXAMS = window.TOEIC_LISTENING_EXAMS || {};
     "A worker is stacking boxes on a shelf.",
     "A machine is cleaning the floor."
   ], 2, {
-    imageUrl: "images/toeic/2018/part1/question-002.png",
+    imageUrl: "images/toeic/2018/part1/question-002.webp",
     topic: "A man stacking boxes in a warehouse",
     skill: "photo description",
     explain: "The picture shows a worker stacking boxes on a shelf."
@@ -91,7 +91,7 @@ window.TOEIC_LISTENING_EXAMS = window.TOEIC_LISTENING_EXAMS || {};
     "A tree is being cut down.",
     "Some flowers are being arranged in a vase."
   ], 0, {
-    imageUrl: "images/toeic/2018/part1/question-003.png",
+    imageUrl: "images/toeic/2018/part1/question-003.webp",
     topic: "A woman watering plants outside a building",
     skill: "photo description",
     explain: "The picture shows a woman watering plants."
@@ -103,7 +103,7 @@ window.TOEIC_LISTENING_EXAMS = window.TOEIC_LISTENING_EXAMS || {};
     "A road is being repaired.",
     "People are boarding an airplane."
   ], 1, {
-    imageUrl: "images/toeic/2018/part1/question-004.png",
+    imageUrl: "images/toeic/2018/part1/question-004.webp",
     topic: "Passengers waiting near a bus stop",
     skill: "photo description",
     explain: "The picture shows passengers waiting outdoors."
@@ -115,7 +115,7 @@ window.TOEIC_LISTENING_EXAMS = window.TOEIC_LISTENING_EXAMS || {};
     "A table is being cleaned.",
     "Some dishes are being stacked on a shelf."
   ], 1, {
-    imageUrl: "images/toeic/2018/part1/question-005.png",
+    imageUrl: "images/toeic/2018/part1/question-005.webp",
     topic: "A chef chopping vegetables in a kitchen",
     skill: "photo description",
     explain: "The picture shows a chef cutting vegetables."
@@ -127,7 +127,7 @@ window.TOEIC_LISTENING_EXAMS = window.TOEIC_LISTENING_EXAMS || {};
     "Some clothes are being packed into a box.",
     "A woman is opening a store entrance."
   ], 0, {
-    imageUrl: "images/toeic/2018/part1/question-006.png",
+    imageUrl: "images/toeic/2018/part1/question-006.webp",
     topic: "A woman standing beside a display of clothes in a store",
     skill: "photo description",
     explain: "The picture shows a customer looking at clothing."

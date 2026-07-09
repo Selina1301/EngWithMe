@@ -67,7 +67,7 @@ window.TOEIC_LISTENING_EXAMS = window.TOEIC_LISTENING_EXAMS || {};
     "A woman is placing food on a plate.",
     "Several workers are repairing the ceiling."
   ], 1, {
-    imageUrl: "images/toeic/2017/part1/question-001.png",
+    imageUrl: "images/toeic/2017/part1/question-001.webp",
     topic: "office meeting",
     skill: "photo description",
     explain: "The picture shows a man pointing at a document on a conference table."
@@ -79,7 +79,7 @@ window.TOEIC_LISTENING_EXAMS = window.TOEIC_LISTENING_EXAMS || {};
     "Some vegetables are being loaded onto a truck.",
     "A customer is paying for her purchase."
   ], 0, {
-    imageUrl: "images/toeic/2017/part1/question-002.png",
+    imageUrl: "images/toeic/2017/part1/question-002.webp",
     topic: "shopping",
     skill: "photo description",
     explain: "The picture shows a woman choosing a drink from a supermarket shelf."
@@ -91,7 +91,7 @@ window.TOEIC_LISTENING_EXAMS = window.TOEIC_LISTENING_EXAMS || {};
     "A worker is cleaning the windows of a train.",
     "Some luggage has been placed on a bench."
   ], 0, {
-    imageUrl: "images/toeic/2017/part1/question-003.png",
+    imageUrl: "images/toeic/2017/part1/question-003.webp",
     topic: "transportation",
     skill: "photo description",
     explain: "The picture shows a train stopped next to a platform."
@@ -103,7 +103,7 @@ window.TOEIC_LISTENING_EXAMS = window.TOEIC_LISTENING_EXAMS || {};
     "Workers are painting the outside of a house.",
     "A crane is lifting materials onto a roof."
   ], 1, {
-    imageUrl: "images/toeic/2017/part1/question-004.png",
+    imageUrl: "images/toeic/2017/part1/question-004.webp",
     topic: "construction",
     skill: "photo description",
     explain: "The picture shows an excavator moving soil at a construction site."
@@ -115,7 +115,7 @@ window.TOEIC_LISTENING_EXAMS = window.TOEIC_LISTENING_EXAMS || {};
     "A man is washing dishes in a sink.",
     "Some vegetables are being chopped on a board."
   ], 0, {
-    imageUrl: "images/toeic/2017/part1/question-005.png",
+    imageUrl: "images/toeic/2017/part1/question-005.webp",
     topic: "restaurant kitchen",
     skill: "photo description",
     explain: "The picture shows a chef placing food carefully on a plate."
@@ -127,7 +127,7 @@ window.TOEIC_LISTENING_EXAMS = window.TOEIC_LISTENING_EXAMS || {};
     "A man is placing bags onto a shelf.",
     "Several people are seated in a waiting area."
   ], 0, {
-    imageUrl: "images/toeic/2017/part1/question-006.png",
+    imageUrl: "images/toeic/2017/part1/question-006.webp",
     topic: "airport",
     skill: "photo description",
     explain: "The picture shows passengers waiting in line at an airport service counter."

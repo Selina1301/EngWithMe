@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Environment configurations
+.env
+
+# Session data
+api/sessions/sess_*
+
+# User uploads (legacy)
+uploads/avatars/*
+!uploads/avatars/.gitkeep
+
+# Professional storage directories
+storage/logs/*
+!storage/logs/.gitkeep
+storage/sessions/*
+!storage/sessions/.gitkeep
+storage/uploads/*
+!storage/uploads/.gitkeep
