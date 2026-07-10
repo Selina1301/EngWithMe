@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng ký - EngWithMe</title>
   <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
-  <link rel="stylesheet" href="css/base.css?v=1.2">
+  <link rel="stylesheet" href="css/base.css?v=1.3">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
@@ -76,6 +76,8 @@
         </select>
       </label>
 
+      <p class="feedback" data-auth-feedback></p>
+
       <button class="btn btn-primary" type="submit"><span class="ti-check"></span> Tạo tài khoản</button>
       <p class="form-note">Đã có tài khoản? <a href="login.html">Đăng nhập</a></p>
       
@@ -91,8 +93,6 @@
         </svg>
         Đăng ký với Google
       </a>
-
-      <p class="feedback" data-auth-feedback></p>
     </form>
   </main>
 
@@ -126,6 +126,29 @@
         <div class="otp-footer">
           <p>Không nhận được mã? <a href="#" id="resendOtpBtn" class="disabled">Gửi lại mã <span id="otpCountdown">(60s)</span></a></p>
           <a href="#" id="cancelOtpBtn" class="otp-cancel-link">Hủy và quay lại</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email Conflict Modal -->
+  <div class="otp-modal" id="conflictModal" style="display: none;">
+    <div class="otp-backdrop" id="conflictBackdrop"></div>
+    <div class="otp-container">
+      <div class="otp-card" style="border-color: rgba(248, 113, 113, 0.4); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(248, 113, 113, 0.15);">
+        <div class="otp-icon-wrapper" style="background: rgba(248, 113, 113, 0.15); border-color: rgba(248, 113, 113, 0.3); color: #f87171; box-shadow: 0 0 20px rgba(248, 113, 113, 0.2);">
+          <span class="ti-alert otp-icon"></span>
+        </div>
+        <h3 style="color: #f87171;">Tài khoản đã tồn tại</h3>
+        <p class="otp-instructions" style="margin-bottom: 20px;">Gmail <strong id="conflictEmailTarget" style="color: #f87171;">your-email@gmail.com</strong> đã được sử dụng để tạo tài khoản trên hệ thống.</p>
+        
+        <div style="margin-top: 10px; margin-bottom: 20px;">
+          <a href="login.html" class="btn btn-primary" style="width: 100%; min-height: 44px; font-weight: 700;"><span class="ti-shift-right"></span> Đăng nhập ngay</a>
+        </div>
+        
+        <div class="otp-footer" style="margin-top: 0;">
+          <p><a href="forgot-password.html" class="forgot-password-link" style="font-size: 14px; font-weight: 600; color: var(--secondary); text-decoration: none;">Bạn quên mật khẩu của tài khoản này?</a></p>
+          <a href="#" id="closeConflictBtn" class="otp-cancel-link" style="margin-top: 15px;">Đóng cửa sổ</a>
         </div>
       </div>
     </div>

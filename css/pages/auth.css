@@ -29,10 +29,11 @@
 }
 
 .auth-copy h1 {
-  margin: 0;
+  margin: 0 0 14px 0;
   color: #ffffff;
-  font-size: clamp(2.4rem, 5vw, 4.6rem);
-  line-height: 1.04;
+  font-size: clamp(2rem, 3.8vw, 2.8rem);
+  line-height: 1.2;
+  letter-spacing: -0.5px;
   text-shadow:
     0 0 1px rgba(255, 255, 255, 0.9),
     0 0 18px rgba(56, 189, 248, 0.25),
@@ -40,9 +41,10 @@
 }
 
 .auth-copy p {
-  color: #c7d2e5;
-  font-size: 18px;
+  color: #a6b4c9;
+  font-size: 16px;
   max-width: 560px;
+  line-height: 1.6;
 }
 
 .auth-highlights {
@@ -84,8 +86,9 @@
 .auth-card-heading h2 {
   margin: 0;
   color: #ffffff;
-  font-size: 30px;
-  line-height: 1.12;
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 700;
 }
 
 .auth-icon {
@@ -325,4 +328,66 @@
   border-radius: 8px;
   font-size: 13px;
   color: #94a3b8;
+}
+
+/* Card Specific Form Overrides for better balance & premium aesthetics */
+.auth-card label {
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  color: #94a3b8 !important;
+  gap: 6px !important;
+  letter-spacing: 0.2px !important;
+}
+
+.auth-card input,
+.auth-card select {
+  font-weight: 500 !important;
+  font-size: 14.5px !important;
+  color: #ffffff !important;
+  background: rgba(15, 23, 42, 0.55) !important;
+  border: 1px solid rgba(125, 211, 252, 0.16) !important;
+  padding: 11px 14px !important;
+  border-radius: var(--radius) !important;
+  transition: border-color 0.25s, box-shadow 0.25s !important;
+}
+
+.auth-card select {
+  appearance: none !important;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+  background-size: 16px !important;
+  padding-right: 40px !important;
+  cursor: pointer !important;
+}
+
+.auth-card input::placeholder {
+  color: rgba(166, 180, 201, 0.35) !important;
+}
+
+.auth-card input:focus,
+.auth-card select:focus {
+  border-color: rgba(56, 189, 248, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12) !important;
+  outline: none !important;
+}
+
+.auth-card .btn {
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  min-height: 44px !important;
+  cursor: pointer !important;
+}
+
+.auth-card .btn-google {
+  min-height: 44px !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+}
+
+.auth-card-heading .eyebrow {
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.5px !important;
+  margin-bottom: 2px !important;
 }

@@ -82,14 +82,14 @@ function initAuthForms() {
 
 async function submitForgotForm(form) {
   const submitButton = form.querySelector('button[type="submit"]');
-  const originalButtonText = submitButton?.textContent;
+  const originalButtonText = submitButton?.innerHTML;
   
   try {
     if (submitButton) {
       submitButton.disabled = true;
-      submitButton.textContent = "Đang gửi...";
+      submitButton.innerHTML = '<span class="spinner"></span> Đang gửi...';
     }
-    showAuthFeedback(form, "Đang kết nối server...", true);
+    showAuthFeedback(form, ""); // Ẩn thông báo cũ khi bắt đầu tải
 
     const response = await fetch("api/forgot_password.php", {
       method: "POST",
@@ -104,22 +104,20 @@ async function submitForgotForm(form) {
     }
 
     showAuthFeedback(form, result.message, true);
-    
-
 
   } catch (error) {
     showAuthFeedback(form, "Không gọi được backend.", false);
   } finally {
     if (submitButton) {
       submitButton.disabled = false;
-      submitButton.textContent = originalButtonText;
+      submitButton.innerHTML = originalButtonText;
     }
   }
 }
 
 async function submitAuthForm(form, endpoint) {
   const submitButton = form.querySelector('button[type="submit"]');
-  const originalButtonText = submitButton?.textContent;
+  const originalButtonText = submitButton?.innerHTML;
   const password = form.elements.password?.value || "";
   const confirmPassword = form.elements.confirm_password?.value || "";
 
@@ -131,9 +129,9 @@ async function submitAuthForm(form, endpoint) {
   try {
     if (submitButton) {
       submitButton.disabled = true;
-      submitButton.textContent = "Đang xử lý...";
+      submitButton.innerHTML = '<span class="spinner"></span> Đang xử lý...';
     }
-    showAuthFeedback(form, "Đang kết nối server...", true);
+    showAuthFeedback(form, ""); // Ẩn thông báo cũ khi bắt đầu tải
 
     const response = await fetch(endpoint, {
       method: "POST",
@@ -143,13 +141,17 @@ async function submitAuthForm(form, endpoint) {
     const result = await response.json();
 
     if (!response.ok || !result.ok) {
+      if (result.conflict) {
+        openConflictModal(form.elements.email?.value || "");
+      }
       showAuthFeedback(form, result.message || "Thao tác không thành công.", false);
       return;
     }
 
     if (result.requires_otp) {
-      showAuthFeedback(form, result.message, true);
-      openOtpModal(result.email, form);
+      showAuthFeedback(form, ""); // Ẩn thông báo cũ, không hiện box màu xanh lá vì modal OTP đã có hướng dẫn chi tiết
+      const isLoginOtp = endpoint.includes("login.php");
+      openOtpModal(result.email, form, isLoginOtp);
       return;
     }
 
@@ -187,7 +189,7 @@ async function submitAuthForm(form, endpoint) {
   } finally {
     if (submitButton) {
       submitButton.disabled = false;
-      submitButton.textContent = originalButtonText;
+      submitButton.innerHTML = originalButtonText;
     }
   }
 }
@@ -211,12 +213,24 @@ function saveAuthenticatedUser(user) {
 function showAuthFeedback(form, message, isSuccess = true) {
   const feedback = form.querySelector("[data-auth-feedback]");
   if (feedback) {
-    feedback.textContent = message;
-    feedback.style.color = isSuccess ? "var(--success)" : "var(--danger)";
+    if (!message) {
+      feedback.className = "feedback";
+      feedback.innerHTML = "";
+      return;
+    }
+    
+    // Sử dụng icon chuẩn của dự án (Themify Icons)
+    const iconClass = isSuccess ? "ti-info-alt" : "ti-alert";
+    feedback.innerHTML = `<span class="${iconClass}" style="margin-right: 8px; font-size: 14px;"></span><span>${message}</span>`;
+    
+    feedback.className = `feedback visible ${isSuccess ? "success" : "danger"}`;
   }
 }
 
-function openOtpModal(email, originalForm) {
+function openOtpModal(email, originalForm, isLoginOtp = false) {
+  const verifyEndpoint = isLoginOtp ? "api/verify_login_otp.php" : "api/verify_otp.php";
+  const resendEndpoint = isLoginOtp ? "api/login.php" : "api/register.php";
+
   document.getElementById("otpFormEmail").value = email;
   document.getElementById("otpEmailTarget").textContent = email;
   
@@ -282,7 +296,7 @@ function openOtpModal(email, originalForm) {
       document.getElementById("otpErrorMsg").textContent = "Đang gửi lại mã...";
       document.getElementById("otpErrorMsg").style.color = "var(--success)";
       
-      const response = await fetch("api/register.php", {
+      const response = await fetch(resendEndpoint, {
         method: "POST",
         body: new FormData(originalForm),
         credentials: "same-origin"
@@ -341,18 +355,24 @@ function openOtpModal(email, originalForm) {
     }
     
     const submitBtn = otpVerifyForm.querySelector('button[type="submit"]');
-    const origBtnText = submitBtn.textContent;
+    const origBtnText = submitBtn.innerHTML;
     try {
       submitBtn.disabled = true;
-      submitBtn.textContent = "Đang xác thực...";
+      submitBtn.innerHTML = '<span class="spinner"></span> Đang xác thực...';
       document.getElementById("otpErrorMsg").textContent = "";
       
-      const response = await fetch("api/verify_otp.php", {
+      const payload = { email, otp: otpCode };
+      if (isLoginOtp && originalForm) {
+        const rememberCheckbox = originalForm.querySelector('input[name="remember"]');
+        payload.remember = (rememberCheckbox && rememberCheckbox.checked) ? 1 : 0;
+      }
+      
+      const response = await fetch(verifyEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ email, otp: otpCode }),
+        body: JSON.stringify(payload),
         credentials: "same-origin"
       });
       const res = await response.json();
@@ -377,7 +397,34 @@ function openOtpModal(email, originalForm) {
       document.getElementById("otpErrorMsg").style.color = "var(--danger)";
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = origBtnText;
+      submitBtn.innerHTML = origBtnText;
     }
   };
 }
+
+function openConflictModal(email) {
+  const conflictModal = document.getElementById("conflictModal");
+  const emailTarget = document.getElementById("conflictEmailTarget");
+  if (emailTarget) {
+    emailTarget.textContent = email;
+  }
+  if (conflictModal) {
+    conflictModal.style.display = "flex";
+  }
+  
+  const closeBtn = document.getElementById("closeConflictBtn");
+  const backdrop = document.getElementById("conflictBackdrop");
+  
+  if (closeBtn) {
+    closeBtn.onclick = (e) => {
+      e.preventDefault();
+      if (conflictModal) conflictModal.style.display = "none";
+    };
+  }
+  if (backdrop) {
+    backdrop.onclick = () => {
+      if (conflictModal) conflictModal.style.display = "none";
+    };
+  }
+}
+

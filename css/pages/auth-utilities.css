@@ -12,38 +12,43 @@
 .toggle-password {
   position: absolute !important;
   right: 12px !important;
-  color: rgba(56, 189, 248, 0.6) !important; /* Soft cyber cyan/blue matching --secondary */
+  background: linear-gradient(135deg, #1e40af, #3b82f6) !important; /* Xanh lam đậm gradient */
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
   cursor: pointer !important;
   font-size: 1.1rem !important;
-  transition: color 0.25s, text-shadow 0.25s !important;
+  transition: opacity 0.25s, filter 0.25s !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   z-index: 10 !important;
+  opacity: 0.85 !important;
 }
 .toggle-password:hover {
-  color: var(--secondary) !important; /* Fully bright cyan */
-  text-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important; /* Cyber glow cyan */
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.6)) !important;
 }
 .toggle-password.slashed {
-  color: rgba(46, 232, 120, 0.6) !important; /* Soft cyber green matching --primary */
+  background: linear-gradient(135deg, #1d4ed8, #2563eb) !important; /* Xanh lam đậm gradient khi slashed */
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
 }
 .toggle-password.slashed:hover {
-  color: var(--primary) !important; /* Fully bright green */
-  text-shadow: 0 0 8px rgba(46, 232, 120, 0.6) !important; /* Cyber glow green */
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 6px rgba(37, 99, 235, 0.6)) !important;
 }
 .toggle-password.slashed::after {
   content: "";
   position: absolute;
   width: 16px;
   height: 1.5px;
-  background: rgba(46, 232, 120, 0.8); /* matching slash to the icon color */
+  background: #2563eb; /* matching slash */
   transform: rotate(45deg);
   transform-origin: center;
   transition: background 0.25s !important;
 }
 .toggle-password.slashed:hover::after {
-  background: var(--primary);
+  background: #3b82f6;
 }
 .form-actions-row {
   display: flex;
@@ -61,4 +66,58 @@
 .forgot-password-link:hover {
   color: var(--primary);
   text-decoration: underline;
+}
+
+/* Premium Feedback Alert Container */
+.feedback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  font-weight: 500;
+  border-radius: var(--radius);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  border: 1px solid transparent;
+  text-align: center;
+  line-height: 1.4;
+}
+.feedback.visible {
+  opacity: 1;
+  max-height: 120px;
+  padding: 11px 16px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+.feedback.success {
+  background: rgba(16, 172, 132, 0.08);
+  border-color: rgba(16, 172, 132, 0.22);
+  color: #34d399;
+  box-shadow: 0 0 15px rgba(16, 172, 132, 0.06);
+}
+.feedback.danger {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.22);
+  color: #f87171;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.06);
+}
+
+/* CSS Loading Spinner */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #ffffff;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

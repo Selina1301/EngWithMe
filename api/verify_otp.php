@@ -23,13 +23,31 @@ if ($email === '' || $otp === '') {
 try {
     $pdo = db();
     
-    // Tìm user tương ứng với email, mã OTP (lưu ở cột verification_token) và trạng thái đang chờ (pending)
-    $statement = $pdo->prepare('SELECT * FROM users WHERE email = ? AND verification_token = ? AND status = "pending" LIMIT 1');
-    $statement->execute([$email, $otp]);
+    // Tìm user theo email và status = pending
+    $statement = $pdo->prepare('SELECT * FROM users WHERE email = ? AND status = "pending" LIMIT 1');
+    $statement->execute([$email]);
     $user = $statement->fetch();
     
     if (!$user) {
-        json_response(['ok' => false, 'message' => 'Mã OTP không chính xác hoặc tài khoản đã được kích hoạt.'], 400);
+        json_response(['ok' => false, 'message' => 'Yêu cầu kích hoạt không hợp lệ hoặc tài khoản đã kích hoạt.'], 400);
+    }
+    
+    if (empty($user['verification_token'])) {
+        json_response(['ok' => false, 'message' => 'Mã OTP không hợp lệ hoặc đã hết hạn.'], 400);
+    }
+    
+    if ($user['verification_token'] !== $otp) {
+        $attempts = (int) $user['login_attempts'] + 1;
+        if ($attempts >= 5) {
+            // Hủy mã OTP đăng ký và reset lượt thử
+            $clear = $pdo->prepare('UPDATE users SET verification_token = NULL, login_attempts = 0 WHERE id = ?');
+            $clear->execute([(int) $user['id']]);
+            json_response(['ok' => false, 'message' => 'Bạn đã nhập sai mã OTP quá 5 lần. Vui lòng đăng ký/gửi lại yêu cầu để nhận mã mới.'], 400);
+        } else {
+            $inc = $pdo->prepare('UPDATE users SET login_attempts = ? WHERE id = ?');
+            $inc->execute([$attempts, (int) $user['id']]);
+            json_response(['ok' => false, 'message' => 'Mã OTP không chính xác. Bạn còn ' . (5 - $attempts) . ' lần thử.'], 400);
+        }
     }
     
     // Kích hoạt tài khoản và xóa mã OTP

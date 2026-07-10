@@ -31,14 +31,21 @@ declare(strict_types=1);
     }
 })();
 
+// Define App Constants
+define('APP_NAME', getenv('APP_NAME') ?: 'EngWithMe');
+define('APP_URL', getenv('APP_URL') ?: 'http://localhost/projects/EngWithMe');
+define('APP_KEY', getenv('APP_KEY') ?: '');
+define('APP_ENV', getenv('APP_ENV') ?: 'production');
+define('APP_DEBUG', filter_var(getenv('APP_DEBUG'), FILTER_VALIDATE_BOOLEAN));
+define('SESSION_SECURE', getenv('SESSION_SECURE') !== false ? filter_var(getenv('SESSION_SECURE'), FILTER_VALIDATE_BOOLEAN) : null);
+
 // Define Database Constants dynamically with fallbacks
 define('DB_HOST', getenv('DB_HOST') ?: '127.0.0.1');
+define('DB_PORT', getenv('DB_PORT') ?: '3306');
 define('DB_NAME', getenv('DB_NAME') ?: 'engwithme_db');
 define('DB_USER', getenv('DB_USER') ?: 'root');
 define('DB_PASS', getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
 define('DB_CHARSET', getenv('DB_CHARSET') ?: 'utf8mb4');
-define('APP_ENV', getenv('APP_ENV') ?: 'production');
-define('APP_DEBUG', filter_var(getenv('APP_DEBUG'), FILTER_VALIDATE_BOOLEAN));
 
 // Define Mail Constants dynamically with fallbacks
 define('MAIL_HOST', getenv('MAIL_HOST') ?: 'smtp.gmail.com');

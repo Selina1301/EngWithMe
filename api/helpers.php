@@ -69,12 +69,16 @@ function start_app_session(): void
     }
     session_save_path($sessionPath);
 
+    $secure = defined('SESSION_SECURE') && SESSION_SECURE !== null 
+        ? SESSION_SECURE 
+        : (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+
     session_set_cookie_params([
         'lifetime' => 0,
         'path' => '/',
         'httponly' => true,
         'samesite' => 'Lax',
-        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+        'secure' => $secure,
     ]);
 
     session_start();
@@ -88,7 +92,7 @@ function db(): PDO
         return $pdo;
     }
 
-    $dsn = sprintf('mysql:host=%s;dbname=%s;charset=%s', DB_HOST, DB_NAME, DB_CHARSET);
+    $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=%s', DB_HOST, DB_PORT, DB_NAME, DB_CHARSET);
 
     $pdo = new PDO($dsn, DB_USER, DB_PASS, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -224,9 +228,16 @@ function send_mail(string $to, string $subject, string $htmlBody, string $altBod
         $mail->Body    = $htmlBody;
         $mail->AltBody = $altBody ?: strip_tags($htmlBody);
 
-        // Thiết lập các header chống spam cơ bản
+        // Thiết lập các header chống spam và tăng độ tin cậy của email giao dịch (transactional)
         $mail->addCustomHeader('X-Mailer', 'PHP/' . phpversion());
         $mail->addCustomHeader('List-Unsubscribe', '<mailto:' . MAIL_FROM_ADDRESS . '?subject=unsubscribe>');
+        $mail->addCustomHeader('X-Auto-Response-Suppress', 'All');
+        $mail->addCustomHeader('Auto-Submitted', 'auto-generated');
+        $mail->addCustomHeader('Precedence', 'bulk');
+        
+        // Đặt độ ưu tiên cao cho email OTP/giao dịch khẩn cấp
+        $mail->Priority = 1;
+        $mail->addCustomHeader('X-Priority', '1');
 
         return $mail->send();
     } catch (\Exception $e) {

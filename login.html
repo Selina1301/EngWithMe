@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng nhập - EngWithMe</title>
   <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
-  <link rel="stylesheet" href="css/base.css?v=1.2">
+  <link rel="stylesheet" href="css/base.css?v=1.3">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
@@ -59,9 +59,15 @@
         </div>
       </label>
 
-      <div class="form-actions-row">
+      <div class="form-actions-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: -4px; margin-bottom: 20px; width: 100%;">
+        <label class="remember-me-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #94a3b8; font-size: 13.5px; font-weight: 500; user-select: none;">
+          <input type="checkbox" name="remember" checked style="width: 15px; height: 15px; accent-color: var(--secondary); cursor: pointer;">
+          Ghi nhớ
+        </label>
         <a href="forgot-password.html" class="forgot-password-link">Quên mật khẩu?</a>
       </div>
+
+      <p class="feedback" data-auth-feedback></p>
 
       <button class="btn btn-primary" type="submit"><span class="ti-arrow-right"></span> Vào tài khoản</button>
       <p class="form-note">Chưa có tài khoản? <a href="register.html">Tạo tài khoản mới</a></p>
@@ -78,10 +84,43 @@
         </svg>
         Đăng nhập với Google
       </a>
-
-      <p class="feedback" data-auth-feedback></p>
     </form>
   </main>
+
+  <!-- OTP Verification Modal for Login (Glassmorphism design) -->
+  <div class="otp-modal" id="otpModal" style="display: none;">
+    <div class="otp-backdrop"></div>
+    <div class="otp-container">
+      <div class="otp-card">
+        <div class="otp-icon-wrapper">
+          <span class="ti-email otp-icon"></span>
+        </div>
+        <h3>Xác thực đăng nhập</h3>
+        <p class="otp-instructions">Vì lý do bảo mật, chúng tôi đã gửi mã xác thực 6 số đến địa chỉ <strong id="otpEmailTarget">your-email@gmail.com</strong>. Vui lòng nhập mã để hoàn tất đăng nhập.</p>
+        
+        <form id="otpVerifyForm">
+          <input type="hidden" name="email" id="otpFormEmail">
+          <div class="otp-input-group">
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-otp-submit"><span class="ti-check"></span> Xác nhận & Đăng nhập</button>
+          
+          <p class="otp-error" id="otpErrorMsg"></p>
+        </form>
+        
+        <div class="otp-footer">
+          <p>Không nhận được mã? <a href="#" id="resendOtpBtn" class="disabled">Gửi lại mã <span id="otpCountdown">(60s)</span></a></p>
+          <a href="#" id="cancelOtpBtn" class="otp-cancel-link">Hủy và quay lại</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="js/core.js?v=1.0.2"></script>
   <script src="js/auth.js"></script>

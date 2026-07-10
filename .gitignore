@@ -18,3 +18,6 @@ storage/sessions/*
 !storage/sessions/.gitkeep
 storage/uploads/*
 !storage/uploads/.gitkeep
+
+# Security & Utility scripts
+tools/reset_admin.php

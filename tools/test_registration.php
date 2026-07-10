@@ -11,7 +11,7 @@ $_POST['goal'] = 'Giao tiếp hằng ngày';
 $_SERVER['REQUEST_METHOD'] = 'POST';
 
 try {
-    include 'api/register.php';
+    include __DIR__ . '/../api/register.php';
 } catch (Throwable $e) {
     echo "FATAL ERROR: " . $e->getMessage() . "\n";
     echo $e->getTraceAsString() . "\n";

@@ -24,14 +24,18 @@ try {
         $update = db()->prepare('UPDATE users SET reset_token = ?, reset_token_expires_at = ? WHERE id = ?');
         $update->execute([$token, $expires, (int) $user['id']]);
 
-        // Tạo đường dẫn đổi mật khẩu tuyệt đối (hỗ trợ reverse proxy SSL termination)
-        $protocol = (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') 
-            || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') 
-            ? "https" : "http";
-        $host = $_SERVER['HTTP_HOST'];
-        $scriptPath = $_SERVER['SCRIPT_NAME'];
-        $projectPath = str_replace('api/forgot_password.php', '', $scriptPath);
-        $resetLink = $protocol . "://" . $host . $projectPath . "reset-password.html?token=" . $token;
+        // Tạo đường dẫn đổi mật khẩu tuyệt đối (sử dụng APP_URL từ .env hoặc tự động nhận diện)
+        if (defined('APP_URL') && APP_URL !== '') {
+            $resetLink = rtrim(APP_URL, '/') . "/reset-password.html?token=" . $token;
+        } else {
+            $protocol = (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') 
+                || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') 
+                ? "https" : "http";
+            $host = $_SERVER['HTTP_HOST'];
+            $scriptPath = $_SERVER['SCRIPT_NAME'];
+            $projectPath = str_replace('api/forgot_password.php', '', $scriptPath);
+            $resetLink = $protocol . "://" . $host . $projectPath . "reset-password.html?token=" . $token;
+        }
 
         // Nội dung Email HTML cao cấp
         $subject = 'EngWithMe - Khôi phục mật khẩu tài khoản';

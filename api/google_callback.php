@@ -28,16 +28,24 @@ if ($code === '') {
 $clientId = getenv('GOOGLE_CLIENT_ID');
 $clientSecret = getenv('GOOGLE_CLIENT_SECRET');
 
-// Tự động nhận diện Redirect URI động theo domain và giao thức hiện tại (HTTP/HTTPS)
-$protocol = "http";
-if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || 
-    (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')) {
-    $protocol = "https";
+// Tự động nhận diện Redirect URI động theo domain hoặc lấy từ cấu hình .env
+$redirectUri = getenv('GOOGLE_REDIRECT_URI');
+$currentHost = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$isLocalhost = (str_starts_with($currentHost, 'localhost') || str_starts_with($currentHost, '127.0.0.1'));
+
+// Nếu cấu hình .env là localhost nhưng người dùng đang truy cập qua Tunnel (như Cloudflare, ngrok...)
+// ta sẽ tự động chuyển sang sử dụng Redirect URI động theo domain thực tế để tránh lỗi redirect_uri_mismatch
+if (empty($redirectUri) || (!$isLocalhost && str_contains($redirectUri, 'localhost'))) {
+    $protocol = "http";
+    if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || 
+        (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')) {
+        $protocol = "https";
+    }
+    $host = $_SERVER['HTTP_HOST'];
+    $scriptPath = $_SERVER['SCRIPT_NAME'];
+    $projectPath = str_replace('api/google_callback.php', '', $scriptPath);
+    $redirectUri = $protocol . "://" . $host . $projectPath . "api/google_callback.php";
 }
-$host = $_SERVER['HTTP_HOST'];
-$scriptPath = $_SERVER['SCRIPT_NAME'];
-$projectPath = str_replace('api/google_callback.php', '', $scriptPath);
-$redirectUri = $protocol . "://" . $host . $projectPath . "api/google_callback.php";
 
 try {
     // 2. Trao đổi Authorization Code lấy Access Token

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/api/helpers.php';
+require_once __DIR__ . '/../api/helpers.php';
 
 $email = 'johndoo120502@gmail.com';
 $otp = '450609';
