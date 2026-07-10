@@ -19,7 +19,7 @@
         <a href="listening.html">Listening</a>
         <a href="reading.html">Reading</a>
         <a href="grammar.html">Grammar</a>
-        <a href="exam-practice.html">Exam</a>
+        <a href="quiz.html">Exam</a>
         <a href="blog.html">Blog</a>
         <a href="pricing.html">Premium</a>
       </nav>
@@ -55,20 +55,18 @@
       <label>Email
         <input type="email" name="email" placeholder="you@example.com" autocomplete="email" required>
       </label>
-      <div class="form-grid two">
-        <label>Mật khẩu
-          <div class="password-wrapper">
-            <input type="password" name="password" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password" minlength="6" required>
-            <span class="toggle-password ti-eye" aria-label="Hiện mật khẩu" role="button" tabindex="0"></span>
-          </div>
-        </label>
-        <label>Nhập lại mật khẩu
-          <div class="password-wrapper">
-            <input type="password" name="confirm_password" placeholder="Nhập lại mật khẩu" autocomplete="new-password" minlength="6" required>
-            <span class="toggle-password ti-eye" aria-label="Hiện mật khẩu" role="button" tabindex="0"></span>
-          </div>
-        </label>
-      </div>
+      <label>Mật khẩu
+        <div class="password-wrapper">
+          <input type="password" name="password" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password" minlength="6" required>
+          <span class="toggle-password ti-eye" aria-label="Hiện mật khẩu" role="button" tabindex="0"></span>
+        </div>
+      </label>
+      <label>Nhập lại mật khẩu
+        <div class="password-wrapper">
+          <input type="password" name="confirm_password" placeholder="Nhập lại mật khẩu" autocomplete="new-password" minlength="6" required>
+          <span class="toggle-password ti-eye" aria-label="Hiện mật khẩu" role="button" tabindex="0"></span>
+        </div>
+      </label>
       <label>Mục tiêu học
         <select name="goal">
           <option>Giao tiếp hằng ngày</option>
@@ -98,7 +96,42 @@
     </form>
   </main>
 
-  <script src="js/core.js"></script>
+  <!-- OTP Verification Modal (Glassmorphism design) -->
+  <div class="otp-modal" id="otpModal" style="display: none;">
+    <div class="otp-backdrop"></div>
+    <div class="otp-container">
+      <div class="otp-card">
+        <div class="otp-icon-wrapper">
+          <span class="ti-email otp-icon"></span>
+        </div>
+        <h3>Xác thực Gmail của bạn</h3>
+        <p class="otp-instructions">Chúng tôi đã gửi mã xác thực 6 số đến địa chỉ <strong id="otpEmailTarget">your-email@gmail.com</strong>. Vui lòng kiểm tra hộp thư.</p>
+        
+        <form id="otpVerifyForm">
+          <input type="hidden" name="email" id="otpFormEmail">
+          <div class="otp-input-group">
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-otp-submit"><span class="ti-check"></span> Xác nhận & Kích hoạt</button>
+          
+          <p class="otp-error" id="otpErrorMsg"></p>
+        </form>
+        
+        <div class="otp-footer">
+          <p>Không nhận được mã? <a href="#" id="resendOtpBtn" class="disabled">Gửi lại mã <span id="otpCountdown">(60s)</span></a></p>
+          <a href="#" id="cancelOtpBtn" class="otp-cancel-link">Hủy và quay lại</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/core.js?v=1.0.2"></script>
   <script src="js/auth.js"></script>
   <script src="js/main.js"></script>
 </body>

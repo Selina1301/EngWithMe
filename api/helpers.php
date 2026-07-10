@@ -214,6 +214,8 @@ function send_mail(string $to, string $subject, string $htmlBody, string $altBod
 
         // Cấu hình người gửi và người nhận
         $mail->setFrom(MAIL_FROM_ADDRESS, MAIL_FROM_NAME);
+        $mail->addReplyTo(MAIL_FROM_ADDRESS, MAIL_FROM_NAME);
+        $mail->Sender = MAIL_FROM_ADDRESS; // Thiết lập Return-Path để tránh lỗi SPF
         $mail->addAddress($to);
 
         // Nội dung thư
@@ -221,6 +223,10 @@ function send_mail(string $to, string $subject, string $htmlBody, string $altBod
         $mail->Subject = $subject;
         $mail->Body    = $htmlBody;
         $mail->AltBody = $altBody ?: strip_tags($htmlBody);
+
+        // Thiết lập các header chống spam cơ bản
+        $mail->addCustomHeader('X-Mailer', 'PHP/' . phpversion());
+        $mail->addCustomHeader('List-Unsubscribe', '<mailto:' . MAIL_FROM_ADDRESS . '?subject=unsubscribe>');
 
         return $mail->send();
     } catch (\Exception $e) {

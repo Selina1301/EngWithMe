@@ -24,22 +24,22 @@
 
 
 .hero p.hero-slogan {
-  border-left: 4px solid #ff5c8a;
-  border-radius: 0 8px 8px 0;
-  background: linear-gradient(90deg, rgba(255, 92, 138, 0.18), rgba(255, 45, 85, 0.08), transparent);
-  color: #2ee878;
-  filter: drop-shadow(0 0 10px rgba(255, 92, 138, 0.34));
-  font-size: 1.04rem;
-  font-weight: 900;
-  line-height: 1.7;
-  margin: 18px 0 0;
+  border-left: 4px solid var(--primary);
+  border-radius: 0 12px 12px 0;
+  background: linear-gradient(90deg, rgba(46, 232, 120, 0.12), rgba(46, 232, 120, 0.01), transparent);
+  color: var(--muted);
+  font-size: 0.98rem;
+  font-weight: 500;
+  line-height: 1.6;
+  margin: 22px 0 0;
   max-width: 760px;
-  padding: 8px 14px;
+  padding: 12px 18px;
   position: relative;
-  text-shadow:
-    0 1px 0 rgba(0, 0, 0, 0.55),
-    0 0 18px rgba(255, 92, 138, 0.38),
-    0 0 28px rgba(255, 45, 85, 0.28);
+  border-top: 1px solid rgba(46, 232, 120, 0.08);
+  border-right: 1px solid rgba(46, 232, 120, 0.02);
+  border-bottom: 1px solid rgba(46, 232, 120, 0.02);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .today-task-panel {
@@ -84,3 +84,37 @@
 .faq-section .faq-list details:hover {
   filter: brightness(1.08) saturate(1.12);
 }
+
+@media (min-width: 769px) {
+  .hero-home {
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+    min-height: calc(100vh - 196px);
+  }
+}
+
+/* Make whole cards clickable */
+.course-card, .article-card {
+  position: relative;
+}
+
+.course-card a, .article-card a {
+  position: static;
+}
+
+.course-card a::after, .article-card a::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
+
+.course-card h3, .course-card p, .course-card .course-level,
+.article-card h3, .article-card p, .article-card span {
+  position: relative;
+  z-index: 1;
+}
+

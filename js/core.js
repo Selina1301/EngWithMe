@@ -11,7 +11,7 @@ function setActiveNav() {
     { href: "listening.html", label: "Listening" },
     { href: "reading.html", label: "Reading" },
     { href: "grammar.html", label: "Grammar" },
-    { href: "exam-practice.html", label: "Exam" },
+    { href: "quiz.html", label: "Exam" },
     { href: "blog.html", label: "Blog" },
     { href: "pricing.html", label: "Premium" }
   ];
@@ -35,7 +35,13 @@ function setActiveNav() {
 
     const links = nav.querySelectorAll("a");
     let activeLink = null;
-    const activePage = currentPage === "vocabulary-study.html" ? "vocabulary.html" : currentPage;
+    
+    let activePage = currentPage;
+    if (currentPage === "vocabulary-study.html") {
+      activePage = "vocabulary.html";
+    } else if (currentPage === "quiz.html" || currentPage === "exam-practice.html") {
+      activePage = "quiz.html";
+    }
 
     const updateIndicator = (target) => {
       if (target) {
@@ -64,8 +70,92 @@ function setActiveNav() {
 
     // Initial position
     setTimeout(() => updateIndicator(activeLink), 50);
+
+    // Re-align after custom fonts load
+    if (document.fonts) {
+      document.fonts.ready.then(() => {
+        updateIndicator(activeLink);
+      });
+    }
+    window.addEventListener("load", () => {
+      updateIndicator(activeLink);
+    });
+
+    // Re-align on window resize
+    window.addEventListener("resize", () => {
+      updateIndicator(activeLink);
+    });
   });
+
+  // Khởi tạo menu điều hướng cho điện thoại
+  initMobileMenu();
 }
+
+function initMobileMenu() {
+  const header = document.querySelector(".site-header");
+  if (!header) return;
+
+  // Đảm bảo nút hamburger tồn tại
+  let navToggle = header.querySelector(".nav-toggle");
+  if (!navToggle) {
+    navToggle = document.createElement("button");
+    navToggle.className = "nav-toggle";
+    navToggle.setAttribute("aria-label", "Mở menu");
+    navToggle.setAttribute("aria-expanded", "false");
+    navToggle.innerHTML = `
+      <span></span>
+      <span></span>
+      <span></span>
+    `;
+    const navActions = header.querySelector(".nav-actions");
+    if (navActions) {
+      header.insertBefore(navToggle, navActions);
+    } else {
+      header.appendChild(navToggle);
+    }
+  }
+
+  // Đảm bảo lớp phủ backdrop tồn tại
+  let backdrop = document.querySelector(".nav-backdrop");
+  if (!backdrop) {
+    backdrop = document.createElement("div");
+    backdrop.className = "nav-backdrop";
+    document.body.appendChild(backdrop);
+  }
+
+  // Hàm chuyển đổi trạng thái menu
+  const toggleMenu = (open) => {
+    const shouldOpen = open !== undefined ? open : !document.body.classList.contains("nav-open");
+    document.body.classList.toggle("nav-open", shouldOpen);
+    navToggle.setAttribute("aria-expanded", String(shouldOpen));
+    navToggle.setAttribute("aria-label", shouldOpen ? "Đóng menu" : "Mở menu");
+  };
+
+  // Ngăn chặn việc liên kết sự kiện nhiều lần
+  if (!window.engWithMeMobileMenuBound) {
+    window.engWithMeMobileMenuBound = true;
+    
+    navToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleMenu();
+    });
+
+    backdrop.addEventListener("click", () => {
+      toggleMenu(false);
+    });
+
+    // Tự động đóng menu khi nhấp vào liên kết
+    const navLinks = header.querySelector(".nav-links");
+    if (navLinks) {
+      navLinks.addEventListener("click", (e) => {
+        if (e.target.tagName === "A") {
+          toggleMenu(false);
+        }
+      });
+    }
+  }
+}
+
 
 function initEnhancedFooter() {
   document.querySelectorAll(".site-footer").forEach((footer) => {

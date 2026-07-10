@@ -12,6 +12,48 @@ function initAuthForms() {
     await submitAuthForm(loginForm, "api/login.php");
   });
 
+  // Bảo mật Password fields: Không cho phép copy từ ô Mật khẩu và không cho phép paste vào ô Nhập lại mật khẩu
+  if (registerForm) {
+    const passwordInput = registerForm.querySelector('input[name="password"]');
+    const confirmInput = registerForm.querySelector('input[name="confirm_password"]');
+    if (passwordInput && confirmInput) {
+      passwordInput.addEventListener("copy", (e) => {
+        e.preventDefault();
+        showAuthFeedback(registerForm, "Vì lý do bảo mật, không được phép copy mật khẩu.", false);
+      });
+      passwordInput.addEventListener("cut", (e) => {
+        e.preventDefault();
+      });
+      confirmInput.addEventListener("paste", (e) => {
+        e.preventDefault();
+        showAuthFeedback(registerForm, "Vui lòng tự gõ lại mật khẩu xác nhận, không được paste.", false);
+      });
+      confirmInput.addEventListener("drop", (e) => {
+        e.preventDefault();
+      });
+    }
+  }
+
+  // Xử lý lỗi trả về từ Google OAuth/Redirect parameters
+  if (loginForm) {
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get("error");
+    if (error) {
+      let message = "Đã xảy ra lỗi khi đăng nhập.";
+      if (error === "csrf_mismatch") {
+        message = "Yêu cầu đã hết hạn hoặc không hợp lệ (CSRF). Vui lòng thử lại.";
+      } else if (error === "google_failed") {
+        message = "Đăng nhập bằng Google thất bại. Vui lòng thử lại.";
+      } else if (error === "code_missing") {
+        message = "Không nhận được mã xác thực từ Google.";
+      }
+      showAuthFeedback(loginForm, message, false);
+      
+      // Xóa tham số lỗi trên thanh địa chỉ để tránh lặp lại thông báo khi F5
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }
+
   // Toggle Password Visibility
   document.querySelectorAll(".toggle-password").forEach((toggleBtn) => {
     toggleBtn.addEventListener("click", () => {
@@ -63,13 +105,7 @@ async function submitForgotForm(form) {
 
     showAuthFeedback(form, result.message, true);
     
-    // Display debug link if provided in development/local mode
-    const demoLinkEl = document.getElementById('demo-reset-link');
-    const resetLink = result.debug_reset_link || result.demo_link;
-    if (demoLinkEl && resetLink) {
-        demoLinkEl.style.display = 'block';
-        demoLinkEl.innerHTML = `<strong>Link khôi phục (Debug):</strong> <a href="${resetLink}" target="_blank">${resetLink}</a>`;
-    }
+
 
   } catch (error) {
     showAuthFeedback(form, "Không gọi được backend.", false);
@@ -108,6 +144,12 @@ async function submitAuthForm(form, endpoint) {
 
     if (!response.ok || !result.ok) {
       showAuthFeedback(form, result.message || "Thao tác không thành công.", false);
+      return;
+    }
+
+    if (result.requires_otp) {
+      showAuthFeedback(form, result.message, true);
+      openOtpModal(result.email, form);
       return;
     }
 
@@ -172,4 +214,170 @@ function showAuthFeedback(form, message, isSuccess = true) {
     feedback.textContent = message;
     feedback.style.color = isSuccess ? "var(--success)" : "var(--danger)";
   }
+}
+
+function openOtpModal(email, originalForm) {
+  document.getElementById("otpFormEmail").value = email;
+  document.getElementById("otpEmailTarget").textContent = email;
+  
+  const otpModal = document.getElementById("otpModal");
+  if (otpModal) {
+    otpModal.style.display = "flex";
+  }
+  
+  const digits = document.querySelectorAll(".otp-digit");
+  digits.forEach((input, index) => {
+    input.value = "";
+    
+    // Auto-advance
+    input.oninput = () => {
+      if (input.value.length > 1) {
+        input.value = input.value.slice(-1);
+      }
+      if (input.value && index < digits.length - 1) {
+        digits[index + 1].focus();
+      }
+    };
+    
+    // Auto-backspace
+    input.onkeydown = (e) => {
+      if (e.key === "Backspace" && !input.value && index > 0) {
+        digits[index - 1].focus();
+      }
+    };
+  });
+  
+  if (digits[0]) {
+    setTimeout(() => digits[0].focus(), 100);
+  }
+  
+  document.getElementById("otpErrorMsg").textContent = "";
+  
+  let countdown = 60;
+  const resendBtn = document.getElementById("resendOtpBtn");
+  const countdownSpan = document.getElementById("otpCountdown");
+  
+  resendBtn.classList.add("disabled");
+  countdownSpan.textContent = `(${countdown}s)`;
+  
+  clearInterval(window.otpInterval);
+  window.otpInterval = setInterval(() => {
+    countdown--;
+    if (countdown <= 0) {
+      clearInterval(window.otpInterval);
+      resendBtn.classList.remove("disabled");
+      countdownSpan.textContent = "";
+    } else {
+      countdownSpan.textContent = `(${countdown}s)`;
+    }
+  }, 1000);
+  
+  // Resend OTP API handler
+  resendBtn.onclick = async (e) => {
+    e.preventDefault();
+    if (resendBtn.classList.contains("disabled")) return;
+    
+    try {
+      resendBtn.classList.add("disabled");
+      document.getElementById("otpErrorMsg").textContent = "Đang gửi lại mã...";
+      document.getElementById("otpErrorMsg").style.color = "var(--success)";
+      
+      const response = await fetch("api/register.php", {
+        method: "POST",
+        body: new FormData(originalForm),
+        credentials: "same-origin"
+      });
+      const res = await response.json();
+      if (res.ok) {
+        document.getElementById("otpErrorMsg").textContent = "Mã mới đã được gửi!";
+        document.getElementById("otpErrorMsg").style.color = "var(--success)";
+        
+        countdown = 60;
+        countdownSpan.textContent = `(${countdown}s)`;
+        clearInterval(window.otpInterval);
+        window.otpInterval = setInterval(() => {
+          countdown--;
+          if (countdown <= 0) {
+            clearInterval(window.otpInterval);
+            resendBtn.classList.remove("disabled");
+            countdownSpan.textContent = "";
+          } else {
+            countdownSpan.textContent = `(${countdown}s)`;
+          }
+        }, 1000);
+      } else {
+        document.getElementById("otpErrorMsg").textContent = res.message || "Không thể gửi lại mã.";
+        document.getElementById("otpErrorMsg").style.color = "var(--danger)";
+        resendBtn.classList.remove("disabled");
+      }
+    } catch (err) {
+      document.getElementById("otpErrorMsg").textContent = "Lỗi kết nối mạng.";
+      document.getElementById("otpErrorMsg").style.color = "var(--danger)";
+      resendBtn.classList.remove("disabled");
+    }
+  };
+  
+  // Cancel button
+  document.getElementById("cancelOtpBtn").onclick = (e) => {
+    e.preventDefault();
+    clearInterval(window.otpInterval);
+    otpModal.style.display = "none";
+  };
+  
+  // Submit OTP Verification Form
+  const otpVerifyForm = document.getElementById("otpVerifyForm");
+  otpVerifyForm.onsubmit = async (e) => {
+    e.preventDefault();
+    
+    let otpCode = "";
+    digits.forEach(input => {
+      otpCode += input.value;
+    });
+    
+    if (otpCode.length !== 6) {
+      document.getElementById("otpErrorMsg").textContent = "Vui lòng nhập đủ 6 chữ số.";
+      document.getElementById("otpErrorMsg").style.color = "var(--danger)";
+      return;
+    }
+    
+    const submitBtn = otpVerifyForm.querySelector('button[type="submit"]');
+    const origBtnText = submitBtn.textContent;
+    try {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Đang xác thực...";
+      document.getElementById("otpErrorMsg").textContent = "";
+      
+      const response = await fetch("api/verify_otp.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, otp: otpCode }),
+        credentials: "same-origin"
+      });
+      const res = await response.json();
+      
+      if (!response.ok || !res.ok) {
+        document.getElementById("otpErrorMsg").textContent = res.message || "Mã OTP không hợp lệ.";
+        document.getElementById("otpErrorMsg").style.color = "var(--danger)";
+        return;
+      }
+      
+      saveAuthenticatedUser(res.user);
+      document.getElementById("otpErrorMsg").textContent = res.message;
+      document.getElementById("otpErrorMsg").style.color = "var(--success)";
+      
+      setTimeout(() => {
+        clearInterval(window.otpInterval);
+        window.location.href = res.redirect || "profile.html#dashboard";
+      }, 1500);
+      
+    } catch (err) {
+      document.getElementById("otpErrorMsg").textContent = "Không thể kết nối đến máy chủ.";
+      document.getElementById("otpErrorMsg").style.color = "var(--danger)";
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = origBtnText;
+    }
+  };
 }

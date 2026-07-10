@@ -67,6 +67,7 @@ try {
 
     session_regenerate_id(true);
     $_SESSION['user_id'] = (int) $user['id'];
+    setcookie('ewm_logged_in', '1', time() + 86400 * 30, '/');
 
     $updateLogin = db()->prepare('UPDATE users SET last_login_at = NOW(), login_attempts = 0, attempt_lock_until = NULL WHERE id = ?');
     $updateLogin->execute([(int) $user['id']]);

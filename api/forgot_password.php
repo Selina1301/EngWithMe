@@ -24,8 +24,10 @@ try {
         $update = db()->prepare('UPDATE users SET reset_token = ?, reset_token_expires_at = ? WHERE id = ?');
         $update->execute([$token, $expires, (int) $user['id']]);
 
-        // Tạo đường dẫn đổi mật khẩu tuyệt đối
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
+        // Tạo đường dẫn đổi mật khẩu tuyệt đối (hỗ trợ reverse proxy SSL termination)
+        $protocol = (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') 
+            || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') 
+            ? "https" : "http";
         $host = $_SERVER['HTTP_HOST'];
         $scriptPath = $_SERVER['SCRIPT_NAME'];
         $projectPath = str_replace('api/forgot_password.php', '', $scriptPath);
@@ -55,20 +57,17 @@ try {
         // Gửi email thật
         $mailSent = send_mail($email, $subject, $htmlBody);
 
-        $response = [
-            'ok' => $mailSent,
-            'message' => $mailSent 
-                ? 'Một liên kết khôi phục mật khẩu đã được gửi đến email của bạn.' 
-                : 'Không thể kết nối máy chủ gửi thư. Vui lòng kiểm tra lại cấu hình tài khoản Gmail SMTP.'
-        ];
-
-        // Nếu ở chế độ Debug, đính kèm link khôi phục dự phòng để Dev copy
-        if (defined('APP_DEBUG') && APP_DEBUG) {
-            $response['debug_reset_link'] = $resetLink;
-            $response['mail_sent'] = $mailSent;
+        if (!$mailSent) {
+            json_response([
+                'ok' => false,
+                'message' => 'Không thể gửi email khôi phục mật khẩu. Vui lòng kiểm tra cấu hình SMTP hoặc thử lại sau.'
+            ], 500);
         }
 
-        json_response($response, $mailSent ? 200 : 500);
+        json_response([
+            'ok' => true,
+            'message' => 'Một liên kết khôi phục mật khẩu đã được gửi đến email của bạn.'
+        ], 200);
     } else {
         // Generic response even if email doesn't exist for security
         json_response([
