@@ -34,7 +34,6 @@ function setActiveNav() {
       .join("");
 
     const links = nav.querySelectorAll("a");
-    let activeLink = null;
     
     let activePage = currentPage;
     if (currentPage === "vocabulary-study.html") {
@@ -43,47 +42,12 @@ function setActiveNav() {
       activePage = "quiz.html";
     }
 
-    const updateIndicator = (target) => {
-      if (target) {
-        nav.style.setProperty("--nav-indicator-x", `${target.offsetLeft}px`);
-        nav.style.setProperty("--nav-indicator-y", `${target.offsetTop}px`);
-        nav.style.setProperty("--nav-indicator-w", `${target.offsetWidth}px`);
-        nav.style.setProperty("--nav-indicator-h", `${target.offsetHeight}px`);
-        nav.style.setProperty("--nav-indicator-opacity", "1");
-      } else {
-        nav.style.setProperty("--nav-indicator-opacity", "0");
-      }
-    };
-
     links.forEach((link) => {
       const href = link.getAttribute("href");
       const linkPage = href.split("#")[0];
       if (href === activePage || linkPage === activePage) {
         link.classList.add("is-active");
-        activeLink = link;
       }
-
-      link.addEventListener("mouseenter", () => updateIndicator(link));
-    });
-
-    nav.addEventListener("mouseleave", () => updateIndicator(activeLink));
-
-    // Initial position
-    setTimeout(() => updateIndicator(activeLink), 50);
-
-    // Re-align after custom fonts load
-    if (document.fonts) {
-      document.fonts.ready.then(() => {
-        updateIndicator(activeLink);
-      });
-    }
-    window.addEventListener("load", () => {
-      updateIndicator(activeLink);
-    });
-
-    // Re-align on window resize
-    window.addEventListener("resize", () => {
-      updateIndicator(activeLink);
     });
   });
 
@@ -252,6 +216,95 @@ function getFooterColumnMarkup(title, links) {
 }
 
 
+// State Management & Cache Controller (Memory + Disk Cache)
+const AppCache = {
+  memoryStore: new Map(),
+
+  get(key) {
+    if (this.memoryStore.has(key)) {
+      return this.memoryStore.get(key);
+    }
+    try {
+      const data = localStorage.getItem(`ewm_cache_${key}`);
+      if (data) {
+        const parsed = JSON.parse(data);
+        this.memoryStore.set(key, parsed);
+        return parsed;
+      }
+    } catch (e) {
+      console.warn("Lỗi đọc cache disk:", e);
+    }
+    return null;
+  },
+
+  set(key, value) {
+    this.memoryStore.set(key, value);
+    try {
+      localStorage.setItem(`ewm_cache_${key}`, JSON.stringify(value));
+      localStorage.setItem(`ewm_cache_invalid_${key}`, "false");
+      localStorage.setItem(`ewm_cache_time_${key}`, Date.now().toString());
+    } catch (e) {
+      console.warn("Storage quota exceeded", e);
+    }
+  },
+
+  invalidate(key) {
+    localStorage.setItem(`ewm_cache_invalid_${key}`, "true");
+    this.memoryStore.delete(key);
+  },
+
+  isInvalid(key) {
+    return localStorage.getItem(`ewm_cache_invalid_${key}`) === "true";
+  },
+
+  getLastSyncTime(key) {
+    return parseInt(localStorage.getItem(`ewm_cache_time_${key}`) || "0", 10);
+  },
+
+  invalidateUser(userId) {
+    if (!userId) return;
+    this.invalidate(`vocab_user_${userId}`);
+    this.invalidate(`progress_user_${userId}`);
+    this.invalidate(`quiz_user_${userId}`);
+    console.log(`[Cache] Invalidated all data caches for user: ${userId}`);
+  }
+};
+
+window.AppCache = AppCache;
+
+async function fetchWithSWR(url, cacheKey, onDataReady, options = {}) {
+  const cachedData = AppCache.get(cacheKey);
+  const isInvalid = AppCache.isInvalid(cacheKey);
+  const lastSync = AppCache.getLastSyncTime(cacheKey);
+  const now = Date.now();
+  const cacheDuration = options.ttl || 2 * 60 * 1000; // Mặc định 2 phút
+
+  // 1. Trả về cache ngay lập tức nếu có
+  if (cachedData) {
+    onDataReady(cachedData, true);
+  }
+
+  // 2. Chạy ngầm nếu chưa có cache, cache bị invalid, hoặc quá thời gian cacheDuration
+  const expired = now - lastSync > cacheDuration;
+  if (!cachedData || expired || isInvalid) {
+    try {
+      const response = await fetch(url, { credentials: "same-origin", ...options.fetchOptions });
+      if (response.ok) {
+        const result = await response.json();
+        if (result.ok) {
+          const hasChanged = JSON.stringify(cachedData) !== JSON.stringify(result);
+          AppCache.set(cacheKey, result);
+          if (hasChanged || !cachedData) {
+            onDataReady(result, false);
+          }
+        }
+      }
+    } catch (error) {
+      console.warn(`SWR background fetch failed for ${url}:`, error);
+    }
+  }
+}
+
 function initAuthNav() {
   const header = document.querySelector(".site-header");
   if (!header) return;
@@ -272,21 +325,20 @@ function initAuthNav() {
     renderAuthenticatedNav(cachedUser);
   }
 
-  fetch("api/me.php", { credentials: "same-origin" })
-    .then((response) => response.ok ? response.json() : Promise.reject(response))
-    .then((result) => {
-      if (!result.ok || !result.user) throw new Error("Unauthenticated");
-      persistAuthUser(result.user);
-      renderAuthenticatedNav(result.user);
-      redirectAuthPages(result.user);
-      syncUserDataFromServer().then(() => {
-        refreshPageAfterUserDataSync();
-      });
-    })
-    .catch(() => {
+  // Fetch me.php using SWR (10 phút cache cho trạng thái đăng nhập)
+  fetchWithSWR("api/me.php", "me", (result, isCached) => {
+    if (!result.ok || !result.user) {
       clearAuthUser();
       renderGuestNav();
-    });
+      return;
+    }
+    persistAuthUser(result.user);
+    renderAuthenticatedNav(result.user);
+    redirectAuthPages(result.user);
+    
+    // Tải dữ liệu tương thích dựa theo Route
+    triggerRouteBasedFetch();
+  }, { ttl: 10 * 60 * 1000 });
 }
 
 function refreshPageAfterUserDataSync() {
@@ -327,44 +379,58 @@ function refreshPageAfterUserDataSync() {
   }
 }
 
-async function syncUserDataFromServer() {
+async function triggerRouteBasedFetch(force = false) {
+  const currentPage = getCurrentPage();
   const userId = localStorage.getItem("engWithMeUserId");
   if (!userId) return;
 
-  try {
-    // 1. Sync Vocab & Viewed Topics
-    const vocabRes = await fetch("api/sync_vocab.php", { credentials: "same-origin" });
-    if (vocabRes.ok) {
-      const vocabData = await vocabRes.json();
-      if (vocabData.ok) {
-        localStorage.setItem(
-          `engWithMeSavedVocabularyWords_user_${userId}`,
-          JSON.stringify(vocabData.saved || [])
-        );
-        localStorage.setItem(
-          `engWithMeViewedTopics_user_${userId}`,
-          JSON.stringify(vocabData.viewed || [])
-        );
-      }
-    }
+  const needsVocab = force || ["vocabulary.html", "vocabulary-study.html"].includes(currentPage);
+  const needsProgress = force || ["dashboard.html", "listening.html", "reading.html", "grammar.html", "quiz.html"].includes(currentPage);
+  const needsQuiz = force || ["quiz.html", "dashboard.html", "results.html"].includes(currentPage);
 
-    // 2. Sync Course Progress
-    const progRes = await fetch("api/sync_progress.php", { credentials: "same-origin" });
-    if (progRes.ok) {
-      const progData = await progRes.json();
-      if (progData.ok) {
-        localStorage.setItem(
-          `engWithMeProgress_user_${userId}`,
-          JSON.stringify(progData.progress || [])
-        );
-      }
-    }
+  if (!needsVocab && !needsProgress && !needsQuiz) {
+    return;
+  }
 
-    // 3. Sync Vocabulary Quiz Stats
-    const quizRes = await fetch("api/sync_quiz.php", { credentials: "same-origin" });
-    if (quizRes.ok) {
-      const quizData = await quizRes.json();
-      if (quizData.ok && quizData.stats) {
+  // 1. Tải từ vựng (SWR) - TTL 3 phút
+  if (needsVocab) {
+    const vocabCacheKey = `vocab_user_${userId}`;
+    if (force) AppCache.invalidate(vocabCacheKey);
+    
+    fetchWithSWR("api/sync_vocab.php", vocabCacheKey, (vocabData) => {
+      localStorage.setItem(
+        `engWithMeSavedVocabularyWords_user_${userId}`,
+        JSON.stringify(vocabData.saved || [])
+      );
+      localStorage.setItem(
+        `engWithMeViewedTopics_user_${userId}`,
+        JSON.stringify(vocabData.viewed || [])
+      );
+      refreshPageAfterUserDataSync();
+    }, { ttl: 3 * 60 * 1000 });
+  }
+
+  // 2. Tải tiến trình khóa học (SWR) - TTL 2 phút
+  if (needsProgress) {
+    const progressCacheKey = `progress_user_${userId}`;
+    if (force) AppCache.invalidate(progressCacheKey);
+
+    fetchWithSWR("api/sync_progress.php", progressCacheKey, (progData) => {
+      localStorage.setItem(
+        `engWithMeProgress_user_${userId}`,
+        JSON.stringify(progData.progress || [])
+      );
+      refreshPageAfterUserDataSync();
+    }, { ttl: 2 * 60 * 1000 });
+  }
+
+  // 3. Tải kết quả thi trắc nghiệm (SWR) - TTL 1 phút
+  if (needsQuiz) {
+    const quizCacheKey = `quiz_user_${userId}`;
+    if (force) AppCache.invalidate(quizCacheKey);
+
+    fetchWithSWR("api/sync_quiz.php", quizCacheKey, (quizData) => {
+      if (quizData.stats) {
         const { activityDays, ...quizStats } = quizData.stats;
         localStorage.setItem(
           `engWithMeVocabQuizStats_user_${userId}`,
@@ -385,11 +451,24 @@ async function syncUserDataFromServer() {
           );
         }
       }
-    }
-  } catch (error) {
-    console.error("Failed to sync user data from server:", error);
+      refreshPageAfterUserDataSync();
+    }, { ttl: 1 * 60 * 1000 });
   }
 }
+
+// Bắt sự kiện người dùng quay lại tab để tự động cập nhật dữ liệu nền
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
+    triggerRouteBasedFetch();
+  }
+});
+
+// Giữ hàm cũ tương thích ngược nhưng gọi logic route mới
+async function syncUserDataFromServer() {
+  return triggerRouteBasedFetch(false);
+}
+
+window.triggerRouteBasedFetch = triggerRouteBasedFetch;
 
 function ensureNavActions(header) {
   if (header.querySelector(".nav-actions")) return;

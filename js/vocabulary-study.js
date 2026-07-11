@@ -43,7 +43,13 @@ function initVocabularyStudy() {
           method: "POST",
           body,
           credentials: "same-origin"
-        }).catch(e => console.error("Failed to sync vocab action to server:", e));
+        })
+        .then(response => {
+          if (response.ok && typeof AppCache !== "undefined") {
+            AppCache.invalidate(`vocab_user_${userId}`);
+          }
+        })
+        .catch(e => console.error("Failed to sync vocab action to server:", e));
       } catch (e) {
         console.error("Failed to sync vocab action to server:", e);
       }
@@ -883,7 +889,13 @@ function initVocabularyStudy() {
           method: "POST",
           body,
           credentials: "same-origin"
-        }).catch(e => console.error("Failed to sync viewed topic to database:", e));
+        })
+        .then(response => {
+          if (response.ok && typeof AppCache !== "undefined") {
+            AppCache.invalidate(`vocab_user_${userId}`);
+          }
+        })
+        .catch(e => console.error("Failed to sync viewed topic to database:", e));
       }
     } catch (err) {
       console.error("Error writing to viewedList:", err);

@@ -544,12 +544,12 @@ function initToeicExamPractice() {
     `;
   }
 
+
   function renderFullExam() {
     const setMeta = getSetMeta(selectedSet);
     stopActiveTts();
     question.closest(".wireframe-question")?.removeAttribute("hidden");
     countdown.textContent = formatTime(timeLeft);
-
     question.hidden = true;
     question.innerHTML = "";
     explain.hidden = true;
@@ -617,7 +617,13 @@ function initToeicExamPractice() {
           method: "POST",
           body,
           credentials: "same-origin"
-        });
+        })
+        .then(response => {
+          if (response.ok && typeof AppCache !== "undefined") {
+            AppCache.invalidate(`quiz_user_${userId}`);
+          }
+        })
+        .catch(e => console.error("Failed to save test result to database:", e));
       } catch (e) {
         console.error("Failed to save test result to database:", e);
       }

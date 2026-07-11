@@ -39,11 +39,14 @@ function initProgressButtons() {
         try {
           const body = new FormData();
           body.append("progress_id", id);
-          await fetch("api/sync_progress.php", {
+          const response = await fetch("api/sync_progress.php", {
             method: "POST",
             body,
             credentials: "same-origin"
           });
+          if (response.ok && typeof AppCache !== "undefined") {
+            AppCache.invalidate(`progress_user_${userId}`);
+          }
         } catch (e) {
           console.error("Failed to sync progress to database:", e);
         }
