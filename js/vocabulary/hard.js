@@ -2,97 +2,97 @@
 window.VOCABULARY_LEVEL_DATA = window.VOCABULARY_LEVEL_DATA || {};
 window.VOCABULARY_LEVEL_DATA.hard = {
   "title": "Hard Vocabulary",
-  "subtitle": "Nhóm từ nâng cao cho công nghệ, kinh doanh và học thuật.",
-  "label": "Chuyên sâu",
+  "subtitle": "Nhóm chủ đề học thuật chuyên sâu và từ vựng IELTS 7.5+.",
+  "label": "Cao cấp",
   "topics": [
     {
       "id": "technology",
       "icon": "ti-desktop",
       "name": "Công nghệ số",
-      "desc": "Thiết bị số, phần mềm, hệ thống cơ sở dữ liệu và bảo mật dữ liệu.",
+      "desc": "Mã hóa, thuật toán, khả năng mở rộng và tối ưu hóa hệ thống.",
       "words": [
         {
-          "word": "device",
-          "phonetic": "/dɪˈvaɪs/",
-          "meaning": "thiết bị phần cứng",
-          "example": "This smart device is very easy to use.",
+          "word": "cryptography",
+          "phonetic": "/krɪpˈtɑː.ɡrə.fi/",
+          "meaning": "mật mã học chuyên sâu",
+          "example": "Cryptography is essential for securing digital transactions.",
           "difficulty": "easy"
         },
         {
-          "word": "screen",
-          "phonetic": "/skriːn/",
-          "meaning": "màn hình hiển thị",
-          "example": "The screen resolution is incredibly high.",
+          "word": "infrastructure",
+          "phonetic": "/ˈɪn.frəˌstrʌk.tʃɚ/",
+          "meaning": "cơ sở hạ tầng kỹ thuật",
+          "example": "Developing cloud infrastructure requires significant resources.",
           "difficulty": "easy"
         },
         {
-          "word": "app",
-          "phonetic": "/æp/",
-          "meaning": "ứng dụng phần mềm",
-          "example": "I use an educational app to study vocab.",
+          "word": "cybersecurity",
+          "phonetic": "/ˌsaɪ.bɚ.səˈkjʊr.ə.t̬i/",
+          "meaning": "an ninh mạng chuyên sâu",
+          "example": "Cybersecurity protocols protect sensitive user details.",
           "difficulty": "easy"
         },
         {
-          "word": "password",
-          "phonetic": "/ˈpæs.wɝːd/",
-          "meaning": "mật khẩu bảo mật",
-          "example": "Do not share your password with anyone.",
+          "word": "protocol",
+          "phonetic": "/ˈproʊ.t̬ə.kɑːl/",
+          "meaning": "giao thức mạng máy tính",
+          "example": "The internet runs on a standard communication protocol.",
           "difficulty": "easy"
         },
         {
-          "word": "file",
-          "phonetic": "/faɪl/",
-          "meaning": "tệp tin dữ liệu",
-          "example": "Please attach the file to your email.",
+          "word": "repository",
+          "phonetic": "/rɪˈpɑː.zɪ.tɔːr.i/",
+          "meaning": "kho chứa mã nguồn/dữ liệu",
+          "example": "Developers push code updates to the main repository.",
           "difficulty": "easy"
         },
         {
-          "word": "software",
-          "phonetic": "/ˈsɑːft.wer/",
-          "meaning": "chương trình phần mềm",
-          "example": "This software helps developers optimize code.",
+          "word": "encryption",
+          "phonetic": "/ɪnˈkrɪp.ʃən/",
+          "meaning": "sự mã hóa bảo mật",
+          "example": "Encryption keeps your personal messages safe.",
           "difficulty": "medium"
         },
         {
-          "word": "database",
-          "phonetic": "/ˈdeɪ.tə.beɪs/",
-          "meaning": "cơ sở dữ liệu",
-          "example": "User info is stored in a secure database.",
+          "word": "integration",
+          "phonetic": "/ˌɪn.t̬əˈgreɪ.ʃən/",
+          "meaning": "sự tích hợp hệ thống",
+          "example": "System integration takes several weeks.",
           "difficulty": "medium"
         },
         {
-          "word": "interface",
-          "phonetic": "/ˈɪn.t̬ɚ.feɪs/",
-          "meaning": "giao diện người dùng",
-          "example": "The UI interface looks simple and futuristic.",
+          "word": "automation",
+          "phonetic": "/ˌɑː.t̬əˈmeɪ.ʃən/",
+          "meaning": "sự tự động hóa",
+          "example": "Automation reduces manufacturing costs.",
           "difficulty": "medium"
         },
         {
-          "word": "network",
-          "phonetic": "/ˈnet.wɝːk/",
-          "meaning": "hệ thống mạng lưới",
-          "example": "The corporate network is highly stable.",
+          "word": "optimization",
+          "phonetic": "/ˌɑːp.tə.məˈzeɪ.ʃən/",
+          "meaning": "sự tối ưu hóa",
+          "example": "Optimization improves webpage load speed.",
           "difficulty": "medium"
         },
         {
           "word": "algorithm",
           "phonetic": "/ˈæl.ɡə.rɪ.ðəm/",
           "meaning": "thuật toán máy tính",
-          "example": "The algorithm suggests lessons for your level.",
+          "example": "The algorithm suggests personalized content.",
           "difficulty": "hard"
         },
         {
           "word": "authentication",
           "phonetic": "/ɔːˌθen.təˈkeɪ.ʃən/",
-          "meaning": "quá trình xác thực bảo mật",
-          "example": "Two-factor authentication improves account safety.",
+          "meaning": "sự xác thực bảo mật",
+          "example": "Multi-factor authentication is highly recommended.",
           "difficulty": "hard"
         },
         {
           "word": "scalability",
           "phonetic": "/ˌskeɪ.ləˈbɪl.ə.ti/",
-          "meaning": "khả năng mở rộng hệ thống",
-          "example": "Scalability is a core requirement for websites.",
+          "meaning": "khả năng mở rộng",
+          "example": "Scalability is crucial for database design.",
           "difficulty": "hard"
         }
       ]
@@ -100,793 +100,779 @@ window.VOCABULARY_LEVEL_DATA.hard = {
     {
       "id": "business",
       "icon": "ti-stats-up",
-      "name": "Kinh doanh & Thị trường",
-      "desc": "Chiến lược, doanh thu, lợi thế cạnh tranh và các bên liên quan.",
+      "name": "Kinh doanh & Chiến lược",
+      "desc": "Thương vụ, tập đoàn, độc quyền và phân khúc thị trường.",
       "words": [
         {
-          "word": "customer",
-          "phonetic": "/ˈkʌs.tə.mɚ/",
-          "meaning": "khách hàng đối tác",
-          "example": "The customer asked for a product demo.",
+          "word": "acquisition",
+          "phonetic": "/ˌæk.wəˈzɪʃ.ən/",
+          "meaning": "thương vụ mua lại công ty",
+          "example": "The tech giant announced its latest corporate acquisition.",
           "difficulty": "easy"
         },
         {
-          "word": "price",
-          "phonetic": "/praɪs/",
-          "meaning": "giá trị niêm yết",
-          "example": "We need to set a competitive price.",
+          "word": "subsidiary",
+          "phonetic": "/səbˈsɪd.i.er.i/",
+          "meaning": "công ty con trực thuộc",
+          "example": "The local enterprise is a subsidiary of a global firm.",
           "difficulty": "easy"
         },
         {
-          "word": "sale",
-          "phonetic": "/seɪl/",
-          "meaning": "hoạt động bán hàng",
-          "example": "Sales representatives are pitching clients.",
+          "word": "monopoly",
+          "phonetic": "/məˈnɑː.pəl.i/",
+          "meaning": "sự độc quyền thị trường",
+          "example": "The state monopoly was broken up to foster competition.",
           "difficulty": "easy"
         },
         {
-          "word": "market",
-          "phonetic": "/ˈmɑːr.kɪt/",
-          "meaning": "thị trường kinh doanh",
-          "example": "They aim to expand into the Asian market.",
+          "word": "conglomerate",
+          "phonetic": "/kənˈɡlɑː.mɚ.ət/",
+          "meaning": "tập đoàn đa ngành",
+          "example": "The conglomerate operates in media, banking, and retail.",
           "difficulty": "easy"
         },
         {
-          "word": "profit",
-          "phonetic": "/ˈprɑː.fɪt/",
-          "meaning": "lợi nhuận ròng",
-          "example": "The company reported an increase in profit.",
+          "word": "commodity",
+          "phonetic": "/kəˈmɑː.də.t̬i/",
+          "meaning": "hàng hóa thương mại",
+          "example": "Oil is a highly traded commodity in global markets.",
           "difficulty": "easy"
         },
         {
-          "word": "revenue",
-          "phonetic": "/ˈrev.ə.nuː/",
-          "meaning": "tổng doanh thu",
-          "example": "Digital products boosted our overall revenue.",
-          "difficulty": "medium"
-        },
-        {
-          "word": "strategy",
-          "phonetic": "/ˈstræt̬.ə.dʒi/",
-          "meaning": "chiến lược phát triển",
-          "example": "Our growth strategy is focused on innovation.",
-          "difficulty": "medium"
-        },
-        {
-          "word": "investment",
-          "phonetic": "/ɪnˈvest.mənt/",
-          "meaning": "khoản tiền đầu tư",
-          "example": "Real estate is a long-term investment.",
+          "word": "leverage",
+          "phonetic": "/ˈlev.ɚ.ɪdʒ/",
+          "meaning": "đòn bẩy tài chính/vị thế",
+          "example": "They plan to leverage assets to secure a larger loan.",
           "difficulty": "medium"
         },
         {
           "word": "branding",
           "phonetic": "/ˈbræn.dɪŋ/",
-          "meaning": "nhận diện thương hiệu",
-          "example": "Branding builds trust with target audiences.",
+          "meaning": "xây dựng thương hiệu",
+          "example": "Good branding builds customer trust.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "enterprise",
+          "phonetic": "/ˈen.t̬ɚ.praɪz/",
+          "meaning": "doanh nghiệp lớn",
+          "example": "He owns a large commercial enterprise.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "corporate",
+          "phonetic": "/ˈkɔːr.pɚ.ət/",
+          "meaning": "thuộc tập đoàn",
+          "example": "She works in a busy corporate environment.",
           "difficulty": "medium"
         },
         {
           "word": "competitive advantage",
           "phonetic": "/kəmˈpet̬.ə.t̬ɪv ədˈvæn.t̬ɪdʒ/",
-          "meaning": "lợi thế cạnh tranh vượt trội",
-          "example": "Proprietary tech is our key competitive advantage.",
+          "meaning": "lợi thế cạnh tranh",
+          "example": "Unique technology is our key competitive advantage.",
           "difficulty": "hard"
         },
         {
           "word": "market segmentation",
           "phonetic": "/ˈmɑːr.kɪt ˌseɡ.menˈteɪ.ʃən/",
-          "meaning": "sự phân khúc thị trường",
-          "example": "Market segmentation aids precise targeting.",
+          "meaning": "phân khúc thị trường",
+          "example": "Market segmentation aids marketing campaigns.",
           "difficulty": "hard"
         },
         {
           "word": "stakeholder",
           "phonetic": "/ˈsteɪkˌhoʊl.dɚ/",
-          "meaning": "bên liên quan trực tiếp",
-          "example": "All major stakeholders agreed on the new policy.",
+          "meaning": "bên liên quan",
+          "example": "Stakeholders approved the new business plan.",
           "difficulty": "hard"
         }
       ]
     },
     {
       "id": "academic",
-      "icon": "ti-pencil-alt",
+      "icon": "ti-book",
       "name": "Học thuật & IELTS",
-      "desc": "Lập luận phản biện, nghiên cứu khoa học và phương pháp luận.",
+      "desc": "Luận văn, hệ hình tư duy, lập luận và giả thuyết khoa học.",
       "words": [
         {
-          "word": "topic",
-          "phonetic": "/ˈtɑː.pɪk/",
-          "meaning": "chủ đề học thuật",
-          "example": "The thesis topic relates to renewable energy.",
+          "word": "thesis",
+          "phonetic": "/ˈθiː.sɪs/",
+          "meaning": "luận văn tốt nghiệp",
+          "example": "She is writing her doctoral thesis.",
           "difficulty": "easy"
         },
         {
-          "word": "example",
-          "phonetic": "/ɪɡˈzæm.pəl/",
-          "meaning": "dẫn chứng ví dụ",
-          "example": "Provide a concrete example to support your point.",
+          "word": "paradigm",
+          "phonetic": "/ˈper.ə.daɪm/",
+          "meaning": "hệ hình, mô thức tư duy",
+          "example": "The scientific discovery shifted the academic paradigm.",
           "difficulty": "easy"
         },
         {
-          "word": "idea",
-          "phonetic": "/aɪˈdiː.ə/",
-          "meaning": "ý tưởng cốt lõi",
-          "example": "He shared an innovative idea in the seminar.",
+          "word": "quantitative",
+          "phonetic": "/ˈkwɑːn.t̬ə.teɪ.t̬ɪv/",
+          "meaning": "phương pháp định lượng",
+          "example": "Quantitative analysis focuses on measurable data.",
           "difficulty": "easy"
         },
         {
-          "word": "chart",
-          "phonetic": "/tʃɑːrt/",
-          "meaning": "biểu đồ số liệu",
-          "example": "The flow chart illustrates the production cycle.",
+          "word": "qualitative",
+          "phonetic": "/ˈkwɑːl.ə.teɪ.t̬ɪv/",
+          "meaning": "phương pháp định tính",
+          "example": "Qualitative research studies human experiences.",
           "difficulty": "easy"
         },
         {
-          "word": "result",
-          "phonetic": "/rɪˈzʌlt/",
-          "meaning": "kết quả khảo sát",
-          "example": "The experimental results confirmed our theory.",
+          "word": "validity",
+          "phonetic": "/vəˈlɪd.ə.t̬i/",
+          "meaning": "tính hiệu lực học thuật",
+          "example": "The validity of the test results was questioned.",
           "difficulty": "easy"
-        },
-        {
-          "word": "evidence",
-          "phonetic": "/ˈev.ə.dəns/",
-          "meaning": "bằng chứng xác thực",
-          "example": "The researchers gathered empirical evidence.",
-          "difficulty": "medium"
         },
         {
           "word": "significant",
           "phonetic": "/sɪɡˈnɪf.ə.kənt/",
-          "meaning": "có ý nghĩa quan trọng, đáng kể",
+          "meaning": "đáng kể, có ý nghĩa",
           "example": "The study showed a significant improvement.",
           "difficulty": "medium"
         },
         {
-          "word": "analysis",
-          "phonetic": "/əˈnæl.ə.sɪs/",
-          "meaning": "bài phân tích chuyên sâu",
-          "example": "The article offers a thorough analysis of data.",
+          "word": "discourse",
+          "phonetic": "/ˈdɪs.kɔːrs/",
+          "meaning": "diễn ngôn học thuật",
+          "example": "Political discourse should remain respectful.",
           "difficulty": "medium"
         },
         {
-          "word": "argument",
-          "phonetic": "/ˈɑːr.ɡjə.mənt/",
-          "meaning": "luận điểm lập luận",
-          "example": "Her academic argument was highly persuasive.",
+          "word": "critique",
+          "phonetic": "/krɪˈtiːk/",
+          "meaning": "bài phê bình chuyên sâu",
+          "example": "She wrote a detailed critique of the new novel.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "methodology",
+          "phonetic": "/ˌmeθ.əˈdɑː.lə.dʒi/",
+          "meaning": "phương pháp luận",
+          "example": "The paper details the research methodology.",
           "difficulty": "medium"
         },
         {
           "word": "hypothesis",
           "phonetic": "/haɪˈpɑː.θə.sɪs/",
           "meaning": "giả thuyết khoa học",
-          "example": "We formulated a hypothesis to test in the lab.",
+          "example": "The researchers formulated a new hypothesis.",
           "difficulty": "hard"
         },
         {
           "word": "counterargument",
           "phonetic": "/ˈkaʊn.t̬ɚˌɑːrɡ.jə.mənt/",
           "meaning": "luận điểm phản biện",
-          "example": "You must address the obvious counterargument.",
+          "example": "Address the counterargument in your essay.",
           "difficulty": "hard"
         },
         {
-          "word": "methodology",
-          "phonetic": "/ˌmeθ.əˈdɑː.lə.dʒi/",
-          "meaning": "phương pháp luận nghiên cứu",
-          "example": "The paper details the research methodology.",
+          "word": "theoretical",
+          "phonetic": "/ˌθiː.əˈret̬.ɪ.kəl/",
+          "meaning": "mang tính lý thuyết",
+          "example": "The study is based on theoretical physics.",
           "difficulty": "hard"
         }
       ]
     },
     {
       "id": "science",
-      "icon": "ti-light-bulb",
+      "icon": "ti-ruler-pencil",
       "name": "Khoa học & Thực nghiệm",
-      "desc": "Thí nghiệm, lý thuyết, quan sát và hiện tượng vật lý phân tử.",
+      "desc": "Cơ chế khoa học, sự dị thường, tổng hợp và thực chứng.",
       "words": [
         {
-          "word": "energy",
-          "phonetic": "/ˈen.ər.dʒi/",
-          "meaning": "nguồn năng lượng",
-          "example": "Solar energy is clean and renewable.",
+          "word": "mechanism",
+          "phonetic": "/ˈmek.ə.nɪz.əm/",
+          "meaning": "cơ chế khoa học",
+          "example": "Scientists study the mechanism of cell division.",
           "difficulty": "easy"
         },
         {
-          "word": "planet",
-          "phonetic": "/ˈplæn.ɪt/",
-          "meaning": "thiên thể hành tinh",
-          "example": "Mars is a planet often called the Red Planet.",
+          "word": "velocity",
+          "phonetic": "/vəˈlɑː.sə.t̬i/",
+          "meaning": "vận tốc chuyển dịch",
+          "example": "The rocket reached escape velocity quickly.",
           "difficulty": "easy"
         },
         {
-          "word": "water",
-          "phonetic": "/ˈwɑː.t̬ər/",
-          "meaning": "nguồn nước",
-          "example": "Water molecules consist of oxygen and hydrogen.",
+          "word": "postulate",
+          "phonetic": "/ˈpɑːs.tʃə.leɪt/",
+          "meaning": "tiên đề khoa học",
+          "example": "Einstein's theory postulates that space is curved.",
           "difficulty": "easy"
         },
         {
-          "word": "light",
-          "phonetic": "/laɪt/",
-          "meaning": "ánh sáng khả kiến",
-          "example": "The speed of light is a physical constant.",
+          "word": "mutation",
+          "phonetic": "/mjuːˈteɪ.ʃən/",
+          "meaning": "sự đột biến sinh học",
+          "example": "A genetic mutation caused the plant's unique color.",
           "difficulty": "easy"
         },
         {
-          "word": "animal",
-          "phonetic": "/ˈæn.ə.məl/",
-          "meaning": "động vật sinh học",
-          "example": "Marine animals adapted to high water pressure.",
+          "word": "anomaly",
+          "phonetic": "/əˈnɑː.mə.li/",
+          "meaning": "sự dị thường khoa học",
+          "example": "The scientist detected a thermal anomaly in orbit.",
           "difficulty": "easy"
-        },
-        {
-          "word": "experiment",
-          "phonetic": "/ɪkˈsper.ə.mənt/",
-          "meaning": "cuộc thí nghiệm kiểm chứng",
-          "example": "The chemistry experiment required caution.",
-          "difficulty": "medium"
         },
         {
           "word": "observation",
           "phonetic": "/ˌɑːb.zərˈveɪ.ʃən/",
-          "meaning": "sự quan sát thực chứng",
-          "example": "A scientific theory starts with observation.",
+          "meaning": "sự quan sát thực nghiệm",
+          "example": "Scientific discovery starts with observation.",
           "difficulty": "medium"
         },
         {
-          "word": "research",
-          "phonetic": "/ˈriː.sɝːtʃ/",
-          "meaning": "hoạt động nghiên cứu",
-          "example": "He conducts research on cancer treatment.",
+          "word": "molecular",
+          "phonetic": "/məˈlek.jə.lər/",
+          "meaning": "thuộc cấp độ phân tử",
+          "example": "They analyzed the molecular structure.",
           "difficulty": "medium"
         },
         {
-          "word": "theory",
-          "phonetic": "/ˈθɪr.i/",
-          "meaning": "lý thuyết hệ thống",
-          "example": "Einstein’s theory of relativity revolutionized physics.",
+          "word": "synthesis",
+          "phonetic": "/ˈsɪn.θə.sɪs/",
+          "meaning": "sự tổng hợp hóa học",
+          "example": "Photosynthesis is a chemical synthesis.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "evolution",
+          "phonetic": "/ˌev.əˈluː.ʃən/",
+          "meaning": "sự tiến hóa sinh học",
+          "example": "Darwin wrote about the evolution of species.",
           "difficulty": "medium"
         },
         {
           "word": "phenomenon",
           "phonetic": "/fəˈnɑː.mə.nɑːn/",
-          "meaning": "hiện tượng tự nhiên đặc thù",
-          "example": "The northern lights are a stunning phenomenon.",
+          "meaning": "hiện tượng tự nhiên",
+          "example": "The northern lights are a rare phenomenon.",
           "difficulty": "hard"
         },
         {
           "word": "empirical",
           "phonetic": "/ɪmˈpɪr.ɪ.kəl/",
-          "meaning": "mang tính thực chứng thực nghiệm",
-          "example": "The researchers provided empirical data.",
+          "meaning": "mang tính thực chứng",
+          "example": "They gathered empirical data to test it.",
           "difficulty": "hard"
         },
         {
-          "word": "molecular",
-          "phonetic": "/məˈlek.jə.lər/",
-          "meaning": "thuộc về cấp độ phân tử",
-          "example": "They analyzed the molecular structure of the drug.",
+          "word": "catalyst",
+          "phonetic": "/ˈkæt̬.əl.ɪst/",
+          "meaning": "chất xúc tác phản ứng",
+          "example": "The chemical reaction needs a catalyst.",
           "difficulty": "hard"
         }
       ]
     },
     {
       "id": "law",
-      "icon": "ti-ink-pen",
+      "icon": "ti-shield",
       "name": "Luật pháp & Quy định",
-      "desc": "Văn bản pháp lý, thẩm quyền, sự tuân thủ và trách nhiệm pháp lý.",
+      "desc": "Quy chế lập pháp, khế ước, bộ máy tư pháp và phán quyết.",
       "words": [
         {
-          "word": "rule",
-          "phonetic": "/ruːl/",
-          "meaning": "nội quy quy tắc",
-          "example": "Compliance with office rules is mandatory.",
+          "word": "statute",
+          "phonetic": "/ˈstætʃ.uːt/",
+          "meaning": "đạo luật ban hành",
+          "example": "The parliament passed a new statute.",
           "difficulty": "easy"
         },
         {
-          "word": "right",
-          "phonetic": "/raɪt/",
-          "meaning": "quyền lợi cơ bản",
-          "example": "Human rights are protected by global treaties.",
+          "word": "covenant",
+          "phonetic": "/ˈkʌv.ə.nənt/",
+          "meaning": "cam kết pháp lý, khế ước",
+          "example": "The nations signed an international covenant on human rights.",
           "difficulty": "easy"
         },
         {
-          "word": "law",
-          "phonetic": "/lɔː/",
-          "meaning": "hệ thống luật pháp",
-          "example": "You should consult a professional in law.",
+          "word": "jurisdiction",
+          "phonetic": "/ˌdʒʊr.ɪsˈdɪk.ʃən/",
+          "meaning": "quyền tài phán, thẩm quyền",
+          "example": "This case falls outside our court's jurisdiction.",
           "difficulty": "easy"
         },
         {
-          "word": "court",
-          "phonetic": "/kɔːrt/",
-          "meaning": "phiên tòa, tòa án",
-          "example": "The dispute was settled in a civil court.",
+          "word": "prosecution",
+          "phonetic": "/ˌprɑː.səˈkjuː.ʃən/",
+          "meaning": "việc khởi tố, bên công tố",
+          "example": "The prosecution presented key physical evidence.",
           "difficulty": "easy"
         },
         {
-          "word": "judge",
-          "phonetic": "/dʒʌdʒ/",
-          "meaning": "quan tòa thẩm phán",
-          "example": "The supreme court judge signed the order.",
+          "word": "arbitration",
+          "phonetic": "/ˌɑːr.bəˈtreɪ.ʃən/",
+          "meaning": "sự phân xử trọng tài",
+          "example": "The contract dispute was settled by arbitration.",
           "difficulty": "easy"
         },
         {
-          "word": "contract",
-          "phonetic": "/ˈkɑːn.trækt/",
-          "meaning": "bản hợp đồng pháp lý",
-          "example": "The parties signed a binding legal contract.",
+          "word": "litigant",
+          "phonetic": "/ˈlɪt̬.ɪ.ɡənt/",
+          "meaning": "bên đương sự tranh chấp",
+          "example": "The litigants settled the case out of court.",
           "difficulty": "medium"
         },
         {
-          "word": "regulation",
-          "phonetic": "/ˌreɡ.jəˈleɪ.ʃən/",
-          "meaning": "quy định, thông tư điều lệ",
-          "example": "The government issued safety regulations.",
+          "word": "jurisprudence",
+          "phonetic": "/ˌdʒʊr.ɪsˈpruː.dəns/",
+          "meaning": "luật học, triết học pháp luật",
+          "example": "He spent years researching American jurisprudence.",
           "difficulty": "medium"
         },
         {
-          "word": "evidence",
-          "phonetic": "/ˈev.ə.dəns/",
-          "meaning": "chứng cứ trước tòa",
-          "example": "The prosecution presented compelling evidence.",
+          "word": "verdict",
+          "phonetic": "/ˈvɝː.dɪkt/",
+          "meaning": "phán quyết tuyên án",
+          "example": "The jury reached a verdict of not guilty.",
           "difficulty": "medium"
         },
         {
-          "word": "legal",
-          "phonetic": "/ˈliː.ɡəl/",
-          "meaning": "hợp pháp, thuộc pháp luật",
-          "example": "They seek professional legal representation.",
+          "word": "indictment",
+          "phonetic": "/ɪnˈdaɪt.mənt/",
+          "meaning": "sự truy tố, bản cáo trạng",
+          "example": "The grand jury handed down a federal indictment.",
           "difficulty": "medium"
         },
         {
           "word": "liability",
           "phonetic": "/ˌlaɪ.əˈbɪl.ə.ti/",
-          "meaning": "trách nhiệm pháp lý liên đới",
-          "example": "The insurance covers personal liability.",
-          "difficulty": "hard"
-        },
-        {
-          "word": "jurisdiction",
-          "phonetic": "/ˌdʒʊr.ɪsˈdɪk.ʃən/",
-          "meaning": "quyền hạn thẩm quyền pháp lý",
-          "example": "This matter falls under local jurisdiction.",
+          "meaning": "trách nhiệm pháp lý",
+          "example": "The company denied any liability for damages.",
           "difficulty": "hard"
         },
         {
           "word": "compliance",
           "phonetic": "/kəmˈplaɪ.əns/",
           "meaning": "sự tuân thủ nghiêm ngặt",
-          "example": "Corporate compliance is closely monitored.",
+          "example": "Compliance with the law is monitored.",
+          "difficulty": "hard"
+        },
+        {
+          "word": "precedent",
+          "phonetic": "/ˈpres.ə.dent/",
+          "meaning": "tiền lệ pháp lý",
+          "example": "The judge's decision set a precedent.",
           "difficulty": "hard"
         }
       ]
     },
     {
       "id": "psychology",
-      "icon": "/ti-user",
+      "icon": "ti-face-smile",
       "name": "Tâm lý học hành vi",
-      "desc": "Động lực, khả năng phục hồi tinh thần, nhận thức và tiềm thức con người.",
+      "desc": "Nhận thức, tính khí, tiềm thức và khả năng kiên cường.",
       "words": [
         {
-          "word": "feeling",
-          "phonetic": "/ˈfiː.lɪŋ/",
-          "meaning": "cảm giác, cảm xúc",
-          "example": "He expressed a feeling of deep gratitude.",
+          "word": "introspection",
+          "phonetic": "/ˌɪn.trəˈspek.ʃən/",
+          "meaning": "sự nội quan, tự soi chiếu",
+          "example": "Introspection is key to personal growth.",
           "difficulty": "easy"
         },
         {
-          "word": "stress",
-          "phonetic": "/stres/",
-          "meaning": "áp lực căng thẳng",
-          "example": "Chronic stress leads to severe health issues.",
+          "word": "reinforcement",
+          "phonetic": "/ˌriː.ɪnˈfɔːrs.mənt/",
+          "meaning": "sự củng cố hành vi",
+          "example": "Positive reinforcement encourages good habits.",
           "difficulty": "easy"
         },
         {
-          "word": "mind",
-          "phonetic": "/maɪnd/",
-          "meaning": "tâm trí tư duy",
-          "example": "A peaceful mind enhances productivity.",
+          "word": "cognition",
+          "phonetic": "/kɑːɡˈnɪʃ.ən/",
+          "meaning": "nhận thức tư duy",
+          "example": "Cognition refers to complex mental processes.",
           "difficulty": "easy"
         },
         {
-          "word": "habit",
-          "phonetic": "/ˈhæb.ɪt/",
-          "meaning": "thói quen hành vi",
-          "example": "Forming good habits takes time and effort.",
+          "word": "stimulus",
+          "phonetic": "/ˈstɪm.jə.ləs/",
+          "meaning": "tác nhân kích thích",
+          "example": "The brain responds to a visual stimulus.",
           "difficulty": "easy"
         },
         {
-          "word": "fear",
-          "phonetic": "/fɪr/",
-          "meaning": "nỗi sợ hãi nguyên bản",
-          "example": "Overcoming fear is the first step to success.",
+          "word": "perception",
+          "phonetic": "/pɚˈsep.ʃən/",
+          "meaning": "sự nhận thức cảm tính",
+          "example": "Sensory perception changes with age.",
           "difficulty": "easy"
         },
         {
-          "word": "behavior",
-          "phonetic": "/bɪˈheɪ.vjər/",
-          "meaning": "hành vi ứng xử",
-          "example": "Sociologists study collective human behavior.",
+          "word": "temperament",
+          "phonetic": "/ˈtem.prə.mənt/",
+          "meaning": "tính khí, khí chất",
+          "example": "He has a calm and stable temperament.",
           "difficulty": "medium"
         },
         {
-          "word": "motivation",
-          "phonetic": "/ˌmoʊ.t̬əˈveɪ.ʃən/",
-          "meaning": "nguồn động lực nội tại",
-          "example": "Intrinsic motivation is key to long-term study.",
+          "word": "therapy",
+          "phonetic": "/ˈθer.ə.pi/",
+          "meaning": "liệu pháp trị liệu",
+          "example": "She attended weekly cognitive therapy.",
           "difficulty": "medium"
         },
         {
-          "word": "emotion",
-          "phonetic": "/ɪˈmoʊ.ʃən/",
-          "meaning": "cung bậc cảm xúc",
-          "example": "Facial expressions convey complex emotions.",
+          "word": "psyche",
+          "phonetic": "/ˈsaɪ.ki/",
+          "meaning": "tâm trí, linh hồn con người",
+          "example": "The test measures aspects of the human psyche.",
           "difficulty": "medium"
         },
         {
-          "word": "memory",
-          "phonetic": "/ˈmem.ər.i/",
-          "meaning": "khả năng lưu trữ trí nhớ",
-          "example": "The brain processes memories during sleep.",
+          "word": "trauma",
+          "phonetic": "/ˈtrɑː.mə/",
+          "meaning": "chấn thương tâm lý",
+          "example": "Childhood trauma affects adult relationships.",
           "difficulty": "medium"
         },
         {
           "word": "cognitive",
           "phonetic": "/ˈkɑːɡ.nə.t̬ɪv/",
-          "meaning": "thuộc về quá trình nhận thức",
-          "example": "Cognitive therapy helps reframe negative thoughts.",
+          "meaning": "thuộc về nhận thức",
+          "example": "Cognitive development is rapid in infants.",
           "difficulty": "hard"
         },
         {
           "word": "subconscious",
           "phonetic": "/ˌsʌbˈkɑːn.ʃəs/",
           "meaning": "tiềm thức sâu thẳm",
-          "example": "Dreams offer a glimpse into the subconscious.",
+          "example": "Dreams offer a view of the subconscious.",
           "difficulty": "hard"
         },
         {
           "word": "resilience",
           "phonetic": "/rɪˈzɪl.jəns/",
-          "meaning": "khả năng phục hồi, kiên cường tinh thần",
-          "example": "Resilience helps athletes bounce back from loss.",
+          "meaning": "sức bật tinh thần",
+          "example": "Mental resilience helps cope with stress.",
           "difficulty": "hard"
         }
       ]
     },
     {
       "id": "media",
-      "icon": "ti-video-camera",
+      "icon": "ti-gallery",
       "name": "Truyền thông đại chúng",
-      "desc": "Khán giả, thông tin sai lệch, lối kể chuyện và mức độ tương tác số.",
+      "desc": "Kiểm duyệt, thông tin giải trí, tuyên truyền và sự tương tác.",
       "words": [
         {
-          "word": "video",
-          "phonetic": "/ˈvɪd.i.oʊ/",
-          "meaning": "bản ghi hình video",
-          "example": "The video went viral across social media platforms.",
+          "word": "censorship",
+          "phonetic": "/ˈsen.sɚ.ʃɪp/",
+          "meaning": "sự kiểm duyệt truyền thông",
+          "example": "Government censorship restricts internet access.",
           "difficulty": "easy"
         },
         {
-          "word": "post",
-          "phonetic": "/poʊst/",
-          "meaning": "bài đăng tải mạng xã hội",
-          "example": "She published a post explaining the event.",
+          "word": "infotainment",
+          "phonetic": "/ˌɪn.foʊˈteɪn.mənt/",
+          "meaning": "thông tin giải trí chuyên sâu",
+          "example": "Most TV channels broadcast infotainment today.",
           "difficulty": "easy"
         },
         {
-          "word": "news",
-          "phonetic": "/nuːz/",
-          "meaning": "tin tức thời sự",
-          "example": "We filter fake news to ensure facts are correct.",
+          "word": "tabloid",
+          "phonetic": "/ˈtæb.lɔɪd/",
+          "meaning": "báo lá cải, giật gân",
+          "example": "Tabloids focus on celebrity gossip.",
           "difficulty": "easy"
         },
         {
-          "word": "photo",
-          "phonetic": "/ˈfoʊ.t̬oʊ/",
-          "meaning": "bức hình, ảnh chụp",
-          "example": "The press photo captured a historic moment.",
+          "word": "correspondent",
+          "phonetic": "/ˌkɔːr.əˈspɑːn.dənt/",
+          "meaning": "phóng viên thường trú",
+          "example": "He works as a foreign correspondent in Paris.",
           "difficulty": "easy"
         },
         {
-          "word": "share",
-          "phonetic": "/ʃer/",
-          "meaning": "hành động chia sẻ",
-          "example": "He clicked share to distribute the article.",
+          "word": "sensationalism",
+          "phonetic": "/senˈseɪ.ʃən.əl.ɪz.əm/",
+          "meaning": "xu hướng giật gân hóa",
+          "example": "Media sensationalism distorts public opinion.",
           "difficulty": "easy"
         },
         {
-          "word": "audience",
-          "phonetic": "/ˈɑː.di.əns/",
-          "meaning": "khán thính giả mục tiêu",
-          "example": "The campaign targets a youthful audience.",
+          "word": "journalism",
+          "phonetic": "/ˈdʒɝː.nə.lɪz.əm/",
+          "meaning": "ngành báo chí",
+          "example": "She is studying investigative journalism.",
           "difficulty": "medium"
         },
         {
-          "word": "content",
-          "phonetic": "/ˈkɑːn.tent/",
-          "meaning": "nội dung số truyền tải",
-          "example": "Content creators must focus on originality.",
+          "word": "dissemination",
+          "phonetic": "/dɪˌsem.əˈneɪ.ʃən/",
+          "meaning": "sự lan truyền thông tin",
+          "example": "The internet allows fast dissemination of news.",
           "difficulty": "medium"
         },
         {
-          "word": "headline",
-          "phonetic": "/ˈhed.laɪn/",
-          "meaning": "tiêu đề bài báo giật gân",
-          "example": "The media headline was slightly misleading.",
+          "word": "propaganda",
+          "phonetic": "/ˌprɑː.pəˈɡæn.də/",
+          "meaning": "hoạt động tuyên truyền",
+          "example": "The government used posters for propaganda.",
           "difficulty": "medium"
         },
         {
-          "word": "source",
-          "phonetic": "/sɔːrs/",
-          "meaning": "nguồn tin cậy",
-          "example": "The journalist refused to reveal her source.",
+          "word": "distort",
+          "phonetic": "/dɪˈstɔːrt/",
+          "meaning": "bóp méo, xuyên tạc",
+          "example": "The report distorted the truth of the event.",
           "difficulty": "medium"
         },
         {
           "word": "engagement",
           "phonetic": "/ɪnˈɡeɪdʒ.mənt/",
-          "meaning": "mức độ tương tác số",
-          "example": "The interactive post achieved high engagement.",
+          "meaning": "sự tương tác số",
+          "example": "Social media engagement increased this month.",
           "difficulty": "hard"
         },
         {
           "word": "narrative",
           "phonetic": "/ˈner.ə.t̬ɪv/",
-          "meaning": "cách kể chuyện, hệ thống lập ngôn",
-          "example": "The campaign built a strong, emotional narrative.",
+          "meaning": "lối kể chuyện, hệ lập ngôn",
+          "example": "The film has a compelling narrative structure.",
           "difficulty": "hard"
         },
         {
           "word": "misinformation",
           "phonetic": "/ˌmɪs.ɪn.fərˈmeɪ.ʃən/",
-          "meaning": "thông tin sai lệch nguy hại",
-          "example": "Misinformation can influence elections severely.",
+          "meaning": "thông tin sai lệch",
+          "example": "Misinformation spreads quickly online.",
           "difficulty": "hard"
         }
       ]
     },
     {
       "id": "finance",
-      "icon": "ti-money",
+      "icon": "ti-bar-chart",
       "name": "Tài chính & Đầu tư",
-      "desc": "Thị trường cổ phiếu, quỹ đầu tư, lạm phát và danh mục tài sản.",
+      "desc": "Tài sản, cổ tức, thanh khoản, khấu hao và lạm phát.",
       "words": [
         {
-          "word": "loan",
-          "phonetic": "/loʊn/",
-          "meaning": "khoản tiền vay nợ",
-          "example": "She applied for a student loan to study abroad.",
+          "word": "arbitrage",
+          "phonetic": "/ˈɑːr.bə.trɑːʒ/",
+          "meaning": "kinh doanh chênh lệch giá",
+          "example": "Arbitrage traders profit from temporary price differences.",
           "difficulty": "easy"
-        },
-        {
-          "word": "tax",
-          "phonetic": "/tæks/",
-          "meaning": "thuế tài chính nghĩa vụ",
-          "example": "Income tax is deducted from your monthly salary.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "bank",
-          "phonetic": "/bæŋk/",
-          "meaning": "ngân hàng giao dịch",
-          "example": "The central bank regulates national money supply.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "fund",
-          "phonetic": "/fʌnd/",
-          "meaning": "nguồn quỹ đầu tư",
-          "example": "The project is backed by a private research fund.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "stock",
-          "phonetic": "/stɑːk/",
-          "meaning": "cổ phiếu doanh nghiệp",
-          "example": "He invested in tech stocks on the exchange.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "credit",
-          "phonetic": "/ˈkred.ɪt/",
-          "meaning": "hạn mức tín dụng",
-          "example": "Maintain a good credit score to borrow easily.",
-          "difficulty": "medium"
         },
         {
           "word": "asset",
           "phonetic": "/ˈæs.et/",
           "meaning": "tài sản sở hữu",
-          "example": "The company’s total assets exceed ten million dollars.",
-          "difficulty": "medium"
+          "example": "Real estate is a valuable long-term asset.",
+          "difficulty": "easy"
         },
         {
-          "word": "capital",
-          "phonetic": "/ˈkæp.ə.t̬əl/",
-          "meaning": "nguồn vốn kinh doanh",
-          "example": "Startups need seed capital to build prototypes.",
-          "difficulty": "medium"
+          "word": "equity",
+          "phonetic": "/ˈek.wə.t̬i/",
+          "meaning": "vốn chủ sở hữu",
+          "example": "She has equity in the family business.",
+          "difficulty": "easy"
         },
         {
-          "word": "profit",
-          "phonetic": "/ˈprɑː.fɪt/",
-          "meaning": "khoản lợi nhuận thu về",
-          "example": "We reinvest our quarterly profits into research.",
-          "difficulty": "medium"
+          "word": "dividend",
+          "phonetic": "/ˈdɪv.ə.dend/",
+          "meaning": "cổ tức chi trả",
+          "example": "The board approved a dividend payout.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "liquidation",
+          "phonetic": "/ˌlɪk.wɪˈdeɪ.ʃən/",
+          "meaning": "sự thanh lý tài sản",
+          "example": "The bankrupt company entered voluntary liquidation.",
+          "difficulty": "easy"
         },
         {
           "word": "portfolio",
           "phonetic": "/ˌpɔːrtˈfoʊ.li.oʊ/",
-          "meaning": "danh mục đầu tư đa dạng",
-          "example": "He diversified his investment portfolio with gold.",
-          "difficulty": "hard"
+          "meaning": "danh mục đầu tư",
+          "example": "He managed a diverse stock portfolio.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "liquidity",
+          "phonetic": "/lɪˈkwid.ə.ti/",
+          "meaning": "tính thanh khoản",
+          "example": "The bank maintained high liquidity ratios.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "brokerage",
+          "phonetic": "/ˈbroʊ.kɚ.ɪdʒ/",
+          "meaning": "dịch vụ môi giới",
+          "example": "The brokerage fee is quite reasonable.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "yield",
+          "phonetic": "/jiːld/",
+          "meaning": "tỷ suất lợi nhuận",
+          "example": "The investment yields a high annual return.",
+          "difficulty": "medium"
         },
         {
           "word": "depreciation",
           "phonetic": "/dɪˌpriː.ʃiˈeɪ.ʃən/",
-          "meaning": "sự khấu hao tài sản",
-          "example": "Car depreciation happens as soon as you drive off.",
+          "meaning": "khấu hao tài sản",
+          "example": "Car depreciation happens very quickly.",
           "difficulty": "hard"
         },
         {
           "word": "inflation",
           "phonetic": "/ɪnˈfleɪ.ʃən/",
-          "meaning": "sự lạm phát tiền tệ",
-          "example": "High inflation reduces the purchasing power of cash.",
+          "meaning": "lạm phát tiền tệ",
+          "example": "High inflation reduces the value of cash.",
+          "difficulty": "hard"
+        },
+        {
+          "word": "amortization",
+          "phonetic": "/ˌæm.ɔːr.tɪˈzeɪ.ʃən/",
+          "meaning": "khấu hao vô hình",
+          "example": "The company calculated the amortization of patents.",
           "difficulty": "hard"
         }
       ]
     },
     {
       "id": "philosophy",
-      "icon": "ti-thought",
+      "icon": "ti-world",
       "name": "Triết học & Tư duy",
-      "desc": "Lý thuyết nhận thức, đạo đức học, thuyết hiện sinh và chân lý cuộc sống.",
+      "desc": "Lý trí, siêu hình học, giáo điều, nhận thức luận và chủ nghĩa hư vô.",
       "words": [
         {
-          "word": "idea",
-          "phonetic": "/aɪˈdiː.ə/",
-          "meaning": "ý niệm tư tưởng",
-          "example": "The philosopher presented an idea about freedom.",
+          "word": "determinism",
+          "phonetic": "/dɪˈtɝː.mɪ.nɪz.əm/",
+          "meaning": "thuyết định mệnh",
+          "example": "Determinism asserts that all events are predetermined.",
           "difficulty": "easy"
         },
         {
-          "word": "life",
-          "phonetic": "/laɪf/",
-          "meaning": "sinh mệnh, cuộc đời",
-          "example": "Socrates spent his life questioning absolute truths.",
+          "word": "utilitarianism",
+          "phonetic": "/juːˌtɪl.ɪˈter.i.ə.nɪz.əm/",
+          "meaning": "thuyết vị lợi",
+          "example": "Utilitarianism promotes actions that maximize happiness.",
           "difficulty": "easy"
         },
         {
-          "word": "truth",
-          "phonetic": "/truːθ/",
-          "meaning": "sự thật khách quan",
-          "example": "Philosophy seeks to uncover universal truths.",
+          "word": "rationalism",
+          "phonetic": "/ˈræʃ.ən.əl.ɪz.əm/",
+          "meaning": "chủ nghĩa duy lý",
+          "example": "Rationalism relies on reason as the chief source of knowledge.",
           "difficulty": "easy"
         },
         {
-          "word": "mind",
-          "phonetic": "/maɪnd/",
-          "meaning": "tâm trí, tư duy tinh thần",
-          "example": "Dualism studies the separation of mind and body.",
+          "word": "nihilism",
+          "phonetic": "/ˈnaɪ.ə.lɪz.əm/",
+          "meaning": "chủ nghĩa hư vô",
+          "example": "Nihilism rejects all religious and moral principles.",
           "difficulty": "easy"
         },
         {
-          "word": "belief",
-          "phonetic": "/bɪˈliːf/",
-          "meaning": "hệ thống niềm tin, đức tin",
-          "example": "Our actions are guided by our inner beliefs.",
+          "word": "dogma",
+          "phonetic": "/ˈdɑːɡ.mə/",
+          "meaning": "giáo điều giáo lý",
+          "example": "He challenged the rigid religious dogma.",
           "difficulty": "easy"
         },
         {
-          "word": "reason",
-          "phonetic": "/ˈriː.zən/",
-          "meaning": "lý tính, lý do suy xét",
-          "example": "Enlightenment philosophers prioritized human reason.",
+          "word": "ethics",
+          "phonetic": "/ˈeθ.ɪks/",
+          "meaning": "đạo đức học",
+          "example": "Business ethics is an important subject.",
           "difficulty": "medium"
         },
         {
-          "word": "logic",
-          "phonetic": "/ˈlɑː.dʒɪk/",
-          "meaning": "lập luận logic chặt chẽ",
-          "example": "In philosophy, arguments must adhere to strict logic.",
+          "word": "paradox",
+          "phonetic": "/ˈper.ə.dɑːks/",
+          "meaning": "nghịch lý",
+          "example": "The liar paradox is famous in philosophy.",
           "difficulty": "medium"
         },
         {
-          "word": "value",
-          "phonetic": "/ˈvæl.juː/",
-          "meaning": "hệ giá trị tinh thần",
-          "example": "Cultivating strong moral values is essential.",
+          "word": "existential",
+          "phonetic": "/ˌeɡ.zɪˈsten.ʃəl/",
+          "meaning": "thuộc hiện sinh",
+          "example": "The character faced a deep existential crisis.",
           "difficulty": "medium"
         },
         {
-          "word": "moral",
-          "phonetic": "/ˈmɔːr.əl/",
-          "meaning": "quy chuẩn đạo đức",
-          "example": "He faced a difficult moral dilemma.",
+          "word": "skepticism",
+          "phonetic": "/ˈskep.tə.sɪz.əm/",
+          "meaning": "chủ nghĩa hoài nghi",
+          "example": "The scientific theory was met with skepticism.",
           "difficulty": "medium"
         },
         {
           "word": "existentialism",
           "phonetic": "/ˌeɡ.zɪˈsten.ʃəl.ɪz.əm/",
-          "meaning": "thuyết hiện sinh triết học",
-          "example": "Sartre is a famous proponent of existentialism.",
+          "meaning": "thuyết hiện sinh",
+          "example": "Existentialism emphasizes personal freedom.",
           "difficulty": "hard"
         },
         {
           "word": "epistemology",
           "phonetic": "/ɪˌpɪs.təˈmɑː.lə.dʒi/",
           "meaning": "nhận thức luận",
-          "example": "Epistemology questions how we know what we know.",
+          "example": "Epistemology studies the nature of knowledge.",
           "difficulty": "hard"
         },
         {
-          "word": "ethics",
-          "phonetic": "/ˈeθ.ɪks/",
-          "meaning": "đạo đức học hành vi",
-          "example": "The ethics of AI development are hotly debated.",
+          "word": "metaphysics",
+          "phonetic": "/ˌmet̬.əˈfɪz.ɪks/",
+          "meaning": "siêu hình học",
+          "example": "Metaphysics studies the ultimate nature of reality.",
           "difficulty": "hard"
         }
       ]
     },
     {
       "id": "politics",
-      "icon": "ti-world",
+      "icon": "ti-flag-alt",
       "name": "Chính trị & Quốc tế",
-      "desc": "Hệ thống nhà nước, chính sách, chủ quyền và bộ máy hành chính.",
+      "desc": "Chủ quyền, liên minh, lập pháp, bộ máy hành chính và bá chủ.",
       "words": [
         {
-          "word": "state",
-          "phonetic": "/steɪt/",
-          "meaning": "quốc gia bang hội",
-          "example": "State funding is allocated to public schools.",
+          "word": "sovereign",
+          "phonetic": "/ˈsɑːv.rən/",
+          "meaning": "quốc gia độc lập có chủ quyền",
+          "example": "The state emerged as a sovereign nation after the war.",
           "difficulty": "easy"
         },
         {
-          "word": "vote",
-          "phonetic": "/voʊt/",
-          "meaning": "lá phiếu bầu cử",
-          "example": "Citizens have the right to vote for their leaders.",
+          "word": "constituency",
+          "phonetic": "/kənˈstɪtʃ.u.ən.si/",
+          "meaning": "khu vực cử tri đại diện",
+          "example": "The MP represents a large rural constituency.",
           "difficulty": "easy"
         },
         {
-          "word": "law",
-          "phonetic": "/lɔː/",
-          "meaning": "hiến pháp pháp luật",
-          "example": "The president signed the bill into law.",
+          "word": "legislature",
+          "phonetic": "/ˈledʒ.ɪs.leɪ.tʃɚ/",
+          "meaning": "cơ quan lập pháp",
+          "example": "The legislature passed the environmental reform bill.",
           "difficulty": "easy"
         },
         {
-          "word": "leader",
-          "phonetic": "/ˈliː.dɚ/",
-          "meaning": "nhà lãnh đạo tài ba",
-          "example": "Great leaders guide nations during crises.",
+          "word": "hegemony",
+          "phonetic": "/hɪˈdʒem.ə.ni/",
+          "meaning": "quyền bá chủ, sự thống trị",
+          "example": "The superpower maintained cultural hegemony over the region.",
           "difficulty": "easy"
         },
         {
-          "word": "power",
-          "phonetic": "/ˈpaʊ.ɚ/",
-          "meaning": "quyền lực chính trị",
-          "example": "A separation of power prevents dictatorial rule.",
+          "word": "regime",
+          "phonetic": "/reɪˈʒiːm/",
+          "meaning": "chế độ cai trị",
+          "example": "The military regime controlled the media.",
           "difficulty": "easy"
-        },
-        {
-          "word": "policy",
-          "phonetic": "/ˈpɑː.lə.si/",
-          "meaning": "chính sách công",
-          "example": "The foreign policy promotes peaceful cooperation.",
-          "difficulty": "medium"
-        },
-        {
-          "word": "government",
-          "phonetic": "/ˈɡʌv.ɚn.mənt/",
-          "meaning": "chính phủ quản lý",
-          "example": "The democratic government held open elections.",
-          "difficulty": "medium"
         },
         {
           "word": "treaty",
@@ -898,100 +884,114 @@ window.VOCABULARY_LEVEL_DATA.hard = {
         {
           "word": "diplomat",
           "phonetic": "/ˈdɪp.lə.mæt/",
-          "meaning": "nhà ngoại giao quốc tế",
-          "example": "The diplomat negotiated a release of prisoners.",
+          "meaning": "nhà ngoại giao",
+          "example": "The diplomat negotiated the release of prisoners.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "coalition",
+          "phonetic": "/ˌkoʊ.əˈlɪʃ.ən/",
+          "meaning": "sự liên minh chính trị",
+          "example": "The parties formed a coalition government.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "sanction",
+          "phonetic": "/ˈsæŋk.ʃən/",
+          "meaning": "lệnh trừng phạt",
+          "example": "The UN imposed economic sanctions.",
           "difficulty": "medium"
         },
         {
           "word": "sovereignty",
           "phonetic": "/ˈsɑːv.rən.ti/",
-          "meaning": "chủ quyền quốc gia tối cao",
+          "meaning": "chủ quyền tối cao",
           "example": "The nation fought hard to defend its sovereignty.",
           "difficulty": "hard"
         },
         {
           "word": "bureaucracy",
           "phonetic": "/bjʊˈrɑː.krə.si/",
-          "meaning": "bộ máy hành chính cồng kềnh",
+          "meaning": "bộ máy hành chính",
           "example": "Startups avoid the slow bureaucracy of big firms.",
           "difficulty": "hard"
         },
         {
           "word": "legislation",
           "phonetic": "/ˌledʒ.ɪsˈleɪ.ʃən/",
-          "meaning": "quy chế lập pháp ban hành",
-          "example": "The new legislation aims to reduce carbon emissions.",
+          "meaning": "quy chế lập pháp",
+          "example": "The new legislation aims to reduce emissions.",
           "difficulty": "hard"
         }
       ]
     },
     {
       "id": "medicine",
-      "icon": "ti-shield",
+      "icon": "ti-heart-broken",
       "name": "Y học chuyên sâu",
-      "desc": "Bệnh lý học, dịch tễ học, ca phẫu thuật và bệnh lý mãn tính.",
+      "desc": "Miễn dịch, chẩn đoán, kháng thể, điều trị và tiên lượng.",
       "words": [
         {
-          "word": "drug",
-          "phonetic": "/drʌɡ/",
-          "meaning": "vật dược phẩm điều trị",
-          "example": "Scientists tested the efficacy of the new drug.",
+          "word": "pathogen",
+          "phonetic": "/ˈpæθ.ə.dʒən/",
+          "meaning": "tác nhân gây bệnh",
+          "example": "The pathogen spreads through physical contact.",
           "difficulty": "easy"
         },
         {
-          "word": "blood",
-          "phonetic": "/blʌd/",
-          "meaning": "tế bào máu sinh học",
-          "example": "The patient lost blood during the accident.",
+          "word": "immunization",
+          "phonetic": "/ˌɪm.jə.nəˈzeɪ.ʃən/",
+          "meaning": "sự miễn dịch chủ động",
+          "example": "Childhood immunization programs prevent outbreaks.",
           "difficulty": "easy"
         },
         {
-          "word": "cell",
-          "phonetic": "/sel/",
-          "meaning": "tế bào gốc cơ thể",
-          "example": "Cancer cells replicate at an abnormal speed.",
+          "word": "anatomy",
+          "phonetic": "/əˈnæt̬.ə.mi/",
+          "meaning": "giải phẫu học",
+          "example": "Medical students study human anatomy.",
           "difficulty": "easy"
         },
         {
-          "word": "pain",
-          "phonetic": "/peɪn/",
-          "meaning": "cảm giác đau đớn thể xác",
-          "example": "He was prescribed painkillers to ease the pain.",
+          "word": "therapeutic",
+          "phonetic": "/ˌθer.əˈpjuː.t̬ɪk/",
+          "meaning": "mang tính trị liệu",
+          "example": "Art can have a therapeutic effect on stress.",
           "difficulty": "easy"
         },
         {
-          "word": "heart",
-          "phonetic": "/hɑːrt/",
-          "meaning": "cơ tim sinh học",
-          "example": "The surgeon performed a heart transplant.",
+          "word": "prognosis",
+          "phonetic": "/prɑːɡˈnoʊ.sɪs/",
+          "meaning": "tiên lượng bệnh lý",
+          "example": "The doctor gave a highly favorable prognosis.",
           "difficulty": "easy"
         },
         {
-          "word": "vaccine",
-          "phonetic": "/vækˈsiːn/",
-          "meaning": "vắc-xin phòng bệnh",
-          "example": "The vaccine offers protection against the virus.",
+          "word": "diagnose",
+          "phonetic": "/ˌdaɪ.əɡˈnoʊz/",
+          "meaning": "chẩn đoán bệnh",
+          "example": "Doctors diagnose illnesses based on symptoms.",
           "difficulty": "medium"
         },
         {
-          "word": "patient",
-          "phonetic": "/ˈpeɪ.ʃənt/",
-          "meaning": "bệnh nhân điều trị",
-          "example": "The hospital provides care for critical patients.",
+          "word": "antibody",
+          "phonetic": "/ˈæn.t̬iˌbɑː.di/",
+          "meaning": "kháng thể",
+          "example": "The body produces antibodies to fight infection.",
           "difficulty": "medium"
         },
         {
-          "word": "surgery",
-          "phonetic": "/ˈsɝː.dʒər.i/",
-          "meaning": "ca phẫu thuật y khoa",
-          "example": "She recovered quickly after a major surgery.",
+          "word": "efficacy",
+          "phonetic": "/ˈef.ə.kə.si/",
+          "meaning": "hiệu lực, hiệu quả thuốc",
+          "example": "Clinical trials proved the drug's high efficacy.",
           "difficulty": "medium"
         },
         {
-          "word": "therapy",
-          "phonetic": "/ˈθer.ə.pi/",
-          "meaning": "liệu pháp phục hồi",
-          "example": "Physical therapy helped him walk again.",
+          "word": "pharmaceutical",
+          "phonetic": "/ˌfɑːr.məˈsuː.t̬ɪ.kəl/",
+          "meaning": "thuộc dược phẩm",
+          "example": "The pharmaceutical industry is growing.",
           "difficulty": "medium"
         },
         {
@@ -1005,7 +1005,7 @@ window.VOCABULARY_LEVEL_DATA.hard = {
           "word": "pathology",
           "phonetic": "/pəˈθɑː.lə.dʒi/",
           "meaning": "bệnh lý học chuyên sâu",
-          "example": "The lab specializes in diagnostic cellular pathology.",
+          "example": "The lab specializes in diagnostic pathology.",
           "difficulty": "hard"
         },
         {
@@ -1019,51 +1019,44 @@ window.VOCABULARY_LEVEL_DATA.hard = {
     },
     {
       "id": "literature",
-      "icon": "ti-book",
+      "icon": "ti-bookmark-alt",
       "name": "Văn học & Nghệ thuật",
-      "desc": "Tiểu thuyết, phép ẩn dụ, kịch nghệ, thẩm mỹ học và nhân vật chính.",
+      "desc": "Tuyển tập, văn xuôi, phép tu từ, phê bình và nghệ thuật ngụ ngôn.",
       "words": [
         {
-          "word": "book",
-          "phonetic": "/bʊk/",
-          "meaning": "cuốn sách văn học",
-          "example": "The classic book is translated into fifty languages.",
+          "word": "anthology",
+          "phonetic": "/ænˈθɑː.lə.dʒi/",
+          "meaning": "tập tuyển tập tác phẩm",
+          "example": "The publisher released an anthology of modern poems.",
           "difficulty": "easy"
         },
         {
-          "word": "writer",
-          "phonetic": "/ˈraɪ.t̬ɚ/",
-          "meaning": "nhà văn viết truyện",
-          "example": "The writer wrote a trilogy about ancient mythology.",
+          "word": "prose",
+          "phonetic": "/proʊz/",
+          "meaning": "văn xuôi nghệ thuật",
+          "example": "The author is known for his poetic prose style.",
           "difficulty": "easy"
         },
         {
-          "word": "story",
-          "phonetic": "/ˈstɔːr.i/",
-          "meaning": "câu chuyện truyện kể",
-          "example": "The story is about a young boy in London.",
+          "word": "playwright",
+          "phonetic": "/ˈpleɪ.raɪt/",
+          "meaning": "nhà viết kịch chuyên nghiệp",
+          "example": "Shakespeare is England's most famous playwright.",
           "difficulty": "easy"
         },
         {
-          "word": "poem",
-          "phonetic": "/ˈpoʊ.əm/",
-          "meaning": "tập thơ nghệ thuật",
-          "example": "He recited a beautiful love poem.",
+          "word": "motif",
+          "phonetic": "/moʊˈtiːf/",
+          "meaning": "chủ đề/họa tiết chủ đạo",
+          "example": "Water is a recurring motif in the film.",
           "difficulty": "easy"
         },
         {
-          "word": "art",
-          "phonetic": "/ɑːrt/",
-          "meaning": "tác phẩm nghệ thuật",
-          "example": "The museum exhibits contemporary modern art.",
+          "word": "rhetoric",
+          "phonetic": "/ˈret̬.ɚ.ɪk/",
+          "meaning": "nghệ thuật tu từ/hùng biện",
+          "example": "The speaker's rhetoric inspired the audience.",
           "difficulty": "easy"
-        },
-        {
-          "word": "novel",
-          "phonetic": "/ˈnɑː.vəl/",
-          "meaning": "cuốn tiểu thuyết",
-          "example": "The historical novel became a bestseller.",
-          "difficulty": "medium"
         },
         {
           "word": "metaphor",
@@ -1073,25 +1066,25 @@ window.VOCABULARY_LEVEL_DATA.hard = {
           "difficulty": "medium"
         },
         {
-          "word": "author",
-          "phonetic": "/ˈɑː.θɚ/",
-          "meaning": "tác giả tác phẩm",
-          "example": "The author signed copies of her new release.",
-          "difficulty": "medium"
-        },
-        {
-          "word": "drama",
-          "phonetic": "/ˈdrɑː.mə/",
-          "meaning": "kịch nghệ sân khấu",
-          "example": "He joined a local drama club at high school.",
-          "difficulty": "medium"
-        },
-        {
           "word": "aesthetic",
           "phonetic": "/esˈθet̬.ɪk/",
-          "meaning": "mỹ học, tính thẩm mỹ",
+          "meaning": "mỹ học, thẩm mỹ",
           "example": "The cafe was designed with a minimal aesthetic.",
-          "difficulty": "hard"
+          "difficulty": "medium"
+        },
+        {
+          "word": "critique",
+          "phonetic": "/krɪˈtiːk/",
+          "meaning": "bài phê bình nghệ thuật",
+          "example": "The literary critic wrote a sharp critique.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "composition",
+          "phonetic": "/ˌkɑːm.pəˈzɪʃ.ən/",
+          "meaning": "tác phẩm soạn thảo",
+          "example": "The pianist played his new musical composition.",
+          "difficulty": "medium"
         },
         {
           "word": "protagonist",
@@ -1102,9 +1095,16 @@ window.VOCABULARY_LEVEL_DATA.hard = {
         },
         {
           "word": "genre",
-          "phonetic": "/ˈʒɑːn.rə/",
+          "phonetic": "/ˈzhɑːn.rə/",
           "meaning": "thể loại tác phẩm",
           "example": "Science fiction is a popular literary genre.",
+          "difficulty": "hard"
+        },
+        {
+          "word": "allegory",
+          "phonetic": "/ˈæl.ə.ɡɔːr.i/",
+          "meaning": "truyện ngụ ngôn ẩn ý",
+          "example": "The story is an allegory about the war.",
           "difficulty": "hard"
         }
       ]
@@ -1113,90 +1113,90 @@ window.VOCABULARY_LEVEL_DATA.hard = {
       "id": "astronomy",
       "icon": "ti-rocket",
       "name": "Vũ trụ & Thiên văn",
-      "desc": "Quỹ đạo, trọng lực, tinh vân, siêu tân tinh và vật lý thiên văn.",
+      "desc": "Thiên thể, điểm chí, tinh vân và vật lý thiên văn chuyên sâu.",
       "words": [
         {
-          "word": "star",
-          "phonetic": "/stɑːr/",
-          "meaning": "ngôi sao thiên thể",
-          "example": "Millions of stars are visible on a clear night.",
+          "word": "celestial",
+          "phonetic": "/sɪˈles.tʃəl/",
+          "meaning": "thuộc về thiên thể, bầu trời",
+          "example": "Comets and stars are celestial bodies.",
           "difficulty": "easy"
         },
         {
-          "word": "moon",
-          "phonetic": "/muːn/",
-          "meaning": "vệ tinh mặt trăng",
-          "example": "The moon rotates around the Earth.",
+          "word": "gravitational",
+          "phonetic": "/ˌɡræv.əˈteɪ.ʃən.əl/",
+          "meaning": "thuộc lực hấp dẫn",
+          "example": "The moon is held by Earth's gravitational pull.",
           "difficulty": "easy"
         },
         {
-          "word": "sun",
-          "phonetic": "/sʌn/",
-          "meaning": "ngôi sao mặt trời",
-          "example": "The sun is at the center of the solar system.",
+          "word": "solstice",
+          "phonetic": "/ˈsɑːl.stɪs/",
+          "meaning": "điểm chí (hạ chí/đông chí)",
+          "example": "The summer solstice marks the longest day of the year.",
           "difficulty": "easy"
         },
         {
-          "word": "sky",
-          "phonetic": "/skaɪ/",
-          "meaning": "bầu trời xanh",
-          "example": "Clouds drifted across the blue sky.",
+          "word": "terrestrial",
+          "phonetic": "/təˈres.tri.əl/",
+          "meaning": "thuộc về trái đất/mặt đất",
+          "example": "The scientists studied terrestrial environments.",
           "difficulty": "easy"
         },
         {
-          "word": "dark",
-          "phonetic": "/dɑːrk/",
-          "meaning": "bóng tối không gian",
-          "example": "Deep space is completely dark and quiet.",
+          "word": "cosmology",
+          "phonetic": "/kɑːzˈmɑː.lə.dʒi/",
+          "meaning": "vũ trụ học nghiên cứu",
+          "example": "Cosmology explores the origin of the universe.",
           "difficulty": "easy"
         },
         {
-          "word": "galaxy",
-          "phonetic": "/ˈɡæl.ək.si/",
-          "meaning": "hệ thống thiên hà",
-          "example": "The Milky Way is our home galaxy.",
+          "word": "cosmos",
+          "phonetic": "/ˈkɑːz.moʊs/",
+          "meaning": "vũ trụ bao la",
+          "example": "The cosmos contains billions of galaxies.",
           "difficulty": "medium"
         },
         {
-          "word": "orbit",
-          "phonetic": "/ˈɔːr.bɪt/",
-          "meaning": "quỹ đạo quay quanh",
-          "example": "The satellite entered the Earth’s orbit.",
+          "word": "comet",
+          "phonetic": "/ˈkɑː.mɪt/",
+          "meaning": "sao chổi",
+          "example": "The comet was visible in the night sky.",
           "difficulty": "medium"
         },
         {
-          "word": "gravity",
-          "phonetic": "/ˈɡræv.ə.t̬i/",
-          "meaning": "lực hấp dẫn, trọng lực",
-          "example": "Gravity keeps the atmosphere around our planet.",
+          "word": "eclipse",
+          "phonetic": "/ɪˈklɪps/",
+          "meaning": "hiện tượng nhật/nguyệt thực",
+          "example": "We watched a total solar eclipse yesterday.",
           "difficulty": "medium"
         },
         {
-          "word": "telescope",
-          "phonetic": "/ˈtel.ə.skoʊp/",
-          "meaning": "kính viễn vọng vũ trụ",
-          "example": "They observed Saturn’s rings through a telescope.",
+          "word": "asteroid",
+          "phonetic": "/ˈæs.tə.rɔɪd/",
+          "meaning": "tiểu hành tinh",
+          "example": "The asteroid orbits the sun.",
           "difficulty": "medium"
         },
         {
           "word": "supernova",
           "phonetic": "/ˌsuː.pɚˈnoʊ.və/",
           "meaning": "vụ nổ siêu tân tinh",
-          "example": "A supernova marks the violent death of a massive star.",
+          "example": "A supernova marks the death of a massive star.",
           "difficulty": "hard"
         },
         {
           "word": "nebula",
           "phonetic": "/ˈneb.jə.lə/",
-          "meaning": "tinh vân trong vũ trụ",
+          "meaning": "tinh vân vũ trụ",
           "example": "The Orion Nebula is a nursery for newborn stars.",
           "difficulty": "hard"
         },
         {
           "word": "astrophysics",
           "phonetic": "/ˌæs.troʊˈfɪz.ɪks/",
-          "meaning": "ngành vật lý thiên văn",
-          "example": "Astrophysics studies the physical properties of stars.",
+          "meaning": "vật lý thiên văn",
+          "example": "Astrophysics studies physical properties of stars.",
           "difficulty": "hard"
         }
       ]

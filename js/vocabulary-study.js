@@ -16,6 +16,10 @@ function initVocabularyStudy() {
   let selectedMatchTile = null;
   let matchedPairs = new Set();
   let gameScore = 0;
+  let gameTimerInterval = null;
+  let gameTimeSeconds = 0;
+  let currentMatchTiles = [];
+  let isProcessingMatch = false;
   let pendingSaveWord = null;
   const getSavedWordsKey = () => getAccountKey("engWithMeSavedVocabularyWords");
   let savedWordRecords = normalizeSavedWordRecords(readLocalArray(getSavedWordsKey()));
@@ -105,6 +109,54 @@ function initVocabularyStudy() {
     selectedMatchTile = null;
     matchedPairs = new Set();
     gameScore = 0;
+    if (gameTimerInterval) {
+      clearInterval(gameTimerInterval);
+      gameTimerInterval = null;
+    }
+    gameTimeSeconds = 0;
+    currentMatchTiles = [];
+    isProcessingMatch = false;
+  }
+
+  function startGameTimer() {
+    if (gameTimerInterval) clearInterval(gameTimerInterval);
+    gameTimeSeconds = 0;
+    updateTimerDisplay();
+    gameTimerInterval = setInterval(() => {
+      gameTimeSeconds++;
+      if (gameTimeSeconds >= 3600) {
+        clearInterval(gameTimerInterval);
+        gameTimerInterval = null;
+        const topic = getTopic();
+        resetGameState();
+        if (currentGameMode === "blast") {
+          startBlastGame(topic);
+          startGameTimer();
+        } else if (currentGameMode === "match") {
+          currentGameMode = "match";
+          const gameWords = topic.words.slice(0, 6);
+          currentMatchTiles = shuffle([
+            ...gameWords.map(word => ({ type: "word", id: word.word, text: word.word })),
+            ...gameWords.map(word => ({ type: "meaning", id: word.word, text: word.meaning }))
+          ]);
+          render();
+          startGameTimer();
+        } else {
+          render();
+        }
+        return;
+      }
+      updateTimerDisplay();
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    const minutes = String(Math.floor(gameTimeSeconds / 60)).padStart(2, "0");
+    const seconds = String(gameTimeSeconds % 60).padStart(2, "0");
+    const timerSpan = root.querySelector("[data-game-timer]");
+    if (timerSpan) {
+      timerSpan.textContent = `${minutes}:${seconds}`;
+    }
   }
 
   function normalizeSavedWordRecords(value) {
@@ -126,76 +178,151 @@ function initVocabularyStudy() {
   }
 
   const closeMeaningHints = {
-    classroom: ["class: lớp học/phòng học", "learning space: không gian học"],
+    routine: ["habit: thói quen", "daily pattern: nếp sinh hoạt"],
     subject: ["course: môn học/khóa học", "discipline: lĩnh vực học"],
     homework: ["assignment: bài tập được giao", "schoolwork: bài học/bài tập"],
-    notebook: ["exercise book: vở ghi", "copybook: vở viết"],
-    teacher: ["instructor: giáo viên/giảng viên", "educator: nhà giáo"],
+    classroom: ["learning space: không gian học", "lecture room: phòng học"],
     assignment: ["task: nhiệm vụ được giao", "homework: bài tập"],
-    presentation: ["talk: bài nói", "speech: bài thuyết trình"],
-    project: ["assignment: bài làm/dự án", "task: nhiệm vụ"],
+    presentation: ["talk: bài nói/thuyết trình", "pitch: bài trình bày"],
     semester: ["term: học kỳ", "school term: kỳ học"],
     curriculum: ["syllabus: đề cương/chương trình học", "course plan: kế hoạch môn học"],
     assessment: ["evaluation: đánh giá", "test: bài kiểm tra/đánh giá"],
     scholarship: ["grant: học bổng/khoản tài trợ", "study grant: học bổng học tập"],
-    routine: ["habit: thói quen", "daily pattern: nếp sinh hoạt"],
-    housework: ["chores: việc nhà", "domestic work: việc trong nhà"],
     appointment: ["meeting: cuộc hẹn", "scheduled visit: lịch hẹn"],
-    responsibility: ["duty: bổn phận", "obligation: nghĩa vụ"],
+    responsibility: ["duty: bổn phận/trách nhiệm", "obligation: nghĩa vụ"],
     balance: ["equilibrium: trạng thái cân bằng", "stability: sự ổn định"],
     schedule: ["timetable: thời khóa biểu/lịch trình", "plan: kế hoạch"],
     independence: ["self-reliance: sự tự lập", "autonomy: quyền tự chủ"],
-    job: ["work: công việc", "position: vị trí công việc"],
-    meeting: ["session: buổi họp", "appointment: cuộc hẹn"],
-    manager: ["supervisor: người giám sát", "leader: người quản lý/lãnh đạo"],
-    deadline: ["due date: hạn nộp", "time limit: thời hạn"],
+    discipline: ["order: kỷ luật", "self-control: sự tự chủ"],
+    transit: ["layover: sự dừng chân/quá cảnh", "transfer: trung chuyển"],
+    luggage: ["baggage: hành lý", "bags: túi hành lý"],
+    reservation: ["booking: sự đặt chỗ trước", "appointment: cuộc hẹn"],
+    destination: ["goal: điểm đến", "endpoint: điểm kết thúc"],
+    itinerary: ["travel plan: lịch trình chuyến đi", "route: lộ trình"],
+    accommodation: ["lodging: chỗ ở nơi lưu trú", "housing: nhà ở/nơi ở"],
+    career: ["profession: nghề nghiệp", "occupation: công việc/sự nghiệp"],
+    employee: ["worker: người lao động", "staff member: nhân viên"],
+    deadline: ["due date: hạn chót", "time limit: thời hạn"],
     colleague: ["coworker: đồng nghiệp", "teammate: người cùng nhóm"],
-    doctor: ["physician: bác sĩ", "medical practitioner: người hành nghề y"],
-    medicine: ["medication: thuốc", "remedy: phương thuốc"],
-    symptom: ["sign: dấu hiệu", "indication: biểu hiện"],
-    treatment: ["therapy: liệu pháp", "care: điều trị/chăm sóc"],
-    reply: ["respond: phản hồi", "answer: trả lời"],
-    agree: ["accept: đồng ý/chấp nhận", "consent: tán thành"],
-    explain: ["clarify: làm rõ", "describe: giải thích/mô tả"],
-    listen: ["hear: nghe", "pay attention: chú ý lắng nghe"],
-    opinion: ["view: quan điểm", "point of view: góc nhìn"],
-    money: ["cash: tiền mặt", "funds: tiền/quỹ"],
-    price: ["cost: giá/chi phí", "rate: mức giá"],
-    budget: ["spending plan: kế hoạch chi tiêu", "allowance: khoản chi cho phép"],
-    expense: ["cost: chi phí", "expenditure: khoản chi"],
-    clean: ["tidy: gọn gàng/sạch sẽ", "unpolluted: không ô nhiễm"],
-    protect: ["preserve: gìn giữ", "safeguard: bảo vệ"],
-    tradition: ["custom: phong tục", "heritage practice: tập tục truyền thống"],
-    identity: ["character: bản sắc/đặc điểm", "sense of self: ý thức bản thân"],
-    device: ["gadget: thiết bị", "tool: công cụ"],
-    app: ["application: ứng dụng", "software app: phần mềm ứng dụng"],
-    interface: ["UI: giao diện", "control surface: bề mặt điều khiển"],
-    customer: ["client: khách hàng", "buyer: người mua"],
-    profit: ["earnings: lợi nhuận", "gain: khoản lời"],
-    revenue: ["income: doanh thu/thu nhập", "sales: doanh số"],
-    strategy: ["plan: chiến lược/kế hoạch", "approach: cách tiếp cận"],
-    topic: ["subject: chủ đề", "theme: đề tài"],
-    example: ["instance: ví dụ/trường hợp", "sample: mẫu minh họa"],
-    idea: ["thought: ý tưởng", "concept: khái niệm"],
-    result: ["outcome: kết quả", "consequence: hệ quả"],
-    evidence: ["proof: bằng chứng", "supporting data: dữ liệu hỗ trợ"],
-    significant: ["important: quan trọng", "notable: đáng chú ý"],
+    productivity: ["efficiency: năng suất/hiệu quả", "output: sản lượng"],
+    collaboration: ["partnership: sự cộng tác", "cooperation: sự hợp tác"],
+    resignation: ["departure: sự thôi việc", "quitting: sự từ chức"],
+    clinic: ["medical center: phòng khám", "dispensary: trạm y tế"],
+    treatment: ["therapy: liệu trình điều trị", "care: sự chăm sóc y tế"],
+    recovery: ["healing: sự phục hồi", "recuperation: sự tĩnh dưỡng"],
+    nutrition: ["nourishment: chất dinh dưỡng", "diet: chế độ ăn uống"],
+    diagnosis: ["identification: sự chẩn đoán", "analysis: sự phân tích bệnh"],
+    prescription: ["recipe: đơn thuốc", "instruction: hướng dẫn điều trị"],
+    reply: ["respond: phản hồi", "answer: câu trả lời"],
+    explain: ["clarify: giải thích/làm rõ", "describe: mô tả"],
+    conversation: ["talk: cuộc trò chuyện", "dialogue: cuộc đối thoại"],
+    discussion: ["debate: cuộc thảo luận", "consultation: sự tham khảo ý kiến"],
+    opinion: ["view: quan điểm/ý kiến", "standpoint: lập trường"],
+    clarify: ["explain: làm rõ/giải thích", "simplify: làm đơn giản hóa"],
+    respond: ["reply: trả lời/phản hồi", "react: phản ứng lại"],
+    persuade: ["convince: thuyết phục", "influence: ảnh hưởng/thuyết phục"],
+    negotiation: ["bargaining: sự thương lượng", "dialogue: đàm phán"],
+    cash: ["paper money: tiền giấy", "ready money: tiền mặt"],
+    bill: ["invoice: hóa đơn thanh toán", "statement: bảng kê nợ"],
+    income: ["earnings: thu nhập", "revenue: doanh thu/lợi tức"],
+    budget: ["spending plan: kế hoạch chi tiêu", "allowance: hạn mức chi tiêu"],
+    expense: ["expenditure: chi phí tiêu dùng", "cost: khoản chi"],
+    financial: ["monetary: thuộc tài chính", "economic: thuộc kinh tế"],
+    ecology: ["ecosystem: hệ sinh thái", "environment: môi trường"],
+    pollution: ["contamination: sự ô nhiễm", "dirtiness: sự vấy bẩn"],
+    recycle: ["reuse: tái chế/tái sử dụng", "reprocess: xử lý lại"],
+    sustainability: ["viability: sự phát triển bền vững", "endurance: sự trường tồn"],
+    conservation: ["preservation: sự bảo tồn", "protection: sự bảo vệ"],
+    custom: ["tradition: phong tục", "practice: thông lệ"],
+    tradition: ["custom: truyền thống/phong tục", "heritage: di sản"],
+    identity: ["individuality: bản sắc/cá tính", "character: đặc trưng"],
+    diversity: ["variety: sự đa dạng", "multiplicity: sự phong phú"],
+    purchase: ["buy: mua sắm", "acquisition: sự mua được"],
+    receipt: ["proof of purchase: biên lai", "slip: phiếu thu"],
+    customer: ["buyer: khách hàng/người mua", "client: thân chủ"],
+    discount: ["reduction: khoản giảm giá", "markdown: sự hạ giá"],
+    product: ["goods: sản phẩm/hàng hóa", "merchandise: hàng hóa"],
+    consumer: ["buyer: người tiêu dùng", "customer: khách hàng"],
+    transaction: ["deal: giao dịch", "exchange: sự trao đổi"],
+    refund: ["repayment: sự hoàn tiền", "compensation: khoản đền bù"],
+    course: ["program: khóa học", "class: lớp học"],
+    lecture: ["talk: bài giảng", "address: bài nói chuyện"],
+    knowledge: ["information: kiến thức", "understanding: sự hiểu biết"],
+    skill: ["ability: kỹ năng/khả năng", "expertise: sự tinh thông"],
+    memory: ["recalls: trí nhớ", "remembrance: ký ức"],
+    vehicle: ["transport: phương tiện", "car: xe cộ"],
+    commute: ["travel: đi lại đi học/đi làm", "journey: hành trình"],
+    congestion: ["traffic jam: sự tắc nghẽn", "blockage: sự tắc nghẽn"],
+    infrastructure: ["foundation: cơ sở hạ tầng", "framework: khung nền tảng"],
+    recipe: ["formula: công thức nấu ăn", "directions: hướng dẫn thực hiện"],
+    cuisine: ["culinary style: ẩm thực", "cooking style: phong cách nấu nướng"],
+    ingredient: ["component: nguyên liệu/thành phần", "element: yếu tố"],
+    flavor: ["taste: hương vị", "aroma: mùi thơm"],
+    culinary: ["cooking: thuộc bếp núc", "gastronomic: thuộc ẩm thực"],
+    suburb: ["outskirts: vùng ngoại ô", "residential area: khu dân cư ngoại vi"],
+    metropolis: ["mega-city: siêu đô thị", "capital: thủ đô lớn"],
+    urbanization: ["city growth: sự đô thị hóa", "development: sự phát triển đô thị"],
+    mood: ["temper: tâm trạng", "frame of mind: trạng thái tinh thần"],
+    emotion: ["feeling: cảm xúc", "passion: niềm say mê/cảm xúc mạnh"],
+    stress: ["tension: sự căng thẳng", "pressure: áp lực"],
+    anxiety: ["worry: sự lo âu", "nervousness: sự bồn chồn"],
+    empathy: ["compassion: sự thấu cảm", "sympathy: sự đồng cảm"],
+    depression: ["sadness: sự trầm cảm/u sầu", "melancholy: sự u uất"],
+    software: ["program: phần mềm", "applications: các ứng dụng"],
+    database: ["data store: cơ sở dữ liệu", "repository: kho lưu trữ dữ liệu"],
+    interface: ["connection: giao diện/kết nối", "dashboard: bảng điều khiển"],
+    encryption: ["coding: sự mã hóa", "ciphering: sự mật mã hóa"],
+    algorithm: ["procedure: thuật toán", "computation rules: quy tắc tính toán"],
+    authentication: ["verification: sự xác thực", "validation: sự phê chuẩn"],
+    scalability: ["expansibility: khả năng mở rộng", "growth potential: tiềm năng tăng trưởng"],
+    revenue: ["income: doanh thu", "earnings: thu nhập"],
+    strategy: ["policy: chiến lược/chính sách", "master plan: kế hoạch tổng thể"],
+    thesis: ["dissertation: luận văn", "academic paper: bài báo học thuật"],
+    evidence: ["proof: bằng chứng/dẫn chứng", "data: dữ liệu minh chứng"],
+    significant: ["important: đáng kể/quan trọng", "meaningful: có ý nghĩa"],
     analysis: ["examination: sự phân tích", "study: nghiên cứu/phân tích"],
     research: ["study: nghiên cứu", "investigation: điều tra/nghiên cứu"],
-    rule: ["regulation: quy định", "guideline: hướng dẫn/quy tắc"],
-    law: ["rule: luật/quy tắc", "legislation: luật pháp"],
-    legal: ["lawful: hợp pháp", "permitted: được phép"],
-    feeling: ["emotion: cảm xúc", "sense: cảm giác"],
-    stress: ["pressure: áp lực", "strain: sự căng thẳng"],
-    mind: ["mental state: trạng thái tâm trí", "thoughts: suy nghĩ"],
-    habit: ["routine: thói quen", "pattern: nếp sinh hoạt"],
-    fear: ["anxiety: lo âu", "worry: nỗi lo"],
-    memory: ["recollection: ký ức", "recall: sự nhớ lại"],
-    video: ["clip: video ngắn", "recording: bản ghi hình"],
-    post: ["article: bài viết", "update: bài cập nhật"],
-    news: ["report: bản tin", "information: thông tin"],
-    photo: ["picture: bức ảnh", "image: hình ảnh"],
-    share: ["distribute: chia sẻ/phân phối", "pass on: chuyển tiếp"]
+    methodology: ["procedure: phương pháp luận", "system of methods: hệ phương pháp"],
+    hypothesis: ["theory: giả thuyết", "assumption: giả định"],
+    regulation: ["rule: quy định", "guideline: quy tắc hướng dẫn"],
+    statute: ["written law: đạo luật", "ordinance: sắc lệnh"],
+    contract: ["agreement: hợp đồng/thỏa thuận", "pact: hiệp ước"],
+    legal: ["lawful: hợp pháp", "statutory: thuộc luật định"],
+    jurisdiction: ["authority: thẩm quyền pháp lý", "control area: khu vực quản hạt"],
+    compliance: ["obedience: sự tuân thủ", "conformity: sự phù hợp"],
+    behavior: ["conduct: hành vi/tác phong", "actions: các hành động"],
+    motivation: ["incentive: động lực/sự khuyến khích", "drive: sức đẩy nội tại"],
+    cognition: ["perception: nhận thức", "mental capability: năng lực trí tuệ"],
+    cognitive: ["mental: thuộc nhận thức/trí tuệ", "intellectual: thuộc trí thức"],
+    subconscious: ["unconscious: tiềm thức/vô thức", "hidden mind: tâm trí ẩn giấu"],
+    resilience: ["flexibility: khả năng phục hồi", "toughness: tính kiên cường"],
+    audience: ["viewers: khán giả", "listeners: thính giả"],
+    misinformation: ["false info: thông tin sai lệch", "fake news: tin giả"],
+    capital: ["funds: nguồn vốn", "financial resources: tài nguyên tài chính"],
+    asset: ["property: tài sản", "possession: tài sản sở hữu"],
+    inflation: ["price rise: lạm phát", "devaluation: sự mất giá tiền tệ"],
+    ethics: ["morals: đạo đức학", "moral principles: nguyên tắc đạo đức"],
+    existentialism: ["human existence philosophy: thuyết hiện sinh", "existential theory: lý thuyết hiện sinh"],
+    epistemology: ["theory of knowledge: nhận thức luận", "philosophical study of belief: nghiên cứu tri thức"],
+    government: ["administration: chính phủ", "regime: chính quyền"],
+    sovereignty: ["independence: chủ quyền tối cao", "supreme power: quyền lực tối cao"],
+    bureaucracy: ["red tape: bộ máy hành chính", "administration: hệ quản trị hành chính"],
+    legislation: ["lawmaking: hoạt động lập pháp", "body of laws: hệ thống luật"],
+    vaccine: ["immunization: vắc-xin", "inoculation: sự tiêm chủng"],
+    epidemiology: ["study of disease spread: dịch tễ học", "epidemic control: kiểm soát dịch bệnh"],
+    pathology: ["study of disease: bệnh lý học", "medical diagnostics: chẩn đoán y khoa"],
+    chronic: ["long-lasting: mãn tính kéo dài", "persistent: dai dẳng"],
+    novel: ["book: tiểu thuyết/sách", "fiction story: truyện hư cấu"],
+    author: ["writer: tác giả/nhà văn", "creator: nhà văn/tác giả"],
+    metaphor: ["figure of speech: phép ẩn dụ", "symbolic expression: cách nói tượng trưng"],
+    aesthetic: ["artistic: thẩm mỹ", "beautiful: đẹp đẽ/thẩm mỹ"],
+    protagonist: ["main character: nhân vật chính", "lead role: vai chính"],
+    genre: ["category: thể loại", "style: phong cách nghệ thuật"],
+    galaxy: ["star system: thiên hà", "star cluster: cụm sao"],
+    orbit: ["path: quỹ đạo", "course: đường quay quanh"],
+    supernova: ["star explosion: siêu tân tinh", "stellar blast: vụ nổ sao"],
+    nebula: ["cosmic cloud: tinh vân", "dust cloud: đám mây bụi vũ trụ"],
+    astrophysics: ["space physics: vật lý thiên văn", "stellar science: khoa học thiên thể"]
   };
 
   function getAllVocabularyEntries() {
@@ -331,6 +458,9 @@ function initVocabularyStudy() {
 
     syncUrl();
     attachEvents(topic);
+    if (currentGameMode && gameTimerInterval) {
+      updateTimerDisplay();
+    }
   }
 
   function renderWorkspacePanel(topic) {
@@ -590,23 +720,56 @@ function initVocabularyStudy() {
   }
 
   function renderMatchGame(topic) {
-    const gameWords = topic.words.slice(0, 6);
-    const tiles = shuffle([
-      ...gameWords.map(word => ({ type: "word", id: word.word, text: word.word })),
-      ...gameWords.map(word => ({ type: "meaning", id: word.word, text: word.meaning }))
-    ]);
+    const gameWords = topic.words.slice(0, 8);
+    const isFinished = matchedPairs.size === gameWords.length;
+
+    if (isFinished) {
+      if (gameTimerInterval) {
+        clearInterval(gameTimerInterval);
+        gameTimerInterval = null;
+      }
+      const minutes = String(Math.floor(gameTimeSeconds / 60)).padStart(2, "0");
+      const seconds = String(gameTimeSeconds % 60).padStart(2, "0");
+
+      return `
+        <div class="game-board-top">
+          <button class="workspace-back" type="button" data-game-menu>← Chọn game khác</button>
+          <strong>Hoàn thành! • Thời gian: ${minutes}:${seconds}</strong>
+        </div>
+        <div class="game-victory-panel" style="text-align: center; padding: 40px 20px;">
+          <i class="ti-cup" style="font-size: 3.5rem; color: #ffd700; margin-bottom: 20px; display: block;"></i>
+          <h3 style="font-size: 1.8rem; margin-bottom: 10px; color: #fff;">Chúc mừng!</h3>
+          <p style="font-size: 1.1rem; color: #a0aec0; margin-bottom: 25px;">Bạn đã ghép đúng tất cả các từ trong <strong>${minutes}:${seconds}</strong>!</p>
+          <button class="btn btn-primary" type="button" data-start-game="match" style="background: linear-gradient(135deg, #319795, #2b6cb0); border: none; padding: 10px 24px; font-size: 1rem; border-radius: 8px; color: white; cursor: pointer; font-weight: 600; box-shadow: 0 4px 12px rgba(49, 151, 149, 0.3); transition: all 0.2s;">Chơi lại</button>
+        </div>
+      `;
+    }
+
+    if (!currentMatchTiles || currentMatchTiles.length === 0) {
+      currentMatchTiles = shuffle([
+        ...gameWords.map(word => ({ type: "word", id: word.word, text: word.word })),
+        ...gameWords.map(word => ({ type: "meaning", id: word.word, text: word.meaning }))
+      ]);
+    }
 
     return `
       <div class="game-board-top">
         <button class="workspace-back" type="button" data-game-menu>← Chọn game khác</button>
-        <strong>${matchedPairs.size} / ${gameWords.length} cặp đúng • ${gameScore} pts</strong>
+        <strong>${matchedPairs.size} / ${gameWords.length} cặp đúng • Thời gian: <span data-game-timer>00:00</span></strong>
       </div>
       <div class="game-board">
-        ${tiles.map(tile => `
-          <button class="game-tile ${tile.type} ${matchedPairs.has(tile.id) ? "is-matched" : ""}" type="button" data-match-id="${tile.id}" data-match-type="${tile.type}">
-            ${tile.text}
-          </button>
-        `).join("")}
+        ${currentMatchTiles.map(tile => {
+          const isMatched = matchedPairs.has(tile.id);
+          return `
+            <button class="game-tile ${tile.type} ${isMatched ? "is-matched" : ""}" 
+                    type="button" 
+                    data-match-id="${tile.id}" 
+                    data-match-type="${tile.type}"
+                    style="${isMatched ? 'visibility: hidden;' : ''}">
+              ${tile.text}
+            </button>
+          `;
+        }).join("")}
       </div>
     `;
   }
@@ -622,7 +785,7 @@ function initVocabularyStudy() {
     root.querySelector(".workspace-panel").innerHTML = `
       <div class="game-board-top">
         <button class="workspace-back" type="button" data-game-menu>← Chọn game khác</button>
-        <strong>${gameScore} pts</strong>
+        <strong>Thời gian: <span data-game-timer>00:00</span></strong>
       </div>
       <div class="game-panel study-card">
         <p>Chọn nghĩa đúng cho:</p>
@@ -639,6 +802,7 @@ function initVocabularyStudy() {
     `;
 
     attachEvents(topic);
+    updateTimerDisplay();
   }
 
   function attachEvents(topic) {
@@ -809,10 +973,17 @@ function initVocabularyStudy() {
         resetGameState();
         if (button.dataset.startGame === "blast") {
           startBlastGame(topic);
+          startGameTimer();
           return;
         }
         currentGameMode = "match";
+        const gameWords = topic.words.slice(0, 8);
+        currentMatchTiles = shuffle([
+          ...gameWords.map(word => ({ type: "word", id: word.word, text: word.word })),
+          ...gameWords.map(word => ({ type: "meaning", id: word.word, text: word.meaning }))
+        ]);
         render();
+        startGameTimer();
       });
     });
 
@@ -823,9 +994,17 @@ function initVocabularyStudy() {
 
     root.querySelectorAll("[data-match-id]").forEach(button => {
       button.addEventListener("click", () => {
+        if (isProcessingMatch) return;
+        if (button.classList.contains("is-matched")) return;
         if (!selectedMatchTile) {
           selectedMatchTile = button;
           button.classList.add("is-selected");
+          return;
+        }
+
+        if (selectedMatchTile === button) {
+          button.classList.remove("is-selected");
+          selectedMatchTile = null;
           return;
         }
 
@@ -834,13 +1013,27 @@ function initVocabularyStudy() {
 
         if (isPair) {
           matchedPairs.add(button.dataset.matchId);
-          gameScore += 10;
+          selectedMatchTile.classList.remove("is-selected");
+          selectedMatchTile = null;
+          render();
         } else {
-          gameScore = Math.max(0, gameScore - 2);
+          isProcessingMatch = true;
+          const firstTile = selectedMatchTile;
+          const secondTile = button;
+          
+          firstTile.classList.remove("is-selected");
+          firstTile.classList.add("shake-wrong");
+          secondTile.classList.add("shake-wrong");
+          
+          selectedMatchTile = null;
+          
+          setTimeout(() => {
+            firstTile.classList.remove("shake-wrong");
+            secondTile.classList.remove("shake-wrong");
+            isProcessingMatch = false;
+            render();
+          }, 800);
         }
-
-        selectedMatchTile = null;
-        render();
       });
     });
 
@@ -848,9 +1041,8 @@ function initVocabularyStudy() {
       button.addEventListener("click", () => {
         const feedback = root.querySelector("[data-study-feedback]");
         const isCorrect = button.dataset.blastCorrect === "true";
-        gameScore += isCorrect ? 10 : 0;
         button.classList.add(isCorrect ? "correct" : "wrong");
-        if (feedback) feedback.textContent = isCorrect ? "Đúng. +10 pts" : "Chưa đúng. Chuyển câu tiếp theo.";
+        if (feedback) feedback.textContent = isCorrect ? "Đúng." : "Chưa đúng. Chuyển câu tiếp theo.";
         setTimeout(() => {
           currentWordIndex = (currentWordIndex + 1) % topic.words.length;
           startBlastGame(topic);

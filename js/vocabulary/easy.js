@@ -42,7 +42,7 @@ window.VOCABULARY_LEVEL_DATA.easy = {
         {
           "word": "laundry",
           "phonetic": "/ˈlɔːn.dri/",
-          "meaning": "đồ giặt",
+          "meaning": "đồ giặt, giặt ủi",
           "example": "I need to do the laundry tonight.",
           "difficulty": "easy"
         },
@@ -54,10 +54,17 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "medium"
         },
         {
-          "word": "responsibility",
-          "phonetic": "/rɪˌspɑːn.səˈbɪl.ə.ti/",
-          "meaning": "trách nhiệm",
-          "example": "Cleaning the kitchen is my responsibility.",
+          "word": "schedule",
+          "phonetic": "/ˈskedʒ.uːl/",
+          "meaning": "lịch trình",
+          "example": "My daily schedule is quite busy.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "chore",
+          "phonetic": "/tʃɔːr/",
+          "meaning": "công việc nhà thường nhật",
+          "example": "Doing chores is part of our daily routine.",
           "difficulty": "medium"
         },
         {
@@ -68,17 +75,10 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "medium"
         },
         {
-          "word": "schedule",
-          "phonetic": "/ˈskedʒ.uːl/",
-          "meaning": "lịch trình",
-          "example": "My daily schedule is quite busy.",
-          "difficulty": "medium"
-        },
-        {
-          "word": "discipline",
-          "phonetic": "/ˈdɪs.ə.plɪn/",
-          "meaning": "kỷ luật",
-          "example": "Discipline helps students learn better.",
+          "word": "responsibility",
+          "phonetic": "/rɪˌspɑːn.səˈbɪl.ə.ti/",
+          "meaning": "trách nhiệm",
+          "example": "Cleaning the kitchen is my responsibility.",
           "difficulty": "hard"
         },
         {
@@ -89,10 +89,10 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "hard"
         },
         {
-          "word": "household expense",
-          "phonetic": "/ˈhaʊs.hoʊld ɪkˈspens/",
-          "meaning": "chi phí sinh hoạt gia đình",
-          "example": "Rent is a major household expense.",
+          "word": "discipline",
+          "phonetic": "/ˈdɪs.ə.plɪn/",
+          "meaning": "kỷ luật",
+          "example": "Self-discipline helps you achieve your goals.",
           "difficulty": "hard"
         }
       ]
@@ -103,13 +103,6 @@ window.VOCABULARY_LEVEL_DATA.easy = {
       "name": "Trường học",
       "desc": "Lớp học, môn học, bài tập và việc học tập mỗi ngày.",
       "words": [
-        {
-          "word": "classroom",
-          "phonetic": "/ˈklæs.ruːm/",
-          "meaning": "lớp học",
-          "example": "The students are in the classroom.",
-          "difficulty": "easy"
-        },
         {
           "word": "subject",
           "phonetic": "/ˈsʌb.dʒekt/",
@@ -139,6 +132,13 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "easy"
         },
         {
+          "word": "classroom",
+          "phonetic": "/ˈklæs.ruːm/",
+          "meaning": "lớp học",
+          "example": "The students are in the classroom.",
+          "difficulty": "easy"
+        },
+        {
           "word": "assignment",
           "phonetic": "/əˈsaɪn.mənt/",
           "meaning": "bài tập được giao",
@@ -163,14 +163,14 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "word": "semester",
           "phonetic": "/səˈmes.tɚ/",
           "meaning": "học kỳ",
-          "example": "This semester is more difficult than the last one.",
+          "example": "This semester is more difficult than the last.",
           "difficulty": "medium"
         },
         {
           "word": "curriculum",
           "phonetic": "/kəˈrɪk.jə.ləm/",
           "meaning": "chương trình học",
-          "example": "The curriculum focuses on communication skills.",
+          "example": "The curriculum focuses on communication.",
           "difficulty": "hard"
         },
         {
@@ -203,13 +203,6 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "easy"
         },
         {
-          "word": "menu",
-          "phonetic": "/ˈmen.juː/",
-          "meaning": "thực đơn",
-          "example": "Can I see the menu, please?",
-          "difficulty": "easy"
-        },
-        {
           "word": "drink",
           "phonetic": "/drɪŋk/",
           "meaning": "đồ uống",
@@ -219,29 +212,36 @@ window.VOCABULARY_LEVEL_DATA.easy = {
         {
           "word": "hungry",
           "phonetic": "/ˈhʌŋ.ɡri/",
-          "meaning": "đói",
+          "meaning": "đói bụng",
           "example": "I am very hungry after class.",
           "difficulty": "easy"
         },
         {
-          "word": "recipe",
-          "phonetic": "/ˈres.ə.pi/",
-          "meaning": "công thức nấu ăn",
-          "example": "This recipe is easy to follow.",
+          "word": "delicious",
+          "phonetic": "/dɪˈlɪʃ.əs/",
+          "meaning": "thơm ngon",
+          "example": "This chocolate cake is delicious.",
           "difficulty": "easy"
         },
         {
-          "word": "ingredient",
-          "phonetic": "/ɪnˈɡriː.di.ənt/",
-          "meaning": "nguyên liệu",
-          "example": "Tomato is the main ingredient in this soup.",
+          "word": "snack",
+          "phonetic": "/snæk/",
+          "meaning": "món ăn nhẹ",
+          "example": "I usually have a healthy snack in the afternoon.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "menu",
+          "phonetic": "/ˈmen.juː/",
+          "meaning": "thực đơn ăn uống",
+          "example": "The waiter handed us the dessert menu.",
           "difficulty": "medium"
         },
         {
-          "word": "flavor",
-          "phonetic": "/ˈfleɪ.vɚ/",
-          "meaning": "hương vị",
-          "example": "This dish has a rich flavor.",
+          "word": "spicy",
+          "phonetic": "/ˈspaɪ.si/",
+          "meaning": "vị cay nồng",
+          "example": "This curry is very hot and spicy.",
           "difficulty": "medium"
         },
         {
@@ -252,11 +252,18 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "medium"
         },
         {
-          "word": "portion",
-          "phonetic": "/ˈpɔːr.ʃən/",
-          "meaning": "khẩu phần",
-          "example": "The portion is too large for one person.",
+          "word": "dessert",
+          "phonetic": "/dɪˈzɝːt/",
+          "meaning": "món tráng miệng",
+          "example": "We had ice cream for dessert.",
           "difficulty": "medium"
+        },
+        {
+          "word": "organic",
+          "phonetic": "/ɔːrˈɡæn.ɪk/",
+          "meaning": "thực phẩm hữu cơ",
+          "example": "We prefer buying fresh organic vegetables.",
+          "difficulty": "hard"
         },
         {
           "word": "nutritious",
@@ -270,13 +277,6 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "phonetic": "/ˈæl.ɚ.dʒi/",
           "meaning": "dị ứng",
           "example": "She has an allergy to seafood.",
-          "difficulty": "hard"
-        },
-        {
-          "word": "carbohydrate",
-          "phonetic": "/ˌkɑːr.boʊˈhaɪ.dreɪt/",
-          "meaning": "carbohydrate",
-          "example": "Rice is a common source of carbohydrate.",
           "difficulty": "hard"
         }
       ]
@@ -305,34 +305,34 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "word": "orange",
           "phonetic": "/ˈɔːr.ɪndʒ/",
           "meaning": "quả cam",
-          "example": "She drinks orange juice.",
+          "example": "She drinks orange juice every day.",
           "difficulty": "easy"
         },
         {
           "word": "mango",
           "phonetic": "/ˈmæŋ.ɡoʊ/",
           "meaning": "quả xoài",
-          "example": "Mango is popular in Vietnam.",
+          "example": "Mango is popular in summer.",
           "difficulty": "easy"
         },
         {
           "word": "grape",
           "phonetic": "/ɡreɪp/",
           "meaning": "quả nho",
-          "example": "I bought some grapes at the market.",
+          "example": "I bought some green grapes at the market.",
           "difficulty": "easy"
         },
         {
           "word": "pineapple",
           "phonetic": "/ˈpaɪnˌæp.əl/",
-          "meaning": "quả dứa",
+          "meaning": "quả dứa, thơm",
           "example": "Pineapple tastes sweet and sour.",
           "difficulty": "medium"
         },
         {
           "word": "watermelon",
           "phonetic": "/ˈwɑː.t̬ɚˌmel.ən/",
-          "meaning": "dưa hấu",
+          "meaning": "quả dưa hấu",
           "example": "Watermelon is refreshing in summer.",
           "difficulty": "medium"
         },
@@ -344,31 +344,31 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "medium"
         },
         {
-          "word": "avocado",
-          "phonetic": "/ˌæv.əˈkɑː.doʊ/",
-          "meaning": "quả bơ",
-          "example": "Avocado is often used in healthy meals.",
+          "word": "lemon",
+          "phonetic": "/ˈlem.ən/",
+          "meaning": "quả chanh vàng",
+          "example": "I add lemon juice to my tea.",
           "difficulty": "medium"
         },
         {
           "word": "pomegranate",
           "phonetic": "/ˈpɑː.məˌɡræn.ɪt/",
           "meaning": "quả lựu",
-          "example": "Pomegranate juice is rich in flavor.",
+          "example": "Pomegranate juice is rich in vitamins.",
           "difficulty": "hard"
         },
         {
           "word": "persimmon",
           "phonetic": "/pɚˈsɪm.ən/",
           "meaning": "quả hồng",
-          "example": "Persimmon is common in autumn.",
+          "example": "Persimmons are common in autumn.",
           "difficulty": "hard"
         },
         {
-          "word": "dragon fruit",
-          "phonetic": "/ˈdræɡ.ən fruːt/",
-          "meaning": "thanh long",
-          "example": "Dragon fruit has a bright pink skin.",
+          "word": "avocado",
+          "phonetic": "/ˌæv.əˈkɑː.doʊ/",
+          "meaning": "quả bơ",
+          "example": "Avocado is often used in healthy salads.",
           "difficulty": "hard"
         }
       ]
@@ -394,17 +394,17 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "easy"
         },
         {
-          "word": "leaf",
-          "phonetic": "/liːf/",
-          "meaning": "chiếc lá",
-          "example": "A leaf fell from the tree.",
-          "difficulty": "easy"
-        },
-        {
           "word": "garden",
           "phonetic": "/ˈɡɑːr.dən/",
           "meaning": "khu vườn",
           "example": "My mother grows flowers in the garden.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "lily",
+          "phonetic": "/ˈlɪl.i/",
+          "meaning": "hoa ly, hoa loa kèn",
+          "example": "The white lily looks very pure.",
           "difficulty": "easy"
         },
         {
@@ -429,13 +429,6 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "medium"
         },
         {
-          "word": "fragrance",
-          "phonetic": "/ˈfreɪ.ɡrəns/",
-          "meaning": "hương thơm",
-          "example": "The fragrance of the flowers filled the room.",
-          "difficulty": "medium"
-        },
-        {
           "word": "blossom",
           "phonetic": "/ˈblɑː.səm/",
           "meaning": "hoa nở rộ",
@@ -443,24 +436,31 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "medium"
         },
         {
-          "word": "botanical",
-          "phonetic": "/bəˈtæn.ɪ.kəl/",
-          "meaning": "thuộc về thực vật",
-          "example": "We visited a botanical garden.",
-          "difficulty": "hard"
-        },
-        {
-          "word": "pollination",
-          "phonetic": "/ˌpɑː.ləˈneɪ.ʃən/",
-          "meaning": "sự thụ phấn",
-          "example": "Bees help with pollination.",
-          "difficulty": "hard"
-        },
-        {
           "word": "petal",
           "phonetic": "/ˈpet̬.əl/",
           "meaning": "cánh hoa",
           "example": "The flower has soft white petals.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "fragrance",
+          "phonetic": "/ˈfreɪ.ɡrəns/",
+          "meaning": "hương thơm",
+          "example": "The fragrance of the flowers filled the room.",
+          "difficulty": "hard"
+        },
+        {
+          "word": "bouquet",
+          "phonetic": "/boʊˈkeɪ/",
+          "meaning": "bó hoa",
+          "example": "He bought a beautiful bouquet of roses.",
+          "difficulty": "hard"
+        },
+        {
+          "word": "botanical",
+          "phonetic": "/bəˈtæn.ɪ.kəl/",
+          "meaning": "thuộc thực vật",
+          "example": "We visited a botanical garden.",
           "difficulty": "hard"
         }
       ]
@@ -482,7 +482,7 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "word": "plant",
           "phonetic": "/plænt/",
           "meaning": "cây trồng",
-          "example": "I water my plant every day.",
+          "example": "I water my plants every morning.",
           "difficulty": "easy"
         },
         {
@@ -493,10 +493,10 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "easy"
         },
         {
-          "word": "root",
-          "phonetic": "/ruːt/",
-          "meaning": "rễ cây",
-          "example": "Roots help plants absorb water.",
+          "word": "leaf",
+          "phonetic": "/liːf/",
+          "meaning": "lá cây",
+          "example": "A dry leaf fell from the tree.",
           "difficulty": "easy"
         },
         {
@@ -521,6 +521,13 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "medium"
         },
         {
+          "word": "root",
+          "phonetic": "/ruːt/",
+          "meaning": "rễ cây",
+          "example": "Roots help plants absorb water.",
+          "difficulty": "medium"
+        },
+        {
           "word": "soil",
           "phonetic": "/sɔɪl/",
           "meaning": "đất trồng",
@@ -531,8 +538,8 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "word": "harvest",
           "phonetic": "/ˈhɑːr.vəst/",
           "meaning": "thu hoạch",
-          "example": "Farmers harvest rice in the autumn.",
-          "difficulty": "medium"
+          "example": "Farmers harvest rice in autumn.",
+          "difficulty": "hard"
         },
         {
           "word": "vegetation",
@@ -546,13 +553,6 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "phonetic": "/ˌfoʊ.t̬oʊˈsɪn.θə.sɪs/",
           "meaning": "quang hợp",
           "example": "Plants use photosynthesis to make food.",
-          "difficulty": "hard"
-        },
-        {
-          "word": "ecosystem",
-          "phonetic": "/ˈiː.koʊˌsɪs.təm/",
-          "meaning": "hệ sinh thái",
-          "example": "Forests are important ecosystems.",
           "difficulty": "hard"
         }
       ]
@@ -599,52 +599,52 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "easy"
         },
         {
-          "word": "wildlife",
-          "phonetic": "/ˈwaɪld.laɪf/",
-          "meaning": "động vật hoang dã",
-          "example": "The park protects local wildlife.",
+          "word": "horse",
+          "phonetic": "/hɔːrs/",
+          "meaning": "con ngựa",
+          "example": "He learned to ride a horse last year.",
           "difficulty": "medium"
+        },
+        {
+          "word": "rabbit",
+          "phonetic": "/ˈræb.ɪt/",
+          "meaning": "con thỏ",
+          "example": "The white rabbit has long ears.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "monkey",
+          "phonetic": "/ˈmʌŋ.ki/",
+          "meaning": "con khỉ",
+          "example": "Monkeys like eating bananas.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "tiger",
+          "phonetic": "/ˈtaɪ.ɡɚ/",
+          "meaning": "con hổ",
+          "example": "The tiger is a powerful hunter.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "mammal",
+          "phonetic": "/ˈmæm.əl/",
+          "meaning": "động vật có vú",
+          "example": "Whales are the largest mammals on Earth.",
+          "difficulty": "hard"
         },
         {
           "word": "species",
           "phonetic": "/ˈspiː.ʃiːz/",
           "meaning": "loài sinh vật",
-          "example": "This species is extremely rare.",
-          "difficulty": "medium"
-        },
-        {
-          "word": "habitat",
-          "phonetic": "/ˈhæb.ə.tæt/",
-          "meaning": "môi trường sống",
-          "example": "Forests are the natural habitat of many animals.",
-          "difficulty": "medium"
-        },
-        {
-          "word": "pet",
-          "phonetic": "/pet/",
-          "meaning": "thú cưng",
-          "example": "A hamster can be a good pet.",
-          "difficulty": "medium"
+          "example": "This species of bird is extremely rare.",
+          "difficulty": "hard"
         },
         {
           "word": "predator",
           "phonetic": "/ˈpred.ə.t̬ɚ/",
           "meaning": "động vật săn mồi",
-          "example": "A lion is a powerful predator.",
-          "difficulty": "hard"
-        },
-        {
-          "word": "endangered",
-          "phonetic": "/ɪnˈdeɪn.dʒɚd/",
-          "meaning": "có nguy cơ tuyệt chủng",
-          "example": "Pandas are endangered animals.",
-          "difficulty": "hard"
-        },
-        {
-          "word": "domesticated",
-          "phonetic": "/dəˈmes.tɪ.keɪ.t̬ɪd/",
-          "meaning": "được thuần hóa",
-          "example": "Dogs are domesticated animals.",
+          "example": "The lion is a powerful predator.",
           "difficulty": "hard"
         }
       ]
@@ -670,52 +670,52 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "easy"
         },
         {
-          "word": "game",
-          "phonetic": "/ɡeɪm/",
-          "meaning": "trò chơi",
-          "example": "They played a board game together.",
-          "difficulty": "easy"
-        },
-        {
           "word": "movie",
           "phonetic": "/ˈmuː.vi/",
-          "meaning": "bộ phim",
+          "meaning": "phim ảnh",
           "example": "We watched an exciting movie last night.",
           "difficulty": "easy"
         },
         {
-          "word": "book",
-          "phonetic": "/bʊk/",
-          "meaning": "sách",
-          "example": "He bought a book about space travel.",
+          "word": "sport",
+          "phonetic": "/spɔːrt/",
+          "meaning": "môn thể thao",
+          "example": "Football is a popular sport.",
           "difficulty": "easy"
         },
         {
-          "word": "photograph",
-          "phonetic": "/ˈfoʊ.t̬ə.ɡræf/",
-          "meaning": "bức ảnh chụp",
-          "example": "She took a beautiful photograph of the sunset.",
+          "word": "drawing",
+          "phonetic": "/ˈdrɑː.ɪŋ/",
+          "meaning": "vẽ tranh",
+          "example": "She is very good at drawing.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "painting",
+          "phonetic": "/ˈpeɪn.tɪŋ/",
+          "meaning": "hội họa",
+          "example": "He enjoys oil painting on weekends.",
           "difficulty": "medium"
         },
         {
           "word": "instrument",
           "phonetic": "/ˈɪn.strə.mənt/",
           "meaning": "nhạc cụ",
-          "example": "The piano is a popular musical instrument.",
+          "example": "The piano is a beautiful instrument.",
           "difficulty": "medium"
         },
         {
           "word": "collection",
           "phonetic": "/kəˈlek.ʃən/",
           "meaning": "bộ sưu tập",
-          "example": "He has a great collection of old coins.",
+          "example": "He has a great stamp collection.",
           "difficulty": "medium"
         },
         {
-          "word": "creative",
-          "phonetic": "/kriˈeɪ.t̬ɪv/",
-          "meaning": "sáng tạo",
-          "example": "Drawing is a highly creative activity.",
+          "word": "photography",
+          "phonetic": "/fəˈtɑː.ɡrə.fi/",
+          "meaning": "nhiếp ảnh",
+          "example": "She took up photography as a hobby.",
           "difficulty": "medium"
         },
         {
@@ -728,15 +728,15 @@ window.VOCABULARY_LEVEL_DATA.easy = {
         {
           "word": "enthusiasm",
           "phonetic": "/ɪnˈθuː.zi.æz.əm/",
-          "meaning": "sự nhiệt huyết",
+          "meaning": "sự hăng hái",
           "example": "She plays guitar with great enthusiasm.",
           "difficulty": "hard"
         },
         {
-          "word": "pastime",
-          "phonetic": "/ˈpæs.taɪm/",
-          "meaning": "trò tiêu khiển",
-          "example": "Gardening is a healthy and peaceful pastime.",
+          "word": "entertainment",
+          "phonetic": "/ˌen.t̬ɚˈteɪn.mənt/",
+          "meaning": "sự giải trí",
+          "example": "The city offers a lot of entertainment options.",
           "difficulty": "hard"
         }
       ]
@@ -745,7 +745,7 @@ window.VOCABULARY_LEVEL_DATA.easy = {
       "id": "family",
       "icon": "ti-heart",
       "name": "Gia đình & Người thân",
-      "desc": "Mối quan hệ gia đình, họ hàng, thế hệ và tình yêu thương.",
+      "desc": "Mối quan hệ gia đình, họ hàng, thế thế và tình yêu thương.",
       "words": [
         {
           "word": "family",
@@ -769,38 +769,31 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "easy"
         },
         {
-          "word": "cousin",
-          "phonetic": "/ˈkʌz.ən/",
-          "meaning": "anh chị em họ",
-          "example": "I am visiting my cousin this weekend.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "uncle",
-          "phonetic": "/ˈʌŋ.kəl/",
-          "meaning": "chú/bác/cậu",
-          "example": "My uncle is an English teacher.",
-          "difficulty": "easy"
-        },
-        {
           "word": "relative",
           "phonetic": "/ˈrel.ə.t̬ɪv/",
           "meaning": "họ hàng",
           "example": "All our relatives gathered for Tet holiday.",
-          "difficulty": "medium"
+          "difficulty": "easy"
         },
         {
           "word": "sibling",
           "phonetic": "/ˈsɪb.lɪŋ/",
           "meaning": "anh chị em ruột",
           "example": "Do you have any siblings?",
+          "difficulty": "easy"
+        },
+        {
+          "word": "cousin",
+          "phonetic": "/ˈkʌz.ən/",
+          "meaning": "anh chị em họ",
+          "example": "I am visiting my cousin this weekend.",
           "difficulty": "medium"
         },
         {
-          "word": "childhood",
-          "phonetic": "/ˈtʃaɪld.hʊd/",
-          "meaning": "tuổi thơ",
-          "example": "I had a very happy childhood.",
+          "word": "uncle",
+          "phonetic": "/ˈʌŋ.kəl/",
+          "meaning": "chú, bác, cậu",
+          "example": "My uncle is an English teacher.",
           "difficulty": "medium"
         },
         {
@@ -808,6 +801,13 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "phonetic": "/ˈmer.ɪdʒ/",
           "meaning": "hôn nhân",
           "example": "Their marriage is built on trust and love.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "childhood",
+          "phonetic": "/ˈtʃaɪld.hʊd/",
+          "meaning": "tuổi thơ",
+          "example": "I had a very happy childhood.",
           "difficulty": "medium"
         },
         {
@@ -825,10 +825,10 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "hard"
         },
         {
-          "word": "heritage",
-          "phonetic": "/ˈher.ɪ.t̬ɪdʒ/",
-          "meaning": "di sản gia đình",
-          "example": "Family values are a part of our heritage.",
+          "word": "upbringing",
+          "phonetic": "/ˈʌpˌbrɪŋ.ɪŋ/",
+          "meaning": "sự nuôi nấng, giáo dục",
+          "example": "She had a strict but loving upbringing.",
           "difficulty": "hard"
         }
       ]
@@ -847,31 +847,31 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "easy"
         },
         {
-          "word": "sun",
-          "phonetic": "/sʌn/",
-          "meaning": "mặt trời",
-          "example": "The sun is shining brightly.",
+          "word": "sunshine",
+          "phonetic": "/ˈsʌn.ʃaɪn/",
+          "meaning": "ánh nắng",
+          "example": "I enjoy the warm morning sunshine.",
           "difficulty": "easy"
         },
         {
-          "word": "rain",
-          "phonetic": "/reɪn/",
-          "meaning": "cơn mưa",
-          "example": "I like listening to the rain.",
+          "word": "rainy",
+          "phonetic": "/reɪn.i/",
+          "meaning": "có mưa",
+          "example": "It is a cold and rainy day.",
           "difficulty": "easy"
         },
         {
-          "word": "wind",
-          "phonetic": "/wɪnd/",
-          "meaning": "gió",
-          "example": "A cool wind blew from the sea.",
+          "word": "windy",
+          "phonetic": "/wɪn.di/",
+          "meaning": "nhiều gió",
+          "example": "It's too windy to play tennis outside.",
           "difficulty": "easy"
         },
         {
-          "word": "snow",
-          "phonetic": "/snoʊ/",
-          "meaning": "tuyết",
-          "example": "Children love playing in the snow.",
+          "word": "snowy",
+          "phonetic": "/snoʊ.i/",
+          "meaning": "có tuyết",
+          "example": "The mountains look beautiful on a snowy day.",
           "difficulty": "easy"
         },
         {
@@ -885,21 +885,21 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "word": "umbrella",
           "phonetic": "/ʌmˈbrel.ə/",
           "meaning": "chiếc ô",
-          "example": "Don't forget to take an umbrella.",
+          "example": "Don't forget to take an umbrella with you.",
           "difficulty": "medium"
         },
         {
           "word": "forecast",
           "phonetic": "/ˈfɔːr.kæst/",
-          "meaning": "bự báo thời tiết",
-          "example": "The weather forecast predicts rain.",
+          "meaning": "dự báo thời tiết",
+          "example": "The weather forecast predicts heavy rain.",
           "difficulty": "medium"
         },
         {
           "word": "season",
           "phonetic": "/ˈsiː.zən/",
-          "meaning": "mùa",
-          "example": "Spring is my favorite season.",
+          "meaning": "mùa trong năm",
+          "example": "Spring is my favorite season of all.",
           "difficulty": "medium"
         },
         {
@@ -917,10 +917,10 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "hard"
         },
         {
-          "word": "climate change",
-          "phonetic": "/ˈklaɪ.mət tʃeɪndʒ/",
-          "meaning": "biến đổi khí hậu",
-          "example": "Climate change is a global challenge.",
+          "word": "climate",
+          "phonetic": "/ˈklaɪ.mət/",
+          "meaning": "khí khí hậu",
+          "example": "Vietnam has a warm, tropical climate.",
           "difficulty": "hard"
         }
       ]
@@ -953,17 +953,17 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "easy"
         },
         {
-          "word": "hat",
-          "phonetic": "/hæt/",
-          "meaning": "mũ/nón",
-          "example": "Wear a hat to protect from the sun.",
-          "difficulty": "easy"
-        },
-        {
           "word": "jacket",
           "phonetic": "/ˈdʒæk.ɪt/",
           "meaning": "áo khoác nhẹ",
-          "example": "Bring a jacket, it might get cold.",
+          "example": "Bring a jacket, it might get cold tonight.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "dress",
+          "phonetic": "/dres/",
+          "meaning": "váy đầm",
+          "example": "She wore a beautiful blue dress to the party.",
           "difficulty": "easy"
         },
         {
@@ -977,7 +977,7 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "word": "material",
           "phonetic": "/məˈtɪr.i.əl/",
           "meaning": "chất liệu vải",
-          "example": "Cotton is a breathable material.",
+          "example": "Cotton is a soft and breathable material.",
           "difficulty": "medium"
         },
         {
@@ -998,20 +998,20 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "word": "elegant",
           "phonetic": "/ˈel.ə.ɡənt/",
           "meaning": "lịch lãm, nhã nhặn",
-          "example": "She looked very elegant in her dress.",
+          "example": "She looked very elegant in her gown.",
           "difficulty": "hard"
         },
         {
           "word": "wardrobe",
           "phonetic": "/ˈwɔːr.droʊb/",
           "meaning": "tủ quần áo",
-          "example": "I need to organize my wardrobe.",
+          "example": "I need to organize my winter wardrobe.",
           "difficulty": "hard"
         },
         {
           "word": "garment",
           "phonetic": "/ˈɡɑːr.mənt/",
-          "meaning": "hàng may mặc",
+          "meaning": "quần áo, hàng may mặc",
           "example": "The store sells high-quality garments.",
           "difficulty": "hard"
         }
@@ -1045,17 +1045,17 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "easy"
         },
         {
-          "word": "light",
-          "phonetic": "/laɪt/",
-          "meaning": "đèn điện",
-          "example": "Turn on the light, it is too dark here.",
-          "difficulty": "easy"
-        },
-        {
           "word": "key",
           "phonetic": "/kiː/",
           "meaning": "chìa khóa",
           "example": "I cannot find the house key.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "door",
+          "phonetic": "/dɔːr/",
+          "meaning": "cánh cửa",
+          "example": "Please close the door behind you.",
           "difficulty": "easy"
         },
         {
@@ -1080,10 +1080,10 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "medium"
         },
         {
-          "word": "device",
-          "phonetic": "/dɪˈvaɪs/",
-          "meaning": "thiết bị gia dụng",
-          "example": "This device saves electricity.",
+          "word": "window",
+          "phonetic": "/ˈwɪn.doʊ/",
+          "meaning": "cửa sổ",
+          "example": "Open the window for some fresh air.",
           "difficulty": "medium"
         },
         {
@@ -1094,10 +1094,10 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "hard"
         },
         {
-          "word": "utensil",
-          "phonetic": "/juːˈten.sɪl/",
-          "meaning": "dụng cụ nhà bếp",
-          "example": "Spoons and forks are kitchen utensils.",
+          "word": "gadget",
+          "phonetic": "/ˈɡædʒ.ɪt/",
+          "meaning": "thiết bị/dụng cụ nhỏ tiện ích",
+          "example": "Kitchen gadgets make cooking much faster.",
           "difficulty": "hard"
         },
         {
@@ -1130,13 +1130,6 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "easy"
         },
         {
-          "word": "game",
-          "phonetic": "/ɡeɪm/",
-          "meaning": "trận đấu",
-          "example": "The game was intense and exciting.",
-          "difficulty": "easy"
-        },
-        {
           "word": "run",
           "phonetic": "/rʌn/",
           "meaning": "chạy bộ",
@@ -1144,18 +1137,18 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "easy"
         },
         {
-          "word": "play",
-          "phonetic": "/pleɪ/",
-          "meaning": "chơi thể thao",
-          "example": "We like to play basketball together.",
+          "word": "swim",
+          "phonetic": "/swɪm/",
+          "meaning": "bơi lội",
+          "example": "I like to swim in the pool on hot days.",
           "difficulty": "easy"
         },
         {
           "word": "player",
           "phonetic": "/ˈpleɪ.ɚ/",
-          "meaning": "vận động viên",
+          "meaning": "người chơi, đấu thủ",
           "example": "He is a talented tennis player.",
-          "difficulty": "medium"
+          "difficulty": "easy"
         },
         {
           "word": "practice",
@@ -1172,17 +1165,24 @@ window.VOCABULARY_LEVEL_DATA.easy = {
           "difficulty": "medium"
         },
         {
-          "word": "energy",
-          "phonetic": "/ˈen.ɚ.dʒi/",
-          "meaning": "năng lượng",
-          "example": "Sports give me positive energy.",
+          "word": "match",
+          "phonetic": "/mætʃ/",
+          "meaning": "trận đấu",
+          "example": "The football match was very exciting.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "coach",
+          "phonetic": "/koʊtʃ/",
+          "meaning": "huấn luyện viên",
+          "example": "The coach gave the team some good advice.",
           "difficulty": "medium"
         },
         {
           "word": "tournament",
           "phonetic": "/ˈtʊr.nə.mənt/",
           "meaning": "giải đấu thể thao",
-          "example": "He entered a chess tournament.",
+          "example": "He entered a local chess tournament.",
           "difficulty": "hard"
         },
         {

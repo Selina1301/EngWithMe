@@ -2,54 +2,54 @@
 window.VOCABULARY_LEVEL_DATA = window.VOCABULARY_LEVEL_DATA || {};
 window.VOCABULARY_LEVEL_DATA.medium = {
   "title": "Medium Vocabulary",
-  "subtitle": "Nhóm từ dùng trong tình huống thực tế như công việc, du lịch và sức khỏe.",
-  "label": "Thực tế",
+  "subtitle": "Nhóm chủ đề mang tính ứng dụng thực tế và giao tiếp công sở.",
+  "label": "Trung cấp",
   "topics": [
     {
       "id": "travel",
-      "icon": "ti-location-arrow",
-      "name": "Du lịch",
-      "desc": "Sân bay, khách sạn, đặt vé và hành trình.",
+      "icon": "ti-direction-alt",
+      "name": "Du lịch & Khám phá",
+      "desc": "Lịch trình, lưu trú, thủ tục bay và trải nghiệm văn hóa.",
       "words": [
         {
-          "word": "ticket",
-          "phonetic": "/ˈtɪk.ɪt/",
-          "meaning": "vé di chuyển",
-          "example": "I bought a train ticket online.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "hotel",
-          "phonetic": "/hoʊˈtel/",
-          "meaning": "khách sạn",
-          "example": "We stayed at a small hotel near the beach.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "passport",
-          "phonetic": "/ˈpæs.pɔːrt/",
-          "meaning": "hộ chiếu",
-          "example": "You need a passport to fly abroad.",
+          "word": "layover",
+          "phonetic": "/ˈleɪˌoʊ.vɚ/",
+          "meaning": "sự dừng nghỉ/quá cảnh",
+          "example": "We have a four-hour layover in Chicago.",
           "difficulty": "easy"
         },
         {
           "word": "luggage",
           "phonetic": "/ˈlʌɡ.ɪdʒ/",
           "meaning": "hành lý",
-          "example": "My luggage is very heavy.",
+          "example": "Please keep an eye on your luggage.",
           "difficulty": "easy"
         },
         {
-          "word": "map",
-          "phonetic": "/mæp/",
-          "meaning": "bản đồ chỉ đường",
-          "example": "I used a map to find the museum.",
+          "word": "passport",
+          "phonetic": "/ˈpæs.pɔːrt/",
+          "meaning": "hộ chiếu",
+          "example": "You need a passport to travel abroad.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "flight",
+          "phonetic": "/flaɪt/",
+          "meaning": "chuyến bay",
+          "example": "Our flight was delayed by two hours.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "tourist",
+          "phonetic": "/ˈtʊr.ɪst/",
+          "meaning": "khách du lịch",
+          "example": "The city attracts millions of tourists.",
           "difficulty": "easy"
         },
         {
           "word": "reservation",
           "phonetic": "/ˌrez.ɚˈveɪ.ʃən/",
-          "meaning": "sự đặt trước, đặt chỗ",
+          "meaning": "sự đặt chỗ trước",
           "example": "I have a hotel reservation for two nights.",
           "difficulty": "medium"
         },
@@ -57,14 +57,14 @@ window.VOCABULARY_LEVEL_DATA.medium = {
           "word": "destination",
           "phonetic": "/ˌdes.təˈneɪ.ʃən/",
           "meaning": "điểm đến",
-          "example": "Paris is my dream destination.",
+          "example": "Paris is my dream travel destination.",
           "difficulty": "medium"
         },
         {
           "word": "departure",
           "phonetic": "/dɪˈpɑːr.tʃɚ/",
           "meaning": "sự khởi hành",
-          "example": "Our departure time is 8 a.m.",
+          "example": "Check the departure screen for your gate.",
           "difficulty": "medium"
         },
         {
@@ -78,7 +78,7 @@ window.VOCABULARY_LEVEL_DATA.medium = {
           "word": "itinerary",
           "phonetic": "/aɪˈtɪn.ə.rer.i/",
           "meaning": "lịch trình chi tiết",
-          "example": "Our itinerary includes three cities.",
+          "example": "Our itinerary includes three major cities.",
           "difficulty": "hard"
         },
         {
@@ -92,7 +92,7 @@ window.VOCABULARY_LEVEL_DATA.medium = {
           "word": "transportation",
           "phonetic": "/ˌtræn.spɚˈteɪ.ʃən/",
           "meaning": "phương tiện di chuyển",
-          "example": "Public transportation is convenient in Singapore.",
+          "example": "Public transportation is very convenient.",
           "difficulty": "hard"
         }
       ]
@@ -100,49 +100,49 @@ window.VOCABULARY_LEVEL_DATA.medium = {
     {
       "id": "work",
       "icon": "ti-briefcase",
-      "name": "Công việc",
-      "desc": "Văn phòng, họp hành, email và hiệu suất làm việc.",
+      "name": "Công việc & Sự nghiệp",
+      "desc": "Môi trường công sở, thăng tiến, đồng nghiệp và dự án.",
       "words": [
         {
-          "word": "job",
-          "phonetic": "/dʒɑːb/",
-          "meaning": "nghề nghiệp công việc",
-          "example": "She found a new job last month.",
+          "word": "career",
+          "phonetic": "/kəˈrɪr/",
+          "meaning": "sự nghiệp",
+          "example": "She wants to pursue a career in medicine.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "office",
+          "phonetic": "/ˈaɪ.fɪs/",
+          "meaning": "văn phòng làm việc",
+          "example": "Our office is on the fifth floor.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "employee",
+          "phonetic": "/ɪmˈplɔɪ.iː/",
+          "meaning": "nhân viên, người lao động",
+          "example": "The company has over fifty employees.",
           "difficulty": "easy"
         },
         {
           "word": "meeting",
           "phonetic": "/ˈmiː.tɪŋ/",
           "meaning": "cuộc họp",
-          "example": "The meeting starts at 9 a.m.",
+          "example": "The staff meeting starts at 9 a.m.",
           "difficulty": "easy"
         },
         {
-          "word": "email",
-          "phonetic": "/ˈiː.meɪl/",
-          "meaning": "thư điện tử",
-          "example": "I sent an email to my manager.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "office",
-          "phonetic": "/ˈɔː.fɪs/",
-          "meaning": "văn phòng làm việc",
-          "example": "Our office is on the fifth floor.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "manager",
-          "phonetic": "/ˈmæn.ɪ.dʒɚ/",
-          "meaning": "người quản lý",
-          "example": "My manager is very supportive.",
+          "word": "salary",
+          "phonetic": "/ˈsæl.ɚ.i/",
+          "meaning": "mức lương",
+          "example": "He negotiated a higher starting salary.",
           "difficulty": "easy"
         },
         {
           "word": "deadline",
           "phonetic": "/ˈded.laɪn/",
           "meaning": "hạn chót hoàn thành",
-          "example": "The project deadline is Friday.",
+          "example": "The project deadline is this Friday.",
           "difficulty": "medium"
         },
         {
@@ -156,35 +156,35 @@ window.VOCABULARY_LEVEL_DATA.medium = {
           "word": "interview",
           "phonetic": "/ˈɪn.t̬ɚ.vjuː/",
           "meaning": "cuộc phỏng vấn",
-          "example": "I have a job interview tomorrow.",
+          "example": "I have a job interview tomorrow morning.",
           "difficulty": "medium"
         },
         {
           "word": "promotion",
           "phonetic": "/prəˈmoʊ.ʃən/",
-          "meaning": "sự thăng tiến thăng chức",
-          "example": "She got a promotion after two years.",
+          "meaning": "thăng chức, thăng tiến",
+          "example": "She got a promotion after two years of hard work.",
           "difficulty": "medium"
-        },
-        {
-          "word": "performance review",
-          "phonetic": "/pɚˈfɔːr.məns rɪˈvjuː/",
-          "meaning": "đánh giá hiệu suất làm việc",
-          "example": "We have a performance review every quarter.",
-          "difficulty": "hard"
-        },
-        {
-          "word": "negotiation",
-          "phonetic": "/nɪˌɡoʊ.ʃiˈeɪ.ʃən/",
-          "meaning": "cuộc thương thảo đàm phán",
-          "example": "The salary negotiation went well.",
-          "difficulty": "hard"
         },
         {
           "word": "productivity",
           "phonetic": "/ˌproʊ.dʌkˈtɪv.ə.t̬i/",
           "meaning": "năng suất làm việc",
-          "example": "Music helps improve my productivity.",
+          "example": "Good lighting can improve office productivity.",
+          "difficulty": "hard"
+        },
+        {
+          "word": "collaboration",
+          "phonetic": "/kəˌlæb.əˈreɪ.ʃən/",
+          "meaning": "sự hợp tác chung",
+          "example": "The project was a collaboration between two teams.",
+          "difficulty": "hard"
+        },
+        {
+          "word": "resignation",
+          "phonetic": "/ˌrez.ɪɡˈneɪ.ʃən/",
+          "meaning": "đơn xin thôi việc",
+          "example": "He handed in his resignation yesterday.",
           "difficulty": "hard"
         }
       ]
@@ -192,91 +192,91 @@ window.VOCABULARY_LEVEL_DATA.medium = {
     {
       "id": "health",
       "icon": "ti-pulse",
-      "name": "Sức khỏe",
-      "desc": "Khám bệnh, triệu chứng và chăm sóc sức khỏe.",
+      "name": "Sức khỏe & Y tế",
+      "desc": "Triệu chứng, phòng khám, điều trị và chế độ dinh dưỡng.",
       "words": [
         {
           "word": "fever",
           "phonetic": "/ˈfiː.vɚ/",
           "meaning": "triệu chứng sốt",
-          "example": "I have a fever today.",
+          "example": "I had a high fever last night.",
           "difficulty": "easy"
         },
         {
-          "word": "pain",
-          "phonetic": "/peɪn/",
-          "meaning": "cơn đau",
-          "example": "I feel pain in my back.",
+          "word": "clinic",
+          "phonetic": "/ˈklɪn.ɪk/",
+          "meaning": "phòng khám",
+          "example": "She works at a local dental clinic.",
           "difficulty": "easy"
         },
         {
-          "word": "medicine",
-          "phonetic": "/ˈmed.ɪ.sən/",
-          "meaning": "thuốc chữa bệnh",
-          "example": "Take this medicine after meals.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "doctor",
-          "phonetic": "/ˈdɑːk.tɚ/",
-          "meaning": "bác sĩ y khoa",
-          "example": "The doctor checked my throat.",
+          "word": "patient",
+          "phonetic": "/ˈpeɪ.ʃənt/",
+          "meaning": "bệnh nhân",
+          "example": "The doctor checked on the patient.",
           "difficulty": "easy"
         },
         {
           "word": "exercise",
           "phonetic": "/ˈek.sɚ.saɪz/",
-          "meaning": "bài tập thể dục",
-          "example": "Exercise is good for your health.",
+          "meaning": "tập thể dục",
+          "example": "Daily exercise is good for your heart.",
           "difficulty": "easy"
         },
         {
-          "word": "symptom",
-          "phonetic": "/ˈsɪmp.təm/",
-          "meaning": "triệu chứng bệnh",
-          "example": "A cough can be a symptom of flu.",
-          "difficulty": "medium"
+          "word": "medical",
+          "phonetic": "/ˈmed.ɪ.kəl/",
+          "meaning": "thuộc y tế",
+          "example": "He has a medical checkup tomorrow.",
+          "difficulty": "easy"
         },
         {
           "word": "treatment",
           "phonetic": "/ˈtriːt.mənt/",
-          "meaning": "phác đồ điều trị",
-          "example": "The treatment lasted two weeks.",
+          "meaning": "liệu trình điều trị",
+          "example": "The patient responded well to the treatment.",
           "difficulty": "medium"
         },
         {
           "word": "recovery",
           "phonetic": "/rɪˈkʌv.ɚ.i/",
-          "meaning": "sự hồi phục sức khỏe",
-          "example": "Her recovery was very quick.",
+          "meaning": "sự phục hồi sức khỏe",
+          "example": "We wish you a speedy recovery.",
           "difficulty": "medium"
         },
         {
           "word": "diet",
           "phonetic": "/ˈdaɪ.ət/",
-          "meaning": "chế độ dinh dưỡng ăn kiêng",
-          "example": "A healthy diet helps you stay fit.",
+          "meaning": "chế độ ăn uống",
+          "example": "A balanced diet is essential for good health.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "nutrition",
+          "phonetic": "/nuːˈtrɪʃ.ən/",
+          "meaning": "dinh dưỡng",
+          "example": "Good nutrition is vital for growing babies.",
           "difficulty": "medium"
         },
         {
           "word": "diagnosis",
           "phonetic": "/ˌdaɪ.əɡˈnoʊ.sɪs/",
-          "meaning": "sự chẩn đoán bệnh",
-          "example": "The doctor gave a clear diagnosis.",
+          "meaning": "chẩn đoán y khoa",
+          "example": "The doctor made a diagnosis after testing.",
           "difficulty": "hard"
         },
         {
           "word": "prescription",
           "phonetic": "/prɪˈskrɪp.ʃən/",
           "meaning": "đơn thuốc của bác sĩ",
-          "example": "You need a prescription to buy this medicine.",
+          "example": "You need a prescription for these antibiotics.",
           "difficulty": "hard"
         },
         {
           "word": "immunity",
           "phonetic": "/ɪˈmjuː.nə.t̬i/",
-          "meaning": "hệ miễn dịch",
-          "example": "Sleep helps strengthen your immunity.",
+          "meaning": "khả năng miễn dịch",
+          "example": "The vaccine helps build immunity to the virus.",
           "difficulty": "hard"
         }
       ]
@@ -284,77 +284,77 @@ window.VOCABULARY_LEVEL_DATA.medium = {
     {
       "id": "communication",
       "icon": "ti-comments",
-      "name": "Giao tiếp",
-      "desc": "Trao đổi ý kiến, phản hồi, hỏi lại và xử lý hội thoại thực tế.",
+      "name": "Giao tiếp xã hội",
+      "desc": "Bày tỏ ý kiến, đàm phán, làm rõ và thuyết phục.",
       "words": [
         {
           "word": "reply",
           "phonetic": "/rɪˈplaɪ/",
-          "meaning": "phản hồi trả lời",
-          "example": "Please reply to my message.",
+          "meaning": "phản hồi, trả lời",
+          "example": "Please reply to my email as soon as possible.",
           "difficulty": "easy"
         },
         {
-          "word": "question",
-          "phonetic": "/ˈkwes.tʃən/",
-          "meaning": "câu hỏi",
-          "example": "Can I ask a question?",
-          "difficulty": "easy"
-        },
-        {
-          "word": "agree",
-          "phonetic": "/əˈɡriː/",
-          "meaning": "đồng thuận, đồng ý",
-          "example": "I agree with your idea.",
+          "word": "message",
+          "phonetic": "/ˈmes.ɪdʒ/",
+          "meaning": "tin nhắn, thông điệp",
+          "example": "He left a message on my phone.",
           "difficulty": "easy"
         },
         {
           "word": "explain",
           "phonetic": "/ɪkˈspleɪn/",
-          "meaning": "giải nghĩa giải thích",
-          "example": "Can you explain this sentence?",
+          "meaning": "giải thích",
+          "example": "Can you explain this grammar rule?",
           "difficulty": "easy"
         },
         {
-          "word": "listen",
-          "phonetic": "/ˈlɪs.ən/",
-          "meaning": "lắng nghe tích cực",
-          "example": "Good speakers also listen carefully.",
+          "word": "conversation",
+          "phonetic": "/ˌkɑːn.vɚˈseɪ.ʃən/",
+          "meaning": "cuộc hội thoại",
+          "example": "We had a long conversation about politics.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "discussion",
+          "phonetic": "/dɪˈskʌʃ.ən/",
+          "meaning": "cuộc thảo luận",
+          "example": "The topic is open for general discussion.",
           "difficulty": "easy"
         },
         {
           "word": "opinion",
           "phonetic": "/əˈpɪn.jən/",
-          "meaning": "quan điểm ý kiến",
-          "example": "What is your opinion about this topic?",
+          "meaning": "quan điểm, ý kiến",
+          "example": "What is your opinion on this proposal?",
           "difficulty": "medium"
         },
         {
           "word": "interrupt",
           "phonetic": "/ˌɪn.təˈrʌpt/",
-          "meaning": "chen ngang ngắt lời",
-          "example": "Please do not interrupt the speaker.",
+          "meaning": "ngắt lời, chen ngang",
+          "example": "Please do not interrupt while she is speaking.",
           "difficulty": "medium"
         },
         {
           "word": "clarify",
           "phonetic": "/ˈkler.ə.faɪ/",
           "meaning": "làm rõ thông tin",
-          "example": "Could you clarify your answer?",
+          "example": "Could you clarify your last point?",
           "difficulty": "medium"
         },
         {
           "word": "respond",
           "phonetic": "/rɪˈspɑːnd/",
-          "meaning": "đáp lời trả lời",
-          "example": "She responded politely to the question.",
+          "meaning": "phản hồi, đáp lại",
+          "example": "He failed to respond to our questions.",
           "difficulty": "medium"
         },
         {
           "word": "persuade",
           "phonetic": "/pərˈsweɪd/",
-          "meaning": "thuyết phục ai đó",
-          "example": "He tried to persuade me to join the club.",
+          "meaning": "thuyết phục",
+          "example": "She tried to persuade me to join the club.",
           "difficulty": "hard"
         },
         {
@@ -367,8 +367,8 @@ window.VOCABULARY_LEVEL_DATA.medium = {
         {
           "word": "negotiation",
           "phonetic": "/nɪˌɡoʊ.ʃiˈeɪ.ʃən/",
-          "meaning": "sự đàm phán thương lượng",
-          "example": "Negotiation skills are useful at work.",
+          "meaning": "đàm phán thương lượng",
+          "example": "The contract is still under negotiation.",
           "difficulty": "hard"
         }
       ]
@@ -376,91 +376,91 @@ window.VOCABULARY_LEVEL_DATA.medium = {
     {
       "id": "money",
       "icon": "ti-wallet",
-      "name": "Tiền bạc & Tài chính",
-      "desc": "Chi tiêu, tiết kiệm, thanh toán và quản lý tài chính cá nhân.",
+      "name": "Tiền bạc & Chi tiêu",
+      "desc": "Hóa đơn, thu nhập, ngân sách, nợ nần và trả góp.",
       "words": [
-        {
-          "word": "money",
-          "phonetic": "/ˈmʌn.i/",
-          "meaning": "tiền tệ",
-          "example": "I need some money for lunch.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "bank",
-          "phonetic": "/bæŋk/",
-          "meaning": "ngân hàng tài chính",
-          "example": "I went to the bank yesterday.",
-          "difficulty": "easy"
-        },
         {
           "word": "cash",
           "phonetic": "/kæʃ/",
-          "meaning": "tiền mặt vật lý",
-          "example": "I paid in cash.",
+          "meaning": "tiền mặt",
+          "example": "I don't have any cash on me right now.",
           "difficulty": "easy"
         },
         {
           "word": "bill",
           "phonetic": "/bɪl/",
           "meaning": "hóa đơn thanh toán",
-          "example": "The electricity bill is high.",
+          "example": "Can I have the bill, please?",
           "difficulty": "easy"
         },
         {
-          "word": "price",
-          "phonetic": "/praɪs/",
-          "meaning": "giá thành",
-          "example": "The price is reasonable.",
+          "word": "income",
+          "phonetic": "/ˈɪn.kʌm/",
+          "meaning": "thu nhập",
+          "example": "He has a stable monthly income.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "debt",
+          "phonetic": "/det/",
+          "meaning": "khoản nợ",
+          "example": "The company is trying to pay off its debts.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "currency",
+          "phonetic": "/ˈkɝː.ən.si/",
+          "meaning": "tiền tệ",
+          "example": "The dollar is a strong international currency.",
           "difficulty": "easy"
         },
         {
           "word": "budget",
           "phonetic": "/ˈbʌdʒ.ɪt/",
-          "meaning": "ngân sách dự chi",
-          "example": "I have a small monthly budget.",
+          "meaning": "ngân sách chi tiêu",
+          "example": "We are traveling on a tight budget.",
           "difficulty": "medium"
         },
         {
           "word": "saving",
           "phonetic": "/ˈseɪ.vɪŋ/",
-          "meaning": "tiền tiết kiệm tích lũy",
-          "example": "Saving money is important.",
+          "meaning": "tiền tiết kiệm",
+          "example": "He put his savings in a high-interest account.",
           "difficulty": "medium"
         },
         {
           "word": "expense",
           "phonetic": "/ɪkˈspens/",
           "meaning": "chi phí tiêu dùng",
-          "example": "Rent is my biggest monthly expense.",
+          "example": "Travel expenses are covered by the company.",
           "difficulty": "medium"
         },
         {
           "word": "transfer",
           "phonetic": "/trænsˈfɝː/",
-          "meaning": "giao dịch chuyển khoản",
-          "example": "I will transfer the money tonight.",
+          "meaning": "chuyển khoản",
+          "example": "I will transfer the money to your account.",
           "difficulty": "medium"
         },
         {
           "word": "interest rate",
           "phonetic": "/ˈɪn.trəst reɪt/",
           "meaning": "lãi suất ngân hàng",
-          "example": "The interest rate changed this month.",
+          "example": "The bank raised its interest rate recently.",
           "difficulty": "hard"
         },
         {
-          "word": "financial literacy",
-          "phonetic": "/faɪˈnæn.ʃəl ˈlɪt̬.ər.ə.si/",
-          "meaning": "kiến thức tài chính cơ bản",
-          "example": "Financial literacy helps people manage money better.",
+          "word": "financial",
+          "phonetic": "/faɪˈnæn.ʃəl/",
+          "meaning": "thuộc tài chính",
+          "example": "She offered some great financial advice.",
           "difficulty": "hard"
         },
         {
           "word": "installment",
           "phonetic": "/ɪnˈstɔːl.mənt/",
-          "meaning": "hình thức trả góp",
-          "example": "He bought the phone by installment.",
+          "meaning": "trả góp",
+          "example": "You can pay for the phone in installments.",
           "difficulty": "hard"
         }
       ]
@@ -469,90 +469,90 @@ window.VOCABULARY_LEVEL_DATA.medium = {
       "id": "environment",
       "icon": "ti-world",
       "name": "Môi trường",
-      "desc": "Rác thải, ô nhiễm, tái chế và bảo vệ thiên nhiên.",
+      "desc": "Rác thải, ô nhiễm, tái chế, bảo tồn và sự bền vững.",
       "words": [
         {
-          "word": "tree",
-          "phonetic": "/triː/",
-          "meaning": "cây bóng mát",
-          "example": "We planted a tree near the school.",
+          "word": "ecology",
+          "phonetic": "/iˈkɑː.lə.dʒi/",
+          "meaning": "sinh thái học",
+          "example": "The development could damage the local ecology.",
           "difficulty": "easy"
         },
         {
-          "word": "river",
-          "phonetic": "/ˈhɪv.ər/",
-          "meaning": "dòng sông tự nhiên",
-          "example": "The river is clean.",
+          "word": "habitat",
+          "phonetic": "/ˈhæb.ə.tæt/",
+          "meaning": "môi trường sống",
+          "example": "The forest is the natural habitat of wild birds.",
           "difficulty": "easy"
         },
         {
           "word": "trash",
           "phonetic": "/træʃ/",
           "meaning": "rác thải sinh hoạt",
-          "example": "Please put trash in the bin.",
+          "example": "Throw your trash in the bin, please.",
           "difficulty": "easy"
         },
         {
-          "word": "clean",
-          "phonetic": "/kliːn/",
-          "meaning": "sạch sẽ trong lành",
-          "example": "We should keep the classroom clean.",
+          "word": "wildlife",
+          "phonetic": "/ˈwaɪld.laɪf/",
+          "meaning": "động vật hoang dã",
+          "example": "The campaign aims to protect local wildlife.",
           "difficulty": "easy"
         },
         {
           "word": "nature",
           "phonetic": "/ˈneɪ.tʃər/",
-          "meaning": "môi trường thiên nhiên",
-          "example": "I enjoy spending time in nature.",
+          "meaning": "tự nhiên, thiên nhiên",
+          "example": "It's beautiful to walk in the middle of nature.",
           "difficulty": "easy"
         },
         {
           "word": "pollution",
           "phonetic": "/pəˈluː.ʃən/",
           "meaning": "sự ô nhiễm",
-          "example": "Air pollution is a serious problem.",
+          "example": "Air pollution has reached dangerous levels.",
           "difficulty": "medium"
         },
         {
           "word": "recycle",
           "phonetic": "/ˌriːˈsaɪ.kəl/",
           "meaning": "tái chế phế liệu",
-          "example": "We should recycle plastic bottles.",
+          "example": "We should recycle glass bottles.",
           "difficulty": "medium"
         },
         {
           "word": "waste",
           "phonetic": "/weɪst/",
-          "meaning": "chất thải công nghiệp",
-          "example": "Factories produce a lot of waste.",
+          "meaning": "chất thải, lãng phí",
+          "example": "Do not waste water while washing dishes.",
           "difficulty": "medium"
         },
         {
           "word": "protect",
           "phonetic": "/prəˈtekt/",
           "meaning": "bảo vệ giữ gìn",
-          "example": "We need to protect the environment.",
+          "example": "We must protect the environment.",
           "difficulty": "medium"
         },
         {
           "word": "sustainability",
           "phonetic": "/səˌsteɪ.nəˈbɪl.ə.ti/",
           "meaning": "sự phát triển bền vững",
-          "example": "Sustainability is important for future generations.",
+          "example": "The project focuses on ecological sustainability.",
           "difficulty": "hard"
         },
         {
           "word": "biodiversity",
           "phonetic": "/ˌbaɪ.oʊ.daɪˈvɝː.sə.ti/",
-          "meaning": "sự đa dạng sinh học",
-          "example": "Forests support biodiversity.",
+          "meaning": "đa dạng sinh học",
+          "example": "Rainforests have incredibly high biodiversity.",
           "difficulty": "hard"
         },
         {
           "word": "conservation",
           "phonetic": "/ˌkɑːn.sərˈveɪ.ʃən/",
           "meaning": "sự bảo tồn thiên nhiên",
-          "example": "Wildlife conservation protects endangered animals.",
+          "example": "Nature conservation is essential for survival.",
           "difficulty": "hard"
         }
       ]
@@ -561,90 +561,90 @@ window.VOCABULARY_LEVEL_DATA.medium = {
       "id": "culture",
       "icon": "ti-flag-alt",
       "name": "Văn hóa & Xã hội",
-      "desc": "Phong tục, lễ hội, truyền thống và khác biệt văn hóa.",
+      "desc": "Phong tục, lễ hội, bản sắc và sự giao thoa văn hóa.",
       "words": [
         {
           "word": "festival",
           "phonetic": "/ˈfes.tə.vəl/",
-          "meaning": "lễ hội truyền thống",
-          "example": "Tet is an important festival in Vietnam.",
+          "meaning": "lễ hội",
+          "example": "Tet is the biggest festival in Vietnam.",
           "difficulty": "easy"
         },
         {
           "word": "holiday",
           "phonetic": "/ˈhɑː.lə.deɪ/",
           "meaning": "ngày nghỉ lễ",
-          "example": "We visit family during the holiday.",
+          "example": "We went to Da Nang for our summer holiday.",
           "difficulty": "easy"
         },
         {
           "word": "custom",
           "phonetic": "/ˈkʌs.təm/",
           "meaning": "phong tục tập quán",
-          "example": "Every country has different customs.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "food",
-          "phonetic": "/fuːd/",
-          "meaning": "ẩm thực vùng miền",
-          "example": "Food is an important part of culture.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "music",
-          "phonetic": "/ˈmjuː.zɪk/",
-          "meaning": "âm nhạc dân tộc",
-          "example": "Traditional music sounds beautiful.",
+          "example": "It is a local custom to welcome guests warmly.",
           "difficulty": "easy"
         },
         {
           "word": "tradition",
           "phonetic": "/trəˈdɪʃ.ən/",
-          "meaning": "truyền thống lâu đời",
-          "example": "This tradition is very old.",
-          "difficulty": "medium"
+          "meaning": "truyền thống",
+          "example": "We follow the family tradition of making banh chung.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "heritage",
+          "phonetic": "/ˈher.ɪ.t̬ɪdʒ/",
+          "meaning": "di sản văn hóa",
+          "example": "Hoi An is a cultural heritage site.",
+          "difficulty": "easy"
         },
         {
           "word": "identity",
-          "phonetic": "/aɪˈden.tə.ti/",
+          "phonetic": "/aɪˈden.t̬ə.t̬i/",
           "meaning": "bản sắc đặc trưng",
-          "example": "Language is part of cultural identity.",
+          "example": "Language is an important part of cultural identity.",
           "difficulty": "medium"
         },
         {
           "word": "ceremony",
           "phonetic": "/ˈser.ə.moʊ.ni/",
-          "meaning": "nghi thức nghi lễ",
-          "example": "The wedding ceremony was simple.",
+          "meaning": "nghi lễ, nghi thức",
+          "example": "The wedding ceremony was held in a church.",
           "difficulty": "medium"
         },
         {
-          "word": "heritage",
-          "phonetic": "/ˈher.ɪ.tɪdʒ/",
-          "meaning": "di sản văn hóa",
-          "example": "Hoi An is a cultural heritage site.",
+          "word": "diversity",
+          "phonetic": "/daɪˈvɝː.sə.t̬i/",
+          "meaning": "sự đa dạng",
+          "example": "The school actively promotes cultural diversity.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "society",
+          "phonetic": "/səˈsaɪ.ə.t̬i/",
+          "meaning": "xã hội",
+          "example": "Technology is changing our modern society.",
           "difficulty": "medium"
         },
         {
           "word": "cross-cultural",
           "phonetic": "/ˌkrɔːs ˈkʌl.tʃər.əl/",
-          "meaning": "giao thoa liên văn hóa",
-          "example": "Cross-cultural communication is useful in business.",
+          "meaning": "giao thoa văn hóa",
+          "example": "Cross-cultural skills are vital in global business.",
           "difficulty": "hard"
         },
         {
           "word": "assimilation",
           "phonetic": "/əˌsɪm.əˈleɪ.ʃən/",
           "meaning": "sự đồng hóa văn hóa",
-          "example": "Assimilation can change local traditions.",
+          "example": "Cultural assimilation takes several generations.",
           "difficulty": "hard"
         },
         {
-          "word": "cultural nuance",
-          "phonetic": "/ˈkʌl.tʃər.əl ˈnuː.ɑːns/",
-          "meaning": "sắc thái văn hóa tinh tế",
-          "example": "Understanding cultural nuance prevents mistakes.",
+          "word": "nuance",
+          "phonetic": "/ˈnuː.ɑːns/",
+          "meaning": "sắc thái tinh tế",
+          "example": "She understood the cultural nuances of the meeting.",
           "difficulty": "hard"
         }
       ]
@@ -653,90 +653,90 @@ window.VOCABULARY_LEVEL_DATA.medium = {
       "id": "shopping",
       "icon": "ti-shopping-cart",
       "name": "Mua sắm & Tiêu dùng",
-      "desc": "Thói quen tiêu dùng, hóa đơn, hoàn tiền và giao dịch hàng hóa.",
+      "desc": "Thương hiệu, hoàn tiền, chiết khấu và giao dịch.",
       "words": [
         {
-          "word": "buy",
-          "phonetic": "/baɪ/",
-          "meaning": "mua sắm",
-          "example": "I need to buy some ingredients for dinner.",
+          "word": "purchase",
+          "phonetic": "/ˈpɝː.tʃəs/",
+          "meaning": "mua sắm, món đồ mua",
+          "example": "You can make a purchase online or in store.",
           "difficulty": "easy"
         },
         {
           "word": "store",
           "phonetic": "/stɔːr/",
           "meaning": "cửa hàng bán lẻ",
-          "example": "The local grocery store is very convenient.",
+          "example": "The retail store opens at 9 a.m.",
           "difficulty": "easy"
         },
         {
-          "word": "market",
-          "phonetic": "/ˈmɑːr.kɪt/",
-          "meaning": "chợ/thị trường mua bán",
-          "example": "We buy fresh vegetables at the market.",
+          "word": "retail",
+          "phonetic": "/ˈriː.teɪl/",
+          "meaning": "ngành bán lẻ",
+          "example": "She works in the retail sector.",
           "difficulty": "easy"
         },
         {
-          "word": "price",
-          "phonetic": "/praɪs/",
-          "meaning": "giá cả niêm yết",
-          "example": "Please check the price tag of this item.",
+          "word": "receipt",
+          "phonetic": "/rɪˈsiːt/",
+          "meaning": "hóa đơn mua hàng",
+          "example": "Please keep the receipt in case of returns.",
           "difficulty": "easy"
         },
         {
-          "word": "bag",
-          "phonetic": "/bæɡ/",
-          "meaning": "túi đựng đồ",
-          "example": "Do you need a paper bag for your products?",
+          "word": "brand",
+          "phonetic": "/brænd/",
+          "meaning": "thương hiệu",
+          "example": "He always buys shoes from this brand.",
           "difficulty": "easy"
         },
         {
           "word": "customer",
           "phonetic": "/ˈkʌs.tə.mɚ/",
           "meaning": "khách hàng tiêu dùng",
-          "example": "The store offers excellent customer service.",
+          "example": "The company aims to satisfy its customers.",
           "difficulty": "medium"
         },
         {
           "word": "discount",
           "phonetic": "/ˈdɪs.kaʊnt/",
-          "meaning": "khoản giảm giá chiết khấu",
-          "example": "Students get a 10% discount on books.",
-          "difficulty": "medium"
-        },
-        {
-          "word": "receipt",
-          "phonetic": "/rɪˈsiːt/",
-          "meaning": "hóa đơn mua hàng",
-          "example": "Keep your receipt in case of returns.",
+          "meaning": "giảm giá chiết khấu",
+          "example": "They offer a 10% discount for students.",
           "difficulty": "medium"
         },
         {
           "word": "product",
           "phonetic": "/ˈprɑː.dʌkt/",
           "meaning": "sản phẩm hàng hóa",
-          "example": "The company launched a new health product.",
+          "example": "This product is made of high-quality material.",
           "difficulty": "medium"
         },
         {
-          "word": "consumer behavior",
-          "phonetic": "/kənˈsuː.mɚ bɪˈheɪ.vjɚ/",
-          "meaning": "hành vi người tiêu dùng",
-          "example": "The marketing team analyzed consumer behavior.",
+          "word": "delivery",
+          "phonetic": "/dɪˈlɪv.ɚ.i/",
+          "meaning": "sự giao hàng",
+          "example": "The online shop offers free delivery.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "consumer",
+          "phonetic": "/kənˈsuː.mɚ/",
+          "meaning": "người tiêu dùng",
+          "example": "Consumer demand has increased this quarter.",
           "difficulty": "hard"
         },
         {
           "word": "transaction",
           "phonetic": "/trænˈzæk.ʃən/",
           "meaning": "giao dịch tài chính",
-          "example": "The credit card transaction was processed instantly.",
+          "example": "The transaction took only a few seconds.",
           "difficulty": "hard"
         },
         {
           "word": "refund",
           "phonetic": "/ˈriː.fʌnd/",
           "meaning": "khoản hoàn tiền",
-          "example": "You can request a full refund within 7 days.",
+          "example": "You can request a full refund within 30 days.",
           "difficulty": "hard"
         }
       ]
@@ -745,90 +745,90 @@ window.VOCABULARY_LEVEL_DATA.medium = {
       "id": "education",
       "icon": "ti-pencil",
       "name": "Giáo dục & Phát triển",
-      "desc": "Học tập, tiếp thu kiến thức, rèn luyện kỹ năng và khả năng tư duy.",
+      "desc": "Khóa học, giảng đường, kỹ năng, tư duy và sư phạm.",
       "words": [
         {
-          "word": "school",
-          "phonetic": "/skuːl/",
-          "meaning": "trường học nói chung",
-          "example": "She goes to school by bicycle.",
+          "word": "course",
+          "phonetic": "/kɔːrs/",
+          "meaning": "khóa học",
+          "example": "I signed up for an English vocabulary course.",
           "difficulty": "easy"
         },
         {
-          "word": "learn",
-          "phonetic": "/lɝːn/",
-          "meaning": "học hỏi tiếp thu",
-          "example": "It is never too late to learn a new skill.",
+          "word": "student",
+          "phonetic": "/ˈstuː.dənt/",
+          "meaning": "học sinh, sinh viên",
+          "example": "The students are preparing for the exams.",
           "difficulty": "easy"
         },
         {
-          "word": "test",
-          "phonetic": "/test/",
-          "meaning": "bài thi thử thách",
-          "example": "We have an English vocabulary test tomorrow.",
+          "word": "lecture",
+          "phonetic": "/ˈlek.tʃɚ/",
+          "meaning": "bài giảng đại học",
+          "example": "The professor gave an interesting lecture.",
           "difficulty": "easy"
         },
         {
-          "word": "class",
-          "phonetic": "/klæs/",
-          "meaning": "lớp học, khóa học",
-          "example": "The morning class starts at 8 a.m.",
+          "word": "lesson",
+          "phonetic": "/ˈles.ən/",
+          "meaning": "bài học rút ra",
+          "example": "This mistake taught us a valuable lesson.",
           "difficulty": "easy"
         },
         {
-          "word": "study",
-          "phonetic": "/ˈstʌd.i/",
-          "meaning": "nghiên cứu học tập",
-          "example": "He studies engineering at university.",
+          "word": "grade",
+          "phonetic": "/ɡreɪd/",
+          "meaning": "điểm số, lớp học",
+          "example": "She got a high grade in her math test.",
           "difficulty": "easy"
         },
         {
           "word": "knowledge",
           "phonetic": "/ˈnɑː.lɪdʒ/",
           "meaning": "kiến thức sâu rộng",
-          "example": "Reading books broadens our knowledge.",
+          "example": "Reading books is a great way to gain knowledge.",
           "difficulty": "medium"
         },
         {
           "word": "skill",
           "phonetic": "/skɪl/",
           "meaning": "kỹ năng thuần thục",
-          "example": "Public speaking is a valuable skill.",
+          "example": "Communication is an essential life skill.",
           "difficulty": "medium"
         },
         {
           "word": "memory",
           "phonetic": "/ˈmem.ər.i/",
           "meaning": "trí nhớ, ký ức",
-          "example": "She has a great memory for dates.",
-          "difficulty": "medium"
-        },
-        {
-          "word": "lesson",
-          "phonetic": "/ˈles.ən/",
-          "meaning": "bài học rút ra",
-          "example": "This mistake taught us an important lesson.",
+          "example": "She has an excellent memory for numbers.",
           "difficulty": "medium"
         },
         {
           "word": "interactive",
           "phonetic": "/ˌɪn.t̬ɚˈæk.tɪv/",
           "meaning": "có tính tương tác",
-          "example": "Interactive games make learning fun.",
-          "difficulty": "hard"
-        },
-        {
-          "word": "logic",
-          "phonetic": "/ˈlɑː.dʒɪk/",
-          "meaning": "tư duy logic",
-          "example": "Her argument is based on simple logic.",
-          "difficulty": "hard"
+          "example": "Interactive games make classes fun.",
+          "difficulty": "medium"
         },
         {
           "word": "literacy",
           "phonetic": "/ˈlɪt̬.ɚ.ə.si/",
-          "meaning": "khả năng đọc viết cơ bản",
-          "example": "The government aims to improve adult literacy.",
+          "meaning": "khả năng đọc viết",
+          "example": "The country is working to improve adult literacy.",
+          "difficulty": "hard"
+        },
+        {
+          "word": "pedagogy",
+          "phonetic": "/ˈped.ə.ɡoʊ.dʒi/",
+          "meaning": "phương pháp sư phạm",
+          "example": "The university uses modern pedagogy.",
+          "difficulty": "hard"
+        },
+        {
+          "word": "academic",
+          "phonetic": "/ˌæk.əˈdem.ɪk/",
+          "meaning": "thuộc học thuật",
+          "example": "She has achieved great academic success.",
           "difficulty": "hard"
         }
       ]
@@ -837,62 +837,48 @@ window.VOCABULARY_LEVEL_DATA.medium = {
       "id": "transport",
       "icon": "ti-car",
       "name": "Giao thông & Di chuyển",
-      "desc": "Phương tiện giao thông, hành trình và cơ sở hạ tầng đô thị.",
+      "desc": "Tuyến đường, hành khách, đi lại, tắc nghẽn và logistics.",
       "words": [
         {
-          "word": "car",
-          "phonetic": "/kɑːr/",
-          "meaning": "xe hơi ô tô",
-          "example": "He parked his car outside.",
+          "word": "vehicle",
+          "phonetic": "/ˈviː.ə.kəl/",
+          "meaning": "phương tiện di chuyển",
+          "example": "Electric vehicles are very quiet.",
           "difficulty": "easy"
         },
         {
-          "word": "bus",
-          "phonetic": "/bʌs/",
-          "meaning": "xe buýt công cộng",
-          "example": "The bus is always on time.",
+          "word": "route",
+          "phonetic": "/ruːt/",
+          "meaning": "lộ trình, tuyến đường",
+          "example": "The bus follows a scenic route.",
           "difficulty": "easy"
         },
         {
-          "word": "train",
-          "phonetic": "/treɪn/",
-          "meaning": "tàu hỏa",
-          "example": "The train passed through the mountains.",
+          "word": "terminal",
+          "phonetic": "/ˈtɝː.mə.nəl/",
+          "meaning": "nhà ga, bến đỗ",
+          "example": "We arrived at airport terminal 2.",
           "difficulty": "easy"
         },
         {
-          "word": "road",
-          "phonetic": "/roʊd/",
-          "meaning": "con đường lộ",
-          "example": "Drive carefully on this narrow road.",
+          "word": "passenger",
+          "phonetic": "/ˈpæs.ən.dʒɚ/",
+          "meaning": "hành khách",
+          "example": "All passengers must wear a seatbelt.",
           "difficulty": "easy"
         },
         {
-          "word": "stop",
-          "phonetic": "/stɑːp/",
-          "meaning": "điểm dừng, nhà ga",
-          "example": "Get off at the next bus stop.",
+          "word": "driver",
+          "phonetic": "/ˈdraɪ.vɚ/",
+          "meaning": "tài xế lái xe",
+          "example": "The taxi driver knew a shortcut to the hotel.",
           "difficulty": "easy"
         },
         {
           "word": "traffic",
           "phonetic": "/ˈtræf.ɪk/",
           "meaning": "luồng giao thông",
-          "example": "There is heavy traffic on the highway.",
-          "difficulty": "medium"
-        },
-        {
-          "word": "vehicle",
-          "phonetic": "/ˈviː.ə.kəl/",
-          "meaning": "phương tiện vận chuyển",
-          "example": "Electric vehicles are becoming more popular.",
-          "difficulty": "medium"
-        },
-        {
-          "word": "driver",
-          "phonetic": "/ˈdraɪ.vɚ/",
-          "meaning": "tài xế lái xe",
-          "example": "The taxi driver knew a shortcut.",
+          "example": "Heavy traffic delayed our arrival.",
           "difficulty": "medium"
         },
         {
@@ -903,16 +889,23 @@ window.VOCABULARY_LEVEL_DATA.medium = {
           "difficulty": "medium"
         },
         {
+          "word": "transit",
+          "phonetic": "/ˈtræn.zɪt/",
+          "meaning": "sự trung chuyển",
+          "example": "The goods are currently in transit.",
+          "difficulty": "medium"
+        },
+        {
           "word": "commute",
           "phonetic": "/kəˈmjuːt/",
           "meaning": "việc đi lại hằng ngày",
-          "example": "My daily commute takes about 45 minutes.",
-          "difficulty": "hard"
+          "example": "My daily commute takes thirty minutes.",
+          "difficulty": "medium"
         },
         {
           "word": "congestion",
           "phonetic": "/kənˈdʒes.tʃən/",
-          "meaning": "sự ách tắc nghẽn",
+          "meaning": "sự tắc nghẽn giao thông",
           "example": "Traffic congestion is common in big cities.",
           "difficulty": "hard"
         },
@@ -920,7 +913,14 @@ window.VOCABULARY_LEVEL_DATA.medium = {
           "word": "infrastructure",
           "phonetic": "/ˈɪn.frəˌstrʌk.tʃɚ/",
           "meaning": "cơ sở hạ tầng",
-          "example": "The city is investing in transport infrastructure.",
+          "example": "The city needs better transport infrastructure.",
+          "difficulty": "hard"
+        },
+        {
+          "word": "logistics",
+          "phonetic": "/loʊˈdʒɪs.tɪks/",
+          "meaning": "ngành hậu cần, logistics",
+          "example": "Logistics planning is key to fast delivery.",
           "difficulty": "hard"
         }
       ]
@@ -929,90 +929,90 @@ window.VOCABULARY_LEVEL_DATA.medium = {
       "id": "cooking",
       "icon": "ti-slice",
       "name": "Ẩm thực & Nấu nướng",
-      "desc": "Dụng cụ nhà bếp, hương vị, nguyên liệu và nghệ thuật ẩm thực.",
+      "desc": "Công thức, đầu bếp, hương vị, sơ chế và nghệ thuật ẩm thực.",
       "words": [
         {
-          "word": "pot",
-          "phonetic": "/pɑːt/",
-          "meaning": "cái xoong, nồi",
-          "example": "The water in the pot is boiling.",
+          "word": "recipe",
+          "phonetic": "/ˈres.ə.pi/",
+          "meaning": "công thức nấu ăn",
+          "example": "She shared her grandmother's secret recipe.",
           "difficulty": "easy"
         },
         {
-          "word": "pan",
-          "phonetic": "/pæn/",
-          "meaning": "cái chảo rán",
-          "example": "Heat some oil in a frying pan.",
+          "word": "utensil",
+          "phonetic": "/juːˈten.sɪl/",
+          "meaning": "dụng cụ làm bếp",
+          "example": "We keep kitchen utensils in the drawer.",
           "difficulty": "easy"
         },
         {
-          "word": "oil",
-          "phonetic": "/ɔɪl/",
-          "meaning": "dầu ăn",
-          "example": "Use olive oil for a healthier meal.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "fire",
-          "phonetic": "/faɪr/",
-          "meaning": "ngọn lửa",
-          "example": "Keep children away from the open fire.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "salt",
-          "phonetic": "/sɑːlt/",
-          "meaning": "muối ăn",
-          "example": "Add a pinch of salt to the soup.",
+          "word": "gourmet",
+          "phonetic": "/ˈɡʊr.meɪ/",
+          "meaning": "ẩm thực cao cấp dã",
+          "example": "They sell gourmet coffee at the shop.",
           "difficulty": "easy"
         },
         {
           "word": "chef",
           "phonetic": "/ʃef/",
           "meaning": "đầu bếp chuyên nghiệp",
-          "example": "He works as a head chef in a French restaurant.",
+          "example": "He works as a head chef in Paris.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "cuisine",
+          "phonetic": "/kwɪˈziːn/",
+          "meaning": "nền ẩm thực",
+          "example": "I love traditional Vietnamese cuisine.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "ingredient",
+          "phonetic": "/ɪnˈɡriː.di.ənt/",
+          "meaning": "nguyên liệu nấu ăn",
+          "example": "Flour is a basic ingredient for bread.",
           "difficulty": "medium"
         },
         {
-          "word": "kitchen",
-          "phonetic": "/ˈkɪtʃ.ən/",
-          "meaning": "phòng bếp",
-          "example": "She is baking cookies in the kitchen.",
-          "difficulty": "medium"
-        },
-        {
-          "word": "menu",
-          "phonetic": "/ˈmen.juː/",
-          "meaning": "thực đơn ăn uống",
-          "example": "The restaurant offers a diverse lunch menu.",
+          "word": "flavor",
+          "phonetic": "/ˈfleɪ.vɚ/",
+          "meaning": "hương vị món ăn",
+          "example": "The soup has a rich beef flavor.",
           "difficulty": "medium"
         },
         {
           "word": "taste",
           "phonetic": "/teɪst/",
-          "meaning": "vị giác, hương vị",
-          "example": "This dessert has a sweet and rich taste.",
+          "meaning": "vị giác, nếm thử",
+          "example": "Taste the food to see if it needs salt.",
           "difficulty": "medium"
         },
         {
-          "word": "gourmet",
-          "phonetic": "/ˈɡʊr.meɪ/",
-          "meaning": "ẩm thực cao cấp xa xỉ",
-          "example": "She bought some gourmet chocolate for her sister.",
-          "difficulty": "hard"
+          "word": "prep",
+          "phonetic": "/prep/",
+          "meaning": "chuẩn bị, sơ chế",
+          "example": "Food prep takes about fifteen minutes.",
+          "difficulty": "medium"
         },
         {
           "word": "culinary",
           "phonetic": "/ˈkʌl.ə.ner.i/",
-          "meaning": "thuộc về ẩm thực bếp núc",
-          "example": "He went to Europe to pursue culinary arts.",
+          "meaning": "thuộc ẩm thực bếp núc",
+          "example": "She went to France to study culinary arts.",
           "difficulty": "hard"
         },
         {
           "word": "marinate",
           "phonetic": "/ˈmer.ə.neɪt/",
           "meaning": "tẩm ướp gia vị",
-          "example": "Marinate the chicken for at least two hours.",
+          "example": "Marinate the meat before grilling it.",
+          "difficulty": "hard"
+        },
+        {
+          "word": "gastronomy",
+          "phonetic": "/ɡæsˈtrɑː.nə.mi/",
+          "meaning": "nghệ thuật ẩm thực",
+          "example": "The city is famous for its gastronomy.",
           "difficulty": "hard"
         }
       ]
@@ -1021,90 +1021,90 @@ window.VOCABULARY_LEVEL_DATA.medium = {
       "id": "city-life",
       "icon": "ti-stats-up",
       "name": "Đời sống đô thị",
-      "desc": "Cảnh quan thành phố, dân cư, tiếng ồn và sự đô thị hóa.",
+      "desc": "Ngoại ô, trung tâm, cư dân, tiếng ồn và sự tiện nghi.",
       "words": [
         {
-          "word": "house",
-          "phonetic": "/haʊs/",
-          "meaning": "ngôi nhà riêng",
-          "example": "They live in a beautiful house in the suburbs.",
+          "word": "suburb",
+          "phonetic": "/ˈsʌb.ɝːb/",
+          "meaning": "vùng ngoại ô thanh bình",
+          "example": "We live in a quiet suburb of Hanoi.",
           "difficulty": "easy"
         },
         {
-          "word": "street",
-          "phonetic": "/striːt/",
-          "meaning": "đường phố đô thị",
-          "example": "The streets are crowded during rush hour.",
+          "word": "metropolis",
+          "phonetic": "/məˈtrɑː.pəl.ɪs/",
+          "meaning": "siêu đô thị",
+          "example": "Tokyo is a bustling East Asian metropolis.",
           "difficulty": "easy"
         },
         {
-          "word": "park",
-          "phonetic": "/pɑːrk/",
-          "meaning": "công viên công cộng",
-          "example": "We walked our dog in the central park.",
+          "word": "resident",
+          "phonetic": "/ˈrez.ə.dənt/",
+          "meaning": "cư dân sinh sống",
+          "example": "Local residents complained about the noise.",
           "difficulty": "easy"
         },
         {
-          "word": "crowd",
-          "phonetic": "/kraʊd/",
-          "meaning": "đám đông người",
-          "example": "A large crowd gathered to watch the concert.",
+          "word": "commuter",
+          "phonetic": "/kəˈmjuː.t̬ɚ/",
+          "meaning": "người đi lại đi làm",
+          "example": "The trains are packed with commuters.",
           "difficulty": "easy"
         },
         {
-          "word": "light",
-          "phonetic": "/laɪt/",
-          "meaning": "ánh đèn đêm",
-          "example": "The neon lights made the city look vibrant.",
+          "word": "district",
+          "phonetic": "/ˈdɪs.trɪkt/",
+          "meaning": "quận, huyện thành phố",
+          "example": "The business district is full of skyscrapers.",
           "difficulty": "easy"
         },
         {
-          "word": "city",
-          "phonetic": "/ˈsɪt.i/",
-          "meaning": "thành phố, đô thị",
-          "example": "New York is a famous metropolitan city.",
-          "difficulty": "medium"
-        },
-        {
-          "word": "modern",
-          "phonetic": "/ˈmɑː.dɚn/",
-          "meaning": "hiện đại tối tân",
-          "example": "The building has a modern and sleek design.",
+          "word": "downtown",
+          "phonetic": "/ˌdaʊnˈtaʊn/",
+          "meaning": "trung tâm thành phố",
+          "example": "We walked around downtown yesterday.",
           "difficulty": "medium"
         },
         {
           "word": "building",
           "phonetic": "/ˈbɪl.dɪŋ/",
           "meaning": "tòa nhà cao tầng",
-          "example": "That skyscraper is the tallest building in town.",
+          "example": "That modern building was completed last year.",
           "difficulty": "medium"
         },
         {
           "word": "noise",
           "phonetic": "/nɔɪz/",
           "meaning": "tiếng ồn đô thị",
-          "example": "I cannot sleep due to the traffic noise.",
+          "example": "City life comes with a lot of noise.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "amenity",
+          "phonetic": "/əˈmen.ə.t̬i/",
+          "meaning": "tiện ích công cộng",
+          "example": "The apartment is close to all local amenities.",
           "difficulty": "medium"
         },
         {
           "word": "urbanization",
           "phonetic": "/ˌɝː.bə.nəˈzeɪ.ʃən/",
-          "meaning": "quá trình đô thị hóa",
-          "example": "Rapid urbanization creates housing problems.",
+          "meaning": "sự đô thị hóa",
+          "example": "Rapid urbanization changes the countryside.",
           "difficulty": "hard"
         },
         {
-          "word": "metropolis",
-          "phonetic": "/məˈtrɑː.pəl.ɪs/",
-          "meaning": "siêu đô thị, thủ phủ",
-          "example": "Tokyo is a bustling East Asian metropolis.",
+          "word": "density",
+          "phonetic": "/ˈden.sə.t̬i/",
+          "meaning": "mật độ dân số",
+          "example": "The city has a high population density.",
           "difficulty": "hard"
         },
         {
-          "word": "suburb",
-          "phonetic": "/ˈsʌb.ɝːb/",
-          "meaning": "vùng ngoại ô thanh bình",
-          "example": "Many families prefer living in the quiet suburbs.",
+          "word": "sprawl",
+          "phonetic": "/sprɑːl/",
+          "meaning": "sự đô thị hóa bành trướng",
+          "example": "Urban sprawl is destroying green areas.",
           "difficulty": "hard"
         }
       ]
@@ -1113,90 +1113,90 @@ window.VOCABULARY_LEVEL_DATA.medium = {
       "id": "feelings",
       "icon": "ti-face-smile",
       "name": "Cảm xúc & Tâm trạng",
-      "desc": "Các cung bậc tình cảm, tâm trạng, sự thấu cảm và căng thẳng tâm lý.",
+      "desc": "Tâm trạng, áp lực, sự hài lòng, sự thấu cảm và trầm cảm.",
       "words": [
         {
-          "word": "happy",
-          "phonetic": "/ˈhæp.i/",
-          "meaning": "hạnh phúc vui sướng",
-          "example": "Her kind words made him very happy.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "sad",
-          "phonetic": "/sæd/",
-          "meaning": "u buồn tủi thân",
-          "example": "The sad movie made everyone cry.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "love",
-          "phonetic": "/lʌv/",
-          "meaning": "yêu thương sâu sắc",
-          "example": "A mother’s love for her children is limitless.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "smile",
-          "phonetic": "/smaɪl/",
-          "meaning": "nụ cười tươi",
-          "example": "She greeted the guests with a warm smile.",
-          "difficulty": "easy"
-        },
-        {
-          "word": "cry",
-          "phonetic": "/kraɪ/",
-          "meaning": "khóc lóc tỏ ý buồn",
-          "example": "The baby started to cry because of hunger.",
+          "word": "mood",
+          "phonetic": "/muːd/",
+          "meaning": "tâm trạng nhất thời",
+          "example": "I am in a good mood today.",
           "difficulty": "easy"
         },
         {
           "word": "emotion",
           "phonetic": "/ɪˈmoʊ.ʃən/",
           "meaning": "cảm xúc nguyên bản",
-          "example": "Fear is a powerful human emotion.",
-          "difficulty": "medium"
+          "example": "Happiness is a positive human emotion.",
+          "difficulty": "easy"
         },
         {
-          "word": "mood",
-          "phonetic": "/muːd/",
-          "meaning": "tâm trạng nhất thời",
-          "example": "I am not in the mood for shopping today.",
-          "difficulty": "medium"
+          "word": "stress",
+          "phonetic": "/stres/",
+          "meaning": "áp lực, căng thẳng",
+          "example": "Work stress can affect your health.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "relief",
+          "phonetic": "/rɪˈliːf/",
+          "meaning": "sự nhẹ nhõm",
+          "example": "It was a relief to hear the good news.",
+          "difficulty": "easy"
+        },
+        {
+          "word": "anxiety",
+          "phonetic": "/æŋˈzaɪ.ə.t̬i/",
+          "meaning": "sự lo âu, bồn chồn",
+          "example": "He felt a wave of anxiety before the interview.",
+          "difficulty": "easy"
         },
         {
           "word": "expression",
           "phonetic": "/ɪkˈspreʃ.ən/",
           "meaning": "sự biểu cảm khuôn mặt",
-          "example": "He had a puzzled expression on his face.",
+          "example": "Her facial expression was hard to read.",
           "difficulty": "medium"
         },
         {
-          "word": "anxiety",
-          "phonetic": "/æŋˈzaɪ.ə.t̬i/",
-          "meaning": "sự lo âu bồn chồn",
-          "example": "Speaking in public causes him great anxiety.",
+          "word": "satisfaction",
+          "phonetic": "/ˌsæt̬.ɪsˈfæk.ʃən/",
+          "meaning": "sự hài lòng",
+          "example": "She smiled with total satisfaction.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "frustration",
+          "phonetic": "/frʌsˈtreɪ.ʃən/",
+          "meaning": "sự ức chế, thất vọng",
+          "example": "He sighed in frustration over the loss.",
+          "difficulty": "medium"
+        },
+        {
+          "word": "optimism",
+          "phonetic": "/ˈɑːp.tə.mɪz.əm/",
+          "meaning": "sự lạc quan",
+          "example": "She has a lot of optimism about the future.",
           "difficulty": "medium"
         },
         {
           "word": "empathy",
           "phonetic": "/ˈem.pə.θi/",
           "meaning": "sự thấu cảm, đồng cảm",
-          "example": "Empathy helps us connect deeply with others.",
+          "example": "Empathy helps us understand other people.",
           "difficulty": "hard"
         },
         {
           "word": "psychological",
           "phonetic": "/ˌsaɪ.kəˈlɑː.dʒɪ.kəl/",
-          "meaning": "thuộc về tâm lý học",
-          "example": "Stress can cause severe psychological effects.",
+          "meaning": "thuộc tâm lý",
+          "example": "The test measures psychological development.",
           "difficulty": "hard"
         },
         {
           "word": "depression",
           "phonetic": "/dɪˈpreʃ.ən/",
-          "meaning": "sự trầm cảm, u uất",
-          "example": "Depression requires professional medical care.",
+          "meaning": "sự trầm cảm",
+          "example": "Depression is a serious medical condition.",
           "difficulty": "hard"
         }
       ]
