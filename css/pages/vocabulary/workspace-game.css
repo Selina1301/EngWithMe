@@ -4,9 +4,15 @@
   gap: 18px;
   max-width: 900px;
   margin: 0 auto;
+  width: 100%;
 }
 
-.vocab-workspace.mode-study {
+.workspace-title {
+  display: none !important;
+}
+
+.vocab-workspace.mode-study,
+.vocab-workspace.mode-play {
   grid-template-rows: auto auto auto minmax(0, 1fr);
   gap: 18px;
   height: 100%;
@@ -113,9 +119,40 @@
   background: rgba(15, 23, 42, 0.72);
 }
 
+.workspace-tabs-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  margin: 4px 0 12px;
+}
+
+.workspace-tabs-container .study-settings-wrap {
+  position: absolute;
+  right: 0;
+  width: auto;
+  z-index: 10;
+}
+
+@media (max-width: 760px) {
+  .workspace-tabs-container {
+    display: grid;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 16px;
+    justify-content: stretch;
+  }
+  
+  .workspace-tabs-container .study-settings-wrap {
+    position: relative;
+    width: 100%;
+  }
+}
+
 .workspace-tabs {
   justify-self: center;
-  margin: 4px 0 8px;
+  margin: 0;
 }
 
 .workspace-tabs {
@@ -257,7 +294,8 @@
   gap: 20px;
 }
 
-.mode-study .workspace-panel {
+.mode-study .workspace-panel,
+.mode-play .workspace-panel {
   align-content: start;
   min-height: 0;
 }
@@ -295,11 +333,17 @@
   font-size: 1.08rem;
 }
 
-.word-view-card .meaning,
-.flashcard-step .meaning {
+.word-view-card .meaning {
   margin: 0 0 14px;
   color: #ffffff;
   font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 900;
+}
+
+.flashcard-step .meaning {
+  margin: 0 0 10px;
+  color: #ffffff;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
   font-weight: 900;
 }
 
@@ -475,22 +519,22 @@
 
 .study-card {
   display: grid;
-  gap: 18px;
-  min-height: 300px;
-  padding: 28px;
+  gap: 12px;
+  min-height: 200px;
+  padding: 20px;
   text-align: center;
 }
 
 .mode-study .study-card {
   align-content: center;
-  gap: 12px;
+  gap: 8px;
   min-height: 0;
-  height: clamp(250px, 39vh, 340px);
-  padding: 22px 28px;
+  height: clamp(190px, 30vh, 250px);
+  padding: 16px 24px;
 }
 
 .study-card-step {
-  min-height: 240px;
+  min-height: 180px;
   border-radius: 24px;
   transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
 }
@@ -533,18 +577,19 @@
 .study-card h3 {
   margin: 0;
   color: #ffffff;
-  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
 }
 
 .mode-study .study-card h3 {
-  font-size: clamp(2.1rem, 4.7vw, 4.1rem);
+  font-size: clamp(1.7rem, 2.8vw, 2.2rem);
   line-height: 1;
 }
 
 .study-card p {
   margin: 0;
   color: #cbd5e1;
-  line-height: 1.7;
+  line-height: 1.6;
+  font-size: 0.95rem;
 }
 
 .study-options {
@@ -695,28 +740,36 @@
 }
 
 .game-tile {
-  min-height: 96px;
-  border: 1px solid rgba(56, 189, 248, 0.26);
-  border-radius: 18px;
+  min-height: 76px;
+  border: 1px solid rgba(99, 102, 241, 0.55);
+  border-radius: 14px;
   background:
-    linear-gradient(135deg, rgba(46, 232, 120, 0.26), rgba(14, 165, 233, 0.35)),
+    linear-gradient(135deg, rgba(59, 130, 246, 0.35), rgba(99, 102, 241, 0.45)),
     rgba(15, 23, 42, 0.94);
   color: #ffffff;
   cursor: pointer;
   font-size: 1.05rem;
   font-weight: 900;
-  padding: 14px;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.24);
+  padding: 10px 12px;
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .game-tile.meaning {
-  border-color: rgba(46, 232, 120, 0.28);
-  background: rgba(46, 232, 120, 0.12);
-  color: #d0ffd8;
+  border-color: rgba(20, 184, 166, 0.55);
+  background:
+    linear-gradient(135deg, rgba(20, 184, 166, 0.3), rgba(16, 185, 129, 0.4)),
+    rgba(15, 23, 42, 0.94);
+  color: #e2fdf5;
+  box-shadow: 0 8px 20px rgba(20, 184, 166, 0.12);
 }
 
 .game-tile.is-selected {
-  outline: 4px solid rgba(56, 189, 248, 0.52);
+  outline: 4px solid rgba(129, 140, 248, 0.65);
+}
+
+.game-tile.meaning.is-selected {
+  outline: 4px solid rgba(45, 212, 191, 0.65);
 }
 
 .game-tile.correct {
@@ -730,14 +783,19 @@
 }
 
 .game-tile.is-matched {
-  visibility: hidden;
+  opacity: 0.8;
   pointer-events: none;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(45, 212, 191, 0.18)), rgba(15, 23, 42, 0.8) !important;
+  border-color: rgba(34, 197, 94, 0.35) !important;
+  color: rgba(167, 251, 192, 0.7) !important;
+  box-shadow: none !important;
 }
 
 .game-tile.shake-wrong {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.45), rgba(220, 38, 38, 0.55)), rgba(15, 23, 42, 0.96) !important;
-  border-color: rgba(239, 68, 68, 0.6) !important;
-  box-shadow: 0 0 15px rgba(239, 68, 68, 0.4) !important;
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  border-color: #f87171 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.6) !important;
   animation: shakeGradient 0.4s ease-in-out;
 }
 

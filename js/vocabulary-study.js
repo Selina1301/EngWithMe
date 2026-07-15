@@ -20,6 +20,7 @@ function initVocabularyStudy() {
   let gameTimeSeconds = 0;
   let currentMatchTiles = [];
   let isProcessingMatch = false;
+  let isTimerStarted = false;
   let pendingSaveWord = null;
   const getSavedWordsKey = () => getAccountKey("engWithMeSavedVocabularyWords");
   let savedWordRecords = normalizeSavedWordRecords(readLocalArray(getSavedWordsKey()));
@@ -116,6 +117,7 @@ function initVocabularyStudy() {
     gameTimeSeconds = 0;
     currentMatchTiles = [];
     isProcessingMatch = false;
+    isTimerStarted = false;
   }
 
   function startGameTimer() {
@@ -444,10 +446,22 @@ function initVocabularyStudy() {
           <p>${topic.desc}</p>
         </div>
 
-        <div class="workspace-tabs" aria-label="Chức năng học chủ đề">
-          ${workspaceTabTemplate("view", "ti-eye", "Read")}
-          ${workspaceTabTemplate("study", "ti-book", "Study")}
-          ${workspaceTabTemplate("play", "ti-game", "Play")}
+        <div class="workspace-tabs-container">
+          <div class="workspace-tabs" aria-label="Chức năng học chủ đề">
+            ${workspaceTabTemplate("view", "ti-eye", "Read")}
+            ${workspaceTabTemplate("study", "ti-book", "Study")}
+            ${workspaceTabTemplate("play", "ti-game", "Play")}
+          </div>
+          ${currentWorkspaceMode === "study" ? `
+            <div class="study-settings-wrap">
+              <button class="study-settings-btn" type="button" data-toggle-study-settings><i class="ti-settings"></i> Tùy chỉnh cách học</button>
+              <div class="study-settings-panel" data-study-settings>
+                <label class="study-setting-row"><input type="checkbox" ${enabledStudyModes.has("flashcard") ? "checked" : ""} data-study-option="flashcard"> <span><strong>Flashcard</strong><br>Xem từ → lật xem nghĩa</span></label>
+                <label class="study-setting-row"><input type="checkbox" ${enabledStudyModes.has("quiz") ? "checked" : ""} data-study-option="quiz"> <span><strong>Trắc nghiệm</strong><br>Xem từ → chọn nghĩa đúng</span></label>
+                <label class="study-setting-row"><input type="checkbox" ${enabledStudyModes.has("type") ? "checked" : ""} data-study-option="type"> <span><strong>Gõ từ</strong><br>Xem nghĩa → gõ từ tiếng Anh</span></label>
+              </div>
+            </div>
+          ` : ""}
         </div>
 
         <div class="workspace-panel">
@@ -569,20 +583,7 @@ function initVocabularyStudy() {
   }
 
   function renderStudyPanel(topic) {
-    return `
-      <div class="study-toolbar unified-study-toolbar">
-        <div class="study-settings-wrap">
-          <button class="study-settings-btn" type="button" data-toggle-study-settings><i class="ti-settings"></i> Tùy chỉnh cách học</button>
-          <div class="study-settings-panel" data-study-settings>
-            <label class="study-setting-row"><input type="checkbox" ${enabledStudyModes.has("flashcard") ? "checked" : ""} data-study-option="flashcard"> <span><strong>Flashcard</strong><br>Xem từ → lật xem nghĩa</span></label>
-            <label class="study-setting-row"><input type="checkbox" ${enabledStudyModes.has("quiz") ? "checked" : ""} data-study-option="quiz"> <span><strong>Trắc nghiệm</strong><br>Xem từ → chọn nghĩa đúng</span></label>
-            <label class="study-setting-row"><input type="checkbox" ${enabledStudyModes.has("type") ? "checked" : ""} data-study-option="type"> <span><strong>Gõ từ</strong><br>Xem nghĩa → gõ từ tiếng Anh</span></label>
-          </div>
-        </div>
-      </div>
-
-      ${renderStudyCard(topic)}
-    `;
+    return renderStudyCard(topic);
   }
 
   function renderStudyCard(topic) {
@@ -764,8 +765,7 @@ function initVocabularyStudy() {
             <button class="game-tile ${tile.type} ${isMatched ? "is-matched" : ""}" 
                     type="button" 
                     data-match-id="${tile.id}" 
-                    data-match-type="${tile.type}"
-                    style="${isMatched ? 'visibility: hidden;' : ''}">
+                    data-match-type="${tile.type}">
               ${tile.text}
             </button>
           `;
@@ -973,7 +973,6 @@ function initVocabularyStudy() {
         resetGameState();
         if (button.dataset.startGame === "blast") {
           startBlastGame(topic);
-          startGameTimer();
           return;
         }
         currentGameMode = "match";
@@ -983,7 +982,6 @@ function initVocabularyStudy() {
           ...gameWords.map(word => ({ type: "meaning", id: word.word, text: word.meaning }))
         ]);
         render();
-        startGameTimer();
       });
     });
 
@@ -994,6 +992,10 @@ function initVocabularyStudy() {
 
     root.querySelectorAll("[data-match-id]").forEach(button => {
       button.addEventListener("click", () => {
+        if (!isTimerStarted) {
+          isTimerStarted = true;
+          startGameTimer();
+        }
         if (isProcessingMatch) return;
         if (button.classList.contains("is-matched")) return;
         if (!selectedMatchTile) {
@@ -1039,6 +1041,10 @@ function initVocabularyStudy() {
 
     root.querySelectorAll("[data-blast-correct]").forEach(button => {
       button.addEventListener("click", () => {
+        if (!isTimerStarted) {
+          isTimerStarted = true;
+          startGameTimer();
+        }
         const feedback = root.querySelector("[data-study-feedback]");
         const isCorrect = button.dataset.blastCorrect === "true";
         button.classList.add(isCorrect ? "correct" : "wrong");

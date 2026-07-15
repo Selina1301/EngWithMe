@@ -1,12 +1,23 @@
 /* Dedicated vocabulary study page */
 .vocab-study-page {
   position: relative;
-  min-height: 100vh;
-  padding: 28px 24px 34px;
+  min-height: calc(100vh - 69px);
+  padding: 16px 24px;
   border-top: 1px solid rgba(148, 163, 184, 0.16);
   background: linear-gradient(135deg, #020617 0%, #061324 48%, #020617 100%);
   color: #ffffff;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@media (min-width: 761px) {
+  .vocab-study-page {
+    min-height: calc(100vh - 69px);
+    height: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 /* Ensure children elements stack above the pseudo-element glow */
@@ -67,20 +78,41 @@
   margin: 0 auto;
 }
 
-.vocab-study-content,
-.vocab-study-content[data-workspace-mode="study"] {
+@media (min-width: 761px) {
+  .vocab-study-shell {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+}
+
+.vocab-study-content {
   position: relative;
   width: 100%;
   height: auto;
   max-height: none;
   overflow: visible;
-  margin: 0 auto;
-  padding: 28px 34px 36px;
+  margin: 0 auto !important;
+  padding: 16px 24px !important;
   border-radius: 30px;
 }
 
-.vocab-study-content .vocab-workspace.mode-study {
-  min-height: 720px;
+@media (min-width: 761px) {
+  .vocab-study-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+
+.vocab-study-content .vocab-workspace.mode-study,
+.vocab-study-content .vocab-workspace.mode-play {
+  height: auto !important;
+  min-height: auto;
 }
 
 .vocab-study-content .workspace-topline a {
