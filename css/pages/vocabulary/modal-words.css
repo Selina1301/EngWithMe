@@ -38,6 +38,7 @@ body.modal-open {
 }
 
 .topic-modal-content[data-workspace-mode="study"] {
+  width: min(1200px, calc(100% - 32px)) !important;
   height: calc(100vh - 24px);
   max-height: calc(100vh - 24px);
   margin: 12px auto;

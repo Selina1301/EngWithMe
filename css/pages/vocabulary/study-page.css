@@ -11,14 +11,26 @@
 }
 
 @media (min-width: 761px) {
+  body.vocab-study-body {
+    overflow: hidden;
+  }
+
   .vocab-study-page {
     min-height: calc(100vh - 69px);
-    height: auto;
-    padding: 12px;
+    height: calc(100vh - 69px);
+    padding: 12px 12px 0 12px;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  .vocab-study-page::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
   }
 }
+
 
 /* Ensure children elements stack above the pseudo-element glow */
 .vocab-study-page > * {
@@ -84,6 +96,7 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
+    margin-bottom: 12px;
   }
 }
 
@@ -96,6 +109,14 @@
   margin: 0 auto !important;
   padding: 16px 24px !important;
   border-radius: 30px;
+}
+
+/* Ensure the outer wrapper has the same width/height in study mode on the standalone page as read and play */
+.vocab-study-page .topic-modal-content[data-workspace-mode="study"] {
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
 }
 
 @media (min-width: 761px) {
