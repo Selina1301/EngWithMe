@@ -34,11 +34,14 @@
   <main class="vocab-page">
     <section class="vocab-hero">
       <p class="eyebrow">Vocabulary</p>
-      <h1>Học từ vựng theo chủ đề và cấp độ</h1>
+      <h1>Hành trình vạn dặm bắt đầu từ một bước chân</h1>
       <p>
-        Chọn Easy, Medium hoặc Hard. Mỗi chủ đề có 12 từ mới gồm 5 từ Easy,
-        4 từ Medium và 3 từ Hard. Bấm vào chủ đề để mở bảng từ vựng chi tiết.
+        Đừng lo lắng về số lượng từ vựng khổng lồ ngoài kia. Hãy tập trung chinh phục từng chủ đề hôm nay từ Easy đến Hard để xây dựng nền tảng vững chắc nhất.
       </p>
+      <blockquote class="vocab-quote">
+        “Live as if you were to die tomorrow. Learn as if you were to live forever.”
+        <cite>— Mahatma Gandhi</cite>
+      </blockquote>
     </section>
 
     <section class="vocab-section">
@@ -201,7 +204,6 @@
     <section class="quick-quiz-section" data-vocab-quiz-section>
       <div class="vocab-container">
         <div class="section-heading">
-          <p class="eyebrow">Bài tập nhanh</p>
           <h2>Fast question</h2>
           <p class="quiz-note">Chọn nghĩa đúng. Sau khi trả lời, câu mới sẽ tự đổi sau 5 giây.</p>
         </div>
@@ -209,7 +211,6 @@
         <div class="mini-quiz" data-vocab-quiz>
           <div class="quiz-question" data-quiz-question></div>
           <div class="quiz-options" data-quiz-options></div>
-          <p class="feedback" data-vocab-feedback></p>
         </div>
       </div>
     </section>
@@ -258,7 +259,7 @@
     const topicSearch = document.querySelector("[data-topic-search]");
     const quizQuestion = document.querySelector("[data-quiz-question]");
     const quizOptions = document.querySelector("[data-quiz-options]");
-    const quizFeedback = document.querySelector("[data-vocab-feedback]");
+
     const progressScore = document.querySelector("[data-vocab-progress-score]");
     const progressSummary = document.querySelector("[data-vocab-progress-summary]");
     const progressBar = document.querySelector("[data-vocab-progress-bar]");
@@ -990,7 +991,7 @@
       `;
 
       quizOptions.innerHTML = options.map(option => `
-        <div class="quiz-option-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+        <div class="quiz-option-wrapper" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
           <button
             type="button"
             class="quiz-option-btn"
@@ -999,13 +1000,13 @@
           >
             ${option.word.meaning}
           </button>
-          <span class="option-word" style="display: block; font-size: 0.95rem; font-weight: 700; color: #70f59d; opacity: 0; transform: translateY(-5px); transition: all 0.4s ease;">
+          <span class="option-word" style="display: block; font-size: 0.9rem; font-weight: 700; color: transparent; opacity: 0; transform: translateY(-3px); transition: all 0.2s ease; pointer-events: none; white-space: nowrap; margin-top: 6px; text-align: center;">
             ${option.word.word}
           </span>
         </div>
       `).join("");
 
-      quizFeedback.textContent = "";
+
 
       quizOptions.querySelectorAll(".quiz-option-btn").forEach(button => {
         button.addEventListener("click", () => {
@@ -1031,7 +1032,7 @@
             if (isBtnCorrect) btn.classList.add("correct");
             if (btn === button && !isCorrect) btn.classList.add("wrong");
             
-            // Show the English word below the button with conditional color
+            // Show the English word below the button with conditional color and smooth fade-in
             if (wordSpan) {
               wordSpan.style.color = isBtnCorrect ? "#70f59d" : "#f87171";
               wordSpan.style.opacity = "1";
@@ -1039,21 +1040,7 @@
             }
           });
 
-          if (isCorrect) {
-            quizFeedback.innerHTML = `
-              <div class="quiz-feedback-main">
-                <span class="feedback-icon success"><i class="ti-check"></i></span>
-                <span><strong>${correctWord.word}</strong> ${correctWord.phonetic} - ${correctWord.meaning}. Ví dụ: ${correctWord.example}</span>
-              </div>
-            `;
-          } else {
-            quizFeedback.innerHTML = `
-              <div class="quiz-feedback-main">
-                <span class="feedback-icon error"><i class="ti-close"></i></span>
-                <span><strong>${correctWord.word}</strong> ${correctWord.phonetic} - ${correctWord.meaning}. Ví dụ: ${correctWord.example}</span>
-              </div>
-            `;
-          }
+
 
           quizTimer = setTimeout(() => {
             createQuiz();

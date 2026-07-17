@@ -23,6 +23,25 @@ function initVocabularyStudy() {
   let isProcessingMatch = false;
   let pendingSaveWord = null;
 
+  // Word Cannon Game State Variables
+  let cannonScore = 0;
+  let cannonLives = 3;
+  let cannonHits = 0;
+  let cannonTotalTargets = 4;
+  let cannonLevel = 1;
+  let cannonQuestionsList = [];
+  let cannonQuestionsPlayed = 0;
+  let cannonCurrentQuestion = null;
+  let cannonTargets = [];
+  let cannonProjectiles = [];
+  let cannonAngle = -Math.PI / 2;
+  let cannonRequestFrameId = null;
+  let cannonWrongFlashTimeout = null;
+  let cannonMissedWords = [];
+  let cannonTotalHits = 0;
+  let cannonCurrentStreak = 0;
+  let cannonMaxStreak = 0;
+
   let isAnswered = false;
   let lastAnswerIsCorrect = false;
   let lastTypedAnswer = "";
@@ -218,6 +237,31 @@ function initVocabularyStudy() {
     blastQuestionsList = [];
     blastQuestionsPlayed = 0;
     blastCorrectAnswers = 0;
+
+    // Reset cannon game variables
+    cannonScore = 0;
+    cannonLives = 3;
+    cannonHits = 0;
+    cannonTotalTargets = 4;
+    cannonLevel = 1;
+    cannonQuestionsList = [];
+    cannonQuestionsPlayed = 0;
+    cannonCurrentQuestion = null;
+    cannonTargets = [];
+    cannonProjectiles = [];
+    cannonAngle = -Math.PI / 2;
+    if (cannonRequestFrameId) {
+      cancelAnimationFrame(cannonRequestFrameId);
+      cannonRequestFrameId = null;
+    }
+    if (cannonWrongFlashTimeout) {
+      clearTimeout(cannonWrongFlashTimeout);
+      cannonWrongFlashTimeout = null;
+    }
+    cannonMissedWords = [];
+    cannonTotalHits = 0;
+    cannonCurrentStreak = 0;
+    cannonMaxStreak = 0;
   }
 
   function startGameTimer() {
@@ -785,6 +829,9 @@ function initVocabularyStudy() {
 
     syncUrl();
     attachEvents(topic);
+    if (currentGameMode === "cannon") {
+      initCannonCanvas(topic);
+    }
     if (currentGameMode && gameTimerInterval) {
       updateTimerDisplay();
     }
@@ -1154,7 +1201,6 @@ function initVocabularyStudy() {
             </div>
           </div>
           <div class="study-options">${optionsHtml}</div>
-          ${isAnswered && !lastAnswerIsCorrect ? `<p class="study-feedback-text wrong" style="margin-top: 10px; color: #ef4444; font-weight: 500;">Chưa đúng. Đáp án đúng: ${item.meaning}.</p>` : ""}
         </div>
       `;
 
@@ -1483,23 +1529,597 @@ function initVocabularyStudy() {
   function renderPlayPanel(topic) {
     if (!currentGameMode) {
       return `
-        <h3 class="word-list-title">Chọn game</h3>
-        <div class="game-menu">
-          <button class="game-choice" type="button" data-start-game="blast">
-            <i class="ti-game"></i>
-            <h3>Word Blast</h3>
-            <p>Chọn nghĩa đúng trước khi chuyển câu</p>
-          </button>
-          <button class="game-choice" type="button" data-start-game="match">
-            <i class="ti-layout-grid2"></i>
-            <h3>Word Match</h3>
-            <p>Ghép từ tiếng Anh với nghĩa tiếng Việt</p>
-          </button>
+        <div class="game-selection-wrapper">
+          <h3 class="word-list-title">Chọn game</h3>
+          <div class="game-menu">
+            <button class="game-choice" type="button" data-start-game="blast">
+              <i class="ti-game"></i>
+              <h3>Word Blast</h3>
+              <p>Chọn nghĩa đúng trước khi chuyển câu</p>
+            </button>
+            <button class="game-choice" type="button" data-start-game="match">
+              <i class="ti-layout-grid2"></i>
+              <h3>Word Match</h3>
+              <p>Ghép từ tiếng Anh với nghĩa tiếng Việt</p>
+            </button>
+            <button class="game-choice" type="button" data-start-game="cannon">
+              <i class="ti-target"></i>
+              <h3>Word Cannon</h3>
+              <p>Bắn pháo từ vựng chính xác để ghi điểm</p>
+            </button>
+          </div>
         </div>
       `;
     }
 
+    if (currentGameMode === "cannon") {
+      return renderCannonGame(topic);
+    }
+
     return renderMatchGame(topic);
+  }
+
+  function renderCannonGame(topic) {
+    const isGameOver = cannonLives <= 0;
+    if (isGameOver) {
+      if (gameTimerInterval) {
+        clearInterval(gameTimerInterval);
+        gameTimerInterval = null;
+      }
+      if (cannonRequestFrameId) {
+        cancelAnimationFrame(cannonRequestFrameId);
+        cannonRequestFrameId = null;
+      }
+    }
+
+    if (cannonHits >= cannonTotalTargets && !isGameOver) {
+      cannonLevel++;
+      cannonHits = 0;
+      cannonQuestionsList = shuffle([...topic.words]);
+      cannonQuestionsPlayed = 0;
+      cannonCurrentQuestion = null;
+    }
+
+    if (!cannonCurrentQuestion && !isGameOver) {
+      if (cannonQuestionsList.length === 0) {
+        let list = [...topic.words];
+        while (list.length < 12) {
+          list = [...list, ...topic.words];
+        }
+        cannonQuestionsList = shuffle(list);
+        cannonQuestionsPlayed = 0;
+      }
+      cannonCurrentQuestion = cannonQuestionsList[cannonQuestionsPlayed % cannonQuestionsList.length];
+      
+      const wrongCandidates = topic.words.filter(w => w.word !== cannonCurrentQuestion.word);
+      const chosenWrong = shuffle(wrongCandidates).slice(0, 3);
+      const options = shuffle([cannonCurrentQuestion, ...chosenWrong]);
+      
+      const tempCanvas = document.createElement("canvas");
+      const tempCtx = tempCanvas.getContext("2d");
+      tempCtx.font = "bold 14px system-ui, sans-serif";
+
+      cannonTargets = options.map((opt, i) => {
+        const textWidth = tempCtx.measureText(opt.word).width;
+        const width = Math.max(130, textWidth + 36);
+        const colWidth = 620 / 4;
+        const x = 50 + i * colWidth + Math.random() * 20;
+        const y = 40 + Math.random() * 40;
+        return {
+          x: x,
+          y: y,
+          width: width,
+          height: 46,
+          text: opt.word,
+          isCorrect: opt.word === cannonCurrentQuestion.word,
+          isHitIncorrect: false,
+          gradientIndex: i,
+          vx: (Math.random() - 0.5) * 0.7,
+          vy: (Math.random() - 0.5) * 0.5
+        };
+      });
+      
+      cannonProjectiles = [];
+    }
+
+    const minutes = String(Math.floor(gameTimeSeconds / 60)).padStart(2, "0");
+    const seconds = String(gameTimeSeconds % 60).padStart(2, "0");
+
+    let livesHtml = "";
+    for (let i = 1; i <= 3; i++) {
+      if (i <= cannonLives) {
+        livesHtml += `<i class="ti-heart" style="color: #00f0ff; font-size: 1.1rem; filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.6)); margin-right: 4px;"></i>`;
+      } else {
+        livesHtml += `<i class="ti-heart" style="color: rgba(255,255,255,0.15); font-size: 1.1rem; margin-right: 4px;"></i>`;
+      }
+    }
+
+    const currentMeaning = cannonCurrentQuestion ? cannonCurrentQuestion.meaning : "";
+
+    return `
+      <style>
+        @keyframes modalFadeIn {
+          from { opacity: 0; transform: scale(0.95) translateY(10px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+      </style>
+      <div style="position: relative; max-width: 720px; margin: 0 auto; width: 100%;">
+        <!-- Background Game Board (blurred if isGameOver) -->
+        <div style="${isGameOver ? 'filter: blur(5px) brightness(0.35); pointer-events: none; transition: filter 0.3s ease;' : 'transition: filter 0.3s ease;'}">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 4px 8px; color: #cbd5e1; font-weight: 600; font-size: 0.95rem; width: 100%;">
+            <div style="display: flex; align-items: center;">
+              <span style="color: #ffd700; font-size: 0.85rem; letter-spacing: 0.5px; background: rgba(255, 215, 0, 0.1); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255, 215, 0, 0.2); display: flex; align-items: center; gap: 4px; font-weight: 700;">
+                🏆 BXH: ___ - Rank 1
+              </span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; font-weight: 700; color: #00f0ff; font-size: 0.95rem; letter-spacing: 1px;">
+              <span>LVL.${String(cannonLevel).padStart(2, '0')}</span>
+              <span style="color: rgba(255,255,255,0.2);">|</span>
+              <span style="color: #38bdf8; display: flex; align-items: center; gap: 4px;"><i class="ti-cup" style="color: #ffd700;"></i>${cannonScore}</span>
+            </div>
+          </div>
+          
+          <div class="game-panel study-card cannon-game-panel" style="position: relative; overflow: hidden; padding: 0; min-height: 360px; display: flex; flex-direction: column; align-items: stretch; justify-content: start;">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; background: rgba(15, 23, 42, 0.4); border-bottom: 1px solid rgba(255, 255, 255, 0.05); z-index: 5;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <button type="button" data-game-menu style="background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 0 4px 0 0; font-size: 1.15rem; line-height: 1; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">←</button>
+                ${livesHtml}
+              </div>
+              <div style="font-weight: 700; color: #38bdf8; font-size: 0.95rem; display: flex; align-items: center; gap: 4px;">
+                <i class="ti-time"></i> <span data-game-timer>${minutes}:${seconds}</span>
+              </div>
+              <div style="font-size: 0.8rem; font-weight: 600; color: #cbd5e1;">
+                ${cannonHits} HIT // ${cannonTotalTargets} TARGETS
+              </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 8px; margin-bottom: 4px; z-index: 5;">
+              <h2 style="color: #ffffff; font-size: 1.8rem; font-weight: 800; text-shadow: 0 0 12px rgba(255,255,255,0.25); margin: 0;">
+                ${currentMeaning}
+              </h2>
+            </div>
+
+            <div class="canvas-container-wrap" style="flex: 1; position: relative; width: 100%; min-height: 234px;">
+              <canvas id="cannon-canvas" style="display: block; width: 100%; height: 100%; cursor: crosshair;"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overlaid Game Over Modal -->
+        ${isGameOver ? `
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; padding: 12px;">
+          <div class="game-panel study-card" style="width: 100%; max-width: 360px; padding: 24px 20px; display: flex; flex-direction: column; align-items: center; background: rgba(15, 23, 42, 0.95); border: 1.5px solid rgba(56, 189, 248, 0.25); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6); animation: modalFadeIn 0.3s ease-out; border-radius: 20px;">
+            
+            <!-- Wave Illustration Icon -->
+            <div style="font-size: 3.5rem; filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.4)); margin-bottom: 4px; line-height: 1;">🌊</div>
+            
+            <!-- Game Over Title -->
+            <h2 style="font-size: 1.6rem; font-weight: 900; color: #00f0ff; letter-spacing: 2px; margin: 4px 0 2px 0; text-transform: uppercase; text-align: center; text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);">GAME OVER</h2>
+            <p style="color: #94a3b8; font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; margin: 0 0 18px 0; text-align: center;">SCORE: ${cannonScore} // LEVEL: ${cannonLevel}</p>
+            
+            <!-- Stats Grid -->
+            <div style="display: flex; gap: 8px; width: 100%; justify-content: center; margin-bottom: 20px;">
+              <!-- PTS -->
+              <div style="flex: 1; background: rgba(30, 41, 59, 0.55); border: 1px solid rgba(255, 255, 255, 0.06); padding: 8px 4px; border-radius: 12px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <i class="ti-cup" style="color: #00f0ff; font-size: 1.1rem;"></i>
+                <div style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin-top: 3px; line-height: 1.1;">${cannonScore}</div>
+                <div style="font-size: 0.65rem; color: #64748b; font-weight: 700; text-transform: uppercase; margin-top: 2px;">PTS</div>
+              </div>
+              
+              <!-- HIT -->
+              <div style="flex: 1; background: rgba(30, 41, 59, 0.55); border: 1px solid rgba(255, 255, 255, 0.06); padding: 8px 4px; border-radius: 12px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <i class="ti-bolt" style="color: #38bdf8; font-size: 1.1rem;"></i>
+                <div style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin-top: 3px; line-height: 1.1;">${cannonTotalHits}</div>
+                <div style="font-size: 0.65rem; color: #64748b; font-weight: 700; text-transform: uppercase; margin-top: 2px;">HIT</div>
+              </div>
+              
+              <!-- MAX combo -->
+              <div style="flex: 1; background: rgba(30, 41, 59, 0.55); border: 1px solid rgba(255, 255, 255, 0.06); padding: 8px 4px; border-radius: 12px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <i class="ti-crown" style="color: #f43f5e; font-size: 1.1rem;"></i>
+                <div style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin-top: 3px; line-height: 1.1;">x${(1 + cannonMaxStreak * 0.1).toFixed(1)}</div>
+                <div style="font-size: 0.65rem; color: #64748b; font-weight: 700; text-transform: uppercase; margin-top: 2px;">MAX</div>
+              </div>
+            </div>
+
+            <!-- Words To Review -->
+            ${cannonMissedWords.length > 0 ? `
+            <div style="text-align: left; width: 100%;">
+              <p style="color: #f43f5e; font-size: 0.78rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin: 0 0 8px 0; border-left: 2.5px solid #f43f5e; padding-left: 6px;">
+                &gt; TỪ CẦN ÔN (${cannonMissedWords.length})
+              </p>
+              <div style="display: flex; flex-direction: column; gap: 6px; max-height: 105px; overflow-y: auto; padding-right: 4px; margin-bottom: 4px; scrollbar-width: thin;">
+                ${cannonMissedWords.map(w => `
+                  <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.04); padding: 5px 10px; border-radius: 6px;">
+                    <span style="font-weight: 700; color: #ffffff; font-size: 0.82rem;">${w.word}</span>
+                    <span style="color: #94a3b8; font-size: 0.8rem;">${w.meaning}</span>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+            ` : ''}
+
+            <!-- Restart Button -->
+            <button class="btn btn-primary" type="button" data-start-game="cannon" style="margin-top: 18px; background: linear-gradient(135deg, #00f0ff, #3b82f6); border: none; width: 100%; padding: 10px 20px; font-size: 0.95rem; border-radius: 99px; color: white; cursor: pointer; font-weight: 700; box-shadow: 0 4px 14px rgba(0, 240, 255, 0.35); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;">
+              <i class="ti-reload" style="font-weight: 900;"></i> RESTART
+            </button>
+            
+            <button class="btn" type="button" data-game-menu style="margin-top: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); width: 100%; padding: 8px 20px; font-size: 0.90rem; border-radius: 99px; color: #cbd5e1; cursor: pointer; font-weight: 600; transition: all 0.2s;">
+              MENU GAME
+            </button>
+
+          </div>
+        </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  function initCannonCanvas(topic) {
+    const canvas = document.getElementById("cannon-canvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const container = canvas.parentElement;
+    
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width || 800;
+    canvas.height = rect.height || 234;
+    
+    let lastTime = performance.now();
+    let mouseX = canvas.width / 2;
+    let mouseY = 50;
+    let lastFireTime = 0;
+
+    const cannonX = canvas.width / 2;
+    const cannonY = canvas.height - 15;
+
+    const gradients = [
+      {
+        start: "rgba(139, 92, 246, 0.22)", // purple
+        end: "rgba(59, 130, 246, 0.22)",   // blue
+        border: "rgba(167, 139, 250, 0.75)"
+      },
+      {
+        start: "rgba(20, 184, 166, 0.22)",  // teal
+        end: "rgba(16, 185, 129, 0.22)",   // emerald
+        border: "rgba(45, 212, 191, 0.75)"
+      },
+      {
+        start: "rgba(244, 63, 94, 0.22)",   // rose
+        end: "rgba(139, 92, 246, 0.22)",   // purple
+        border: "rgba(251, 113, 133, 0.75)"
+      },
+      {
+        start: "rgba(245, 158, 11, 0.18)",  // amber
+        end: "rgba(217, 70, 239, 0.18)",   // fuchsia
+        border: "rgba(252, 211, 77, 0.75)"
+      }
+    ];
+
+    if (cannonRequestFrameId) {
+      cancelAnimationFrame(cannonRequestFrameId);
+      cannonRequestFrameId = null;
+    }
+
+    function getMousePos(evt) {
+      const cRect = canvas.getBoundingClientRect();
+      let clientX, clientY;
+      if (evt.touches && evt.touches.length > 0) {
+        clientX = evt.touches[0].clientX;
+        clientY = evt.touches[0].clientY;
+      } else {
+        clientX = evt.clientX;
+        clientY = evt.clientY;
+      }
+      return {
+        x: (clientX - cRect.left) * (canvas.width / cRect.width),
+        y: (clientY - cRect.top) * (canvas.height / cRect.height)
+      };
+    }
+
+    function handleMove(e) {
+      const pos = getMousePos(e);
+      mouseX = pos.x;
+      mouseY = pos.y;
+      
+      const dx = mouseX - cannonX;
+      const dy = mouseY - cannonY;
+      let angle = Math.atan2(dy, dx);
+      if (angle > 0) {
+        if (angle < Math.PI / 2) {
+          angle = 0;
+        } else {
+          angle = -Math.PI;
+        }
+      }
+      cannonAngle = angle;
+    }
+
+    canvas.addEventListener("mousemove", handleMove);
+    canvas.addEventListener("touchmove", handleMove, { passive: true });
+
+    function handleShoot(e) {
+      e.preventDefault();
+      if (cannonLives <= 0) return;
+      const gamePanel = root.querySelector(".cannon-game-panel");
+      if (gamePanel && gamePanel.classList.contains("game-wrong-flash")) return;
+
+      const now = performance.now();
+      if (now - lastFireTime < 450) return;
+      lastFireTime = now;
+
+      if (!isTimerStarted) {
+        isTimerStarted = true;
+        startGameTimer();
+      }
+
+      const speed = 12;
+      const vx = Math.cos(cannonAngle) * speed;
+      const vy = Math.sin(cannonAngle) * speed;
+      
+      cannonProjectiles.push({
+        x: cannonX + Math.cos(cannonAngle) * 45,
+        y: cannonY + Math.sin(cannonAngle) * 45,
+        vx: vx,
+        vy: vy,
+        radius: 6
+      });
+    }
+
+    canvas.addEventListener("mousedown", handleShoot);
+    canvas.addEventListener("touchstart", handleShoot, { passive: false });
+
+    function update(time) {
+      if (currentGameMode !== "cannon" || cannonLives <= 0 || !document.getElementById("cannon-canvas")) {
+        if (cannonRequestFrameId) {
+          cancelAnimationFrame(cannonRequestFrameId);
+          cannonRequestFrameId = null;
+        }
+        return;
+      }
+
+      const dt = (time - lastTime) / 1000;
+      lastTime = time;
+
+      for (let i = cannonProjectiles.length - 1; i >= 0; i--) {
+        const p = cannonProjectiles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        
+        if (p.x < 0 || p.x > canvas.width || p.y < 0 || p.y > canvas.height) {
+          cannonProjectiles.splice(i, 1);
+          continue;
+        }
+        
+        let hitTarget = null;
+        for (let j = 0; j < cannonTargets.length; j++) {
+          const t = cannonTargets[j];
+          if (t.isHitIncorrect) continue;
+          if (p.x >= t.x && p.x <= t.x + t.width && p.y >= t.y && p.y <= t.y + t.height) {
+            hitTarget = t;
+            break;
+          }
+        }
+        
+        if (hitTarget) {
+          cannonProjectiles.splice(i, 1);
+          
+          if (hitTarget.isCorrect) {
+            cannonScore += 10;
+            cannonHits++;
+            cannonTotalHits++;
+            cannonCurrentStreak++;
+            if (cannonCurrentStreak > cannonMaxStreak) {
+              cannonMaxStreak = cannonCurrentStreak;
+            }
+            cannonQuestionsPlayed++;
+            cannonCurrentQuestion = null;
+            setTimeout(() => {
+              render();
+            }, 100);
+            return;
+          } else {
+            if (!hitTarget.isHitIncorrect) {
+              hitTarget.isHitIncorrect = true;
+              hitTarget.vx = 0;
+              hitTarget.vy = 0;
+              cannonLives--;
+              cannonCurrentStreak = 0;
+
+              if (cannonCurrentQuestion && !cannonMissedWords.some(w => w.word === cannonCurrentQuestion.word)) {
+                cannonMissedWords.push(cannonCurrentQuestion);
+              }
+              
+              const gamePanel = root.querySelector(".cannon-game-panel");
+              if (gamePanel) {
+                gamePanel.classList.add("game-wrong-flash");
+                if (cannonWrongFlashTimeout) clearTimeout(cannonWrongFlashTimeout);
+                cannonWrongFlashTimeout = setTimeout(() => {
+                  gamePanel.classList.remove("game-wrong-flash");
+                }, 1300);
+              }
+              
+              setTimeout(() => {
+                render();
+              }, 100);
+              return;
+            }
+          }
+        }
+      }
+
+      cannonTargets.forEach(t => {
+        t.x += t.vx;
+        t.y += t.vy;
+        
+        if (t.x < 10 || t.x + t.width > canvas.width - 10) {
+          t.vx *= -1;
+          t.x = Math.max(10, Math.min(t.x, canvas.width - t.width - 10));
+        }
+        if (t.y < 40 || t.y + t.height > canvas.height - 80) {
+          t.vy *= -1;
+          t.y = Math.max(40, Math.min(t.y, canvas.height - t.height - 80));
+        }
+      });
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.015)";
+      ctx.lineWidth = 1;
+      for (let i = 0; i < canvas.height; i += 6) {
+        ctx.beginPath();
+        ctx.moveTo(0, i);
+        ctx.lineTo(canvas.width, i);
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = "rgba(0, 240, 255, 0.25)";
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 6]);
+      ctx.beginPath();
+      ctx.moveTo(cannonX, cannonY);
+      ctx.lineTo(mouseX, mouseY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.strokeStyle = "#00f0ff";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(mouseX, mouseY, 7, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      ctx.beginPath();
+      ctx.moveTo(mouseX - 10, mouseY);
+      ctx.lineTo(mouseX + 10, mouseY);
+      ctx.moveTo(mouseX, mouseY - 10);
+      ctx.lineTo(mouseX, mouseY + 10);
+      ctx.stroke();
+
+      cannonTargets.forEach(t => {
+        ctx.save();
+        
+        let glowColor = "rgba(0, 240, 255, 0.4)";
+        
+        if (t.isHitIncorrect) {
+          glowColor = "rgba(239, 68, 68, 1.0)";
+          ctx.shadowColor = glowColor;
+          ctx.shadowBlur = 8;
+          ctx.strokeStyle = glowColor;
+          ctx.fillStyle = "rgba(15, 23, 42, 0.45)";
+          ctx.lineWidth = 1.5;
+          
+          const radius = 10;
+          ctx.beginPath();
+          ctx.moveTo(t.x + radius, t.y);
+          ctx.lineTo(t.x + t.width - radius, t.y);
+          ctx.quadraticCurveTo(t.x + t.width, t.y, t.x + t.width, t.y + radius);
+          ctx.lineTo(t.x + t.width, t.y + t.height - radius);
+          ctx.quadraticCurveTo(t.x + t.width, t.y + t.height, t.x + t.width - radius, t.y + t.height);
+          ctx.lineTo(t.x + radius, t.y + t.height);
+          ctx.quadraticCurveTo(t.x, t.y + t.height, t.x, t.y + t.height - radius);
+          ctx.lineTo(t.x, t.y + radius);
+          ctx.quadraticCurveTo(t.x, t.y, t.x + radius, t.y);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+          
+          ctx.save();
+          ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+          ctx.font = "bold 13px system-ui, -apple-system, sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(t.text, t.x + t.width / 2, t.y + t.height / 2);
+          ctx.restore();
+        } else {
+          const gradInfo = gradients[t.gradientIndex] || gradients[0];
+          glowColor = gradInfo.border;
+          
+          ctx.shadowColor = glowColor;
+          ctx.shadowBlur = 6;
+          ctx.strokeStyle = glowColor;
+          ctx.lineWidth = 1.5;
+          
+          const linearGrad = ctx.createLinearGradient(t.x, t.y, t.x, t.y + t.height);
+          linearGrad.addColorStop(0, gradInfo.start);
+          linearGrad.addColorStop(1, gradInfo.end);
+          ctx.fillStyle = linearGrad;
+          
+          const radius = 10;
+          ctx.beginPath();
+          ctx.moveTo(t.x + radius, t.y);
+          ctx.lineTo(t.x + t.width - radius, t.y);
+          ctx.quadraticCurveTo(t.x + t.width, t.y, t.x + t.width, t.y + radius);
+          ctx.lineTo(t.x + t.width, t.y + t.height - radius);
+          ctx.quadraticCurveTo(t.x + t.width, t.y + t.height, t.x + t.width - radius, t.y + t.height);
+          ctx.lineTo(t.x + radius, t.y + t.height);
+          ctx.quadraticCurveTo(t.x, t.y + t.height, t.x, t.y + t.height - radius);
+          ctx.lineTo(t.x, t.y + radius);
+          ctx.quadraticCurveTo(t.x, t.y, t.x + radius, t.y);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+          
+          ctx.save();
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 13px system-ui, -apple-system, sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(t.text, t.x + t.width / 2, t.y + t.height / 2);
+          ctx.restore();
+        }
+      });
+
+      cannonProjectiles.forEach(p => {
+        ctx.save();
+        ctx.fillStyle = "#00f0ff";
+        ctx.shadowColor = "#00f0ff";
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      ctx.save();
+      ctx.translate(cannonX, cannonY);
+      ctx.rotate(cannonAngle + Math.PI / 2);
+      
+      const barrelGrad = ctx.createLinearGradient(-8, -40, 8, 0);
+      barrelGrad.addColorStop(0, "#00f0ff");
+      barrelGrad.addColorStop(1, "#2563eb");
+      ctx.fillStyle = barrelGrad;
+      
+      ctx.beginPath();
+      ctx.roundRect ? ctx.roundRect(-8, -42, 16, 42, 4) : ctx.rect(-8, -42, 16, 42);
+      ctx.fill();
+      
+      ctx.restore();
+
+      ctx.save();
+      ctx.shadowColor = "rgba(0, 240, 255, 0.3)";
+      ctx.shadowBlur = 6;
+      ctx.strokeStyle = "#00f0ff";
+      ctx.fillStyle = "rgba(15, 23, 42, 0.95)";
+      ctx.lineWidth = 1.5;
+      
+      ctx.beginPath();
+      ctx.arc(cannonX - 14, cannonY + 6, 7, 0, Math.PI * 2);
+      ctx.arc(cannonX + 14, cannonY + 6, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(cannonX, cannonY + 4, 11, Math.PI, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      cannonRequestFrameId = requestAnimationFrame(update);
+    }
+
+    cannonRequestFrameId = requestAnimationFrame(update);
   }
 
   function renderMatchGame(topic) {
@@ -1515,15 +2135,14 @@ function initVocabularyStudy() {
       const seconds = String(gameTimeSeconds % 60).padStart(2, "0");
 
       return `
-        <div class="game-board-top">
-          <button class="workspace-back" type="button" data-game-menu>← Chọn game khác</button>
-          <strong>Hoàn thành! • Thời gian: ${minutes}:${seconds}</strong>
-        </div>
-        <div class="game-victory-panel" style="text-align: center; padding: 40px 20px;">
+        <div class="game-victory-panel" style="text-align: center; padding: 40px 20px; max-width: 720px; margin: 0 auto;">
           <i class="ti-cup" style="font-size: 3.5rem; color: #ffd700; margin-bottom: 20px; display: block;"></i>
           <h3 style="font-size: 1.8rem; margin-bottom: 10px; color: #fff;">Chúc mừng!</h3>
           <p style="font-size: 1.1rem; color: #a0aec0; margin-bottom: 25px;">Bạn đã ghép đúng tất cả các từ trong <strong>${minutes}:${seconds}</strong>!</p>
-          <button class="btn btn-primary" type="button" data-start-game="match" style="background: linear-gradient(135deg, #319795, #2b6cb0); border: none; padding: 10px 24px; font-size: 1rem; border-radius: 8px; color: white; cursor: pointer; font-weight: 600; box-shadow: 0 4px 12px rgba(49, 151, 149, 0.3); transition: all 0.2s;">Chơi lại</button>
+          <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+            <button class="btn btn-primary" type="button" data-start-game="match" style="background: linear-gradient(135deg, #319795, #2b6cb0); border: none; padding: 10px 24px; font-size: 1rem; border-radius: 8px; color: white; cursor: pointer; font-weight: 600; box-shadow: 0 4px 12px rgba(49, 151, 149, 0.3); transition: all 0.2s;">Chơi lại</button>
+            <button class="btn" type="button" data-game-menu style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); padding: 10px 24px; font-size: 1rem; border-radius: 8px; color: white; cursor: pointer; font-weight: 600; transition: all 0.2s;">Menu Game</button>
+          </div>
         </div>
       `;
     }
@@ -1536,22 +2155,28 @@ function initVocabularyStudy() {
     }
 
     return `
-      <div class="game-board-top">
-        <button class="workspace-back" type="button" data-game-menu>← Chọn game khác</button>
-        <strong>${matchedPairs.size} / ${gameWords.length} cặp đúng • Thời gian: <span data-game-timer>00:00</span></strong>
-      </div>
-      <div class="game-board">
-        ${currentMatchTiles.map(tile => {
-          const isMatched = matchedPairs.has(tile.id);
-          return `
-            <button class="game-tile ${tile.type} ${isMatched ? "is-matched" : ""}" 
-                    type="button" 
-                    data-match-id="${tile.id}" 
-                    data-match-type="${tile.type}">
-              ${tile.text}
-            </button>
-          `;
-        }).join("")}
+      <div style="max-width: 720px; margin: 0 auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 4px 8px; color: #cbd5e1; font-weight: 600; font-size: 0.95rem;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button type="button" data-game-menu style="background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 0; font-size: 1.25rem; line-height: 1; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">←</button>
+            <span>${matchedPairs.size} / ${gameWords.length} cặp đúng</span>
+          </div>
+          <span>⏱️ <span data-game-timer>00:00</span></span>
+        </div>
+        <div class="game-board" style="gap: 12px;">
+          ${currentMatchTiles.map(tile => {
+            const isMatched = matchedPairs.has(tile.id);
+            return `
+              <button class="game-tile ${tile.type} ${isMatched ? "is-matched" : ""}" 
+                      type="button" 
+                      data-match-id="${tile.id}" 
+                      data-match-type="${tile.type}"
+                      style="padding: 12px 14px; font-size: 0.95rem; min-height: 52px;">
+                ${tile.text}
+              </button>
+            `;
+          }).join("")}
+        </div>
       </div>
     `;
   }
@@ -1580,11 +2205,7 @@ function initVocabularyStudy() {
       const seconds = String(gameTimeSeconds % 60).padStart(2, "0");
 
       root.querySelector(".workspace-panel").innerHTML = `
-        <div class="game-board-top">
-          <button class="workspace-back" type="button" data-game-menu>← Chọn game khác</button>
-          <strong>Hoàn thành! • Thời gian: ${minutes}:${seconds}</strong>
-        </div>
-        <div class="game-victory-panel" style="text-align: center; padding: 40px 20px;">
+        <div class="game-victory-panel" style="text-align: center; padding: 40px 20px; max-width: 720px; margin: 0 auto;">
           <i class="ti-cup" style="font-size: 3.5rem; color: #ffd700; margin-bottom: 20px; display: block;"></i>
           <h3 style="font-size: 1.8rem; margin-bottom: 10px; color: #fff;">Hoàn thành trò chơi!</h3>
           <p style="font-size: 1.25rem; color: #e2e8f0; margin-bottom: 8px;">
@@ -1593,7 +2214,7 @@ function initVocabularyStudy() {
           <p style="font-size: 1.1rem; color: #a0aec0; margin-bottom: 25px;">Thời gian hoàn thành: <strong>${minutes}:${seconds}</strong></p>
           <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
             <button class="btn btn-primary" type="button" data-start-game="blast" style="background: linear-gradient(135deg, #319795, #2b6cb0); border: none; padding: 10px 24px; font-size: 1rem; border-radius: 8px; color: white; cursor: pointer; font-weight: 600; box-shadow: 0 4px 12px rgba(49, 151, 149, 0.3); transition: all 0.2s;">Chơi lại</button>
-            <a href="${getListHref()}" class="btn" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); padding: 10px 24px; font-size: 1rem; border-radius: 8px; color: white; text-decoration: none; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center;">Quay lại Vocabulary</a>
+            <button class="btn" type="button" data-game-menu style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); padding: 10px 24px; font-size: 1rem; border-radius: 8px; color: white; cursor: pointer; font-weight: 600; transition: all 0.2s;">Menu Game</button>
           </div>
         </div>
       `;
@@ -1608,21 +2229,25 @@ function initVocabularyStudy() {
     ]);
 
     root.querySelector(".workspace-panel").innerHTML = `
-      <div class="game-board-top">
-        <button class="workspace-back" type="button" data-game-menu>← Chọn game khác</button>
-        <strong>Thời gian: <span data-game-timer>00:00</span> • Câu ${blastQuestionsPlayed + 1} / 12</strong>
-      </div>
-      <div class="game-panel study-card">
-        <p>Chọn nghĩa đúng cho:</p>
-        <h3>${item.word}</h3>
-        <div class="blast-options">
-          ${options.map(option => `
-            <button class="game-tile meaning" type="button" data-blast-correct="${option.word === item.word}">
-              ${option.meaning}
-            </button>
-          `).join("")}
+      <div style="max-width: 720px; margin: 0 auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 4px 8px; color: #cbd5e1; font-weight: 600; font-size: 0.95rem;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button type="button" data-game-menu style="background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 0; font-size: 1.25rem; line-height: 1; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">←</button>
+            <span>Câu ${blastQuestionsPlayed + 1} / 12</span>
+          </div>
+          <span>⏱️ <span data-game-timer>00:00</span></span>
         </div>
-        <p data-study-feedback></p>
+        <div class="game-panel study-card" style="padding: 16px; min-height: auto;">
+          <h3 style="margin-top: 0; margin-bottom: 16px; font-size: 1.8rem; text-align: center; color: #ffffff;">${item.word}</h3>
+          <div class="blast-options" style="gap: 12px;">
+            ${options.map(option => `
+              <button class="game-tile meaning" type="button" data-blast-correct="${option.word === item.word}" style="padding: 12px 14px; font-size: 0.95rem; min-height: 52px;">
+                ${option.meaning}
+              </button>
+            `).join("")}
+          </div>
+          <p data-study-feedback style="margin-top: 10px; margin-bottom: 0;"></p>
+        </div>
       </div>
     `;
 
@@ -1981,6 +2606,20 @@ function initVocabularyStudy() {
         resetGameState();
         if (button.dataset.startGame === "blast") {
           startBlastGame(topic);
+          return;
+        }
+        if (button.dataset.startGame === "cannon") {
+          currentGameMode = "cannon";
+          cannonLives = 3;
+          cannonHits = 0;
+          cannonScore = 0;
+          cannonLevel = 1;
+          cannonCurrentQuestion = null;
+          cannonMissedWords = [];
+          cannonTotalHits = 0;
+          cannonCurrentStreak = 0;
+          cannonMaxStreak = 0;
+          render();
           return;
         }
         currentGameMode = "match";

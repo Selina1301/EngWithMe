@@ -17,8 +17,8 @@
 }
 
 .mini-quiz {
-  margin-top: 18px;
-  padding: 24px;
+  margin-top: 14px;
+  padding: 15px 20px 16px;
   border-radius: 26px;
   background: rgba(15, 23, 42, 0.85);
   border: 1px solid rgba(148, 163, 184, 0.18);
@@ -26,9 +26,10 @@
 }
 
 .quiz-question p {
-  margin: 0 0 8px;
+  margin: 10px 0 0;
   font-size: 1.25rem;
   color: #ffffff;
+  text-align: center;
 }
 
 .quiz-question small {
@@ -38,13 +39,13 @@
 .quiz-options {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 12px;
-  margin-top: 20px;
+  gap: 10px;
+  margin-top: 8px;
 }
 
 .quiz-option-btn {
-  padding: 12px 14px;
-  border-radius: 16px;
+  padding: 8px 12px;
+  border-radius: 14px;
   border: 1px solid rgba(148, 163, 184, 0.2);
   background: rgba(2, 6, 23, 0.9);
   color: #ffffff;
@@ -73,33 +74,4 @@
 .quiz-option-btn:disabled {
   cursor: not-allowed;
   opacity: 0.95;
-}
-
-.feedback {
-  margin-top: 18px;
-  line-height: 1.7;
-  color: #e2e8f0;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.quiz-feedback-main {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.feedback-icon {
-  flex-shrink: 0;
-  font-size: 1.15rem;
-  line-height: 1.4;
-}
-
-.feedback-icon.success {
-  color: #70f59d;
-}
-
-.feedback-icon.error {
-  color: #f87171;
 }

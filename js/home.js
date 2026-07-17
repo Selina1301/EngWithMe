@@ -2,34 +2,82 @@ function initHomeSuggestion() {
   const section = document.querySelector("[data-today-suggestion]");
   if (!section) return;
 
+  const planProgress = getHomePlanProgress(17);
+  const completedDays = planProgress.completedDays;
+  const planDay = Math.min(completedDays + 1, 17);
+
+  // Get active targets to build dynamic links
+  const accountKeyFn = typeof getAccountKey === "function" ? getAccountKey : (k) => k + "_guest";
+  const vocabTargetsKey = accountKeyFn("engWithMePlanVocabularyTargets");
+  
+  let vocabTargets = [];
+  try {
+    const stored = JSON.parse(localStorage.getItem(vocabTargetsKey) || "{}");
+    vocabTargets = Array.isArray(stored.targets) ? stored.targets : [];
+  } catch (e) {}
+
+  if (vocabTargets.length === 0) {
+    vocabTargets = [
+      { id: "daily-life", levelKey: "easy", name: "Đời sống hằng ngày" },
+      { id: "school", levelKey: "easy", name: "Trường học" },
+      { id: "food", levelKey: "easy", name: "Ăn uống" },
+      { id: "fruits", levelKey: "easy", name: "Loại quả" },
+      { id: "flowers", levelKey: "easy", name: "Loài hoa" },
+      { id: "plants", levelKey: "easy", name: "Cây cối" },
+      { id: "animals", levelKey: "easy", name: "Con vật" }
+    ];
+  }
+
+  const readingTargets = [
+    { id: "schedule-change", title: "Schedule Change" },
+    { id: "office-supplies", title: "Office Supplies" },
+    { id: "client-visit", title: "Client Visit" }
+  ];
+
+  const grammarTargets = [
+    { id: "tu-loai", title: "Từ loại" },
+    { id: "thi", title: "Thì" },
+    { id: "danh-tu", title: "Danh từ" },
+    { id: "dong-tu", title: "Động từ" },
+    { id: "tinh-tu", title: "Tính từ" },
+    { id: "trang-tu", title: "Trạng từ" },
+    { id: "mao-tu", title: "Mạo từ" }
+  ];
+
   const roadmap = [
-    ...Array.from({ length: 7 }, (_, index) => ({
-      day: index + 1,
-      skill: "Vocabulary",
-      label: "Từ vựng",
-      href: "vocabulary.html",
-      tasks: ["Học 12 từ mới theo chủ đề", "Ôn flashcard trong 8 phút", "Lưu lại 3 từ khó để xem lại"]
-    })),
-    ...Array.from({ length: 3 }, (_, index) => ({
-      day: index + 8,
-      skill: "Reading",
-      label: "Đọc hiểu",
-      href: "reading.html",
-      tasks: ["Đọc 1 đoạn ngắn", "Trả lời câu hỏi kiểm tra ý chính", "Ghi lại 3 cụm từ hoặc cấu trúc hay"]
-    })),
-    ...Array.from({ length: 7 }, (_, index) => ({
-      day: index + 11,
-      skill: "Grammar",
-      label: "Ngữ pháp",
-      href: "grammar.html",
-      tasks: ["Ôn 1 điểm ngữ pháp trọng tâm", "Làm 10 câu luyện tập", "Xem lại lỗi sai và ghi chú quy tắc"]
-    }))
+    ...Array.from({ length: 7 }, (_, index) => {
+      const target = vocabTargets[index] || { id: "daily-life", levelKey: "easy", name: "Từ vựng" };
+      return {
+        day: index + 1,
+        skill: "Vocabulary",
+        label: "Từ vựng",
+        href: `vocabulary-study.html?level=${target.levelKey}&topic=${target.id}&mode=study&planDay=${index + 1}`,
+        tasks: [`Học chủ đề ${target.name || "Từ vựng"}`, "Ôn flashcard trong 8 phút", "Lưu lại 3 từ khó để xem lại"]
+      };
+    }),
+    ...Array.from({ length: 3 }, (_, index) => {
+      const target = readingTargets[index];
+      return {
+        day: index + 8,
+        skill: "Reading",
+        label: "Đọc hiểu",
+        href: `reading.html#${target.id}`,
+        tasks: [`Đọc bài "${target.title}"`, "Trả lời câu hỏi kiểm tra ý chính", "Ghi lại 3 cụm từ hoặc cấu trúc hay"]
+      };
+    }),
+    ...Array.from({ length: 7 }, (_, index) => {
+      const target = grammarTargets[index];
+      return {
+        day: index + 11,
+        skill: "Grammar",
+        label: "Ngữ pháp",
+        href: `grammar.html#${target.id}`,
+        tasks: [`Ôn chủ đề "${target.title}"`, "Làm 10 câu luyện tập", "Xem lại lỗi sai và ghi chú quy tắc"]
+      };
+    })
   ];
 
   const state = updateHomeLearningStreak();
-  const planProgress = getHomePlanProgress(roadmap.length);
-  const completedDays = planProgress.completedDays;
-  const planDay = Math.min(completedDays + 1, roadmap.length);
   const todayPlan = roadmap[planDay - 1];
   const progress = Math.round((completedDays / roadmap.length) * 100);
   const heading = section.querySelector("[data-today-title]");
@@ -108,11 +156,117 @@ function updateHomeLearningStreak() {
 }
 
 function getHomePlanProgress(totalDays) {
-  const storageKey = typeof getAccountKey === "function"
-    ? getAccountKey("engWithMeLearningPlanProgress")
-    : "engWithMeLearningPlanProgress_guest";
-  const saved = getStoredHomeLearningState(storageKey);
-  const completedDays = Math.min(Math.max(Number(saved.completedDays) || 0, 0), totalDays);
+  const accountKeyFn = typeof getAccountKey === "function" ? getAccountKey : (k) => k + "_guest";
+  
+  // 1. Get Vocabulary completion
+  const vocabTargetsKey = accountKeyFn("engWithMePlanVocabularyTargets");
+  let vocabTargets = [];
+  try {
+    const stored = JSON.parse(localStorage.getItem(vocabTargetsKey) || "{}");
+    vocabTargets = Array.isArray(stored.targets) ? stored.targets : [];
+  } catch (e) {}
+
+  if (vocabTargets.length === 0) {
+    vocabTargets = [
+      { id: "daily-life", levelKey: "easy" },
+      { id: "school", levelKey: "easy" },
+      { id: "food", levelKey: "easy" },
+      { id: "fruits", levelKey: "easy" },
+      { id: "flowers", levelKey: "easy" },
+      { id: "plants", levelKey: "easy" },
+      { id: "animals", levelKey: "easy" }
+    ];
+  }
+
+  const viewedVocabKey = accountKeyFn("engWithMeViewedTopics");
+  let viewedVocab = [];
+  try {
+    viewedVocab = JSON.parse(localStorage.getItem(viewedVocabKey) || "[]");
+    if (!Array.isArray(viewedVocab)) viewedVocab = [];
+  } catch (e) {}
+
+  const isVocabularyComplete = (target) => {
+    return viewedVocab.some((topic) => topic?.level === target.levelKey && topic?.id === target.id);
+  };
+
+  // 2. Get Reading completion
+  const viewedReadingKey = accountKeyFn("engWithMeViewedReadingTopics");
+  let viewedReading = [];
+  try {
+    viewedReading = JSON.parse(localStorage.getItem(viewedReadingKey) || "[]");
+    if (!Array.isArray(viewedReading)) viewedReading = [];
+  } catch (e) {}
+
+  const readingTargets = [
+    { id: "schedule-change" },
+    { id: "office-supplies" },
+    { id: "client-visit" }
+  ];
+
+  const isReadingComplete = (target) => {
+    return viewedReading.includes(target.id);
+  };
+
+  // 3. Get Grammar completion
+  const grammarPracticeKey = accountKeyFn("engWithMeGrammarPractice");
+  let grammarPractice = {};
+  try {
+    grammarPractice = JSON.parse(localStorage.getItem(grammarPracticeKey) || "{}");
+    if (typeof grammarPractice !== "object" || grammarPractice === null) grammarPractice = {};
+  } catch (e) {}
+
+  const grammarTargets = [
+    { id: "tu-loai", exerciseCount: 10 },
+    { id: "thi", exerciseCount: 10 },
+    { id: "danh-tu", exerciseCount: 10 },
+    { id: "dong-tu", exerciseCount: 10 },
+    { id: "tinh-tu", exerciseCount: 10 },
+    { id: "trang-tu", exerciseCount: 10 },
+    { id: "mao-tu", exerciseCount: 10 }
+  ];
+
+  const isGrammarComplete = (target) => {
+    const solved = Array.isArray(grammarPractice[target.id]) ? grammarPractice[target.id] : [];
+    return solved.length >= target.exerciseCount;
+  };
+
+  // 4. Calculate completedDays sequentially
+  let completedDays = 0;
+
+  // Check Vocabulary Days (Days 1 to 7)
+  for (let i = 0; i < 7; i++) {
+    const target = vocabTargets[i];
+    if (target && isVocabularyComplete(target)) {
+      completedDays += 1;
+    } else {
+      break;
+    }
+  }
+
+  // Check Reading Days (Days 8 to 10)
+  if (completedDays === 7) {
+    for (let i = 0; i < 3; i++) {
+      const target = readingTargets[i];
+      if (isReadingComplete(target)) {
+        completedDays += 1;
+      } else {
+        break;
+      }
+    }
+  }
+
+  // Check Grammar Days (Days 11 to 17)
+  if (completedDays === 10) {
+    for (let i = 0; i < 7; i++) {
+      const target = grammarTargets[i];
+      if (isGrammarComplete(target)) {
+        completedDays += 1;
+      } else {
+        break;
+      }
+    }
+  }
+
   return { completedDays };
 }
 
@@ -222,4 +376,23 @@ function initContactForm() {
       }
     }
   });
+}
+
+function initScrollIndicator() {
+  const indicator = document.querySelector(".hero-scroll-indicator");
+  if (!indicator) return;
+
+  const handleScroll = () => {
+    // Hide when scrolled past 65% of the total scrollable height of the home page
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    const threshold = maxScroll > 0 ? maxScroll * 0.65 : window.innerHeight * 0.70;
+    if (window.scrollY > threshold) {
+      indicator.classList.add("fade-out");
+    } else {
+      indicator.classList.remove("fade-out");
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  handleScroll();
 }

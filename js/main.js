@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "initHomeSuggestion",
     "initHomeInteractions",
     "initContactForm",
+    "initScrollIndicator",
     "initBlogPage",
     "initListeningLab"
   ].forEach((initializerName) => {

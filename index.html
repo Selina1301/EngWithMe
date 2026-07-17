@@ -33,11 +33,24 @@
 
   <main>
     <section class="hero hero-home">
+      <div class="hero-scroll-indicator" aria-hidden="true">
+        <svg class="scroll-arrow-svg" width="22" height="55" viewBox="0 0 22 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="11" y1="3" x2="11" y2="48" stroke="url(#arrow-gradient)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M4 42L11 49L18 42" stroke="url(#arrow-gradient)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="arrow-gradient" x1="11" y1="3" x2="11" y2="49" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="rgba(226, 232, 240, 0.1)"/>
+              <stop offset="60%" stop-color="rgba(226, 232, 240, 0.8)"/>
+              <stop offset="100%" stop-color="#48cfff"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
       <div class="hero-content">
-        <p class="eyebrow">Lộ trình cho người mới bắt đầu</p>
-        <h1>Học tiếng Anh dễ hơn mỗi ngày</h1>
-        <p>Xem đề thi toeic, luyện từ vựng, ngữ pháp, nghe, nói, đọc và theo dõi tiến độ học tập trong một nơi.</p>
-        <p class="hero-slogan">Slogan: Học không phải vì 1 ai mà là để tiến gần thêm 1 bước cho chính hoài bão to lớn của chúng ta - chính là những lời hứa vô tri khi còn bé với người thân ^^</p>
+        <p class="eyebrow">Mở rộng thế giới của riêng bạn</p>
+        <h1>Ngôn ngữ mới, thế giới mới</h1>
+        <p>Slogan: Học tiếng Anh không phải vì kỳ vọng của bất kỳ ai, mà là để bước gần hơn tới giấc mơ to lớn của riêng mình, hiện thực hóa những lời hứa hồn nhiên thuở bé với những người ta yêu thương nhất.</p>
+        <p class="hero-slogan">"Believe you can and you're half way there." — Theodore Roosevelt</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="quiz.html">Xem đề thi toeic</a>
           <a class="btn btn-light" href="vocabulary.html">Bắt đầu học từ vựng</a>
@@ -115,7 +128,7 @@
         <p class="eyebrow">Gợi ý hôm nay</p>
         <h2 data-today-title>Ngày học hôm nay</h2>
         <p data-today-description>Lộ trình 17 ngày gồm 7 ngày học từ vựng, 3 ngày luyện đọc và 7 ngày ôn ngữ pháp. Tiến độ được tính theo bài hoàn thành thật.</p>
-        <a class="btn btn-primary" href="dashboard.html" data-today-task-toggle>Nhiệm vụ hôm nay</a>
+        <button class="btn btn-primary" data-today-task-toggle>Nhiệm vụ hôm nay</button>
         <div class="today-task-panel" data-today-tasks hidden></div>
       </div>
       <div class="stat-panel">

@@ -866,10 +866,17 @@
   color: #ffffff;
 }
 
+.game-selection-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
 .game-menu {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 20px;
 }
 
 .game-choice {
@@ -891,6 +898,7 @@
 .game-choice i {
   color: #38bdf8;
   font-size: 2.5rem;
+  margin-top: 7px;
 }
 
 .game-choice h3 {
@@ -903,12 +911,24 @@
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
+  max-width: 800px;
+  margin: 0 auto 12px auto;
+  width: 100%;
 }
 
 .game-board {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.game-panel {
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .game-tile {
@@ -1047,24 +1067,6 @@
   box-shadow: 0 12px 40px rgba(239, 68, 68, 0.15), inset 0 0 12px rgba(239, 68, 68, 0.05) !important;
 }
 
-.mode-study .study-card.quiz-step.wrong-card {
-  height: 315px !important;
-}
-
-.mode-study .study-card.type-step.wrong-card,
-.mode-study .study-card.type-step.correct-card {
-  height: 240px !important;
-}
-
-@media (max-width: 768px) {
-  .mode-study .study-card.quiz-step.wrong-card {
-    height: 380px !important;
-  }
-  .mode-study .study-card.type-step.wrong-card,
-  .mode-study .study-card.type-step.correct-card {
-    height: 300px !important;
-  }
-}
 
 /* Sub tabs navigation */
 .study-sub-tabs {
@@ -1199,7 +1201,6 @@
   justify-content: center;
   text-align: center;
   width: 100%;
-  gap: 12px;
   margin-top: 15px;
 }
 
@@ -1224,6 +1225,10 @@
   font-style: italic;
   color: #38bdf8;
   opacity: 0.9;
+}
+
+.word-info-wrap {
+  gap: 8px !important;
 }
 
 /* Phonetics & Sound Row */
@@ -1338,6 +1343,17 @@
   box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
 }
 
+/* Custom spacing for type answer mode */
+.type-body .instruction-text {
+  margin-bottom: 12px !important;
+}
+.type-body .meaning-word {
+  margin-bottom: 20px !important;
+}
+.type-body .type-answer {
+  margin-bottom: 18px !important;
+}
+
 .study-feedback-text {
   margin-top: 4px !important;
   font-weight: 600;
@@ -1377,7 +1393,7 @@
 /* Actions Container Below Card */
 .study-actions-container {
   max-width: 780px;
-  margin: -8px auto 0 auto !important;
+  margin: 16px auto 0 auto !important;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1390,7 +1406,7 @@
   gap: 16px;
   width: 100%;
   max-width: 440px;
-  margin-top: 4px;
+  margin-top: 8px;
 }
 
 .study-action-btn {
@@ -1458,8 +1474,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  margin-top: 0;
+  gap: 12px;
+  margin-top: 14px;
 }
 
 .microphone-btn {
@@ -1538,7 +1554,7 @@
   font-weight: 600;
   color: #64748b;
   text-align: center;
-  margin-top: 4px !important;
+  margin-top: 24px !important;
 }
 
 /* Bottom Stats summary badges */
@@ -1678,6 +1694,27 @@
 
 .toggle-checkbox:checked::before {
   transform: translateX(16px);
+}
+
+.cannon-game-panel {
+  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.99)) !important;
+  border: 1px solid rgba(0, 240, 255, 0.15) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cannon-game-panel.game-wrong-flash {
+  border: 1.5px solid #ef4444 !important;
+  box-shadow: 0 12px 40px rgba(239, 68, 68, 0.3), inset 0 0 20px rgba(239, 68, 68, 0.15) !important;
+  animation: wrong-flash-pulse 0.3s ease-in-out infinite alternate;
+}
+
+@keyframes wrong-flash-pulse {
+  0% {
+    border-color: #ef4444;
+  }
+  100% {
+    border-color: rgba(239, 68, 68, 0.4);
+  }
 }
 
 

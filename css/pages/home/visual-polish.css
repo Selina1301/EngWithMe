@@ -87,9 +87,9 @@
 
 @media (min-width: 769px) {
   .hero-home {
-    padding-top: 40px !important;
-    padding-bottom: 40px !important;
-    min-height: calc(100vh - 196px);
+    padding-top: 60px !important;
+    padding-bottom: 60px !important;
+    min-height: calc(100vh - 120px);
   }
 }
 
@@ -116,5 +116,48 @@
 .article-card h3, .article-card p, .article-card span {
   position: relative;
   z-index: 1;
+}
+
+/* Scroll Indicator Arrow */
+.hero-scroll-indicator {
+  position: fixed;
+  left: 87px; /* Aligned with 'g' of EngWithMe (center of SVG is 11px, so 87px + 11px = 98px) */
+  top: 310px; /* 300px down from logo */
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-scroll-indicator.fade-out {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.scroll-arrow-svg {
+  animation: svgArrowAnim 2s infinite ease-in-out;
+  filter: drop-shadow(0 0 5px rgba(72, 207, 255, 0.15));
+}
+
+@keyframes svgArrowAnim {
+  0% {
+    transform: translateY(0);
+    opacity: 0.25;
+    filter: drop-shadow(0 0 2px rgba(72, 207, 255, 0));
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 0.95;
+    filter: drop-shadow(0 0 6px rgba(72, 207, 255, 0.45));
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0.25;
+    filter: drop-shadow(0 0 2px rgba(72, 207, 255, 0));
+  }
 }
 

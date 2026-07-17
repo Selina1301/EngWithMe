@@ -30,6 +30,27 @@
   font-size: 1.06rem;
 }
 
+.vocab-quote {
+  margin: 20px 0 0;
+  padding-left: 16px;
+  border-left: 3px solid rgba(46, 232, 120, 0.65);
+  font-style: italic;
+  color: #94a3b8;
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+.vocab-quote cite {
+  display: block;
+  font-size: 0.85rem;
+  color: #64748b;
+  font-style: normal;
+  font-weight: 700;
+  margin-top: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
 .vocab-section {
   padding: 20px 24px 70px;
 }
