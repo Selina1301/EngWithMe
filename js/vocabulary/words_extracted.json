@@ -1,0 +1,2332 @@
+{
+  "routine": {
+    "meaning": "thói quen hằng ngày",
+    "level": "easy",
+    "topic": "Đời sống hằng ngày"
+  },
+  "neighbor": {
+    "meaning": "hàng xóm",
+    "level": "easy",
+    "topic": "Đời sống hằng ngày"
+  },
+  "housework": {
+    "meaning": "việc nhà",
+    "level": "easy",
+    "topic": "Đời sống hằng ngày"
+  },
+  "breakfast": {
+    "meaning": "bữa sáng",
+    "level": "easy",
+    "topic": "Đời sống hằng ngày"
+  },
+  "laundry": {
+    "meaning": "đồ giặt, giặt ủi",
+    "level": "easy",
+    "topic": "Đời sống hằng ngày"
+  },
+  "appointment": {
+    "meaning": "cuộc hẹn",
+    "level": "easy",
+    "topic": "Đời sống hằng ngày"
+  },
+  "schedule": {
+    "meaning": "lịch trình",
+    "level": "easy",
+    "topic": "Đời sống hằng ngày"
+  },
+  "chore": {
+    "meaning": "công việc nhà thường nhật",
+    "level": "easy",
+    "topic": "Đời sống hằng ngày"
+  },
+  "balance": {
+    "meaning": "sự cân bằng",
+    "level": "easy",
+    "topic": "Đời sống hằng ngày"
+  },
+  "responsibility": {
+    "meaning": "trách nhiệm",
+    "level": "easy",
+    "topic": "Đời sống hằng ngày"
+  },
+  "independence": {
+    "meaning": "sự tự lập",
+    "level": "easy",
+    "topic": "Đời sống hằng ngày"
+  },
+  "discipline": {
+    "meaning": "kỷ luật",
+    "level": "easy",
+    "topic": "Đời sống hằng ngày"
+  },
+  "subject": {
+    "meaning": "môn học",
+    "level": "easy",
+    "topic": "Trường học"
+  },
+  "homework": {
+    "meaning": "bài tập về nhà",
+    "level": "easy",
+    "topic": "Trường học"
+  },
+  "notebook": {
+    "meaning": "quyển vở",
+    "level": "easy",
+    "topic": "Trường học"
+  },
+  "teacher": {
+    "meaning": "giáo viên",
+    "level": "easy",
+    "topic": "Trường học"
+  },
+  "classroom": {
+    "meaning": "lớp học",
+    "level": "easy",
+    "topic": "Trường học"
+  },
+  "assignment": {
+    "meaning": "bài tập được giao",
+    "level": "easy",
+    "topic": "Trường học"
+  },
+  "presentation": {
+    "meaning": "bài thuyết trình",
+    "level": "easy",
+    "topic": "Trường học"
+  },
+  "project": {
+    "meaning": "dự án học tập",
+    "level": "easy",
+    "topic": "Trường học"
+  },
+  "semester": {
+    "meaning": "học kỳ",
+    "level": "easy",
+    "topic": "Trường học"
+  },
+  "curriculum": {
+    "meaning": "chương trình học",
+    "level": "easy",
+    "topic": "Trường học"
+  },
+  "assessment": {
+    "meaning": "đánh giá",
+    "level": "easy",
+    "topic": "Trường học"
+  },
+  "scholarship": {
+    "meaning": "học bổng",
+    "level": "easy",
+    "topic": "Trường học"
+  },
+  "meal": {
+    "meaning": "bữa ăn",
+    "level": "easy",
+    "topic": "Ăn uống"
+  },
+  "drink": {
+    "meaning": "đồ uống",
+    "level": "easy",
+    "topic": "Ăn uống"
+  },
+  "hungry": {
+    "meaning": "đói bụng",
+    "level": "easy",
+    "topic": "Ăn uống"
+  },
+  "delicious": {
+    "meaning": "thơm ngon",
+    "level": "easy",
+    "topic": "Ăn uống"
+  },
+  "snack": {
+    "meaning": "món ăn nhẹ",
+    "level": "easy",
+    "topic": "Ăn uống"
+  },
+  "menu": {
+    "meaning": "thực đơn ăn uống",
+    "level": "easy",
+    "topic": "Ăn uống"
+  },
+  "spicy": {
+    "meaning": "vị cay nồng",
+    "level": "easy",
+    "topic": "Ăn uống"
+  },
+  "order": {
+    "meaning": "gọi món",
+    "level": "easy",
+    "topic": "Ăn uống"
+  },
+  "dessert": {
+    "meaning": "món tráng miệng",
+    "level": "easy",
+    "topic": "Ăn uống"
+  },
+  "organic": {
+    "meaning": "thực phẩm hữu cơ",
+    "level": "easy",
+    "topic": "Ăn uống"
+  },
+  "nutritious": {
+    "meaning": "bổ dưỡng",
+    "level": "easy",
+    "topic": "Ăn uống"
+  },
+  "allergy": {
+    "meaning": "dị ứng",
+    "level": "easy",
+    "topic": "Ăn uống"
+  },
+  "apple": {
+    "meaning": "quả táo",
+    "level": "easy",
+    "topic": "Loại quả"
+  },
+  "banana": {
+    "meaning": "quả chuối",
+    "level": "easy",
+    "topic": "Loại quả"
+  },
+  "orange": {
+    "meaning": "quả cam",
+    "level": "easy",
+    "topic": "Loại quả"
+  },
+  "mango": {
+    "meaning": "quả xoài",
+    "level": "easy",
+    "topic": "Loại quả"
+  },
+  "grape": {
+    "meaning": "quả nho",
+    "level": "easy",
+    "topic": "Loại quả"
+  },
+  "pineapple": {
+    "meaning": "quả dứa, thơm",
+    "level": "easy",
+    "topic": "Loại quả"
+  },
+  "watermelon": {
+    "meaning": "quả dưa hấu",
+    "level": "easy",
+    "topic": "Loại quả"
+  },
+  "coconut": {
+    "meaning": "quả dừa",
+    "level": "easy",
+    "topic": "Loại quả"
+  },
+  "lemon": {
+    "meaning": "quả chanh vàng",
+    "level": "easy",
+    "topic": "Loại quả"
+  },
+  "pomegranate": {
+    "meaning": "quả lựu",
+    "level": "easy",
+    "topic": "Loại quả"
+  },
+  "persimmon": {
+    "meaning": "quả hồng",
+    "level": "easy",
+    "topic": "Loại quả"
+  },
+  "avocado": {
+    "meaning": "quả bơ",
+    "level": "easy",
+    "topic": "Loại quả"
+  },
+  "rose": {
+    "meaning": "hoa hồng",
+    "level": "easy",
+    "topic": "Loài hoa"
+  },
+  "flower": {
+    "meaning": "bông hoa",
+    "level": "easy",
+    "topic": "Loài hoa"
+  },
+  "garden": {
+    "meaning": "khu vườn",
+    "level": "easy",
+    "topic": "Loài hoa"
+  },
+  "lily": {
+    "meaning": "hoa ly, hoa loa kèn",
+    "level": "easy",
+    "topic": "Loài hoa"
+  },
+  "sunflower": {
+    "meaning": "hoa hướng dương",
+    "level": "easy",
+    "topic": "Loài hoa"
+  },
+  "orchid": {
+    "meaning": "hoa lan",
+    "level": "easy",
+    "topic": "Loài hoa"
+  },
+  "tulip": {
+    "meaning": "hoa tulip",
+    "level": "easy",
+    "topic": "Loài hoa"
+  },
+  "blossom": {
+    "meaning": "hoa nở rộ",
+    "level": "easy",
+    "topic": "Loài hoa"
+  },
+  "petal": {
+    "meaning": "cánh hoa",
+    "level": "easy",
+    "topic": "Loài hoa"
+  },
+  "fragrance": {
+    "meaning": "hương thơm",
+    "level": "easy",
+    "topic": "Loài hoa"
+  },
+  "bouquet": {
+    "meaning": "bó hoa",
+    "level": "easy",
+    "topic": "Loài hoa"
+  },
+  "botanical": {
+    "meaning": "thuộc thực vật",
+    "level": "easy",
+    "topic": "Loài hoa"
+  },
+  "tree": {
+    "meaning": "cây thân gỗ",
+    "level": "easy",
+    "topic": "Cây cối"
+  },
+  "plant": {
+    "meaning": "cây trồng",
+    "level": "easy",
+    "topic": "Cây cối"
+  },
+  "grass": {
+    "meaning": "cỏ",
+    "level": "easy",
+    "topic": "Cây cối"
+  },
+  "leaf": {
+    "meaning": "lá cây",
+    "level": "easy",
+    "topic": "Cây cối"
+  },
+  "forest": {
+    "meaning": "rừng",
+    "level": "easy",
+    "topic": "Cây cối"
+  },
+  "branch": {
+    "meaning": "cành cây",
+    "level": "easy",
+    "topic": "Cây cối"
+  },
+  "seed": {
+    "meaning": "hạt giống",
+    "level": "easy",
+    "topic": "Cây cối"
+  },
+  "root": {
+    "meaning": "rễ cây",
+    "level": "easy",
+    "topic": "Cây cối"
+  },
+  "soil": {
+    "meaning": "đất trồng",
+    "level": "easy",
+    "topic": "Cây cối"
+  },
+  "harvest": {
+    "meaning": "thu hoạch",
+    "level": "easy",
+    "topic": "Cây cối"
+  },
+  "vegetation": {
+    "meaning": "thảm thực vật",
+    "level": "easy",
+    "topic": "Cây cối"
+  },
+  "photosynthesis": {
+    "meaning": "quang hợp",
+    "level": "easy",
+    "topic": "Cây cối"
+  },
+  "dog": {
+    "meaning": "con chó",
+    "level": "easy",
+    "topic": "Con vật"
+  },
+  "cat": {
+    "meaning": "con mèo",
+    "level": "easy",
+    "topic": "Con vật"
+  },
+  "bird": {
+    "meaning": "con chim",
+    "level": "easy",
+    "topic": "Con vật"
+  },
+  "fish": {
+    "meaning": "con cá",
+    "level": "easy",
+    "topic": "Con vật"
+  },
+  "cow": {
+    "meaning": "con bò",
+    "level": "easy",
+    "topic": "Con vật"
+  },
+  "horse": {
+    "meaning": "con ngựa",
+    "level": "easy",
+    "topic": "Con vật"
+  },
+  "rabbit": {
+    "meaning": "con thỏ",
+    "level": "easy",
+    "topic": "Con vật"
+  },
+  "monkey": {
+    "meaning": "con khỉ",
+    "level": "easy",
+    "topic": "Con vật"
+  },
+  "tiger": {
+    "meaning": "con hổ",
+    "level": "easy",
+    "topic": "Con vật"
+  },
+  "mammal": {
+    "meaning": "động vật có vú",
+    "level": "easy",
+    "topic": "Con vật"
+  },
+  "species": {
+    "meaning": "loài sinh vật",
+    "level": "easy",
+    "topic": "Con vật"
+  },
+  "predator": {
+    "meaning": "động vật săn mồi",
+    "level": "easy",
+    "topic": "Con vật"
+  },
+  "hobby": {
+    "meaning": "sở thích",
+    "level": "easy",
+    "topic": "Sở thích & Giải trí"
+  },
+  "music": {
+    "meaning": "âm nhạc",
+    "level": "easy",
+    "topic": "Sở thích & Giải trí"
+  },
+  "movie": {
+    "meaning": "phim ảnh",
+    "level": "easy",
+    "topic": "Sở thích & Giải trí"
+  },
+  "sport": {
+    "meaning": "môn thể thao",
+    "level": "easy",
+    "topic": "Sở thích & Giải trí"
+  },
+  "drawing": {
+    "meaning": "vẽ tranh",
+    "level": "easy",
+    "topic": "Sở thích & Giải trí"
+  },
+  "painting": {
+    "meaning": "hội họa",
+    "level": "easy",
+    "topic": "Sở thích & Giải trí"
+  },
+  "instrument": {
+    "meaning": "nhạc cụ",
+    "level": "easy",
+    "topic": "Sở thích & Giải trí"
+  },
+  "collection": {
+    "meaning": "bộ sưu tập",
+    "level": "easy",
+    "topic": "Sở thích & Giải trí"
+  },
+  "photography": {
+    "meaning": "nhiếp ảnh",
+    "level": "easy",
+    "topic": "Sở thích & Giải trí"
+  },
+  "relaxation": {
+    "meaning": "sự thư giãn",
+    "level": "easy",
+    "topic": "Sở thích & Giải trí"
+  },
+  "enthusiasm": {
+    "meaning": "sự hăng hái",
+    "level": "easy",
+    "topic": "Sở thích & Giải trí"
+  },
+  "entertainment": {
+    "meaning": "sự giải trí",
+    "level": "easy",
+    "topic": "Sở thích & Giải trí"
+  },
+  "family": {
+    "meaning": "gia đình",
+    "level": "easy",
+    "topic": "Gia đình & Người thân"
+  },
+  "parent": {
+    "meaning": "cha mẹ",
+    "level": "easy",
+    "topic": "Gia đình & Người thân"
+  },
+  "child": {
+    "meaning": "đứa trẻ",
+    "level": "easy",
+    "topic": "Gia đình & Người thân"
+  },
+  "relative": {
+    "meaning": "họ hàng",
+    "level": "easy",
+    "topic": "Gia đình & Người thân"
+  },
+  "sibling": {
+    "meaning": "anh chị em ruột",
+    "level": "easy",
+    "topic": "Gia đình & Người thân"
+  },
+  "cousin": {
+    "meaning": "anh chị em họ",
+    "level": "easy",
+    "topic": "Gia đình & Người thân"
+  },
+  "uncle": {
+    "meaning": "chú, bác, cậu",
+    "level": "easy",
+    "topic": "Gia đình & Người thân"
+  },
+  "marriage": {
+    "meaning": "hôn nhân",
+    "level": "easy",
+    "topic": "Gia đình & Người thân"
+  },
+  "childhood": {
+    "meaning": "tuổi thơ",
+    "level": "easy",
+    "topic": "Gia đình & Người thân"
+  },
+  "ancestor": {
+    "meaning": "tổ tiên",
+    "level": "easy",
+    "topic": "Gia đình & Người thân"
+  },
+  "generation": {
+    "meaning": "thế hệ",
+    "level": "easy",
+    "topic": "Gia đình & Người thân"
+  },
+  "upbringing": {
+    "meaning": "sự nuôi nấng, giáo dục",
+    "level": "easy",
+    "topic": "Gia đình & Người thân"
+  },
+  "weather": {
+    "meaning": "thời tiết",
+    "level": "easy",
+    "topic": "Thời tiết & Khí hậu"
+  },
+  "sunshine": {
+    "meaning": "ánh nắng",
+    "level": "easy",
+    "topic": "Thời tiết & Khí hậu"
+  },
+  "rainy": {
+    "meaning": "có mưa",
+    "level": "easy",
+    "topic": "Thời tiết & Khí hậu"
+  },
+  "windy": {
+    "meaning": "nhiều gió",
+    "level": "easy",
+    "topic": "Thời tiết & Khí hậu"
+  },
+  "snowy": {
+    "meaning": "có tuyết",
+    "level": "easy",
+    "topic": "Thời tiết & Khí hậu"
+  },
+  "temperature": {
+    "meaning": "nhiệt độ",
+    "level": "easy",
+    "topic": "Thời tiết & Khí hậu"
+  },
+  "umbrella": {
+    "meaning": "chiếc ô",
+    "level": "easy",
+    "topic": "Thời tiết & Khí hậu"
+  },
+  "forecast": {
+    "meaning": "dự báo thời tiết",
+    "level": "easy",
+    "topic": "Thời tiết & Khí hậu"
+  },
+  "season": {
+    "meaning": "mùa trong năm",
+    "level": "easy",
+    "topic": "Thời tiết & Khí hậu"
+  },
+  "humidity": {
+    "meaning": "độ ẩm không khí",
+    "level": "easy",
+    "topic": "Thời tiết & Khí hậu"
+  },
+  "thunderstorm": {
+    "meaning": "bão kèm sấm sét",
+    "level": "easy",
+    "topic": "Thời tiết & Khí hậu"
+  },
+  "climate": {
+    "meaning": "khí khí hậu",
+    "level": "easy",
+    "topic": "Thời tiết & Khí hậu"
+  },
+  "clothes": {
+    "meaning": "quần áo nói chung",
+    "level": "easy",
+    "topic": "Trang phục & Thời trang"
+  },
+  "shirt": {
+    "meaning": "áo sơ mi",
+    "level": "easy",
+    "topic": "Trang phục & Thời trang"
+  },
+  "shoes": {
+    "meaning": "giày",
+    "level": "easy",
+    "topic": "Trang phục & Thời trang"
+  },
+  "jacket": {
+    "meaning": "áo khoác nhẹ",
+    "level": "easy",
+    "topic": "Trang phục & Thời trang"
+  },
+  "dress": {
+    "meaning": "váy đầm",
+    "level": "easy",
+    "topic": "Trang phục & Thời trang"
+  },
+  "fashion": {
+    "meaning": "thời trang",
+    "level": "easy",
+    "topic": "Trang phục & Thời trang"
+  },
+  "material": {
+    "meaning": "chất liệu vải",
+    "level": "easy",
+    "topic": "Trang phục & Thời trang"
+  },
+  "leather": {
+    "meaning": "da thuộc",
+    "level": "easy",
+    "topic": "Trang phục & Thời trang"
+  },
+  "style": {
+    "meaning": "phong cách",
+    "level": "easy",
+    "topic": "Trang phục & Thời trang"
+  },
+  "elegant": {
+    "meaning": "lịch lãm, nhã nhặn",
+    "level": "easy",
+    "topic": "Trang phục & Thời trang"
+  },
+  "wardrobe": {
+    "meaning": "tủ quần áo",
+    "level": "easy",
+    "topic": "Trang phục & Thời trang"
+  },
+  "garment": {
+    "meaning": "quần áo, hàng may mặc",
+    "level": "easy",
+    "topic": "Trang phục & Thời trang"
+  },
+  "table": {
+    "meaning": "cái bàn",
+    "level": "easy",
+    "topic": "Đồ dùng gia đình"
+  },
+  "chair": {
+    "meaning": "cái ghế",
+    "level": "easy",
+    "topic": "Đồ dùng gia đình"
+  },
+  "bed": {
+    "meaning": "cái giường",
+    "level": "easy",
+    "topic": "Đồ dùng gia đình"
+  },
+  "key": {
+    "meaning": "chìa khóa",
+    "level": "easy",
+    "topic": "Đồ dùng gia đình"
+  },
+  "door": {
+    "meaning": "cánh cửa",
+    "level": "easy",
+    "topic": "Đồ dùng gia đình"
+  },
+  "kitchen": {
+    "meaning": "nhà bếp",
+    "level": "easy",
+    "topic": "Đồ dùng gia đình"
+  },
+  "fridge": {
+    "meaning": "tủ lạnh",
+    "level": "easy",
+    "topic": "Đồ dùng gia đình"
+  },
+  "machine": {
+    "meaning": "máy móc",
+    "level": "easy",
+    "topic": "Đồ dùng gia đình"
+  },
+  "window": {
+    "meaning": "cửa sổ",
+    "level": "easy",
+    "topic": "Đồ dùng gia đình"
+  },
+  "convenience": {
+    "meaning": "sự tiện nghi",
+    "level": "easy",
+    "topic": "Đồ dùng gia đình"
+  },
+  "gadget": {
+    "meaning": "thiết bị/dụng cụ nhỏ tiện ích",
+    "level": "easy",
+    "topic": "Đồ dùng gia đình"
+  },
+  "maintenance": {
+    "meaning": "sự bảo trì, bảo dưỡng",
+    "level": "easy",
+    "topic": "Đồ dùng gia đình"
+  },
+  "ball": {
+    "meaning": "quả bóng",
+    "level": "easy",
+    "topic": "Thể thao & Sức khỏe"
+  },
+  "team": {
+    "meaning": "đội thể thao",
+    "level": "easy",
+    "topic": "Thể thao & Sức khỏe"
+  },
+  "run": {
+    "meaning": "chạy bộ",
+    "level": "easy",
+    "topic": "Thể thao & Sức khỏe"
+  },
+  "swim": {
+    "meaning": "bơi lội",
+    "level": "easy",
+    "topic": "Thể thao & Sức khỏe"
+  },
+  "player": {
+    "meaning": "người chơi, đấu thủ",
+    "level": "easy",
+    "topic": "Thể thao & Sức khỏe"
+  },
+  "practice": {
+    "meaning": "luyện tập",
+    "level": "easy",
+    "topic": "Thể thao & Sức khỏe"
+  },
+  "victory": {
+    "meaning": "chiến thắng",
+    "level": "easy",
+    "topic": "Thể thao & Sức khỏe"
+  },
+  "match": {
+    "meaning": "trận đấu",
+    "level": "easy",
+    "topic": "Thể thao & Sức khỏe"
+  },
+  "coach": {
+    "meaning": "huấn luyện viên",
+    "level": "easy",
+    "topic": "Thể thao & Sức khỏe"
+  },
+  "tournament": {
+    "meaning": "giải đấu thể thao",
+    "level": "easy",
+    "topic": "Thể thao & Sức khỏe"
+  },
+  "athlete": {
+    "meaning": "vận động viên chuyên nghiệp",
+    "level": "easy",
+    "topic": "Thể thao & Sức khỏe"
+  },
+  "stamina": {
+    "meaning": "sức bền, thể lực",
+    "level": "easy",
+    "topic": "Thể thao & Sức khỏe"
+  },
+  "layover": {
+    "meaning": "sự dừng nghỉ/quá cảnh",
+    "level": "medium",
+    "topic": "Du lịch & Khám phá"
+  },
+  "luggage": {
+    "meaning": "hành lý",
+    "level": "medium",
+    "topic": "Du lịch & Khám phá"
+  },
+  "passport": {
+    "meaning": "hộ chiếu",
+    "level": "medium",
+    "topic": "Du lịch & Khám phá"
+  },
+  "flight": {
+    "meaning": "chuyến bay",
+    "level": "medium",
+    "topic": "Du lịch & Khám phá"
+  },
+  "tourist": {
+    "meaning": "khách du lịch",
+    "level": "medium",
+    "topic": "Du lịch & Khám phá"
+  },
+  "reservation": {
+    "meaning": "sự đặt chỗ trước",
+    "level": "medium",
+    "topic": "Du lịch & Khám phá"
+  },
+  "destination": {
+    "meaning": "điểm đến",
+    "level": "medium",
+    "topic": "Du lịch & Khám phá"
+  },
+  "departure": {
+    "meaning": "sự khởi hành",
+    "level": "medium",
+    "topic": "Du lịch & Khám phá"
+  },
+  "sightseeing": {
+    "meaning": "cuộc đi ngắm cảnh",
+    "level": "medium",
+    "topic": "Du lịch & Khám phá"
+  },
+  "itinerary": {
+    "meaning": "lịch trình chi tiết",
+    "level": "medium",
+    "topic": "Du lịch & Khám phá"
+  },
+  "accommodation": {
+    "meaning": "chỗ ở nơi lưu trú",
+    "level": "medium",
+    "topic": "Du lịch & Khám phá"
+  },
+  "transportation": {
+    "meaning": "phương tiện di chuyển",
+    "level": "medium",
+    "topic": "Du lịch & Khám phá"
+  },
+  "career": {
+    "meaning": "sự nghiệp",
+    "level": "medium",
+    "topic": "Công việc & Sự nghiệp"
+  },
+  "office": {
+    "meaning": "văn phòng làm việc",
+    "level": "medium",
+    "topic": "Công việc & Sự nghiệp"
+  },
+  "employee": {
+    "meaning": "nhân viên, người lao động",
+    "level": "medium",
+    "topic": "Công việc & Sự nghiệp"
+  },
+  "meeting": {
+    "meaning": "cuộc họp",
+    "level": "medium",
+    "topic": "Công việc & Sự nghiệp"
+  },
+  "salary": {
+    "meaning": "mức lương",
+    "level": "medium",
+    "topic": "Công việc & Sự nghiệp"
+  },
+  "deadline": {
+    "meaning": "hạn chót hoàn thành",
+    "level": "medium",
+    "topic": "Công việc & Sự nghiệp"
+  },
+  "colleague": {
+    "meaning": "đồng nghiệp",
+    "level": "medium",
+    "topic": "Công việc & Sự nghiệp"
+  },
+  "interview": {
+    "meaning": "cuộc phỏng vấn",
+    "level": "medium",
+    "topic": "Công việc & Sự nghiệp"
+  },
+  "promotion": {
+    "meaning": "thăng chức, thăng tiến",
+    "level": "medium",
+    "topic": "Công việc & Sự nghiệp"
+  },
+  "productivity": {
+    "meaning": "năng suất làm việc",
+    "level": "medium",
+    "topic": "Công việc & Sự nghiệp"
+  },
+  "collaboration": {
+    "meaning": "sự hợp tác chung",
+    "level": "medium",
+    "topic": "Công việc & Sự nghiệp"
+  },
+  "resignation": {
+    "meaning": "đơn xin thôi việc",
+    "level": "medium",
+    "topic": "Công việc & Sự nghiệp"
+  },
+  "fever": {
+    "meaning": "triệu chứng sốt",
+    "level": "medium",
+    "topic": "Sức khỏe & Y tế"
+  },
+  "clinic": {
+    "meaning": "phòng khám",
+    "level": "medium",
+    "topic": "Sức khỏe & Y tế"
+  },
+  "patient": {
+    "meaning": "bệnh nhân",
+    "level": "medium",
+    "topic": "Sức khỏe & Y tế"
+  },
+  "exercise": {
+    "meaning": "tập thể dục",
+    "level": "medium",
+    "topic": "Sức khỏe & Y tế"
+  },
+  "medical": {
+    "meaning": "thuộc y tế",
+    "level": "medium",
+    "topic": "Sức khỏe & Y tế"
+  },
+  "treatment": {
+    "meaning": "liệu trình điều trị",
+    "level": "medium",
+    "topic": "Sức khỏe & Y tế"
+  },
+  "recovery": {
+    "meaning": "sự phục hồi sức khỏe",
+    "level": "medium",
+    "topic": "Sức khỏe & Y tế"
+  },
+  "diet": {
+    "meaning": "chế độ ăn uống",
+    "level": "medium",
+    "topic": "Sức khỏe & Y tế"
+  },
+  "nutrition": {
+    "meaning": "dinh dưỡng",
+    "level": "medium",
+    "topic": "Sức khỏe & Y tế"
+  },
+  "diagnosis": {
+    "meaning": "chẩn đoán y khoa",
+    "level": "medium",
+    "topic": "Sức khỏe & Y tế"
+  },
+  "prescription": {
+    "meaning": "đơn thuốc của bác sĩ",
+    "level": "medium",
+    "topic": "Sức khỏe & Y tế"
+  },
+  "immunity": {
+    "meaning": "khả năng miễn dịch",
+    "level": "medium",
+    "topic": "Sức khỏe & Y tế"
+  },
+  "reply": {
+    "meaning": "phản hồi, trả lời",
+    "level": "medium",
+    "topic": "Giao tiếp xã hội"
+  },
+  "message": {
+    "meaning": "tin nhắn, thông điệp",
+    "level": "medium",
+    "topic": "Giao tiếp xã hội"
+  },
+  "explain": {
+    "meaning": "giải thích",
+    "level": "medium",
+    "topic": "Giao tiếp xã hội"
+  },
+  "conversation": {
+    "meaning": "cuộc hội thoại",
+    "level": "medium",
+    "topic": "Giao tiếp xã hội"
+  },
+  "discussion": {
+    "meaning": "cuộc thảo luận",
+    "level": "medium",
+    "topic": "Giao tiếp xã hội"
+  },
+  "opinion": {
+    "meaning": "quan điểm, ý kiến",
+    "level": "medium",
+    "topic": "Giao tiếp xã hội"
+  },
+  "interrupt": {
+    "meaning": "ngắt lời, chen ngang",
+    "level": "medium",
+    "topic": "Giao tiếp xã hội"
+  },
+  "clarify": {
+    "meaning": "làm rõ thông tin",
+    "level": "medium",
+    "topic": "Giao tiếp xã hội"
+  },
+  "respond": {
+    "meaning": "phản hồi, đáp lại",
+    "level": "medium",
+    "topic": "Giao tiếp xã hội"
+  },
+  "persuade": {
+    "meaning": "thuyết phục",
+    "level": "medium",
+    "topic": "Giao tiếp xã hội"
+  },
+  "misunderstanding": {
+    "meaning": "sự hiểu lầm",
+    "level": "medium",
+    "topic": "Giao tiếp xã hội"
+  },
+  "negotiation": {
+    "meaning": "đàm phán thương lượng",
+    "level": "medium",
+    "topic": "Giao tiếp xã hội"
+  },
+  "cash": {
+    "meaning": "tiền mặt",
+    "level": "medium",
+    "topic": "Tiền bạc & Chi tiêu"
+  },
+  "bill": {
+    "meaning": "hóa đơn thanh toán",
+    "level": "medium",
+    "topic": "Tiền bạc & Chi tiêu"
+  },
+  "income": {
+    "meaning": "thu nhập",
+    "level": "medium",
+    "topic": "Tiền bạc & Chi tiêu"
+  },
+  "debt": {
+    "meaning": "khoản nợ",
+    "level": "medium",
+    "topic": "Tiền bạc & Chi tiêu"
+  },
+  "currency": {
+    "meaning": "tiền tệ",
+    "level": "medium",
+    "topic": "Tiền bạc & Chi tiêu"
+  },
+  "budget": {
+    "meaning": "ngân sách chi tiêu",
+    "level": "medium",
+    "topic": "Tiền bạc & Chi tiêu"
+  },
+  "saving": {
+    "meaning": "tiền tiết kiệm",
+    "level": "medium",
+    "topic": "Tiền bạc & Chi tiêu"
+  },
+  "expense": {
+    "meaning": "chi phí tiêu dùng",
+    "level": "medium",
+    "topic": "Tiền bạc & Chi tiêu"
+  },
+  "transfer": {
+    "meaning": "chuyển khoản",
+    "level": "medium",
+    "topic": "Tiền bạc & Chi tiêu"
+  },
+  "interest rate": {
+    "meaning": "lãi suất ngân hàng",
+    "level": "medium",
+    "topic": "Tiền bạc & Chi tiêu"
+  },
+  "financial": {
+    "meaning": "thuộc tài chính",
+    "level": "medium",
+    "topic": "Tiền bạc & Chi tiêu"
+  },
+  "installment": {
+    "meaning": "trả góp",
+    "level": "medium",
+    "topic": "Tiền bạc & Chi tiêu"
+  },
+  "ecology": {
+    "meaning": "sinh thái học",
+    "level": "medium",
+    "topic": "Môi trường"
+  },
+  "habitat": {
+    "meaning": "môi trường sống",
+    "level": "medium",
+    "topic": "Môi trường"
+  },
+  "trash": {
+    "meaning": "rác thải sinh hoạt",
+    "level": "medium",
+    "topic": "Môi trường"
+  },
+  "wildlife": {
+    "meaning": "động vật hoang dã",
+    "level": "medium",
+    "topic": "Môi trường"
+  },
+  "nature": {
+    "meaning": "tự nhiên, thiên nhiên",
+    "level": "medium",
+    "topic": "Môi trường"
+  },
+  "pollution": {
+    "meaning": "sự ô nhiễm",
+    "level": "medium",
+    "topic": "Môi trường"
+  },
+  "recycle": {
+    "meaning": "tái chế phế liệu",
+    "level": "medium",
+    "topic": "Môi trường"
+  },
+  "waste": {
+    "meaning": "chất thải, lãng phí",
+    "level": "medium",
+    "topic": "Môi trường"
+  },
+  "protect": {
+    "meaning": "bảo vệ giữ gìn",
+    "level": "medium",
+    "topic": "Môi trường"
+  },
+  "sustainability": {
+    "meaning": "sự phát triển bền vững",
+    "level": "medium",
+    "topic": "Môi trường"
+  },
+  "biodiversity": {
+    "meaning": "đa dạng sinh học",
+    "level": "medium",
+    "topic": "Môi trường"
+  },
+  "conservation": {
+    "meaning": "sự bảo tồn thiên nhiên",
+    "level": "medium",
+    "topic": "Môi trường"
+  },
+  "festival": {
+    "meaning": "lễ hội",
+    "level": "medium",
+    "topic": "Văn hóa & Xã hội"
+  },
+  "holiday": {
+    "meaning": "ngày nghỉ lễ",
+    "level": "medium",
+    "topic": "Văn hóa & Xã hội"
+  },
+  "custom": {
+    "meaning": "phong tục tập quán",
+    "level": "medium",
+    "topic": "Văn hóa & Xã hội"
+  },
+  "tradition": {
+    "meaning": "truyền thống",
+    "level": "medium",
+    "topic": "Văn hóa & Xã hội"
+  },
+  "heritage": {
+    "meaning": "di sản văn hóa",
+    "level": "medium",
+    "topic": "Văn hóa & Xã hội"
+  },
+  "identity": {
+    "meaning": "bản sắc đặc trưng",
+    "level": "medium",
+    "topic": "Văn hóa & Xã hội"
+  },
+  "ceremony": {
+    "meaning": "nghi lễ, nghi thức",
+    "level": "medium",
+    "topic": "Văn hóa & Xã hội"
+  },
+  "diversity": {
+    "meaning": "sự đa dạng",
+    "level": "medium",
+    "topic": "Văn hóa & Xã hội"
+  },
+  "society": {
+    "meaning": "xã hội",
+    "level": "medium",
+    "topic": "Văn hóa & Xã hội"
+  },
+  "cross-cultural": {
+    "meaning": "giao thoa văn hóa",
+    "level": "medium",
+    "topic": "Văn hóa & Xã hội"
+  },
+  "assimilation": {
+    "meaning": "sự đồng hóa văn hóa",
+    "level": "medium",
+    "topic": "Văn hóa & Xã hội"
+  },
+  "nuance": {
+    "meaning": "sắc thái tinh tế",
+    "level": "medium",
+    "topic": "Văn hóa & Xã hội"
+  },
+  "purchase": {
+    "meaning": "mua sắm, món đồ mua",
+    "level": "medium",
+    "topic": "Mua sắm & Tiêu dùng"
+  },
+  "store": {
+    "meaning": "cửa hàng bán lẻ",
+    "level": "medium",
+    "topic": "Mua sắm & Tiêu dùng"
+  },
+  "retail": {
+    "meaning": "ngành bán lẻ",
+    "level": "medium",
+    "topic": "Mua sắm & Tiêu dùng"
+  },
+  "receipt": {
+    "meaning": "hóa đơn mua hàng",
+    "level": "medium",
+    "topic": "Mua sắm & Tiêu dùng"
+  },
+  "brand": {
+    "meaning": "thương hiệu",
+    "level": "medium",
+    "topic": "Mua sắm & Tiêu dùng"
+  },
+  "customer": {
+    "meaning": "khách hàng tiêu dùng",
+    "level": "medium",
+    "topic": "Mua sắm & Tiêu dùng"
+  },
+  "discount": {
+    "meaning": "giảm giá chiết khấu",
+    "level": "medium",
+    "topic": "Mua sắm & Tiêu dùng"
+  },
+  "product": {
+    "meaning": "sản phẩm hàng hóa",
+    "level": "medium",
+    "topic": "Mua sắm & Tiêu dùng"
+  },
+  "delivery": {
+    "meaning": "sự giao hàng",
+    "level": "medium",
+    "topic": "Mua sắm & Tiêu dùng"
+  },
+  "consumer": {
+    "meaning": "người tiêu dùng",
+    "level": "medium",
+    "topic": "Mua sắm & Tiêu dùng"
+  },
+  "transaction": {
+    "meaning": "giao dịch tài chính",
+    "level": "medium",
+    "topic": "Mua sắm & Tiêu dùng"
+  },
+  "refund": {
+    "meaning": "khoản hoàn tiền",
+    "level": "medium",
+    "topic": "Mua sắm & Tiêu dùng"
+  },
+  "course": {
+    "meaning": "khóa học",
+    "level": "medium",
+    "topic": "Giáo dục & Phát triển"
+  },
+  "student": {
+    "meaning": "học sinh, sinh viên",
+    "level": "medium",
+    "topic": "Giáo dục & Phát triển"
+  },
+  "lecture": {
+    "meaning": "bài giảng đại học",
+    "level": "medium",
+    "topic": "Giáo dục & Phát triển"
+  },
+  "lesson": {
+    "meaning": "bài học rút ra",
+    "level": "medium",
+    "topic": "Giáo dục & Phát triển"
+  },
+  "grade": {
+    "meaning": "điểm số, lớp học",
+    "level": "medium",
+    "topic": "Giáo dục & Phát triển"
+  },
+  "knowledge": {
+    "meaning": "kiến thức sâu rộng",
+    "level": "medium",
+    "topic": "Giáo dục & Phát triển"
+  },
+  "skill": {
+    "meaning": "kỹ năng thuần thục",
+    "level": "medium",
+    "topic": "Giáo dục & Phát triển"
+  },
+  "memory": {
+    "meaning": "trí nhớ, ký ức",
+    "level": "medium",
+    "topic": "Giáo dục & Phát triển"
+  },
+  "interactive": {
+    "meaning": "có tính tương tác",
+    "level": "medium",
+    "topic": "Giáo dục & Phát triển"
+  },
+  "literacy": {
+    "meaning": "khả năng đọc viết",
+    "level": "medium",
+    "topic": "Giáo dục & Phát triển"
+  },
+  "pedagogy": {
+    "meaning": "phương pháp sư phạm",
+    "level": "medium",
+    "topic": "Giáo dục & Phát triển"
+  },
+  "academic": {
+    "meaning": "thuộc học thuật",
+    "level": "medium",
+    "topic": "Giáo dục & Phát triển"
+  },
+  "vehicle": {
+    "meaning": "phương tiện di chuyển",
+    "level": "medium",
+    "topic": "Giao thông & Di chuyển"
+  },
+  "route": {
+    "meaning": "lộ trình, tuyến đường",
+    "level": "medium",
+    "topic": "Giao thông & Di chuyển"
+  },
+  "terminal": {
+    "meaning": "nhà ga, bến đỗ",
+    "level": "medium",
+    "topic": "Giao thông & Di chuyển"
+  },
+  "passenger": {
+    "meaning": "hành khách",
+    "level": "medium",
+    "topic": "Giao thông & Di chuyển"
+  },
+  "driver": {
+    "meaning": "tài xế lái xe",
+    "level": "medium",
+    "topic": "Giao thông & Di chuyển"
+  },
+  "traffic": {
+    "meaning": "luồng giao thông",
+    "level": "medium",
+    "topic": "Giao thông & Di chuyển"
+  },
+  "journey": {
+    "meaning": "hành trình chuyến đi",
+    "level": "medium",
+    "topic": "Giao thông & Di chuyển"
+  },
+  "transit": {
+    "meaning": "sự trung chuyển",
+    "level": "medium",
+    "topic": "Giao thông & Di chuyển"
+  },
+  "commute": {
+    "meaning": "việc đi lại hằng ngày",
+    "level": "medium",
+    "topic": "Giao thông & Di chuyển"
+  },
+  "congestion": {
+    "meaning": "sự tắc nghẽn giao thông",
+    "level": "medium",
+    "topic": "Giao thông & Di chuyển"
+  },
+  "infrastructure": {
+    "meaning": "cơ sở hạ tầng kỹ thuật",
+    "level": "hard",
+    "topic": "Công nghệ số"
+  },
+  "logistics": {
+    "meaning": "ngành hậu cần, logistics",
+    "level": "medium",
+    "topic": "Giao thông & Di chuyển"
+  },
+  "recipe": {
+    "meaning": "công thức nấu ăn",
+    "level": "medium",
+    "topic": "Ẩm thực & Nấu nướng"
+  },
+  "utensil": {
+    "meaning": "dụng cụ làm bếp",
+    "level": "medium",
+    "topic": "Ẩm thực & Nấu nướng"
+  },
+  "gourmet": {
+    "meaning": "ẩm thực cao cấp dã",
+    "level": "medium",
+    "topic": "Ẩm thực & Nấu nướng"
+  },
+  "chef": {
+    "meaning": "đầu bếp chuyên nghiệp",
+    "level": "medium",
+    "topic": "Ẩm thực & Nấu nướng"
+  },
+  "cuisine": {
+    "meaning": "nền ẩm thực",
+    "level": "medium",
+    "topic": "Ẩm thực & Nấu nướng"
+  },
+  "ingredient": {
+    "meaning": "nguyên liệu nấu ăn",
+    "level": "medium",
+    "topic": "Ẩm thực & Nấu nướng"
+  },
+  "flavor": {
+    "meaning": "hương vị món ăn",
+    "level": "medium",
+    "topic": "Ẩm thực & Nấu nướng"
+  },
+  "taste": {
+    "meaning": "vị giác, nếm thử",
+    "level": "medium",
+    "topic": "Ẩm thực & Nấu nướng"
+  },
+  "prep": {
+    "meaning": "chuẩn bị, sơ chế",
+    "level": "medium",
+    "topic": "Ẩm thực & Nấu nướng"
+  },
+  "culinary": {
+    "meaning": "thuộc ẩm thực bếp núc",
+    "level": "medium",
+    "topic": "Ẩm thực & Nấu nướng"
+  },
+  "marinate": {
+    "meaning": "tẩm ướp gia vị",
+    "level": "medium",
+    "topic": "Ẩm thực & Nấu nướng"
+  },
+  "gastronomy": {
+    "meaning": "nghệ thuật ẩm thực",
+    "level": "medium",
+    "topic": "Ẩm thực & Nấu nướng"
+  },
+  "suburb": {
+    "meaning": "vùng ngoại ô thanh bình",
+    "level": "medium",
+    "topic": "Đời sống đô thị"
+  },
+  "metropolis": {
+    "meaning": "siêu đô thị",
+    "level": "medium",
+    "topic": "Đời sống đô thị"
+  },
+  "resident": {
+    "meaning": "cư dân sinh sống",
+    "level": "medium",
+    "topic": "Đời sống đô thị"
+  },
+  "commuter": {
+    "meaning": "người đi lại đi làm",
+    "level": "medium",
+    "topic": "Đời sống đô thị"
+  },
+  "district": {
+    "meaning": "quận, huyện thành phố",
+    "level": "medium",
+    "topic": "Đời sống đô thị"
+  },
+  "downtown": {
+    "meaning": "trung tâm thành phố",
+    "level": "medium",
+    "topic": "Đời sống đô thị"
+  },
+  "building": {
+    "meaning": "tòa nhà cao tầng",
+    "level": "medium",
+    "topic": "Đời sống đô thị"
+  },
+  "noise": {
+    "meaning": "tiếng ồn đô thị",
+    "level": "medium",
+    "topic": "Đời sống đô thị"
+  },
+  "amenity": {
+    "meaning": "tiện ích công cộng",
+    "level": "medium",
+    "topic": "Đời sống đô thị"
+  },
+  "urbanization": {
+    "meaning": "sự đô thị hóa",
+    "level": "medium",
+    "topic": "Đời sống đô thị"
+  },
+  "density": {
+    "meaning": "mật độ dân số",
+    "level": "medium",
+    "topic": "Đời sống đô thị"
+  },
+  "sprawl": {
+    "meaning": "sự đô thị hóa bành trướng",
+    "level": "medium",
+    "topic": "Đời sống đô thị"
+  },
+  "mood": {
+    "meaning": "tâm trạng nhất thời",
+    "level": "medium",
+    "topic": "Cảm xúc & Tâm trạng"
+  },
+  "emotion": {
+    "meaning": "cảm xúc nguyên bản",
+    "level": "medium",
+    "topic": "Cảm xúc & Tâm trạng"
+  },
+  "stress": {
+    "meaning": "áp lực, căng thẳng",
+    "level": "medium",
+    "topic": "Cảm xúc & Tâm trạng"
+  },
+  "relief": {
+    "meaning": "sự nhẹ nhõm",
+    "level": "medium",
+    "topic": "Cảm xúc & Tâm trạng"
+  },
+  "anxiety": {
+    "meaning": "sự lo âu, bồn chồn",
+    "level": "medium",
+    "topic": "Cảm xúc & Tâm trạng"
+  },
+  "expression": {
+    "meaning": "sự biểu cảm khuôn mặt",
+    "level": "medium",
+    "topic": "Cảm xúc & Tâm trạng"
+  },
+  "satisfaction": {
+    "meaning": "sự hài lòng",
+    "level": "medium",
+    "topic": "Cảm xúc & Tâm trạng"
+  },
+  "frustration": {
+    "meaning": "sự ức chế, thất vọng",
+    "level": "medium",
+    "topic": "Cảm xúc & Tâm trạng"
+  },
+  "optimism": {
+    "meaning": "sự lạc quan",
+    "level": "medium",
+    "topic": "Cảm xúc & Tâm trạng"
+  },
+  "empathy": {
+    "meaning": "sự thấu cảm, đồng cảm",
+    "level": "medium",
+    "topic": "Cảm xúc & Tâm trạng"
+  },
+  "psychological": {
+    "meaning": "thuộc tâm lý",
+    "level": "medium",
+    "topic": "Cảm xúc & Tâm trạng"
+  },
+  "depression": {
+    "meaning": "sự trầm cảm",
+    "level": "medium",
+    "topic": "Cảm xúc & Tâm trạng"
+  },
+  "cryptography": {
+    "meaning": "mật mã học chuyên sâu",
+    "level": "hard",
+    "topic": "Công nghệ số"
+  },
+  "cybersecurity": {
+    "meaning": "an ninh mạng chuyên sâu",
+    "level": "hard",
+    "topic": "Công nghệ số"
+  },
+  "protocol": {
+    "meaning": "giao thức mạng máy tính",
+    "level": "hard",
+    "topic": "Công nghệ số"
+  },
+  "repository": {
+    "meaning": "kho chứa mã nguồn/dữ liệu",
+    "level": "hard",
+    "topic": "Công nghệ số"
+  },
+  "encryption": {
+    "meaning": "sự mã hóa bảo mật",
+    "level": "hard",
+    "topic": "Công nghệ số"
+  },
+  "integration": {
+    "meaning": "sự tích hợp hệ thống",
+    "level": "hard",
+    "topic": "Công nghệ số"
+  },
+  "automation": {
+    "meaning": "sự tự động hóa",
+    "level": "hard",
+    "topic": "Công nghệ số"
+  },
+  "optimization": {
+    "meaning": "sự tối ưu hóa",
+    "level": "hard",
+    "topic": "Công nghệ số"
+  },
+  "algorithm": {
+    "meaning": "thuật toán máy tính",
+    "level": "hard",
+    "topic": "Công nghệ số"
+  },
+  "authentication": {
+    "meaning": "sự xác thực bảo mật",
+    "level": "hard",
+    "topic": "Công nghệ số"
+  },
+  "scalability": {
+    "meaning": "khả năng mở rộng",
+    "level": "hard",
+    "topic": "Công nghệ số"
+  },
+  "acquisition": {
+    "meaning": "thương vụ mua lại công ty",
+    "level": "hard",
+    "topic": "Kinh doanh & Chiến lược"
+  },
+  "subsidiary": {
+    "meaning": "công ty con trực thuộc",
+    "level": "hard",
+    "topic": "Kinh doanh & Chiến lược"
+  },
+  "monopoly": {
+    "meaning": "sự độc quyền thị trường",
+    "level": "hard",
+    "topic": "Kinh doanh & Chiến lược"
+  },
+  "conglomerate": {
+    "meaning": "tập đoàn đa ngành",
+    "level": "hard",
+    "topic": "Kinh doanh & Chiến lược"
+  },
+  "commodity": {
+    "meaning": "hàng hóa thương mại",
+    "level": "hard",
+    "topic": "Kinh doanh & Chiến lược"
+  },
+  "leverage": {
+    "meaning": "đòn bẩy tài chính/vị thế",
+    "level": "hard",
+    "topic": "Kinh doanh & Chiến lược"
+  },
+  "branding": {
+    "meaning": "xây dựng thương hiệu",
+    "level": "hard",
+    "topic": "Kinh doanh & Chiến lược"
+  },
+  "enterprise": {
+    "meaning": "doanh nghiệp lớn",
+    "level": "hard",
+    "topic": "Kinh doanh & Chiến lược"
+  },
+  "corporate": {
+    "meaning": "thuộc tập đoàn",
+    "level": "hard",
+    "topic": "Kinh doanh & Chiến lược"
+  },
+  "competitive advantage": {
+    "meaning": "lợi thế cạnh tranh",
+    "level": "hard",
+    "topic": "Kinh doanh & Chiến lược"
+  },
+  "market segmentation": {
+    "meaning": "phân khúc thị trường",
+    "level": "hard",
+    "topic": "Kinh doanh & Chiến lược"
+  },
+  "stakeholder": {
+    "meaning": "bên liên quan",
+    "level": "hard",
+    "topic": "Kinh doanh & Chiến lược"
+  },
+  "thesis": {
+    "meaning": "luận văn tốt nghiệp",
+    "level": "hard",
+    "topic": "Học thuật & IELTS"
+  },
+  "paradigm": {
+    "meaning": "hệ hình, mô thức tư duy",
+    "level": "hard",
+    "topic": "Học thuật & IELTS"
+  },
+  "quantitative": {
+    "meaning": "phương pháp định lượng",
+    "level": "hard",
+    "topic": "Học thuật & IELTS"
+  },
+  "qualitative": {
+    "meaning": "phương pháp định tính",
+    "level": "hard",
+    "topic": "Học thuật & IELTS"
+  },
+  "validity": {
+    "meaning": "tính hiệu lực học thuật",
+    "level": "hard",
+    "topic": "Học thuật & IELTS"
+  },
+  "significant": {
+    "meaning": "đáng kể, có ý nghĩa",
+    "level": "hard",
+    "topic": "Học thuật & IELTS"
+  },
+  "discourse": {
+    "meaning": "diễn ngôn học thuật",
+    "level": "hard",
+    "topic": "Học thuật & IELTS"
+  },
+  "critique": {
+    "meaning": "bài phê bình nghệ thuật",
+    "level": "hard",
+    "topic": "Văn học & Nghệ thuật"
+  },
+  "methodology": {
+    "meaning": "phương pháp luận",
+    "level": "hard",
+    "topic": "Học thuật & IELTS"
+  },
+  "hypothesis": {
+    "meaning": "giả thuyết khoa học",
+    "level": "hard",
+    "topic": "Học thuật & IELTS"
+  },
+  "counterargument": {
+    "meaning": "luận điểm phản biện",
+    "level": "hard",
+    "topic": "Học thuật & IELTS"
+  },
+  "theoretical": {
+    "meaning": "mang tính lý thuyết",
+    "level": "hard",
+    "topic": "Học thuật & IELTS"
+  },
+  "mechanism": {
+    "meaning": "cơ chế khoa học",
+    "level": "hard",
+    "topic": "Khoa học & Thực nghiệm"
+  },
+  "velocity": {
+    "meaning": "vận tốc chuyển dịch",
+    "level": "hard",
+    "topic": "Khoa học & Thực nghiệm"
+  },
+  "postulate": {
+    "meaning": "tiên đề khoa học",
+    "level": "hard",
+    "topic": "Khoa học & Thực nghiệm"
+  },
+  "mutation": {
+    "meaning": "sự đột biến sinh học",
+    "level": "hard",
+    "topic": "Khoa học & Thực nghiệm"
+  },
+  "anomaly": {
+    "meaning": "sự dị thường khoa học",
+    "level": "hard",
+    "topic": "Khoa học & Thực nghiệm"
+  },
+  "observation": {
+    "meaning": "sự quan sát thực nghiệm",
+    "level": "hard",
+    "topic": "Khoa học & Thực nghiệm"
+  },
+  "molecular": {
+    "meaning": "thuộc cấp độ phân tử",
+    "level": "hard",
+    "topic": "Khoa học & Thực nghiệm"
+  },
+  "synthesis": {
+    "meaning": "sự tổng hợp hóa học",
+    "level": "hard",
+    "topic": "Khoa học & Thực nghiệm"
+  },
+  "evolution": {
+    "meaning": "sự tiến hóa sinh học",
+    "level": "hard",
+    "topic": "Khoa học & Thực nghiệm"
+  },
+  "phenomenon": {
+    "meaning": "hiện tượng tự nhiên",
+    "level": "hard",
+    "topic": "Khoa học & Thực nghiệm"
+  },
+  "empirical": {
+    "meaning": "mang tính thực chứng",
+    "level": "hard",
+    "topic": "Khoa học & Thực nghiệm"
+  },
+  "catalyst": {
+    "meaning": "chất xúc tác phản ứng",
+    "level": "hard",
+    "topic": "Khoa học & Thực nghiệm"
+  },
+  "statute": {
+    "meaning": "đạo luật ban hành",
+    "level": "hard",
+    "topic": "Luật pháp & Quy định"
+  },
+  "covenant": {
+    "meaning": "cam kết pháp lý, khế ước",
+    "level": "hard",
+    "topic": "Luật pháp & Quy định"
+  },
+  "jurisdiction": {
+    "meaning": "quyền tài phán, thẩm quyền",
+    "level": "hard",
+    "topic": "Luật pháp & Quy định"
+  },
+  "prosecution": {
+    "meaning": "việc khởi tố, bên công tố",
+    "level": "hard",
+    "topic": "Luật pháp & Quy định"
+  },
+  "arbitration": {
+    "meaning": "sự phân xử trọng tài",
+    "level": "hard",
+    "topic": "Luật pháp & Quy định"
+  },
+  "litigant": {
+    "meaning": "bên đương sự tranh chấp",
+    "level": "hard",
+    "topic": "Luật pháp & Quy định"
+  },
+  "jurisprudence": {
+    "meaning": "luật học, triết học pháp luật",
+    "level": "hard",
+    "topic": "Luật pháp & Quy định"
+  },
+  "verdict": {
+    "meaning": "phán quyết tuyên án",
+    "level": "hard",
+    "topic": "Luật pháp & Quy định"
+  },
+  "indictment": {
+    "meaning": "sự truy tố, bản cáo trạng",
+    "level": "hard",
+    "topic": "Luật pháp & Quy định"
+  },
+  "liability": {
+    "meaning": "trách nhiệm pháp lý",
+    "level": "hard",
+    "topic": "Luật pháp & Quy định"
+  },
+  "compliance": {
+    "meaning": "sự tuân thủ nghiêm ngặt",
+    "level": "hard",
+    "topic": "Luật pháp & Quy định"
+  },
+  "precedent": {
+    "meaning": "tiền lệ pháp lý",
+    "level": "hard",
+    "topic": "Luật pháp & Quy định"
+  },
+  "introspection": {
+    "meaning": "sự nội quan, tự soi chiếu",
+    "level": "hard",
+    "topic": "Tâm lý học hành vi"
+  },
+  "reinforcement": {
+    "meaning": "sự củng cố hành vi",
+    "level": "hard",
+    "topic": "Tâm lý học hành vi"
+  },
+  "cognition": {
+    "meaning": "nhận thức tư duy",
+    "level": "hard",
+    "topic": "Tâm lý học hành vi"
+  },
+  "stimulus": {
+    "meaning": "tác nhân kích thích",
+    "level": "hard",
+    "topic": "Tâm lý học hành vi"
+  },
+  "perception": {
+    "meaning": "sự nhận thức cảm tính",
+    "level": "hard",
+    "topic": "Tâm lý học hành vi"
+  },
+  "temperament": {
+    "meaning": "tính khí, khí chất",
+    "level": "hard",
+    "topic": "Tâm lý học hành vi"
+  },
+  "therapy": {
+    "meaning": "liệu pháp trị liệu",
+    "level": "hard",
+    "topic": "Tâm lý học hành vi"
+  },
+  "psyche": {
+    "meaning": "tâm trí, linh hồn con người",
+    "level": "hard",
+    "topic": "Tâm lý học hành vi"
+  },
+  "trauma": {
+    "meaning": "chấn thương tâm lý",
+    "level": "hard",
+    "topic": "Tâm lý học hành vi"
+  },
+  "cognitive": {
+    "meaning": "thuộc về nhận thức",
+    "level": "hard",
+    "topic": "Tâm lý học hành vi"
+  },
+  "subconscious": {
+    "meaning": "tiềm thức sâu thẳm",
+    "level": "hard",
+    "topic": "Tâm lý học hành vi"
+  },
+  "resilience": {
+    "meaning": "sức bật tinh thần",
+    "level": "hard",
+    "topic": "Tâm lý học hành vi"
+  },
+  "censorship": {
+    "meaning": "sự kiểm duyệt truyền thông",
+    "level": "hard",
+    "topic": "Truyền thông đại chúng"
+  },
+  "infotainment": {
+    "meaning": "thông tin giải trí chuyên sâu",
+    "level": "hard",
+    "topic": "Truyền thông đại chúng"
+  },
+  "tabloid": {
+    "meaning": "báo lá cải, giật gân",
+    "level": "hard",
+    "topic": "Truyền thông đại chúng"
+  },
+  "correspondent": {
+    "meaning": "phóng viên thường trú",
+    "level": "hard",
+    "topic": "Truyền thông đại chúng"
+  },
+  "sensationalism": {
+    "meaning": "xu hướng giật gân hóa",
+    "level": "hard",
+    "topic": "Truyền thông đại chúng"
+  },
+  "journalism": {
+    "meaning": "ngành báo chí",
+    "level": "hard",
+    "topic": "Truyền thông đại chúng"
+  },
+  "dissemination": {
+    "meaning": "sự lan truyền thông tin",
+    "level": "hard",
+    "topic": "Truyền thông đại chúng"
+  },
+  "propaganda": {
+    "meaning": "hoạt động tuyên truyền",
+    "level": "hard",
+    "topic": "Truyền thông đại chúng"
+  },
+  "distort": {
+    "meaning": "bóp méo, xuyên tạc",
+    "level": "hard",
+    "topic": "Truyền thông đại chúng"
+  },
+  "engagement": {
+    "meaning": "sự tương tác số",
+    "level": "hard",
+    "topic": "Truyền thông đại chúng"
+  },
+  "narrative": {
+    "meaning": "lối kể chuyện, hệ lập ngôn",
+    "level": "hard",
+    "topic": "Truyền thông đại chúng"
+  },
+  "misinformation": {
+    "meaning": "thông tin sai lệch",
+    "level": "hard",
+    "topic": "Truyền thông đại chúng"
+  },
+  "arbitrage": {
+    "meaning": "kinh doanh chênh lệch giá",
+    "level": "hard",
+    "topic": "Tài chính & Đầu tư"
+  },
+  "asset": {
+    "meaning": "tài sản sở hữu",
+    "level": "hard",
+    "topic": "Tài chính & Đầu tư"
+  },
+  "equity": {
+    "meaning": "vốn chủ sở hữu",
+    "level": "hard",
+    "topic": "Tài chính & Đầu tư"
+  },
+  "dividend": {
+    "meaning": "cổ tức chi trả",
+    "level": "hard",
+    "topic": "Tài chính & Đầu tư"
+  },
+  "liquidation": {
+    "meaning": "sự thanh lý tài sản",
+    "level": "hard",
+    "topic": "Tài chính & Đầu tư"
+  },
+  "portfolio": {
+    "meaning": "danh mục đầu tư",
+    "level": "hard",
+    "topic": "Tài chính & Đầu tư"
+  },
+  "liquidity": {
+    "meaning": "tính thanh khoản",
+    "level": "hard",
+    "topic": "Tài chính & Đầu tư"
+  },
+  "brokerage": {
+    "meaning": "dịch vụ môi giới",
+    "level": "hard",
+    "topic": "Tài chính & Đầu tư"
+  },
+  "yield": {
+    "meaning": "tỷ suất lợi nhuận",
+    "level": "hard",
+    "topic": "Tài chính & Đầu tư"
+  },
+  "depreciation": {
+    "meaning": "khấu hao tài sản",
+    "level": "hard",
+    "topic": "Tài chính & Đầu tư"
+  },
+  "inflation": {
+    "meaning": "lạm phát tiền tệ",
+    "level": "hard",
+    "topic": "Tài chính & Đầu tư"
+  },
+  "amortization": {
+    "meaning": "khấu hao vô hình",
+    "level": "hard",
+    "topic": "Tài chính & Đầu tư"
+  },
+  "determinism": {
+    "meaning": "thuyết định mệnh",
+    "level": "hard",
+    "topic": "Triết học & Tư duy"
+  },
+  "utilitarianism": {
+    "meaning": "thuyết vị lợi",
+    "level": "hard",
+    "topic": "Triết học & Tư duy"
+  },
+  "rationalism": {
+    "meaning": "chủ nghĩa duy lý",
+    "level": "hard",
+    "topic": "Triết học & Tư duy"
+  },
+  "nihilism": {
+    "meaning": "chủ nghĩa hư vô",
+    "level": "hard",
+    "topic": "Triết học & Tư duy"
+  },
+  "dogma": {
+    "meaning": "giáo điều giáo lý",
+    "level": "hard",
+    "topic": "Triết học & Tư duy"
+  },
+  "ethics": {
+    "meaning": "đạo đức học",
+    "level": "hard",
+    "topic": "Triết học & Tư duy"
+  },
+  "paradox": {
+    "meaning": "nghịch lý",
+    "level": "hard",
+    "topic": "Triết học & Tư duy"
+  },
+  "existential": {
+    "meaning": "thuộc hiện sinh",
+    "level": "hard",
+    "topic": "Triết học & Tư duy"
+  },
+  "skepticism": {
+    "meaning": "chủ nghĩa hoài nghi",
+    "level": "hard",
+    "topic": "Triết học & Tư duy"
+  },
+  "existentialism": {
+    "meaning": "thuyết hiện sinh",
+    "level": "hard",
+    "topic": "Triết học & Tư duy"
+  },
+  "epistemology": {
+    "meaning": "nhận thức luận",
+    "level": "hard",
+    "topic": "Triết học & Tư duy"
+  },
+  "metaphysics": {
+    "meaning": "siêu hình học",
+    "level": "hard",
+    "topic": "Triết học & Tư duy"
+  },
+  "sovereign": {
+    "meaning": "quốc gia độc lập có chủ quyền",
+    "level": "hard",
+    "topic": "Chính trị & Quốc tế"
+  },
+  "constituency": {
+    "meaning": "khu vực cử tri đại diện",
+    "level": "hard",
+    "topic": "Chính trị & Quốc tế"
+  },
+  "legislature": {
+    "meaning": "cơ quan lập pháp",
+    "level": "hard",
+    "topic": "Chính trị & Quốc tế"
+  },
+  "hegemony": {
+    "meaning": "quyền bá chủ, sự thống trị",
+    "level": "hard",
+    "topic": "Chính trị & Quốc tế"
+  },
+  "regime": {
+    "meaning": "chế độ cai trị",
+    "level": "hard",
+    "topic": "Chính trị & Quốc tế"
+  },
+  "treaty": {
+    "meaning": "hiệp ước bang giao",
+    "level": "hard",
+    "topic": "Chính trị & Quốc tế"
+  },
+  "diplomat": {
+    "meaning": "nhà ngoại giao",
+    "level": "hard",
+    "topic": "Chính trị & Quốc tế"
+  },
+  "coalition": {
+    "meaning": "sự liên minh chính trị",
+    "level": "hard",
+    "topic": "Chính trị & Quốc tế"
+  },
+  "sanction": {
+    "meaning": "lệnh trừng phạt",
+    "level": "hard",
+    "topic": "Chính trị & Quốc tế"
+  },
+  "sovereignty": {
+    "meaning": "chủ quyền tối cao",
+    "level": "hard",
+    "topic": "Chính trị & Quốc tế"
+  },
+  "bureaucracy": {
+    "meaning": "bộ máy hành chính",
+    "level": "hard",
+    "topic": "Chính trị & Quốc tế"
+  },
+  "legislation": {
+    "meaning": "quy chế lập pháp",
+    "level": "hard",
+    "topic": "Chính trị & Quốc tế"
+  },
+  "pathogen": {
+    "meaning": "tác nhân gây bệnh",
+    "level": "hard",
+    "topic": "Y học chuyên sâu"
+  },
+  "immunization": {
+    "meaning": "sự miễn dịch chủ động",
+    "level": "hard",
+    "topic": "Y học chuyên sâu"
+  },
+  "anatomy": {
+    "meaning": "giải phẫu học",
+    "level": "hard",
+    "topic": "Y học chuyên sâu"
+  },
+  "therapeutic": {
+    "meaning": "mang tính trị liệu",
+    "level": "hard",
+    "topic": "Y học chuyên sâu"
+  },
+  "prognosis": {
+    "meaning": "tiên lượng bệnh lý",
+    "level": "hard",
+    "topic": "Y học chuyên sâu"
+  },
+  "diagnose": {
+    "meaning": "chẩn đoán bệnh",
+    "level": "hard",
+    "topic": "Y học chuyên sâu"
+  },
+  "antibody": {
+    "meaning": "kháng thể",
+    "level": "hard",
+    "topic": "Y học chuyên sâu"
+  },
+  "efficacy": {
+    "meaning": "hiệu lực, hiệu quả thuốc",
+    "level": "hard",
+    "topic": "Y học chuyên sâu"
+  },
+  "pharmaceutical": {
+    "meaning": "thuộc dược phẩm",
+    "level": "hard",
+    "topic": "Y học chuyên sâu"
+  },
+  "epidemiology": {
+    "meaning": "dịch tễ học cộng đồng",
+    "level": "hard",
+    "topic": "Y học chuyên sâu"
+  },
+  "pathology": {
+    "meaning": "bệnh lý học chuyên sâu",
+    "level": "hard",
+    "topic": "Y học chuyên sâu"
+  },
+  "chronic": {
+    "meaning": "bệnh mãn tính kéo dài",
+    "level": "hard",
+    "topic": "Y học chuyên sâu"
+  },
+  "anthology": {
+    "meaning": "tập tuyển tập tác phẩm",
+    "level": "hard",
+    "topic": "Văn học & Nghệ thuật"
+  },
+  "prose": {
+    "meaning": "văn xuôi nghệ thuật",
+    "level": "hard",
+    "topic": "Văn học & Nghệ thuật"
+  },
+  "playwright": {
+    "meaning": "nhà viết kịch chuyên nghiệp",
+    "level": "hard",
+    "topic": "Văn học & Nghệ thuật"
+  },
+  "motif": {
+    "meaning": "chủ đề/họa tiết chủ đạo",
+    "level": "hard",
+    "topic": "Văn học & Nghệ thuật"
+  },
+  "rhetoric": {
+    "meaning": "nghệ thuật tu từ/hùng biện",
+    "level": "hard",
+    "topic": "Văn học & Nghệ thuật"
+  },
+  "metaphor": {
+    "meaning": "phép ẩn dụ tu từ",
+    "level": "hard",
+    "topic": "Văn học & Nghệ thuật"
+  },
+  "aesthetic": {
+    "meaning": "mỹ học, thẩm mỹ",
+    "level": "hard",
+    "topic": "Văn học & Nghệ thuật"
+  },
+  "composition": {
+    "meaning": "tác phẩm soạn thảo",
+    "level": "hard",
+    "topic": "Văn học & Nghệ thuật"
+  },
+  "protagonist": {
+    "meaning": "nhân vật chính diện",
+    "level": "hard",
+    "topic": "Văn học & Nghệ thuật"
+  },
+  "genre": {
+    "meaning": "thể loại tác phẩm",
+    "level": "hard",
+    "topic": "Văn học & Nghệ thuật"
+  },
+  "allegory": {
+    "meaning": "truyện ngụ ngôn ẩn ý",
+    "level": "hard",
+    "topic": "Văn học & Nghệ thuật"
+  },
+  "celestial": {
+    "meaning": "thuộc về thiên thể, bầu trời",
+    "level": "hard",
+    "topic": "Vũ trụ & Thiên văn"
+  },
+  "gravitational": {
+    "meaning": "thuộc lực hấp dẫn",
+    "level": "hard",
+    "topic": "Vũ trụ & Thiên văn"
+  },
+  "solstice": {
+    "meaning": "điểm chí (hạ chí/đông chí)",
+    "level": "hard",
+    "topic": "Vũ trụ & Thiên văn"
+  },
+  "terrestrial": {
+    "meaning": "thuộc về trái đất/mặt đất",
+    "level": "hard",
+    "topic": "Vũ trụ & Thiên văn"
+  },
+  "cosmology": {
+    "meaning": "vũ trụ học nghiên cứu",
+    "level": "hard",
+    "topic": "Vũ trụ & Thiên văn"
+  },
+  "cosmos": {
+    "meaning": "vũ trụ bao la",
+    "level": "hard",
+    "topic": "Vũ trụ & Thiên văn"
+  },
+  "comet": {
+    "meaning": "sao chổi",
+    "level": "hard",
+    "topic": "Vũ trụ & Thiên văn"
+  },
+  "eclipse": {
+    "meaning": "hiện tượng nhật/nguyệt thực",
+    "level": "hard",
+    "topic": "Vũ trụ & Thiên văn"
+  },
+  "asteroid": {
+    "meaning": "tiểu hành tinh",
+    "level": "hard",
+    "topic": "Vũ trụ & Thiên văn"
+  },
+  "supernova": {
+    "meaning": "vụ nổ siêu tân tinh",
+    "level": "hard",
+    "topic": "Vũ trụ & Thiên văn"
+  },
+  "nebula": {
+    "meaning": "tinh vân vũ trụ",
+    "level": "hard",
+    "topic": "Vũ trụ & Thiên văn"
+  },
+  "astrophysics": {
+    "meaning": "vật lý thiên văn",
+    "level": "hard",
+    "topic": "Vũ trụ & Thiên văn"
+  }
+}

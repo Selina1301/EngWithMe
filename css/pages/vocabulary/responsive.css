@@ -34,8 +34,13 @@
 
 
   .mode-study .study-card {
-    height: auto;
-    min-height: 260px;
+    height: 340px !important;
+    padding: 32px 20px 20px 20px !important;
+  }
+
+  .study-card-header {
+    top: 20px !important;
+    right: 20px !important;
   }
 
   .word-list-card,

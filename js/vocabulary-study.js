@@ -21,9 +21,45 @@ function initVocabularyStudy() {
   let gameTimeSeconds = 0;
   let currentMatchTiles = [];
   let isProcessingMatch = false;
-  let isTimerStarted = false;
   let pendingSaveWord = null;
+
+  let isAnswered = false;
+  let lastAnswerIsCorrect = false;
+  let lastTypedAnswer = "";
+  let lastQuizSelectedIndex = -1;
+  let currentQuizOptions = [];
+
+  function initWordState(item, topic) {
+    isWordRevealed = false;
+    isAnswered = false;
+    lastAnswerIsCorrect = false;
+    lastTypedAnswer = "";
+    lastQuizSelectedIndex = -1;
+    
+    if (item && topic) {
+      const wrongCandidates = topic.words.filter(w => w.word !== item.word);
+      const chosenWrong = shuffle(wrongCandidates).slice(0, 3);
+      currentQuizOptions = shuffle([item, ...chosenWrong]);
+    } else {
+      currentQuizOptions = [];
+    }
+  }
   
+  let autoSpeak = localStorage.getItem("vocab_settings_autoSpeak") !== "false";
+  let showExamples = localStorage.getItem("vocab_settings_showExamples") !== "false";
+  let showCollocations = localStorage.getItem("vocab_settings_showCollocations") !== "false";
+  let showSynonyms = localStorage.getItem("vocab_settings_showSynonyms") !== "false";
+  let showWordClass = localStorage.getItem("vocab_settings_showWordClass") !== "false";
+  let preferredVoice = localStorage.getItem("vocab_settings_preferredVoice") || "en-US";
+  let isStudySettingsOpen = false;
+  let isModesSettingsOpen = false;
+  let lastSpokenKey = "";
+
+  let confirmMasteredWordKey = null;
+  let activeReportWord = null;
+  let selectedReportOptions = new Set();
+  let reportDescription = "";
+
   let recognition = null;
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (SpeechRecognition) {
@@ -60,7 +96,10 @@ function initVocabularyStudy() {
     } else if (e.key === "Enter") {
       e.preventDefault();
       if (isInputActive) {
-        root.querySelector("[data-check-type]")?.click();
+        const inputEl = document.activeElement;
+        if (inputEl && inputEl.value.trim() !== "") {
+          root.querySelector("[data-check-type]")?.click();
+        }
       } else {
         root.querySelector("[data-next-step]")?.click();
       }
@@ -86,6 +125,7 @@ function initVocabularyStudy() {
   const getTopic = () => vocabularyData[activeLevel]?.topics.find(topic => topic.id === currentTopicId);
   const getListHref = () => `vocabulary.html?level=${activeLevel}`;
   const getWordKey = (topic, word) => `${activeLevel}-${topic.id}-${word.word}`;
+  const getStudyWords = (topic) => topic ? topic.words.filter(w => !savedWords.has(getWordKey(topic, w))) : [];
   const saveSavedWords = (action, vocabKey, studyLevel) => {
     savedWords = new Set(savedWordRecords.keys());
     localStorage.setItem(getSavedWordsKey(), JSON.stringify(Array.from(savedWordRecords.values())));
@@ -387,6 +427,20 @@ function initVocabularyStudy() {
     astrophysics: ["space physics: vật lý thiên văn", "stellar science: khoa học thiên thể"]
   };
 
+  if (typeof window !== "undefined" && window.VOCAB_EXTRAS) {
+    for (const [word, data] of Object.entries(window.VOCAB_EXTRAS)) {
+      const lowerWord = word.toLowerCase();
+      if (!closeMeaningHints[lowerWord]) {
+        closeMeaningHints[lowerWord] = [];
+      }
+      if (data.synonym) {
+        if (!closeMeaningHints[lowerWord].includes(data.synonym)) {
+          closeMeaningHints[lowerWord].push(data.synonym);
+        }
+      }
+    }
+  }
+
   function getAllVocabularyEntries() {
     return Object.entries(vocabularyData).flatMap(([levelKey, levelData]) =>
       levelData.topics.flatMap(topic =>
@@ -468,6 +522,70 @@ function initVocabularyStudy() {
     `;
   }
 
+  function showUndoToast(wordText, wordKey) {
+    const existing = document.querySelector(".vocab-toast-undo");
+    if (existing) existing.remove();
+
+    const toast = document.createElement("div");
+    toast.className = "vocab-toast-undo";
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      opacity: 0;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 2000;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    `;
+
+    toast.innerHTML = `
+      <span style="color: #e2e8f0; font-size: 0.9rem; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+        Đã đánh dấu thành thạo từ <strong style="color: #ffffff;">${wordText}</strong>
+      </span>
+      <button type="button" class="undo-btn" style="background: none; border: none; color: #10b981; font-weight: bold; cursor: pointer; font-size: 0.9rem; padding: 0; display: inline-flex; align-items: center; gap: 4px; transition: color 0.2s; font-family: inherit;">
+        <i class="ti-back-left" style="font-size: 0.85rem; position: relative; top: 1px;"></i> Hoàn tác
+      </button>
+    `;
+
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.style.transform = "translateX(-50%) translateY(0)";
+      toast.style.opacity = "1";
+    });
+
+    let dismissTimer = setTimeout(() => {
+      dismissToast();
+    }, 4500);
+
+    function dismissToast() {
+      toast.style.transform = "translateX(-50%) translateY(100px)";
+      toast.style.opacity = "0";
+      setTimeout(() => {
+        toast.remove();
+      }, 400);
+    }
+
+    toast.querySelector(".undo-btn").addEventListener("click", () => {
+      clearTimeout(dismissTimer);
+      savedWords.delete(wordKey);
+      savedWordRecords.delete(wordKey);
+      saveSavedWords("remove", wordKey);
+      dismissToast();
+      render();
+    });
+  }
+
   function render() {
     const topic = getTopic();
     if (!topic) {
@@ -485,11 +603,124 @@ function initVocabularyStudy() {
       return;
     }
 
+    const counts = topic.words.reduce((acc, w) => {
+      const wKey = getWordKey(topic, w);
+      const record = savedWordRecords.get(wKey);
+      if (!record) {
+        acc.newWords++;
+      } else if (record.studyLevel === "hard") {
+        acc.review++;
+      } else {
+        acc.learned++;
+      }
+      return acc;
+    }, { newWords: 0, learned: 0, review: 0 });
+
     root.dataset.workspaceMode = currentWorkspaceMode;
     const pageContainer = document.querySelector(".vocab-study-page");
     if (pageContainer) {
       pageContainer.setAttribute("data-mode", currentWorkspaceMode);
     }
+
+    const getTabsGridStyle = () => {
+      return currentWorkspaceMode === "study" ? "grid-template-columns: repeat(3, minmax(83px, 1fr)) 44px;" : "";
+    };
+
+    let confirmPopupHtml = "";
+    if (confirmMasteredWordKey) {
+      confirmPopupHtml = `
+        <div class="modal-overlay" data-close-confirm style="position: fixed; inset: 0; background: rgba(2, 6, 23, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+          <div class="confirm-modal-card" style="width: min(90vw, 410px); min-height: 180px; background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.08); padding: 24px; border-radius: 16px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); text-align: left; display: flex; flex-direction: column; justify-content: space-between;">
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0 0 8px 0;">Đánh dấu thành thạo?</h3>
+            <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.5; margin: 0 0 20px 0;">
+               Từ này sẽ được đánh dấu là đã thành thạo và không xuất hiện trong hàng đợi ôn tập nữa. Bạn có chắc chắn không?
+            </p>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+              <button class="modal-btn-cancel" type="button" data-close-confirm style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); color: #ffffff; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.88rem; transition: background 0.2s;">Hủy</button>
+              <button class="modal-btn-confirm" type="button" data-confirm-mastered style="background: #0ea5e9; border: none; color: #ffffff; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.88rem; transition: background 0.2s;">Xác nhận</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    let reportPopupHtml = "";
+    if (activeReportWord) {
+      const options = [
+        "Ảnh không đúng nghĩa",
+        "Từ vựng sai",
+        "Ví dụ sai",
+        "Lỗi âm thanh",
+        "Khác"
+      ];
+      const descVal = reportDescription || "";
+      const charCount = descVal.length;
+      const wordCount = descVal.trim() === "" ? 0 : descVal.trim().split(/\s+/).length;
+      
+      const isSelected = selectedReportOptions.size > 0;
+      const hasOther = selectedReportOptions.has(4);
+      const isSubmitActive = isSelected && (!hasOther || wordCount >= 5);
+
+      const descriptionBoxHtml = hasOther ? `
+        <div style="margin-top: 14px; margin-bottom: 14px;">
+          <label style="display: block; font-size: 0.88rem; font-weight: 700; color: #ffffff; margin-bottom: 6px;">Mô tả chi tiết <span style="color: #ef4444;">*</span></label>
+          <textarea data-report-desc style="width: 100%; height: 72px; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: #ffffff; padding: 10px; font-family: inherit; font-size: 0.85rem; resize: none; outline: none; transition: border-color 0.2s; box-sizing: border-box;" placeholder="Ví dụ: Bấm loa không nghe gì, đã reload trang 2 lần. Đang dùng Chrome trên iPhone, mạng 4G.">${descVal}</textarea>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+            <span data-report-word-req-text style="font-size: 0.78rem; color: #ef4444; font-weight: 500;">
+              ${wordCount < 5 ? `Cần thêm ${5 - wordCount} từ nữa (tối thiểu 5)` : ""}
+            </span>
+            <span data-report-char-counter style="font-size: 0.78rem; color: #64748b;">${charCount}/500</span>
+          </div>
+        </div>
+      ` : "";
+
+      reportPopupHtml = `
+        <div class="modal-overlay" data-close-report style="position: fixed; inset: 0; background: rgba(2, 6, 23, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; align-items: flex-start; justify-content: center; padding-top: calc(10vh + 20px); z-index: 1000; overflow-y: auto;">
+          <div class="report-modal-card" style="width: min(95vw, 400px); background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.08); padding: 20px; border-radius: 16px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); text-align: left; position: relative; display: flex; flex-direction: column;">
+            <button class="report-close-cross" type="button" data-close-report style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; color: #64748b; cursor: pointer; font-size: 1rem;"><i class="ti-close"></i></button>
+            
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#redGradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <defs>
+                  <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#ef4444" />
+                    <stop offset="100%" stop-color="#f87171" />
+                  </linearGradient>
+                </defs>
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              <h3 style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0;">Báo lỗi</h3>
+            </div>
+            <p style="font-size: 0.85rem; color: #94a3b8; margin: 0 0 16px 0;">Bạn đang báo lỗi: <strong style="color: #ffffff;">${activeReportWord}</strong></p>
+            
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+              ${options.map((opt, idx) => {
+                const isSelectedOption = selectedReportOptions.has(idx);
+                const optStyle = isSelectedOption
+                  ? "border: 1px solid transparent; background-image: linear-gradient(#0f172a, #0f172a), linear-gradient(135deg, #ef4444, #f87171); background-origin: border-box; background-clip: padding-box, border-box; color: #ffffff;"
+                  : "border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02); color: #cbd5e1;";
+                return `
+                  <button class="report-opt-btn" type="button" data-report-opt="${idx}" style="width: 100%; text-align: left; padding: 10px 14px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.88rem; display: flex; align-items: center; justify-content: space-between; ${optStyle}">
+                    <span>${opt}</span>
+                    ${isSelectedOption ? `<span style="background: linear-gradient(135deg, #10b981, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.1rem; font-weight: bold;">✓</span>` : ""}
+                  </button>
+                `;
+              }).join("")}
+            </div>
+
+            ${descriptionBoxHtml}
+            
+            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 12px;">
+              <button class="modal-btn-cancel-text" type="button" data-close-report style="background: transparent; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; font-size: 0.88rem; transition: color 0.2s;">Hủy</button>
+              <button class="modal-btn-submit-report" type="button" data-submit-report ${isSubmitActive ? "" : "disabled"} style="background: ${isSubmitActive ? '#ef4444' : 'rgba(239, 68, 68, 0.15)'}; border: none; color: ${isSubmitActive ? '#ffffff' : 'rgba(255,255,255,0.3)'}; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: ${isSubmitActive ? 'pointer' : 'not-allowed'}; font-size: 0.88rem; transition: all 0.2s;">Gửi báo cáo</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     root.innerHTML = `
       <div class="vocab-workspace mode-${currentWorkspaceMode}">
         <div class="workspace-top-bar">
@@ -497,25 +728,41 @@ function initVocabularyStudy() {
             <a class="workspace-back" href="${getListHref()}">← Quay lại chủ đề</a>
           </div>
           <div class="top-bar-center">
-            <div class="workspace-tabs" aria-label="Chức năng học chủ đề">
-              ${workspaceTabTemplate("view", "ti-eye", "Read")}
-              ${workspaceTabTemplate("study", "ti-book", "Study")}
-              ${workspaceTabTemplate("play", "ti-game", "Play")}
-            </div>
-          </div>
-          <div class="top-bar-right">
-            ${currentWorkspaceMode === "study" ? `
-              <div class="study-settings-wrap">
-                <button class="study-settings-btn" type="button" data-toggle-study-settings><i class="ti-settings"></i> Tùy chỉnh cách học</button>
-                <div class="study-settings-panel" data-study-settings>
+            <div class="workspace-tabs-wrap" style="position: relative; display: inline-block;">
+              <div class="workspace-tabs" style="${getTabsGridStyle()}" aria-label="Chức năng học chủ đề">
+                ${workspaceTabTemplate("view", "ti-eye", "Read")}
+                ${workspaceTabTemplate("study", "ti-book", "Study")}
+                ${workspaceTabTemplate("play", "ti-game", "Play")}
+                ${currentWorkspaceMode === "study" ? `
+                  <button class="workspace-tab settings-tab-btn ${isModesSettingsOpen ? 'settings-active' : ''}" type="button" data-toggle-modes-settings title="Tùy chỉnh chế độ học">
+                    <svg class="settings-sliders-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
+                      <line x1="4" y1="7" x2="20" y2="7"></line>
+                      <circle cx="16" cy="7" r="2.5" fill="currentColor"></circle>
+                      <line x1="4" y1="17" x2="20" y2="17"></line>
+                      <circle cx="8" cy="17" r="2.5" fill="currentColor"></circle>
+                    </svg>
+                  </button>
+                ` : ""}
+              </div>
+              
+              ${currentWorkspaceMode === "study" ? `
+                <div class="study-settings-panel" data-modes-settings style="position: absolute; top: calc(100% + 10px); right: 0; z-index: 100; width: 320px; display: ${isModesSettingsOpen ? 'block' : 'none'}; text-align: left;">
                   <label class="study-setting-row"><input type="checkbox" ${enabledStudyModes.has("flashcard") ? "checked" : ""} data-study-option="flashcard"> <span><strong>Flashcard</strong><br>Xem từ → lật xem nghĩa</span></label>
                   <label class="study-setting-row"><input type="checkbox" ${enabledStudyModes.has("quiz") ? "checked" : ""} data-study-option="quiz"> <span><strong>Trắc nghiệm</strong><br>Xem từ → chọn nghĩa đúng</span></label>
                   <label class="study-setting-row"><input type="checkbox" ${enabledStudyModes.has("type") ? "checked" : ""} data-study-option="type"> <span><strong>Gõ từ</strong><br>Xem nghĩa → gõ từ tiếng Anh</span></label>
                   <label class="study-setting-row"><input type="checkbox" ${enabledStudyModes.has("speak") ? "checked" : ""} data-study-option="speak"> <span><strong>Phát âm</strong><br>Nghe phát âm → đọc to để máy nhận dạng</span></label>
                 </div>
-              </div>
-            ` : ""}
-            <a class="close-modal-btn" href="${getListHref()}">Đóng</a>
+              ` : ""}
+            </div>
+          </div>
+          <div class="top-bar-right" style="display: flex; align-items: center; justify-content: flex-end;">
+            <div class="study-score-wrap" style="display: flex; align-items: center; gap: 4px; font-family: inherit; font-size: 0.85rem; font-weight: 600; padding: 4px 10px; border-radius: 99px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="fill: #f97316;">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+              <span class="study-points-add" style="color: #f97316; font-weight: 800;">+0</span>
+              <span class="study-progress-text" style="color: #94a3b8; font-weight: 500; margin-left: 2px;">${counts.learned}/${topic.words.length} từ</span>
+            </div>
           </div>
         </div>
 
@@ -531,6 +778,8 @@ function initVocabularyStudy() {
         <div class="workspace-panel">
           ${renderWorkspacePanel(topic)}
         </div>
+        ${confirmPopupHtml}
+        ${reportPopupHtml}
       </div>
     `;
 
@@ -677,6 +926,17 @@ function initVocabularyStudy() {
     window.speechSynthesis.speak(utterance);
   }
 
+  function triggerAutoSpeak(word, mode) {
+    if (!autoSpeak) return;
+    if (mode === "type") return;
+    
+    const speakKey = `${word.word}-${mode}`;
+    if (lastSpokenKey !== speakKey) {
+      lastSpokenKey = speakKey;
+      speakWord(word.word, preferredVoice);
+    }
+  }
+
   function getExampleTranslation(example) {
     const translations = {
       "My morning routine starts at 6 a.m.": "Thói quen buổi sáng của tôi bắt đầu lúc 6 giờ sáng.",
@@ -720,11 +980,33 @@ function initVocabularyStudy() {
   }
 
   function renderStudyCard(topic) {
-    const item = topic.words[currentWordIndex];
+    const studyWords = getStudyWords(topic);
+    if (studyWords.length === 0) {
+      return `
+        <div class="study-card" style="width: min(95vw, 400px); background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.08); padding: 40px 24px; border-radius: 16px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 40px auto 0 auto; box-sizing: border-box;">
+          <i class="ti-cup" style="font-size: 3.5rem; background: linear-gradient(135deg, #ffd700, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; display: block;"></i>
+          <h3 style="color: #ffffff; font-size: 1.4rem; font-weight: 700; margin: 0 0 10px 0;">Chủ đề hoàn thành!</h3>
+          <p style="color: #94a3b8; font-size: 0.9rem; line-height: 1.6; margin: 0 0 24px 0;">
+            Tuyệt vời! Bạn đã đánh dấu thành thạo tất cả ${topic.words.length} từ trong chủ đề này.
+          </p>
+          <a href="${getListHref()}" class="btn" style="background: linear-gradient(135deg, #10b981, #059669); border: none; padding: 10px 24px; font-size: 0.95rem; border-radius: 8px; color: white; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+            Quay lại Vocabulary
+          </a>
+        </div>
+      `;
+    }
+
+    if (currentWordIndex >= studyWords.length) {
+      currentWordIndex = 0;
+    }
+    const item = studyWords[currentWordIndex];
     const wordKey = getWordKey(topic, item);
     const isSaved = savedWords.has(wordKey);
     const activeStudyModes = getActiveStudyModes();
     if (!activeStudyModes.includes(currentStudyMode)) currentStudyMode = activeStudyModes[0];
+
+    // Trigger auto-speak
+    triggerAutoSpeak(item, currentStudyMode);
 
     const counts = topic.words.reduce((acc, w) => {
       const wKey = getWordKey(topic, w);
@@ -771,15 +1053,54 @@ function initVocabularyStudy() {
       </div>
     `;
 
+    const studySettingsPanel = `
+      <div class="study-settings-panel card-settings-panel" data-study-settings style="position: absolute; top: 58px; right: 20px; z-index: 100; width: 280px; text-align: left; display: ${isStudySettingsOpen ? 'block' : 'none'};">
+        <div style="font-weight: bold; font-size: 0.95rem; margin-bottom: 12px; color: #ffffff; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.08);">Cài đặt</div>
+        
+        <label class="setting-toggle-row">
+          <span class="setting-label-with-icon"><i class="ti-volume"></i> Tự động phát âm</span>
+          <input type="checkbox" class="toggle-checkbox" ${autoSpeak ? "checked" : ""} data-study-setting="autoSpeak">
+        </label>
+        
+        <label class="setting-toggle-row">
+          <span class="setting-label-with-icon"><i class="ti-eye"></i> Hiện ví dụ</span>
+          <input type="checkbox" class="toggle-checkbox" ${showExamples ? "checked" : ""} data-study-setting="showExamples">
+        </label>
+        
+        <label class="setting-toggle-row">
+          <span class="setting-label-with-icon"><i class="ti-comment"></i> Hiện cụm từ</span>
+          <input type="checkbox" class="toggle-checkbox" ${showCollocations ? "checked" : ""} data-study-setting="showCollocations">
+        </label>
+        
+        <label class="setting-toggle-row">
+          <span class="setting-label-with-icon"><span style="display: inline-block; width: 14px; text-align: center; font-weight: bold; margin-right: 6px;">#</span> Hiện từ đồng nghĩa</span>
+          <input type="checkbox" class="toggle-checkbox" ${showSynonyms ? "checked" : ""} data-study-setting="showSynonyms">
+        </label>
+        
+        <label class="setting-toggle-row">
+          <span class="setting-label-with-icon"><i class="ti-book"></i> Hiển thị loại từ</span>
+          <input type="checkbox" class="toggle-checkbox" ${showWordClass ? "checked" : ""} data-study-setting="showWordClass">
+        </label>
+        
+        <div class="setting-select-row" style="display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
+          <span style="font-size: 0.9rem; color: #cbd5e1;">Giọng đọc</span>
+          <select class="setting-select" data-study-setting="preferredVoice" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.15); color: #ffffff; border-radius: 6px; padding: 4px 8px; font-size: 0.85rem; cursor: pointer; outline: none;">
+            <option value="en-US" ${preferredVoice === "en-US" ? "selected" : ""}>US us</option>
+            <option value="en-GB" ${preferredVoice === "en-GB" ? "selected" : ""}>UK uk</option>
+          </select>
+        </div>
+      </div>
+    `;
+
     const cardHeader = `
       <div class="study-card-header">
-        <button class="card-action-btn ${isSaved ? 'active' : ''}" type="button" data-save-word="${wordKey}" title="${isSaved ? 'Bỏ lưu từ này' : 'Lưu từ này'}">
-          <i class="${isSaved ? 'ti-check' : 'ti-plus'}"></i>
+        <button class="card-action-btn check-btn ${isSaved ? 'active' : ''}" type="button" data-save-word="${wordKey}" title="${isSaved ? 'Bỏ lưu từ này' : 'Lưu từ này'}">
+          <i class="ti-check"></i>
         </button>
-        <button class="card-action-btn" type="button" data-toggle-study-settings title="Tùy chỉnh cách học">
+        <button class="card-action-btn ${isStudySettingsOpen ? 'settings-active' : ''}" type="button" data-toggle-study-settings title="Tùy chỉnh cách học">
           <i class="ti-settings"></i>
         </button>
-        <button class="card-action-btn" type="button" data-report-word="${item.word}" title="Báo cáo lỗi từ vựng">
+        <button class="card-action-btn report-btn" type="button" data-report-word="${item.word}" title="Báo cáo lỗi từ vựng">
           <i class="ti-alert"></i>
         </button>
       </div>
@@ -799,71 +1120,144 @@ function initVocabularyStudy() {
     `).join("");
 
     if (currentStudyMode === "quiz") {
+      const optionsHtml = currentQuizOptions.map((w, optIdx) => {
+        const isCorrectOpt = w.word === item.word;
+        let btnClass = "study-answer-btn";
+        if (isAnswered) {
+          if (isCorrectOpt) {
+            btnClass += " correct";
+          } else if (optIdx === lastQuizSelectedIndex) {
+            btnClass += " wrong";
+          }
+        }
+        return `
+          <button class="${btnClass}" type="button" data-study-answer="${w.word}" data-correct="${isCorrectOpt}" data-answer-index="${optIdx}" ${isAnswered ? "disabled" : ""}>
+            ${w.meaning}
+          </button>
+        `;
+      }).join("");
+
       cardBody = `
         <div class="study-card-body quiz-body">
-          <div class="word-title-wrap">
-            <h3 class="vocab-word">${item.word}</h3>
-            <span class="vocab-class">(${getWordClass(item.word)})</span>
+          <div class="word-info-wrap" style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+            <div class="word-title-wrap" style="margin-bottom: 0;">
+              <h3 class="vocab-word">${item.word}</h3>
+              ${showWordClass ? `<span class="vocab-class">(${getWordClass(item.word)})</span>` : ""}
+            </div>
+            <div class="phonetics-row">
+              <button class="pronounce-btn us" type="button" data-speak-word="${item.word}" data-lang="en-US">
+                <i class="ti-volume"></i> <span>US /${item.phonetic.replace(/\//g, '')}/</span>
+              </button>
+              <button class="pronounce-btn uk" type="button" data-speak-word="${item.word}" data-lang="en-GB">
+                <i class="ti-volume"></i> <span>UK /${item.phonetic.replace(/\//g, '')}/</span>
+              </button>
+            </div>
           </div>
-          <div class="phonetics-row">
-            <button class="pronounce-btn us" type="button" data-speak-word="${item.word}" data-lang="en-US">
-              <i class="ti-volume"></i> <span>US /${item.phonetic.replace(/\//g, '')}/</span>
-            </button>
-            <button class="pronounce-btn uk" type="button" data-speak-word="${item.word}" data-lang="en-GB">
-              <i class="ti-volume"></i> <span>UK /${item.phonetic.replace(/\//g, '')}/</span>
-            </button>
-          </div>
-          <p class="instruction-text">Chọn nghĩa đúng cho từ:</p>
-          <div class="study-options">${options}</div>
-          <p data-study-feedback class="study-feedback-text"></p>
+          <div class="study-options">${optionsHtml}</div>
+          ${isAnswered && !lastAnswerIsCorrect ? `<p class="study-feedback-text wrong" style="margin-top: 10px; color: #ef4444; font-weight: 500;">Chưa đúng. Đáp án đúng: ${item.meaning}.</p>` : ""}
         </div>
       `;
-      actionsHtml = `
-        <div class="study-action-row">
-          <button class="study-action-btn learned-btn" type="button" data-mark-learned>
-            <i class="ti-check"></i> Đã thuộc
-          </button>
-          <button class="study-action-btn continue-btn" type="button" data-next-step>
-            Học tiếp
-          </button>
-        </div>
-      `;
-      shortcutText = "<kbd>Tab</kbd> Đã thuộc · <kbd>Enter</kbd> Học tiếp";
+
+      if (isAnswered) {
+        actionsHtml = `
+          <div class="study-action-row fade-in">
+            <button class="study-action-btn learned-btn" type="button" data-mark-learned>
+              <i class="ti-check"></i> Đã thuộc
+            </button>
+            <button class="study-action-btn continue-btn" type="button" data-next-step>
+              Học tiếp
+            </button>
+          </div>
+        `;
+        shortcutText = "<kbd>Tab</kbd> Đã thuộc · <kbd>Enter</kbd> Học tiếp";
+      } else {
+        actionsHtml = ``;
+        shortcutText = ``;
+      }
     } else if (currentStudyMode === "type") {
-      cardBody = `
-        <div class="study-card-body type-body">
-          <p class="instruction-text">Gõ từ tiếng Anh có nghĩa là:</p>
-          <h3 class="meaning-word">${item.meaning}</h3>
-          <input class="type-answer" type="text" data-type-answer placeholder="Nhập từ tiếng Anh" autocomplete="off" autofocus>
-          <button class="primary-study-action" type="button" data-check-type>Kiểm tra</button>
-          <p data-study-feedback class="study-feedback-text"></p>
-        </div>
-      `;
-      actionsHtml = `
-        <div class="study-action-row">
-          <button class="study-action-btn learned-btn" type="button" data-mark-learned>
-            <i class="ti-check"></i> Đã thuộc
-          </button>
-          <button class="study-action-btn continue-btn" type="button" data-next-step>
-            Học tiếp
-          </button>
-        </div>
-      `;
-      shortcutText = "<kbd>Enter</kbd> Kiểm tra · <kbd>Tab</kbd> Đã thuộc / Học tiếp";
+      if (isAnswered) {
+        if (lastAnswerIsCorrect) {
+          const wordClassBadge = showWordClass 
+            ? `<div style="display: flex; justify-content: center; margin-top: 4px; margin-bottom: 2px;">
+                <span class="vocab-class-badge" style="background: rgba(255, 255, 255, 0.08); padding: 4px 12px; border-radius: 6px; font-size: 0.85rem; color: #94a3b8; font-style: italic; font-weight: 500;">
+                  ${getWordClass(item.word)}
+                </span>
+               </div>`
+            : "";
+
+          cardBody = `
+            <div class="study-card-body type-checked-body correct-spelling-body" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; height: 100%;">
+              ${wordClassBadge}
+              <h2 class="meaning-word" style="font-size: 2.2rem !important; font-weight: 700; color: #ffffff; margin: 4px 0 2px 0; text-align: center;">
+                ${item.meaning}
+              </h2>
+              <div class="status-indicator-row" style="margin: 4px 0; color: #2ee878; font-weight: 600; font-size: 1.3rem; display: inline-flex; align-items: center; gap: 8px;">
+                <i class="ti-check"></i> Chính xác!
+              </div>
+              <h2 class="vocab-word" style="font-size: 2.2rem !important; font-weight: 800; color: #2ee878; margin: 2px 0 0 0;">
+                ${item.word}
+              </h2>
+            </div>
+          `;
+        } else {
+          cardBody = `
+            <div class="study-card-body type-checked-body incorrect-spelling-body" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; height: 100%;">
+              <h2 class="vocab-word" style="font-size: 2.2rem !important; font-weight: 800; color: #ffffff; margin: 0; display: flex; align-items: baseline; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                <span>${item.word}</span>
+                ${showWordClass ? `<span class="vocab-class" style="font-size: 1.1rem; font-style: italic; color: #38bdf8; font-weight: 600;">(${getWordClass(item.word)})</span>` : ""}
+                <span style="color: #94a3b8; font-weight: 400; font-size: 1.8rem; margin: 0 6px;">-</span>
+                <span style="font-size: 1.8rem; color: #cbd5e1; font-weight: 600;">${item.meaning}</span>
+              </h2>
+              <div class="status-indicator-row" style="margin: 4px 0; color: #ef4444; font-weight: 600; font-size: 1.3rem; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="ti-close"></i> Chưa đúng
+              </div>
+              <p class="typed-answer-line" style="font-size: 0.9rem; color: #94a3b8; margin: 4px 0 0 0;">
+                Bạn gõ: <span style="color: #ef4444; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); padding: 4px 10px; border-radius: 6px; font-weight: 600; font-family: monospace;">${lastTypedAnswer || "(trống)"}</span>
+              </p>
+            </div>
+          `;
+        }
+
+        actionsHtml = `
+          <div class="study-action-row fade-in">
+            <button class="study-action-btn learned-btn" type="button" data-mark-learned>
+              <i class="ti-check"></i> Đã thuộc
+            </button>
+            <button class="study-action-btn continue-btn" type="button" data-next-step>
+              Học tiếp
+            </button>
+          </div>
+        `;
+        shortcutText = "<kbd>Tab</kbd> Đã thuộc · <kbd>Enter</kbd> Học tiếp";
+      } else {
+        cardBody = `
+          <div class="study-card-body type-body">
+            <p class="instruction-text">Gõ từ tiếng Anh có nghĩa là:</p>
+            <h3 class="meaning-word">${item.meaning}</h3>
+            <input class="type-answer" type="text" data-type-answer placeholder="Nhập từ tiếng Anh" autocomplete="off" autofocus>
+            <button class="primary-study-action" type="button" data-check-type disabled style="opacity: 0.5; cursor: not-allowed;">Kiểm tra</button>
+            <p data-study-feedback class="study-feedback-text"></p>
+          </div>
+        `;
+        actionsHtml = ``;
+        shortcutText = "<kbd>Enter</kbd> Kiểm tra";
+      }
     } else if (currentStudyMode === "speak") {
       cardBody = `
         <div class="study-card-body speak-body">
-          <div class="word-title-wrap">
-            <h3 class="vocab-word">${item.word}</h3>
-            <span class="vocab-class">(${getWordClass(item.word)})</span>
-          </div>
-          <div class="phonetics-row">
-            <button class="pronounce-btn us" type="button" data-speak-word="${item.word}" data-lang="en-US">
-              <i class="ti-volume"></i> <span>US /${item.phonetic.replace(/\//g, '')}/</span>
-            </button>
-            <button class="pronounce-btn uk" type="button" data-speak-word="${item.word}" data-lang="en-GB">
-              <i class="ti-volume"></i> <span>UK /${item.phonetic.replace(/\//g, '')}/</span>
-            </button>
+          <div class="word-info-wrap" style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+            <div class="word-title-wrap" style="margin-bottom: 0;">
+              <h3 class="vocab-word">${item.word}</h3>
+              ${showWordClass ? `<span class="vocab-class">(${getWordClass(item.word)})</span>` : ""}
+            </div>
+            <div class="phonetics-row">
+              <button class="pronounce-btn us" type="button" data-speak-word="${item.word}" data-lang="en-US">
+                <i class="ti-volume"></i> <span>US /${item.phonetic.replace(/\//g, '')}/</span>
+              </button>
+              <button class="pronounce-btn uk" type="button" data-speak-word="${item.word}" data-lang="en-GB">
+                <i class="ti-volume"></i> <span>UK /${item.phonetic.replace(/\//g, '')}/</span>
+              </button>
+            </div>
           </div>
           
           <div class="speech-controls">
@@ -890,24 +1284,58 @@ function initVocabularyStudy() {
       // Flashcard Mode
       if (isWordRevealed) {
         const translation = getExampleTranslation(item.example);
-        const hints = closeMeaningHints[item.word.toLowerCase()];
-        let hintsHtml = "";
-        if (hints && hints.length) {
-          hintsHtml = `
-            <div class="collocations-row" style="margin-top: 14px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
-              ${hints.map(hint => `<span class="collocation-badge" style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.2); color: #38bdf8; padding: 4px 10px; border-radius: 99px; font-size: 0.85rem;">${hint}</span>`).join("")}
+        const extra = (window.VOCAB_EXTRAS && window.VOCAB_EXTRAS[item.word.toLowerCase()]);
+        let extrasHtml = "";
+        if (extra) {
+          const collocationsHtml = (extra.collocations || []).map(col => `
+            <span class="collocation-badge" style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.25); color: #38bdf8; padding: 4px 10px; border-radius: 99px; font-size: 0.85rem; font-weight: 500; display: inline-flex; align-items: center; gap: 4px;">
+              ${col}
+            </span>
+          `).join("");
+
+          const synonymHtml = extra.synonym ? `
+            <div class="synonym-line" style="margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.85rem; color: #94a3b8;">
+              <span>Đồng nghĩa:</span>
+              <span class="synonym-badge" style="background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.25); color: #c084fc; padding: 4px 10px; border-radius: 99px; font-weight: 500;">
+                ${extra.synonym}
+              </span>
+            </div>
+          ` : "";
+
+          extrasHtml = `
+            <div class="extras-section" style="margin-top: 18px; display: flex; flex-direction: column; align-items: center; gap: 12px;">
+              <div class="collocations-row" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                ${collocationsHtml}
+              </div>
+              ${synonymHtml}
             </div>
           `;
+        } else {
+          const hints = closeMeaningHints[item.word.toLowerCase()];
+          if (hints && hints.length && showSynonyms) {
+            extrasHtml = `
+              <div class="collocations-row" style="margin-top: 14px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                ${hints.map(hint => `<span class="collocation-badge" style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.2); color: #38bdf8; padding: 4px 10px; border-radius: 99px; font-size: 0.85rem;">${hint}</span>`).join("")}
+              </div>
+            `;
+          }
         }
 
         cardBody = `
-          <div class="study-card-body flashcard-body" data-flip-view style="cursor: pointer;">
-            <h3 class="meaning-word" style="color: #ffffff; margin-top: 10px; font-size: 2.2rem !important; font-weight: 800;">${item.meaning}</h3>
-            <p class="example-text" style="font-size: 1rem; color: #cbd5e1; font-style: italic; margin-top: 12px; font-weight: 500;">
-              "${item.example}"
-            </p>
-            ${translation ? `<p class="example-translation-text" style="color: #64748b; font-size: 0.88rem; margin-top: 4px;">(${translation})</p>` : ""}
-            ${hintsHtml}
+          <div class="study-card-body flashcard-body">
+            <h3 class="meaning-word" style="color: #ffffff; margin-top: 14px; font-size: 2.2rem !important; font-weight: 800; display: flex; align-items: baseline; justify-content: center; gap: 8px; flex-wrap: wrap;">
+              <span>${item.word}</span>
+              ${showWordClass ? `<span style="font-size: 1.1rem; font-style: italic; color: #38bdf8; font-weight: 600;">(${getWordClass(item.word)})</span>` : ""}
+              <span style="color: #94a3b8; font-weight: 400; font-size: 1.8rem; margin: 0 6px;">-</span>
+              <span style="font-size: 1.8rem; color: #cbd5e1; font-weight: 600;">${item.meaning}</span>
+            </h3>
+            ${showExamples ? `
+              <p class="example-text" style="font-size: 1rem; color: #cbd5e1; font-style: italic; margin-top: 14px; font-weight: 500;">
+                "${item.example}"
+              </p>
+              ${translation ? `<p class="example-translation-text" style="color: #64748b; font-size: 0.88rem; margin-top: 8px;">(${translation})</p>` : ""}
+            ` : ""}
+            ${extrasHtml}
           </div>
         `;
 
@@ -924,18 +1352,20 @@ function initVocabularyStudy() {
         shortcutText = "<kbd>Tab</kbd> Đã thuộc · <kbd>Enter</kbd> Học tiếp";
       } else {
         cardBody = `
-          <div class="study-card-body flashcard-body" data-flip-view style="cursor: pointer;">
-            <div class="word-title-wrap">
-              <h3 class="vocab-word">${item.word}</h3>
-              <span class="vocab-class">(${getWordClass(item.word)})</span>
-            </div>
-            <div class="phonetics-row">
-              <button class="pronounce-btn us" type="button" data-speak-word="${item.word}" data-lang="en-US">
-                <i class="ti-volume"></i> <span>US /${item.phonetic.replace(/\//g, '')}/</span>
-              </button>
-              <button class="pronounce-btn uk" type="button" data-speak-word="${item.word}" data-lang="en-GB">
-                <i class="ti-volume"></i> <span>UK /${item.phonetic.replace(/\//g, '')}/</span>
-              </button>
+          <div class="study-card-body flashcard-body">
+            <div class="word-info-wrap" style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <div class="word-title-wrap" style="margin-bottom: 0;">
+                <h3 class="vocab-word">${item.word}</h3>
+                ${showWordClass ? `<span class="vocab-class">(${getWordClass(item.word)})</span>` : ""}
+              </div>
+              <div class="phonetics-row">
+                <button class="pronounce-btn us" type="button" data-speak-word="${item.word}" data-lang="en-US">
+                  <i class="ti-volume"></i> <span>US /${item.phonetic.replace(/\//g, '')}/</span>
+                </button>
+                <button class="pronounce-btn uk" type="button" data-speak-word="${item.word}" data-lang="en-GB">
+                  <i class="ti-volume"></i> <span>UK /${item.phonetic.replace(/\//g, '')}/</span>
+                </button>
+              </div>
             </div>
             <div class="meaning-section">
               <p class="flip-prompt">Nhấn hoặc phím Space để xem nghĩa</p>
@@ -943,14 +1373,8 @@ function initVocabularyStudy() {
           </div>
         `;
 
-        actionsHtml = `
-          <div class="study-action-row">
-            <button class="study-action-btn reveal-btn solo" type="button" data-flip-view>
-              Xem nghĩa
-            </button>
-          </div>
-        `;
-        shortcutText = "<kbd>Space</kbd> Xem nghĩa";
+        actionsHtml = "";
+        shortcutText = "";
       }
     }
 
@@ -974,15 +1398,22 @@ function initVocabularyStudy() {
       shortcutText = "<kbd>1</kbd> Học lại · <kbd>2</kbd> Khó · <kbd>3</kbd> Tốt · <kbd>4</kbd> Dễ";
     }
 
+    const hasActiveOverlay = isStudySettingsOpen || !!confirmMasteredWordKey || !!activeReportWord;
+
+    let borderClass = "";
+    if (isAnswered) {
+      borderClass = lastAnswerIsCorrect ? "correct-card" : "wrong-card";
+    }
+
     return `
       ${subTabs}
-      <section class="study-card study-card-step ${currentStudyMode}-step">
+      <section class="study-card study-card-step ${currentStudyMode}-step ${borderClass} ${hasActiveOverlay ? 'settings-open' : ''}" ${currentStudyMode === 'flashcard' ? 'data-flip-view' : ''} style="position: relative;">
         ${cardHeader}
+        ${studySettingsPanel}
         ${cardBody}
       </section>
       <div class="study-actions-container">
         ${actionsHtml}
-        <p class="study-shortcut-hint">${shortcutText}</p>
         <p class="study-mode-indicator">Chế độ ${getModeNumber()}/4: ${getModeName()}</p>
         <div class="study-bottom-stats">
           <span class="stat-badge new-words"><strong>${counts.newWords}</strong> Từ mới</span>
@@ -1017,16 +1448,28 @@ function initVocabularyStudy() {
     }
 
     currentStudyMode = activeStudyModes[nextModeIndex];
+    
+    // Reset answers but keep quiz options since it's the same word
     isWordRevealed = false;
+    isAnswered = false;
+    lastAnswerIsCorrect = false;
+    lastTypedAnswer = "";
+    lastQuizSelectedIndex = -1;
     render();
   }
 
   function nextWord(topic) {
     isClassifyingWord = false;
-    currentWordIndex = (currentWordIndex + 1) % topic.words.length;
+    const activeWords = currentWorkspaceMode === "study" ? getStudyWords(topic) : topic.words;
+    if (activeWords.length > 0) {
+      currentWordIndex = (currentWordIndex + 1) % activeWords.length;
+    } else {
+      currentWordIndex = 0;
+    }
     const activeStudyModes = getActiveStudyModes();
     currentStudyMode = activeStudyModes[0];
-    isWordRevealed = false;
+    
+    initWordState(activeWords[currentWordIndex], topic);
     render();
   }
 
@@ -1188,6 +1631,7 @@ function initVocabularyStudy() {
   }
 
   function attachEvents(topic) {
+    const activeWords = currentWorkspaceMode === "study" ? getStudyWords(topic) : topic.words;
     root.querySelectorAll("[data-workspace-mode]").forEach(button => {
       button.addEventListener("click", () => {
         currentWorkspaceMode = button.dataset.workspaceMode;
@@ -1198,8 +1642,59 @@ function initVocabularyStudy() {
       });
     });
 
-    root.querySelector("[data-toggle-study-settings]")?.addEventListener("click", () => {
-      root.querySelector("[data-study-settings]")?.classList.toggle("is-open");
+    root.querySelector("[data-toggle-modes-settings]")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      isModesSettingsOpen = !isModesSettingsOpen;
+      isStudySettingsOpen = false;
+      render();
+    });
+
+    root.querySelector("[data-toggle-study-settings]")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      isStudySettingsOpen = !isStudySettingsOpen;
+      isModesSettingsOpen = false;
+      render();
+    });
+
+    // Close settings panels on outside click
+    const handleGlobalClick = (e) => {
+      let changed = false;
+      if (isModesSettingsOpen && !e.target.closest("[data-modes-settings]") && !e.target.closest("[data-toggle-modes-settings]")) {
+        isModesSettingsOpen = false;
+        changed = true;
+      }
+      if (isStudySettingsOpen && !e.target.closest("[data-study-settings]") && !e.target.closest("[data-toggle-study-settings]")) {
+        isStudySettingsOpen = false;
+        changed = true;
+      }
+      if (changed) {
+        render();
+      }
+    };
+    if (window._vocabStudyClickHandler) {
+      window.removeEventListener("click", window._vocabStudyClickHandler);
+    }
+    window._vocabStudyClickHandler = handleGlobalClick;
+    window.addEventListener("click", handleGlobalClick);
+
+    root.querySelectorAll("[data-study-setting]").forEach(input => {
+      input.addEventListener("change", () => {
+        const setting = input.dataset.studySetting;
+        if (input.type === "checkbox") {
+          const val = input.checked;
+          if (setting === "autoSpeak") autoSpeak = val;
+          if (setting === "showExamples") showExamples = val;
+          if (setting === "showCollocations") showCollocations = val;
+          if (setting === "showSynonyms") showSynonyms = val;
+          if (setting === "showWordClass") showWordClass = val;
+          localStorage.setItem(`vocab_settings_${setting}`, val);
+        } else if (input.tagName === "SELECT") {
+          const val = input.value;
+          if (setting === "preferredVoice") preferredVoice = val;
+          localStorage.setItem(`vocab_settings_${setting}`, val);
+        }
+        render();
+      });
     });
 
     root.querySelectorAll("[data-study-option]").forEach(input => {
@@ -1220,8 +1715,13 @@ function initVocabularyStudy() {
       });
     });
 
-    root.querySelectorAll("[data-flip-view]").forEach(button => {
-      button.addEventListener("click", () => {
+    root.querySelectorAll("[data-flip-view]").forEach(element => {
+      element.addEventListener("click", (e) => {
+        if (element.classList.contains("flashcard-step")) {
+          if (e.target.closest("button") || e.target.closest("input") || e.target.closest("a") || e.target.closest("select") || e.target.closest(".study-settings-panel") || e.target.closest(".confirm-modal-card") || e.target.closest(".report-modal-card") || e.target.closest(".modal-overlay")) {
+            return;
+          }
+        }
         isWordRevealed = !isWordRevealed;
         render();
       });
@@ -1232,26 +1732,134 @@ function initVocabularyStudy() {
         const wordKey = button.dataset.saveWord;
         if (!wordKey) return;
 
-        const isLoggedIn = !!localStorage.getItem("engWithMeUserId");
-        if (!isLoggedIn) {
-          const word = topic.words.find(item => getWordKey(topic, item) === wordKey);
-          if (!word) return;
-          pendingSaveWord = { key: wordKey, word, requireLogin: true };
-          render();
-          return;
-        }
-
         if (savedWords.has(wordKey)) {
+          savedWords.delete(wordKey);
           savedWordRecords.delete(wordKey);
           saveSavedWords("remove", wordKey);
           render();
         } else {
-          const word = topic.words.find(item => getWordKey(topic, item) === wordKey);
-          if (!word) return;
-          pendingSaveWord = { key: wordKey, word };
+          confirmMasteredWordKey = wordKey;
           render();
         }
       });
+    });
+
+    root.querySelectorAll("[data-report-word]").forEach(button => {
+      button.addEventListener("click", () => {
+        activeReportWord = button.dataset.reportWord;
+        selectedReportOptions.clear();
+        reportDescription = "";
+        render();
+      });
+    });
+
+    // Confirm Mastered Modal Events
+    root.querySelectorAll("[data-close-confirm]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        if (e.target === btn || btn.tagName === "BUTTON") {
+          confirmMasteredWordKey = null;
+          render();
+        }
+      });
+    });
+
+    root.querySelector("[data-confirm-mastered]")?.addEventListener("click", () => {
+      if (confirmMasteredWordKey) {
+        const wordKey = confirmMasteredWordKey;
+        const wordText = wordKey.split("-").pop();
+        savedWords.add(wordKey);
+        savedWordRecords.set(wordKey, {
+          key: wordKey,
+          studyLevel: "easy"
+        });
+        saveSavedWords("save", wordKey, "easy");
+        confirmMasteredWordKey = null;
+        render();
+        showUndoToast(wordText, wordKey);
+      }
+    });
+
+    // Report Modal Events
+    root.querySelectorAll("[data-close-report]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        if (e.target === btn || btn.tagName === "BUTTON" || btn.classList.contains("modal-btn-cancel-text") || btn.closest(".report-close-cross")) {
+          activeReportWord = null;
+          selectedReportOptions.clear();
+          reportDescription = "";
+          render();
+        }
+      });
+    });
+
+    root.querySelectorAll("[data-report-opt]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const idx = parseInt(btn.dataset.reportOpt);
+        if (selectedReportOptions.has(idx)) {
+          selectedReportOptions.delete(idx);
+        } else {
+          selectedReportOptions.add(idx);
+        }
+        render();
+      });
+    });
+
+    const reportTextarea = root.querySelector("[data-report-desc]");
+    if (reportTextarea) {
+      reportTextarea.addEventListener("input", (e) => {
+        reportDescription = e.target.value;
+        const text = reportDescription;
+        const charCount = text.length;
+        const wordCount = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
+        
+        const counterEl = root.querySelector("[data-report-char-counter]");
+        if (counterEl) counterEl.textContent = `${charCount}/500`;
+        
+        const reqEl = root.querySelector("[data-report-word-req-text]");
+        if (reqEl) {
+          if (wordCount < 5) {
+            reqEl.textContent = `Cần thêm ${5 - wordCount} từ nữa (tối thiểu 5)`;
+            reqEl.style.color = "#ef4444";
+          } else {
+            reqEl.textContent = "";
+          }
+        }
+        
+        const submitBtn = root.querySelector("[data-submit-report]");
+        if (submitBtn) {
+          const isSelected = selectedReportOptions.size > 0;
+          const hasOther = selectedReportOptions.has(4);
+          const isSubmitActive = isSelected && (!hasOther || wordCount >= 5);
+          submitBtn.disabled = !isSubmitActive;
+          if (isSubmitActive) {
+            submitBtn.style.background = "#ef4444";
+            submitBtn.style.color = "#ffffff";
+            submitBtn.style.cursor = "pointer";
+          } else {
+            submitBtn.style.background = "rgba(239, 68, 68, 0.15)";
+            submitBtn.style.color = "rgba(255, 255, 255, 0.3)";
+            submitBtn.style.cursor = "not-allowed";
+          }
+        }
+      });
+    }
+
+    root.querySelector("[data-submit-report]")?.addEventListener("click", () => {
+      const text = reportDescription || "";
+      const wordCount = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
+      
+      const isSelected = selectedReportOptions.size > 0;
+      const hasOther = selectedReportOptions.has(4);
+      const isSubmitActive = isSelected && (!hasOther || wordCount >= 5);
+
+      if (isSubmitActive) {
+        const optionNames = ["Ảnh không đúng nghĩa", "Từ vựng sai", "Ví dụ sai", "Lỗi âm thanh", "Khác"];
+        const selectedNames = Array.from(selectedReportOptions).map(idx => optionNames[idx]);
+        alert(`Báo cáo của bạn đã được ghi nhận: "${selectedNames.join(", ")}" cho từ "${activeReportWord}".`);
+        activeReportWord = null;
+        selectedReportOptions.clear();
+        reportDescription = "";
+        render();
+      }
     });
 
     root.querySelectorAll("[data-save-level]").forEach(button => {
@@ -1309,45 +1917,62 @@ function initVocabularyStudy() {
 
     root.querySelectorAll("[data-study-answer]").forEach(button => {
       button.addEventListener("click", () => {
+        if (isAnswered) return;
         const isCorrect = button.dataset.correct === "true";
-        const card = button.closest(".study-card");
-        const item = topic.words[currentWordIndex];
-        const feedback = card?.querySelector("[data-study-feedback]");
+        
+        isAnswered = true;
+        lastAnswerIsCorrect = isCorrect;
+        lastQuizSelectedIndex = parseInt(button.dataset.answerIndex);
 
-        card?.querySelectorAll("[data-study-answer]").forEach(answerButton => {
-          answerButton.disabled = true;
-          if (answerButton.dataset.correct === "true") answerButton.classList.add("correct");
-        });
-
-        if (!isCorrect) button.classList.add("wrong");
-        if (feedback) {
-          feedback.textContent = isCorrect
-            ? `Đúng. Đáp án: ${item.meaning}.`
-            : `Chưa đúng. Đáp án đúng: ${item.meaning}.`;
-        }
-
-        scheduleStudyAdvance(topic);
+        render();
       });
     });
 
     root.querySelectorAll("[data-check-type]").forEach(button => {
       button.addEventListener("click", () => {
+        if (isAnswered) return;
         const card = button.closest(".study-card");
         const input = card?.querySelector("[data-type-answer]");
-        const item = topic.words[currentWordIndex];
-        const feedback = card?.querySelector("[data-study-feedback]");
+        const item = activeWords[currentWordIndex];
         const isCorrect = input?.value.trim().toLowerCase() === item.word.toLowerCase();
 
-        input?.classList.add(isCorrect ? "correct" : "wrong");
-        button.disabled = true;
-        if (input) input.disabled = true;
-        if (feedback) {
-          feedback.textContent = isCorrect
-            ? `Chính xác. Đáp án: ${item.word}.`
-            : `Chưa đúng. Đáp án đúng là ${item.word}.`;
-        }
+        isAnswered = true;
+        lastAnswerIsCorrect = isCorrect;
+        lastTypedAnswer = input?.value.trim() || "";
 
-        scheduleStudyAdvance(topic);
+        render();
+      });
+    });
+
+    root.querySelectorAll("[data-type-answer]").forEach(input => {
+      const card = input.closest(".study-card");
+      const checkBtn = card?.querySelector("[data-check-type]");
+      
+      const updateButtonState = () => {
+        if (!checkBtn) return;
+        const val = input.value.trim();
+        if (val === "") {
+          checkBtn.disabled = true;
+          checkBtn.style.opacity = "0.5";
+          checkBtn.style.cursor = "not-allowed";
+        } else {
+          if (!input.disabled) {
+            checkBtn.disabled = false;
+            checkBtn.style.opacity = "1";
+            checkBtn.style.cursor = "pointer";
+          }
+        }
+      };
+
+      input.addEventListener("input", updateButtonState);
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          if (input.value.trim() !== "") {
+            checkBtn?.click();
+          }
+        }
       });
     });
 
@@ -1471,7 +2096,7 @@ function initVocabularyStudy() {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         const lvl = btn.dataset.classify;
-        const item = topic.words[currentWordIndex];
+        const item = activeWords[currentWordIndex];
         const wordKey = getWordKey(topic, item);
         savedWordRecords.set(wordKey, { key: wordKey, studyLevel: lvl });
         saveSavedWords("save", wordKey, lvl);
@@ -1495,12 +2120,7 @@ function initVocabularyStudy() {
       });
     });
 
-    root.querySelectorAll("[data-report-word]").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        alert(`Đã gửi báo cáo phản hồi về từ vựng "${btn.dataset.reportWord}". Cảm ơn đóng góp của bạn!`);
-      });
-    });
+
 
     root.querySelector("[data-start-speech]")?.addEventListener("click", () => {
       if (!recognition) {
@@ -1509,7 +2129,7 @@ function initVocabularyStudy() {
         return;
       }
       
-      const item = topic.words[currentWordIndex];
+      const item = activeWords[currentWordIndex];
       const micBtn = root.querySelector("[data-start-speech]");
       const resText = root.querySelector("[data-speech-result]");
       
@@ -1595,6 +2215,14 @@ function initVocabularyStudy() {
   }
 
   recordCurrentTopicView();
+
+  const startTopic = getTopic();
+  if (startTopic) {
+    const activeWords = currentWorkspaceMode === "study" ? getStudyWords(startTopic) : startTopic.words;
+    if (activeWords && activeWords[currentWordIndex]) {
+      initWordState(activeWords[currentWordIndex], startTopic);
+    }
+  }
 
   render();
 }
