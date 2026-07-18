@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+(() => {
   const modeTabs = document.querySelectorAll("[data-vocab-mode]");
   const studyView = document.querySelector("[data-vocab-study-view]");
   const progressView = document.querySelector("[data-vocab-progress-view]");
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const topicSearch = document.querySelector("[data-topic-search]");
   const quizQuestion = document.querySelector("[data-quiz-question]");
   const quizOptions = document.querySelector("[data-quiz-options]");
-  const quizFeedback = document.querySelector("[data-vocab-feedback]");
+
   const progressScore = document.querySelector("[data-vocab-progress-score]");
   const progressSummary = document.querySelector("[data-vocab-progress-summary]");
   const progressBar = document.querySelector("[data-vocab-progress-bar]");
@@ -161,6 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Read local storage object with safety fallback
   function readLocalObject(key) {
     try {
       const parsed = JSON.parse(localStorage.getItem(key) || "null");
@@ -574,7 +575,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ? `Chưa có chủ đề nào được mở ở mức ${vocabularyData[activeLevel].title}.`
       : isSearch
         ? "Thử đổi từ khóa tìm kiếm hoặc chuyển sang cấp độ khác."
-      : `${sectionName} không còn chủ đề nào cần xử lý ở mức ${vocabularyData[activeLevel].title}.`;
+        : `${sectionName} không còn chủ đề nào cần xử lý ở mức ${vocabularyData[activeLevel].title}.`;
 
     return `
       <article class="topic-done-card ${activeLevel} ${isNoHope ? "no-hope" : ""} ${isSearch ? "search" : ""}">
@@ -672,7 +673,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (vBlock && vTrack) {
         if (visitedTopics.length > 0) {
           vBlock.style.display = "block";
-          vTrack.innerHTML = visitedTopics.map(topicCardTemplate).join("");
+          vTrack.innerHTML = visitedTopics.map(topicCardTemplate).join("")
           vTrack.dataset.remainder = visitedTopics.length % 4;
           if (vCount) vCount.textContent = `${visitedTopics.length} chủ đề`;
         } else {
@@ -736,7 +737,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function createQuiz() {
-    if (!quizQuestion || !quizOptions || !quizFeedback) return;
+    if (!quizQuestion || !quizOptions) return;
     if (quizTimer) {
       clearTimeout(quizTimer);
       quizTimer = null;
@@ -756,7 +757,7 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     quizOptions.innerHTML = options.map(option => `
-      <div class="quiz-option-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+      <div class="quiz-option-wrapper" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
         <button
           type="button"
           class="quiz-option-btn"
@@ -765,13 +766,11 @@ document.addEventListener("DOMContentLoaded", () => {
         >
           ${option.word.meaning}
         </button>
-        <span class="option-word" style="display: block; font-size: 0.95rem; font-weight: 700; color: #70f59d; opacity: 0; transform: translateY(-5px); transition: all 0.4s ease;">
+        <span class="option-word" style="display: block; font-size: 0.9rem; font-weight: 700; color: transparent; opacity: 0; transform: translateY(-3px); transition: all 0.2s ease; pointer-events: none; white-space: nowrap; margin-top: 6px; text-align: center;">
           ${option.word.word}
         </span>
       </div>
     `).join("");
-
-    quizFeedback.textContent = "";
 
     quizOptions.querySelectorAll(".quiz-option-btn").forEach(button => {
       button.addEventListener("click", () => {
@@ -797,29 +796,13 @@ document.addEventListener("DOMContentLoaded", () => {
           if (isBtnCorrect) btn.classList.add("correct");
           if (btn === button && !isCorrect) btn.classList.add("wrong");
           
-          // Show the English word below the button with conditional color
+          // Show the English word below the button with conditional color and smooth fade-in
           if (wordSpan) {
             wordSpan.style.color = isBtnCorrect ? "#70f59d" : "#f87171";
             wordSpan.style.opacity = "1";
             wordSpan.style.transform = "translateY(0)";
           }
         });
-
-        if (isCorrect) {
-          quizFeedback.innerHTML = `
-            <div class="quiz-feedback-main">
-              <span class="feedback-icon success"><i class="ti-check"></i></span>
-              <span><strong>${correctWord.word}</strong> ${correctWord.phonetic} - ${correctWord.meaning}. Ví dụ: ${correctWord.example}</span>
-            </div>
-          `;
-        } else {
-          quizFeedback.innerHTML = `
-            <div class="quiz-feedback-main">
-              <span class="feedback-icon error"><i class="ti-close"></i></span>
-              <span><strong>${correctWord.word}</strong> ${correctWord.phonetic} - ${correctWord.meaning}. Ví dụ: ${correctWord.example}</span>
-            </div>
-          `;
-        }
 
         quizTimer = setTimeout(() => {
           createQuiz();
@@ -869,7 +852,7 @@ document.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", closeSavedWords);
   });
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && savedWordsPopover && !savedWordsPopover.hidden) closeSavedWords();
+    if (event.key === "Escape" && !savedWordsPopover.hidden) closeSavedWords();
   });
 
   updateSavedCount();
@@ -879,4 +862,4 @@ document.addEventListener("DOMContentLoaded", () => {
   createQuiz();
   updateProgressView();
   setVocabMode(activeMode);
-});
+})();
