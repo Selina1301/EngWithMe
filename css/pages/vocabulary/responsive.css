@@ -44,10 +44,20 @@
   }
 
   .word-list-card,
-  .game-menu,
   .game-board,
   .blast-options {
     grid-template-columns: 1fr;
+  }
+
+  .game-menu {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .word-view-card {
+    height: 410px !important;
+    padding: 24px 20px !important;
   }
 }
 
