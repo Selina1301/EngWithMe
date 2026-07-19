@@ -7,30 +7,6 @@ start_app_session();
 
 $pdo = db();
 
-function ensure_learning_content_table(PDO $pdo): void
-{
-    $pdo->exec(
-        'CREATE TABLE IF NOT EXISTS learning_content_items (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            section ENUM("reading", "listening", "grammar") NOT NULL,
-            content_key VARCHAR(150) NOT NULL,
-            level_key VARCHAR(50) NULL,
-            goal_key VARCHAR(100) NULL,
-            title VARCHAR(255) NOT NULL,
-            description TEXT NULL,
-            payload_json LONGTEXT NOT NULL,
-            sort_order INT NOT NULL DEFAULT 0,
-            status ENUM("draft", "published", "archived") NOT NULL DEFAULT "published",
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            UNIQUE KEY unique_learning_content (section, content_key),
-            KEY idx_learning_content_section_status (section, status),
-            KEY idx_learning_content_level (section, level_key),
-            KEY idx_learning_content_goal (section, goal_key)
-        ) ENGINE=InnoDB'
-    );
-}
-
 function valid_learning_section(string $section): bool
 {
     return in_array($section, ['reading', 'listening', 'grammar'], true);
@@ -60,12 +36,42 @@ function request_json_payload(): array
     return is_array($decoded) ? $decoded : $_POST;
 }
 
-ensure_learning_content_table($pdo);
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $section = trim((string) ($_GET['section'] ?? ''));
     if (!valid_learning_section($section)) {
         json_response(['ok' => false, 'message' => 'Section không hợp lệ.'], 422);
+    }
+    $key = trim((string) ($_GET['key'] ?? ''));
+    $lazy = (($_GET['lazy'] ?? '') === '1');
+
+    if ($key !== '') {
+        $stmt = $pdo->prepare(
+            'SELECT section, content_key, level_key, goal_key, title, description, payload_json, sort_order, status, updated_at
+             FROM learning_content_items
+             WHERE section = ? AND content_key = ?'
+        );
+        $stmt->execute([$section, $key]);
+        $row = $stmt->fetch();
+        if (!$row) {
+            json_response(['ok' => false, 'message' => 'Nội dung không tồn tại.'], 404);
+        }
+        $payload = decode_payload((string) $row['payload_json']);
+        json_response([
+            'ok' => true,
+            'section' => $section,
+            'item' => [
+                'section' => $row['section'],
+                'key' => $row['content_key'],
+                'level' => $row['level_key'],
+                'goal' => $row['goal_key'],
+                'title' => $row['title'],
+                'description' => $row['description'],
+                'sortOrder' => (int) $row['sort_order'],
+                'status' => $row['status'],
+                'updatedAt' => $row['updated_at'],
+                'payload' => $payload,
+            ]
+        ]);
     }
 
     $includeDrafts = (($_GET['include_drafts'] ?? '') === '1');
@@ -73,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $user = require_admin_user();
         unset($user);
         $stmt = $pdo->prepare(
-            'SELECT section, content_key, level_key, goal_key, title, description, payload_json, sort_order, status, updated_at
+            'SELECT section, content_key, level_key, goal_key, title, description, ' . ($lazy ? 'NULL as payload_json' : 'payload_json') . ', sort_order, status, updated_at
              FROM learning_content_items
              WHERE section = ?
              ORDER BY sort_order ASC, id ASC'
@@ -81,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $stmt->execute([$section]);
     } else {
         $stmt = $pdo->prepare(
-            'SELECT section, content_key, level_key, goal_key, title, description, payload_json, sort_order, status, updated_at
+            'SELECT section, content_key, level_key, goal_key, title, description, ' . ($lazy ? 'NULL as payload_json' : 'payload_json') . ', sort_order, status, updated_at
              FROM learning_content_items
              WHERE section = ? AND status = "published"
              ORDER BY sort_order ASC, id ASC'
@@ -91,7 +97,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $items = [];
     foreach ($stmt->fetchAll() as $row) {
-        $payload = decode_payload((string) $row['payload_json']);
+        $payload = null;
+        if (!$lazy && isset($row['payload_json'])) {
+            $payload = decode_payload((string) $row['payload_json']);
+        }
         $items[] = [
             'section' => $row['section'],
             'key' => $row['content_key'],

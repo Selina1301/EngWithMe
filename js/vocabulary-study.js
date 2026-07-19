@@ -308,7 +308,7 @@ function initVocabularyStudy() {
 
       if (!item || typeof item !== "object" || !item.key) return;
       const studyLevel = ["easy", "medium", "hard"].includes(item.studyLevel) ? item.studyLevel : "easy";
-      records.set(item.key, { key: item.key, studyLevel });
+      records.set(item.key, { key: item.key, studyLevel, ...item });
     });
 
     return records;

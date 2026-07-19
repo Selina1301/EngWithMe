@@ -48,7 +48,8 @@ function loadReadingLessons() {
 }
 
 function loadListeningMissions() {
-  const source = fs.readFileSync(path.join(root, "js", "listening-lab.js"), "utf8");
+  const fallbackSource = fs.readFileSync(path.join(root, "js", "listening-data-fallback.js"), "utf8");
+  const labSource = fs.readFileSync(path.join(root, "js", "listening-lab.js"), "utf8");
   const sandbox = {
     window: {},
     console,
@@ -59,7 +60,8 @@ function loadListeningMissions() {
     setTimeout,
     clearTimeout
   };
-  vm.runInNewContext(source, sandbox, { filename: "listening-lab.js" });
+  vm.runInNewContext(fallbackSource, sandbox, { filename: "listening-data-fallback.js" });
+  vm.runInNewContext(labSource, sandbox, { filename: "listening-lab.js" });
   return sandbox.window.LISTENING_MISSIONS_FALLBACK || [];
 }
 

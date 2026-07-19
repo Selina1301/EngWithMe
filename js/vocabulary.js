@@ -230,7 +230,21 @@
     return Array.from(savedWordRecords.values())
       .map(record => {
         const entry = entriesByKey.get(record.key);
-        return entry ? { ...entry, studyLevel: record.studyLevel } : null;
+        if (entry) return { ...entry, studyLevel: record.studyLevel };
+        if (record.key && record.key.startsWith("custom-")) {
+          return {
+            key: record.key,
+            studyLevel: record.studyLevel || "easy",
+            levelKey: record.studyLevel || "easy",
+            levelLabel: (record.studyLevel || "easy").toUpperCase(),
+            topicName: record.topicName || "Listening Lab",
+            word: record.word || "",
+            phonetic: record.phonetic || "/.../",
+            meaning: record.meaning || "Từ vựng từ bài nghe",
+            example: record.example || ""
+          };
+        }
+        return null;
       })
       .filter(Boolean);
   }

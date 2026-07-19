@@ -29,20 +29,6 @@ function is_valid_topic_id(string $value): bool
         && (bool) preg_match('/^[a-z0-9][a-z0-9-]*$/i', $value);
 }
 
-function ensure_vocab_activity_table(PDO $pdo): void
-{
-    $pdo->exec(
-        'CREATE TABLE IF NOT EXISTS user_vocab_activity_days (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT NOT NULL,
-            activity_day DATE NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE KEY unique_user_vocab_activity_day (user_id, activity_day),
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-        ) ENGINE=InnoDB'
-    );
-}
-
 function normalize_day_key(string $value): ?string
 {
     $value = trim($value);
@@ -58,7 +44,6 @@ function record_vocab_activity_day(PDO $pdo, int $userId, ?string $day): void
 {
     try {
         $day = normalize_day_key((string) $day) ?? date('Y-m-d');
-        ensure_vocab_activity_table($pdo);
 
         $stmt = $pdo->prepare('INSERT IGNORE INTO user_vocab_activity_days (user_id, activity_day) VALUES (?, ?)');
         $stmt->execute([$userId, $day]);

@@ -31,237 +31,305 @@
 
   <main class="page-main audio-lab-page">
     <section class="section listening-command" id="lab-dashboard">
-      <div class="command-hero">
+      <!-- VIEW 1: Luyện nghe (Study View) -->
+      <div class="command-hero full-width">
         <div class="command-copy">
           <p class="eyebrow">Listening Lab</p>
           <h1>Không chỉ nghe đúng sai. Biết chính xác vì sao bạn nghe không ra.</h1>
           <p class="real-situation" data-opening-scenario>Bạn vừa bước vào một quán cà phê ở New York. Nhân viên hỏi rất nhanh, phía sau có tiếng máy pha cà phê. Bạn có hiểu kịp không?</p>
+          <div class="listening-quote" style="margin: 16px 0 20px; font-style: italic; color: rgba(255,255,255,0.7); font-size: 0.9rem; border-left: 2px solid #10b981; padding-left: 12px; line-height: 1.5; text-align: left;">
+            "Tri thức lên tiếng, nhưng trí tuệ biết lắng nghe." 
+            <span style="display: block; font-size: 0.8rem; color: #a7f3d0; margin-top: 4px; font-weight: 600; font-style: normal; text-transform: uppercase; letter-spacing: 0.5px;">— Jimi Hendrix</span>
+          </div>
           <div class="command-actions">
             <button class="btn btn-primary" type="button" data-start-featured><span class="ti-control-play"></span> Bắt đầu session đầu tiên</button>
-            <button class="btn btn-ghost" type="button" data-daily-challenge><span class="ti-timer"></span> Thử thách 30 giây</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs switcher matching Vocab layout -->
+      <div class="listening-mode-switch" aria-label="Chế độ xem">
+        <button class="listening-mode-tab is-active" type="button" data-listening-mode="study">
+          <span class="ti-headphone"></span>
+          <span>Luyện nghe</span>
+        </button>
+        <button class="listening-mode-tab" type="button" data-listening-mode="progress">
+          <span class="ti-bar-chart"></span>
+          <span>Tiến độ</span>
+        </button>
+      </div>
+
+      <div class="listening-study-view" data-listening-study-view>
+        <div class="mission-map" style="display: flex; flex-direction: column; gap: 24px; padding: 24px; margin-bottom: 28px;">
+          <!-- Inner goal-selector (no border, no background, no margin) -->
+          <div class="goal-selector" aria-label="Chọn chủ đề luyện nghe" style="display: flex; flex-direction: column; gap: 14px; padding: 0 0 20px 0; border-bottom: 1px solid rgba(125, 211, 252, 0.12); align-items: stretch;">
+            <div style="font-weight: 800; font-size: 15px; color: #38bdf8; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+              <span class="ti-layers"></span> Phân loại chủ đề luyện nghe:
+            </div>
+            
+            <!-- Easy section -->
+            <div class="goal-level-group" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <span style="font-weight: 700; font-size: 12px; color: #10b981; background: rgba(16, 185, 129, 0.15); padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; min-width: 80px; text-align: center;">Easy</span>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; flex: 1;">
+                <button class="goal-chip active" type="button" data-goal="self-introduction">Giới thiệu bản thân</button>
+                <button class="goal-chip" type="button" data-goal="family-friends">Gia đình & bạn bè</button>
+                <button class="goal-chip" type="button" data-goal="daily-routine">Thói quen</button>
+                <button class="goal-chip" type="button" data-goal="weather-seasons">Thời tiết</button>
+                <button class="goal-chip" type="button" data-goal="hobbies-free-time">Sở thích</button>
+              </div>
+            </div>
+
+            <!-- Medium section -->
+            <div class="goal-level-group" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px dashed rgba(148, 163, 184, 0.1); padding-top: 12px;">
+              <span style="font-weight: 700; font-size: 12px; color: #f59e0b; background: rgba(245, 158, 11, 0.15); padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; min-width: 80px; text-align: center;">Medium</span>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; flex: 1;">
+                <button class="goal-chip" type="button" data-goal="shopping-prices">Mua sắm</button>
+                <button class="goal-chip" type="button" data-goal="food-restaurant">Ăn uống</button>
+                <button class="goal-chip" type="button" data-goal="travel-directions">Du lịch</button>
+                <button class="goal-chip" type="button" data-goal="study-school">Học tập</button>
+                <button class="goal-chip" type="button" data-goal="health-doctor">Sức khỏe</button>
+              </div>
+            </div>
+
+            <!-- Hard section -->
+            <div class="goal-level-group" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px dashed rgba(148, 163, 184, 0.1); padding-top: 12px;">
+              <span style="font-weight: 700; font-size: 12px; color: #ef4444; background: rgba(239, 68, 68, 0.15); padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; min-width: 80px; text-align: center;">Hard</span>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; flex: 1;">
+                <button class="goal-chip" type="button" data-goal="work-career">Công việc</button>
+                <button class="goal-chip" type="button" data-goal="news-society">Tin tức</button>
+                <button class="goal-chip" type="button" data-goal="tech-internet">Công nghệ</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Session Grid content -->
+          <div class="lab-dashboard-grid full-width" style="padding: 0; background: none; border: none; box-shadow: none;">
+            <section aria-label="Listening Map">
+              <div class="mission-toolbar" aria-label="Bộ lọc session" style="margin-top: 0;">
+                <label class="mission-search">
+                  <span class="ti-search"></span>
+                  <input type="search" data-mission-search placeholder="Tìm session, accent, bối cảnh...">
+                </label>
+                <span class="mission-count" data-mission-count>78 sessions</span>
+              </div>
+              <div class="mission-grid" data-mission-grid></div>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: Tiến độ (Progress View) -->
+      <div class="listening-progress-view" data-listening-progress-view hidden>
+        <div class="listening-progress-hero">
+          <div class="listening-progress-copy">
+            <p class="eyebrow">Tiến độ nghe tổng quan</p>
+            <div class="listening-progress-ring-container">
+              <div class="diagnostic-panel">
+                <div class="score-ring">
+                  <svg viewBox="0 0 36 36" aria-hidden="true">
+                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                    <path class="circle" data-score-ring stroke-dasharray="72, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                    <text x="18" y="20.35" data-native-score>72%</text>
+                  </svg>
+                  <span>Native comprehension</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="listening-progress-metrics">
+            <div class="listening-progress-metric">
+              <span>Cấp độ hiện tại</span>
+              <strong data-listening-level>Level 3: Sentence Decoder</strong>
+            </div>
+            <div class="listening-progress-metric">
+              <span>Streak học tập</span>
+              <strong data-streak-count>Streak 3 ngày</strong>
+            </div>
+            <div class="listening-progress-metric">
+              <span>Nhận định điểm yếu</span>
+              <strong data-weakness-summary>Hay miss: nối âm</strong>
+            </div>
+            <div class="listening-progress-metric">
+              <span>Bài luyện tiếp theo</span>
+              <strong data-next-drill style="font-size: 14px; font-weight: normal; color: #cbd5e1;">Luyện did you -> didja, want to -> wanna.</strong>
+            </div>
           </div>
         </div>
 
-        <aside class="diagnostic-panel" aria-label="Báo cáo nghe cá nhân">
-          <div class="score-ring">
-            <svg viewBox="0 0 36 36" aria-hidden="true">
-              <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-              <path class="circle" data-score-ring stroke-dasharray="72, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-              <text x="18" y="20.35" data-native-score>72%</text>
-            </svg>
-            <span>Native comprehension</span>
-          </div>
-          <div class="diagnostic-list">
-            <div>
-              <strong data-listening-level>Level 3: Sentence Decoder</strong>
-              <span>Mục tiêu kế tiếp: 85% để mở khóa Native Mode nâng cao.</span>
+        <div class="listening-progress-detail-grid">
+          <div class="progress-card weakness-card">
+            <div class="progress-card-header">
+              <span class="ti-pulse"></span>
+              <h3>Báo cáo kỹ năng & điểm yếu cá nhân</h3>
             </div>
-            <div>
-              <strong data-streak-count>Streak 3 ngày</strong>
-              <span>Hôm nay có session thật sẵn sàng để luyện ngay.</span>
-            </div>
-            <div>
-              <strong data-weakness-summary>Hay miss: nối âm</strong>
-              <span data-next-drill>Luyện did you -> didja, want to -> wanna, let me -> lemme.</span>
-            </div>
-          </div>
-        </aside>
-      </div>
-
-      <div class="goal-selector" aria-label="Chọn chủ đề luyện nghe">
-        <span>Chủ đề nghe:</span>
-        <button class="goal-chip active" type="button" data-goal="self-introduction">Giới thiệu bản thân</button>
-        <button class="goal-chip" type="button" data-goal="family-friends">Gia đình & bạn bè</button>
-        <button class="goal-chip" type="button" data-goal="work-career">Công việc</button>
-        <button class="goal-chip" type="button" data-goal="study-school">Học tập</button>
-        <button class="goal-chip" type="button" data-goal="daily-routine">Thói quen</button>
-        <button class="goal-chip" type="button" data-goal="shopping-prices">Mua sắm</button>
-        <button class="goal-chip" type="button" data-goal="food-restaurant">Ăn uống</button>
-        <button class="goal-chip" type="button" data-goal="travel-directions">Du lịch</button>
-        <button class="goal-chip" type="button" data-goal="health-doctor">Sức khỏe</button>
-        <button class="goal-chip" type="button" data-goal="weather-seasons">Thời tiết</button>
-        <button class="goal-chip" type="button" data-goal="hobbies-free-time">Sở thích</button>
-        <button class="goal-chip" type="button" data-goal="news-society">Tin tức</button>
-        <button class="goal-chip" type="button" data-goal="tech-internet">Công nghệ</button>
-      </div>
-
-      <div class="lab-dashboard-grid">
-        <section class="mission-map" aria-labelledby="mission-map-title">
-          <div class="section-heading">
-            <p class="eyebrow">Listening Map</p>
-            <h2 id="mission-map-title">Chọn một tình huống thật để luyện</h2>
-            <p>Mỗi tình huống là một session luyện nghe hoàn chỉnh. Bạn nghe 3 lần, mỗi lần mở khóa thêm dữ kiện: nghe thô, từ khóa, gap transcript, rồi mới xem breakdown.</p>
-          </div>
-          <div class="mission-toolbar" aria-label="Bộ lọc session">
-            <label class="mission-search">
-              <span class="ti-search"></span>
-              <input type="search" data-mission-search placeholder="Tìm session, accent, bối cảnh...">
-            </label>
-            <span class="mission-count" data-mission-count>78 sessions</span>
-          </div>
-          <div class="mission-grid" data-mission-grid></div>
-        </section>
-
-        <aside class="lab-insights" aria-label="Thông tin luyện nghe">
-          <article class="insight-panel">
-            <span class="panel-icon ti-bolt"></span>
-            <h3>Today's 3-minute Challenge</h3>
-            <p>Nghe một session ngắn trong bối cảnh đời thật. Web sẽ chấm phần trăm hiểu ở Natural Mode.</p>
-            <div class="mini-stats"><span>+40 XP</span><span>Fast Listener</span></div>
-            <button class="btn btn-secondary" type="button" data-daily-challenge>Start daily</button>
-          </article>
-
-          <article class="insight-panel">
-            <span class="panel-icon ti-pulse"></span>
-            <h3>Personal Weakness Report</h3>
+            <p class="progress-card-desc">Tỷ lệ thành thạo (Mastery %) dựa trên số lỗi đã tích lũy trong các session:</p>
             <ul class="mistake-bank" data-mistake-bank></ul>
-          </article>
-
-          <article class="insight-panel">
-            <span class="panel-icon ti-headphone-alt"></span>
-            <h3>Smart Speed Modes</h3>
-            <div class="mode-preview-list">
-              <span><strong>Slow</strong> nghe rõ từng chữ</span>
-              <span><strong>Natural</strong> tốc độ thực tế</span>
-              <span><strong>Native</strong> nuốt âm, nối âm nhanh</span>
-              <span><strong>Chaos</strong> có tiếng nền</span>
-            </div>
-          </article>
-        </aside>
+          </div>
+        </div>
       </div>
     </section>
 
     <section class="section compact lab-workspace" id="lab-workspace" hidden>
-      <button class="btn btn-ghost btn-back" id="back-to-map" type="button"><span class="ti-arrow-left"></span> Quay lại Listening Map</button>
+      <div class="workspace-header">
+        <button class="btn" id="back-to-map" type="button" style="display: flex; align-items: center; gap: 8px; background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(125, 211, 252, 0.15); color: #94a3b8; font-weight: 600; padding: 10px 18px; border-radius: 10px; transition: all 0.2s ease; cursor: pointer;" onmouseover="this.style.background='rgba(51, 65, 85, 0.8)'; this.style.color='#f8fafc'; this.style.borderColor='rgba(125, 211, 252, 0.3)';" onmouseout="this.style.background='rgba(30, 41, 59, 0.7)'; this.style.color='#94a3b8'; this.style.borderColor='rgba(125, 211, 252, 0.15)';">
+          <span class="ti-arrow-left" style="font-weight: bold;"></span> Quay lại
+        </button>
+        
+        <!-- Center Tabs matching Đậu TOEIC -->
+        <div class="workspace-tabs" style="margin: 0 auto; display: flex; gap: 6px;">
+          <button class="workspace-tab is-active" data-workspace-stage="2" type="button">Nghe Chép</button>
+          <button class="workspace-tab" data-workspace-stage="1" type="button">Nghe Check</button>
+          <button class="workspace-tab" data-workspace-stage="3" type="button">Nghe Full</button>
+        </div>
 
-      <div class="mission-shell">
-        <aside class="mission-context">
-          <p class="eyebrow" data-mission-kicker>Session</p>
-          <h2 data-mission-title>Session title</h2>
-          <p class="mission-story" data-mission-story></p>
-          <dl class="mission-meta">
-            <div><dt>Vai của bạn</dt><dd data-mission-role></dd></div>
-            <div><dt>Accent</dt><dd data-mission-accent></dd></div>
-            <div><dt>Noise</dt><dd data-mission-noise></dd></div>
-            <div><dt>Mục tiêu</dt><dd data-mission-target></dd></div>
-          </dl>
-
-          <div class="challenge-clock" data-challenge-box hidden>
-            <span class="ti-timer"></span>
-            <strong data-challenge-timer>30s</strong>
-            <small>Quick Listen challenge</small>
+        <!-- Right stats matching Đậu TOEIC -->
+        <div class="header-stats" style="color: #22d3ee; font-weight: 700; font-size: 13.5px; display: flex; align-items: center; gap: 10px;">
+          <span id="toolbar-status-text">1/3 Nghe Check</span>
+          <span style="color: rgba(125, 211, 252, 0.2)">|</span>
+          <span id="challenge-timer-display" style="display: none; align-items: center; gap: 4px;"><span class="ti-timer"></span> <span data-challenge-timer>0s</span><span style="color: rgba(125, 211, 252, 0.2)">|</span></span>
+          <div class="study-score-wrap" style="display: flex; align-items: center; gap: 4px; font-family: inherit; font-size: 0.82rem; font-weight: 600; padding: 4px 10px; border-radius: 99px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); height: 26px; box-sizing: border-box; transition: all 0.2s ease;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="fill: #f97316;">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <span id="study-points-add" style="color: #f97316; font-weight: 800; font-size: 12px; transition: all 0.3s ease;">+40 XP</span>
+            <span id="study-progress-text" style="color: #94a3b8; font-weight: 500; margin-left: 2px;">1/6 bài</span>
           </div>
+        </div>
+      </div>
 
-          <div class="listen-pass">
-            <h3>Nghe 3 lần, mỗi lần mở khóa thêm</h3>
-            <ol>
-              <li data-layer-step="1" class="active">Lần 1: chỉ nghe audio</li>
-              <li data-layer-step="2">Lần 2: hiện từ khóa</li>
-              <li data-layer-step="3">Lần 3: gap transcript</li>
-            </ol>
-            <p><strong data-listen-count>0</strong>/3 lượt nghe đã dùng trong session này.</p>
+      <div class="workspace-layout">
+        <!-- LEFT SIDEBAR: List of sessions in current goal -->
+        <aside class="workspace-sidebar" aria-label="Danh sách bài học">
+          <div class="sidebar-topic-header">
+            <span class="ti-agenda"></span>
+            <div style="display: grid; line-height: 1.2;">
+              <strong id="active-topic-name" style="font-size: 14px; text-transform: uppercase;">Giới thiệu bản thân</strong>
+              <span id="sidebar-subtitle" style="font-size: 11px; color: #64748b; font-weight: 700; margin-top: 2px;">4 bài • 12 câu</span>
+            </div>
           </div>
-          <div class="session-audit" data-session-audit aria-label="Session quality check"></div>
+          <div class="sidebar-session-list" id="sidebar-session-list"></div>
         </aside>
 
-        <section class="audio-workbench" aria-label="Khu luyện nghe">
-          <div class="player-panel">
-            <div class="player-topline">
-              <div>
-                <p class="eyebrow">Audio Lab</p>
-                <h3 data-player-title>Listen without subtitles first.</h3>
+        <!-- MAIN CONTAINER -->
+        <main class="workspace-main-panel">
+          <!-- Exercise Content box -->
+          <div class="exercise-content-card">
+            <!-- Top mini-toolbar inside card -->
+            <div class="workspace-mini-toolbar" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(125, 211, 252, 0.1); padding-bottom: 14px; margin-bottom: 20px;">
+              <!-- Playback controls -->
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <button class="toolbar-btn" id="prev-stage-btn" type="button" title="Bước trước"><span class="ti-angle-left"></span></button>
+                <button class="toolbar-btn play-btn" id="master-play" type="button" title="Phát audio (Ctrl)"><span class="ti-control-play"></span></button>
+                <button class="toolbar-btn" id="next-stage-btn" type="button" title="Bước tiếp theo"><span class="ti-angle-right"></span></button>
+                
+                <!-- Speed selector -->
+                <div class="playback-speed-selector" style="display: flex; align-items: center; gap: 4px; border: 1px solid rgba(125, 211, 252, 0.12); border-radius: 999px; padding: 3px; background: rgba(2, 6, 23, 0.4); margin-left: 8px;">
+                  <span style="color: #64748b; font-size: 11px; font-weight: bold; padding: 0 4px 0 8px; user-select: none;">TỐC ĐỘ:</span>
+                  <button class="speed-btn playback-speed-btn" data-speed="0.8" type="button">0.8x</button>
+                  <button class="speed-btn playback-speed-btn active" data-speed="1.0" type="button">1.0x</button>
+                  <button class="speed-btn playback-speed-btn" data-speed="1.2" type="button">1.2x</button>
+                </div>
+                
+                <!-- Speed indicator and controls -->
+                <span class="toolbar-status-text" id="mini-index-text" style="color: #94a3b8; font-weight: 700; font-size: 13px; margin: 0 8px;">1/4</span>
+              </div>
+              
+              <!-- Hint controls -->
+              <div class="toolbar-hints" style="display: flex; align-items: center; gap: 4px; border: 1px solid rgba(125, 211, 252, 0.12); border-radius: 999px; padding: 3px; background: rgba(2, 6, 23, 0.4);">
+                <span style="color: #64748b; font-size: 11px; font-weight: bold; padding: 0 4px 0 8px; user-select: none;">GỢI Ý:</span>
+                <button class="speed-btn hint-btn active" data-hint="0" type="button">0%</button>
+                <button class="speed-btn hint-btn" data-hint="35" type="button">35%</button>
+                <button class="speed-btn hint-btn" data-hint="70" type="button">70%</button>
+                <button class="speed-btn hint-btn" data-hint="100" type="button">Full</button>
               </div>
             </div>
-            <div class="waveform" id="waveform" aria-hidden="true"></div>
-            <div class="mode-tabs" aria-label="Chọn chế độ nghe">
-              <button class="mode-tab" type="button" data-mode="slow">Slow Mode<span>0.78x</span></button>
-              <button class="mode-tab active" type="button" data-mode="natural">Natural Mode<span>1x</span></button>
-              <button class="mode-tab" type="button" data-mode="native">Native Mode<span>1.25x</span></button>
-              <button class="mode-tab chaos" type="button" data-mode="chaos">Chaos Mode<span>noise</span></button>
+
+            <!-- STAGE 1: Trắc nghiệm -->
+            <div class="stage-view-panel" id="stage-panel-1">
+              <div class="stage-intro">
+                <h3>Câu hỏi hiểu ý chính</h3>
+                <p data-question-context>Chọn phản hồi phù hợp với vai của bạn.</p>
+              </div>
+              
+              <div class="roleplay-card-box">
+                <h4 data-question-title class="roleplay-question-title">Bạn nghĩ người nói đang hỏi gì?</h4>
+                <div class="roleplay-options" id="roleplay-options"></div>
+              </div>
+
+              <p class="answer-feedback" data-answer-feedback aria-live="polite"></p>
+            </div>
+
+            <!-- STAGE 2: Chép chính tả -->
+            <div class="stage-view-panel" id="stage-panel-2" hidden>
+              <div class="stage-intro" style="margin-bottom: 16px;">
+                <h3>Nghe và điền từ còn thiếu</h3>
+                <p>Điền các từ nghe được vào ô trống. Sử dụng gợi ý nếu gặp từ khó.</p>
+              </div>
+
+              <!-- Dictation filling area -->
+              <div class="dictation-filling-box" id="fill-blanks" data-dictation></div>
+
+              <!-- Hint Actions matching Đậu TOEIC -->
+              <div class="dictation-hints-bar" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; border-top: 1px solid rgba(125, 211, 252, 0.08); padding-top: 14px;">
+                <button class="hint-btn" id="reveal-letter" type="button"><span class="ti-eye"></span> Gợi ý 1 từ</button>
+                <button class="hint-btn" id="show-connected" type="button"><span class="ti-light-bulb"></span> Nối âm</button>
+                <button class="hint-btn" id="show-answer" type="button"><span class="ti-layout-grid3"></span> Hiện tất cả</button>
+                <div style="margin-left: auto; display: flex; gap: 8px;">
+                  <button class="hint-btn" id="check-dictation-btn" type="button" style="background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4); color: #10b981; font-weight: bold;"><span class="ti-check"></span> Check</button>
+                  <button class="hint-btn reset-btn" id="reset-dictation-btn" type="button"><span class="ti-reload"></span> Reset</button>
+                </div>
+              </div>
+
+              <div style="text-align: center; color: #64748b; font-size: 11px; margin-top: 14px; font-weight: 600;">
+                Ctrl: phát lại &nbsp;&bull;&nbsp; Tab: lật từ &nbsp;&bull;&nbsp; Enter: check nhanh
+              </div>
+
+              <div class="connected-panel" data-connected-panel hidden style="margin-top: 18px; padding: 14px; border: 1px dashed rgba(34, 211, 238, 0.2); border-radius: 8px; background: rgba(34, 211, 238, 0.02);">
+                <strong style="color: #22d3ee; font-size: 13px;">Nghe như người bản xứ:</strong>
+                <p data-connected-speech style="margin: 6px 0 0; font-size: 13.5px; color: #e2e8f0; font-style: italic;"></p>
+              </div>
+            </div>
+
+            <!-- STAGE 3: Giải thích -->
+            <div class="stage-view-panel" id="stage-panel-3" hidden>
+              <div class="stage-intro">
+                <h3>Bóc tách phát âm bản xứ</h3>
+                <p>Xem phân tích chi tiết nối âm, nuốt âm của câu này dưới đây:</p>
+              </div>
+
+              <div class="transcript-display-box">
+                <p class="transcript" data-transcript></p>
+                <div class="native-line">
+                  <span>Native speech:</span>
+                  <strong data-native-line></strong>
+                </div>
+                <div class="translation-line" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 14.5px; color: #94a3b8; line-height: 1.5; display: flex; align-items: flex-start; gap: 8px;">
+                  <span style="color: #38bdf8; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; margin-top: 2px;">Bản dịch:</span>
+                  <span data-translation-text style="color: #e2e8f0; font-weight: 500;"></span>
+                </div>
+                <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: flex-end;">
+                  <button class="btn btn-primary" id="finish-mission" type="button" style="background: linear-gradient(135deg, #10b981, #06b6d4); border: none; font-weight: 700; padding: 10px 22px; border-radius: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); transition: all 0.2s;"><span class="ti-medall"></span> Hoàn thành bài học</button>
+                </div>
+              </div>
+
+              <!-- Keyword list with Save to Notebook button -->
+              <div class="keywords-box" style="margin-top: 18px; padding: 16px; border: 1px dashed rgba(125, 211, 252, 0.2); border-radius: 12px; background: rgba(2, 6, 23, 0.35);">
+                <div style="font-weight: 700; font-size: 13.5px; color: #38bdf8; display: flex; align-items: center; gap: 6px; margin-bottom: 12px;">
+                  <span class="ti-book"></span> Từ khóa quan trọng (Keywords):
+                </div>
+                <div id="breakdown-keywords" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <!-- Keywords will be rendered dynamically here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- COMPLETION PANEL -->
+            <div class="completion-panel" id="completion-panel" hidden style="text-align: center; padding: 45px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; background: rgba(15, 23, 42, 0.4); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.05); margin-top: 10px;">
             </div>
           </div>
 
-          <div class="stage-card question-stage" id="stage-1">
-            <span class="stage-label">Tầng 1: Nghe thô</span>
-            <div class="stage-heading">
-              <h3 data-question-title>Bạn nghĩ người nói đang hỏi gì?</h3>
-              <p data-question-context>Chọn phản hồi phù hợp với vai của bạn.</p>
-            </div>
-            <div class="roleplay-options" id="roleplay-options"></div>
-            <div class="confidence-row" aria-label="Mức tự tin">
-              <span>Confidence:</span>
-              <label><input type="radio" name="confidence" value="high"> Tôi chắc chắn</label>
-              <label><input type="radio" name="confidence" value="medium" checked> Tôi hơi đoán</label>
-              <label><input type="radio" name="confidence" value="low"> Tôi không chắc</label>
-            </div>
-            <p class="answer-feedback" data-answer-feedback aria-live="polite"></p>
-          </div>
 
-          <div class="stage-card stage-locked" id="stage-2">
-            <span class="stage-label">Tầng 2-3: Từ khóa + gap transcript</span>
-            <div class="stage-heading">
-              <h3>Ẩn phụ đề từng phần</h3>
-              <p>Nghe lại, nhìn từ khóa bị che một phần, rồi điền phần còn thiếu.</p>
-            </div>
-            <div class="keyword-strip" data-keyword-hints aria-label="Từ khóa gợi ý"></div>
-            <div class="fill-blanks" id="fill-blanks" data-dictation></div>
-            <div class="hint-actions">
-              <button class="btn btn-ghost" id="reveal-letter" type="button" disabled>Reveal first letter</button>
-              <button class="btn btn-ghost" id="play-slower" type="button" disabled>Play slower</button>
-              <button class="btn btn-ghost" id="show-connected" type="button" disabled>Show connected speech</button>
-              <button class="btn btn-ghost" id="show-answer" type="button" disabled>Show full answer</button>
-              <button class="btn btn-secondary" id="check-blanks" type="button" disabled>Kiểm tra</button>
-            </div>
-            <div class="connected-panel" data-connected-panel hidden>
-              <strong>Nghe như người bản xứ:</strong>
-              <p data-connected-speech></p>
-            </div>
-          </div>
-
-          <div class="stage-card stage-locked" id="stage-3">
-            <span class="stage-label">Tầng 4: Bóc tách âm thanh</span>
-            <div class="stage-heading">
-              <h3>Why did I miss it?</h3>
-              <p>Không chỉ hiện đáp án, lab chỉ ra phần bạn dễ nghe sai.</p>
-            </div>
-            <p class="transcript" data-transcript></p>
-            <div class="native-line"><span>Native speech</span><strong data-native-line></strong></div>
-            <div class="sound-timeline" data-phrase-timeline></div>
-            <div class="breakdown-grid">
-              <div><h4>Vì sao khó nghe?</h4><ul data-why-hard></ul></div>
-              <div><h4>Lỗi nghe cá nhân</h4><p data-miss-reason></p></div>
-            </div>
-            <button class="btn btn-primary" id="finish-mission" type="button" disabled><span class="ti-medall"></span> Hoàn thành session</button>
-          </div>
-
-          <div class="result-panel" data-result-panel hidden>
-            <div>
-              <p class="eyebrow">Session Result</p>
-              <h3 data-result-title>Bạn hiểu được 72% đoạn hội thoại ở tốc độ tự nhiên.</h3>
-              <p data-result-copy>Mục tiêu tiếp theo: đạt 85% để mở khóa Native Mode nâng cao.</p>
-            </div>
-            <div class="earned-badges" data-earned-badges></div>
-          </div>
-        </section>
-
-        <aside class="session-player-card" aria-label="Nghe lại session">
-          <div class="session-player-head">
-            <span class="session-player-icon ti-headphone-alt" aria-hidden="true"></span>
-            <div>
-              <p class="eyebrow">Listen anytime</p>
-              <strong data-sticky-session-title>Session audio</strong>
-            </div>
-          </div>
-          <div class="session-player-meta">
-            <span class="mode-status" data-current-mode>Natural Mode</span>
-            <span data-voice-route>Auto voice</span>
-          </div>
-          <div class="player-actions session-player-actions">
-            <button class="btn btn-primary" id="master-play" type="button"><span class="ti-control-play"></span> Play session audio</button>
-            <button class="btn btn-ghost" id="replay-hard" type="button"><span class="ti-loop"></span> Replay hard part</button>
-          </div>
-          <p class="player-note" data-audio-note>Tốc độ hội thoại thực tế.</p>
-        </aside>
+        </main>
       </div>
     </section>
   </main>

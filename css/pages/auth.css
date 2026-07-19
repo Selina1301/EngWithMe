@@ -5,7 +5,7 @@
   padding: 38px 24px;
   background:
     linear-gradient(rgba(5, 8, 13, 0.9), rgba(5, 8, 13, 0.92)),
-    url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=80") center/cover;
+    url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=60&fm=webp") center/cover;
 }
 
 .auth-card {

@@ -9,20 +9,6 @@ $user = require_current_user();
 $userId = (int) $user['id'];
 $pdo = db();
 
-function ensure_vocab_activity_table(PDO $pdo): void
-{
-    $pdo->exec(
-        'CREATE TABLE IF NOT EXISTS user_vocab_activity_days (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT NOT NULL,
-            activity_day DATE NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE KEY unique_user_vocab_activity_day (user_id, activity_day),
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-        ) ENGINE=InnoDB'
-    );
-}
-
 function normalize_day_key(string $value): ?string
 {
     $value = trim($value);
@@ -73,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $activityDays = [];
         try {
-            ensure_vocab_activity_table($pdo);
             $stmt = $pdo->prepare('SELECT activity_day FROM user_vocab_activity_days WHERE user_id = ? ORDER BY activity_day ASC');
             $stmt->execute([$userId]);
             foreach ($stmt->fetchAll() as $row) {
@@ -114,12 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $canSyncActivity = false;
 
     if ($activityDay) {
-        try {
-            ensure_vocab_activity_table($pdo);
-            $canSyncActivity = true;
-        } catch (Throwable $e) {
-            $canSyncActivity = false;
-        }
+        $canSyncActivity = true;
     }
 
     try {

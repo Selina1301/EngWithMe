@@ -6,7 +6,7 @@
   background-color: #05080d;
   background-image:
     linear-gradient(90deg, rgba(3, 7, 18, 0.98), rgba(3, 7, 18, 0.76), rgba(3, 7, 18, 0.38)),
-    url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80");
+    url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=60&fm=webp");
   background-position: center;
   background-size: cover;
   border-bottom: 1px solid rgba(125, 211, 252, 0.16);

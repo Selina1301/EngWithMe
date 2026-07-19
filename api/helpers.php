@@ -253,26 +253,6 @@ function log_user_activity(string $eventName, array $payload = []): void
 {
     try {
         $pdo = db();
-        
-        // Tự động kiểm tra và tạo bảng lưu trữ logs hoạt động
-        static $tableChecked = false;
-        if (!$tableChecked) {
-            $pdo->exec(
-                "CREATE TABLE IF NOT EXISTS user_activity_logs (
-                  id INT AUTO_INCREMENT PRIMARY KEY,
-                  user_id INT NULL,
-                  session_id VARCHAR(100) NULL,
-                  event_name VARCHAR(100) NOT NULL,
-                  page_url VARCHAR(255) NULL,
-                  payload_json TEXT NULL,
-                  ip_address VARCHAR(45) NULL,
-                  user_agent VARCHAR(255) NULL,
-                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
-                ) ENGINE=InnoDB;"
-            );
-            $tableChecked = true;
-        }
 
         // Xác thực người dùng hiện tại (nếu có)
         $userId = null;
