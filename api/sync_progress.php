@@ -26,19 +26,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $progressId = trim((string) ($_POST['progress_id'] ?? ''));
+    $action = trim((string) ($_POST['action'] ?? 'save'));
 
     if ($progressId === '') {
         json_response(['ok' => false, 'message' => 'Mã tiến độ không hợp lệ.'], 422);
     }
 
     try {
-        $stmt = $pdo->prepare('INSERT IGNORE INTO user_progress (user_id, progress_id) VALUES (?, ?)');
-        $stmt->execute([$userId, $progressId]);
+        if ($action === 'delete') {
+            $stmt = $pdo->prepare('DELETE FROM user_progress WHERE user_id = ? AND progress_id = ?');
+            $stmt->execute([$userId, $progressId]);
+            json_response([
+                'ok' => true,
+                'message' => 'Đã xóa tiến độ.'
+            ]);
+        } else {
+            $stmt = $pdo->prepare('INSERT IGNORE INTO user_progress (user_id, progress_id) VALUES (?, ?)');
+            $stmt->execute([$userId, $progressId]);
 
-        json_response([
-            'ok' => true,
-            'message' => 'Đã lưu tiến độ học tập.'
-        ]);
+            json_response([
+                'ok' => true,
+                'message' => 'Đã lưu tiến độ học tập.'
+            ]);
+        }
     } catch (Throwable $e) {
         json_response(['ok' => false, 'message' => 'Lỗi hệ thống khi lưu tiến độ.'], 500);
     }

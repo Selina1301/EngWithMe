@@ -52,12 +52,15 @@
 
   function loadFallbackSync() {
     if (typeof window !== "undefined") {
-      missions.splice(0, missions.length, ...(window.LISTENING_LAB_MISSIONS || []));
-      missionExpansions.splice(0, missionExpansions.length, ...(window.LISTENING_LAB_MISSION_EXPANSIONS || []));
-      supplementalSessionExpansions.splice(0, supplementalSessionExpansions.length, ...(window.LISTENING_LAB_SUPPLEMENTAL_EXPANSIONS || []));
+      const primary = (window.LISTENING_LAB_MISSIONS || []).map((spec, index) => createMissionFromSpec(spec, spec.sessionOrder || index + 1));
+      const seenIds = new Set(primary.map((m) => m.id).filter(Boolean));
       
-      // Process fallbacks
-      missions.push(...[...missionExpansions, ...supplementalSessionExpansions].map((spec, index) => createMissionFromSpec(spec, index + 7)));
+      const expansionItems = [...(window.LISTENING_LAB_MISSION_EXPANSIONS || []), ...(window.LISTENING_LAB_SUPPLEMENTAL_EXPANSIONS || [])];
+      const filteredExpansions = expansionItems
+        .filter((spec) => spec && spec.id && !seenIds.has(spec.id))
+        .map((spec, index) => createMissionFromSpec(spec, primary.length + index + 1));
+
+      missions.splice(0, missions.length, ...primary, ...filteredExpansions);
       assignSessionVoiceRoutes();
       window.LISTENING_MISSIONS_FALLBACK = cloneContentList(missions);
     }
@@ -265,6 +268,8 @@
     let availableVoices = [];
     let noiseContext = null;
     let noiseSource = null;
+    let currentHintPercent = 0;
+    let lastRenderedMissionId = null;
 
     syncStickyOffset();
     generateWaveform();
@@ -273,6 +278,7 @@
     bindWorkspace();
     setupVoiceEngine();
     openInitialMissionFromHash();
+    fetchProgressFromDatabase();
 
     function collectElements() {
       return {
@@ -317,32 +323,43 @@
         questionContext: document.querySelector("[data-question-context]"),
         options: document.getElementById("roleplay-options"),
         answerFeedback: document.querySelector("[data-answer-feedback]"),
-        stage2: document.getElementById("stage-2"),
-        keywordHints: document.querySelector("[data-keyword-hints]"),
+        stage2: document.getElementById("stage-panel-2") || document.getElementById("stage-2"),
+        keywordHints: document.getElementById("breakdown-keywords") || document.querySelector("[data-keyword-hints]"),
         dictation: document.querySelector("[data-dictation]"),
         revealLetterBtn: document.getElementById("reveal-letter"),
         playSlowerBtn: document.getElementById("play-slower"),
         showConnectedBtn: document.getElementById("show-connected"),
         showAnswerBtn: document.getElementById("show-answer"),
-        checkBlanksBtn: document.getElementById("check-blanks"),
+        checkBlanksBtn: document.getElementById("check-dictation-btn") || document.getElementById("check-blanks"),
         connectedPanel: document.querySelector("[data-connected-panel]"),
         connectedSpeech: document.querySelector("[data-connected-speech]"),
-        stage3: document.getElementById("stage-3"),
+        stage3: document.getElementById("stage-panel-3") || document.getElementById("stage-3"),
         transcript: document.querySelector("[data-transcript]"),
         nativeLine: document.querySelector("[data-native-line]"),
+        translationText: document.querySelector("[data-translation-text]"),
         phraseTimeline: document.querySelector("[data-phrase-timeline]"),
         whyHard: document.querySelector("[data-why-hard]"),
         missReason: document.querySelector("[data-miss-reason]"),
         finishBtn: document.getElementById("finish-mission"),
-        resultPanel: document.querySelector("[data-result-panel]"),
+        resultPanel: document.getElementById("completion-panel") || document.querySelector("[data-result-panel]"),
         resultTitle: document.querySelector("[data-result-title]"),
         resultCopy: document.querySelector("[data-result-copy]"),
-        earnedBadges: document.querySelector("[data-earned-badges]")
+        earnedBadges: document.querySelector("[data-earned-badges]"),
+        activeTopicName: document.getElementById("active-topic-name"),
+        sidebarSubtitle: document.getElementById("sidebar-subtitle"),
+        sidebarSessionList: document.getElementById("sidebar-session-list"),
+        toolbarStatusText: document.getElementById("toolbar-status-text"),
+        miniIndexText: document.getElementById("mini-index-text"),
+        studyProgressText: document.getElementById("study-progress-text"),
+        workspaceTabs: document.querySelectorAll(".workspace-tab"),
+        hintLevelBtns: document.querySelectorAll(".toolbar-hints .hint-btn"),
+        resetDictationBtn: document.getElementById("reset-dictation-btn"),
+        stage1: document.getElementById("stage-panel-1")
       };
     }
 
     function bindDashboard() {
-      els.startFeatured.addEventListener("click", () => openMission(getRecommendedMission().id));
+      els.startFeatured?.addEventListener("click", () => openMission(getRecommendedMission().id));
 
       els.dailyButtons.forEach((button) => {
         button.addEventListener("click", () => openMission(getRecommendedMission().id, { challenge: true }));
@@ -356,6 +373,27 @@
         });
       });
 
+      // Bind Mode Tabs: "Luyện nghe" vs "Tiến độ"
+      const listeningModeTabs = document.querySelectorAll("[data-listening-mode]");
+      const studyView = document.querySelector("[data-listening-study-view]");
+      const progressView = document.querySelector("[data-listening-progress-view]");
+
+      listeningModeTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const mode = tab.dataset.listeningMode;
+          listeningModeTabs.forEach((t) => t.classList.toggle("is-active", t === tab));
+
+          if (mode === "progress") {
+            if (studyView) studyView.hidden = true;
+            if (progressView) progressView.hidden = false;
+            renderDashboard();
+          } else {
+            if (studyView) studyView.hidden = false;
+            if (progressView) progressView.hidden = true;
+          }
+        });
+      });
+
       els.missionSearch?.addEventListener("input", () => {
         missionSearch = els.missionSearch.value.trim().toLowerCase();
         renderMissionGrid();
@@ -364,14 +402,55 @@
       window.addEventListener("resize", syncStickyOffset);
     }
 
+    function switchWorkspaceTab(stage) {
+      if (els.workspaceTabs) {
+        els.workspaceTabs.forEach((tab) => {
+          tab.classList.toggle("is-active", tab.dataset.workspaceStage === String(stage));
+        });
+      }
+      if (els.stage1) els.stage1.hidden = String(stage) !== "1";
+      if (els.stage2) els.stage2.hidden = String(stage) !== "2";
+      if (els.stage3) els.stage3.hidden = String(stage) !== "3";
+    }
+
+    function scrollToMissionMap() {
+      window.requestAnimationFrame(() => {
+        const missionMap = document.querySelector(".mission-map") || document.querySelector(".goal-selector") || els.dashboard;
+        if (missionMap) {
+          const headerHeight = document.querySelector(".site-header")?.offsetHeight || 70;
+          const targetY = missionMap.getBoundingClientRect().top + window.pageYOffset - headerHeight - 16;
+          window.scrollTo({ top: Math.max(0, targetY), behavior: "smooth" });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+    }
+
     function bindWorkspace() {
       els.backBtn.addEventListener("click", () => {
         stopSpeech();
         stopTimer();
         els.workspace.hidden = true;
         els.dashboard.hidden = false;
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        document.body.classList.remove("workspace-active");
+        scrollToMissionMap();
       });
+
+      if (els.workspaceTabs) {
+        els.workspaceTabs.forEach((tab) => {
+          tab.addEventListener("click", () => switchWorkspaceTab(tab.dataset.workspaceStage));
+        });
+      }
+
+      if (els.hintLevelBtns) {
+        els.hintLevelBtns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            els.hintLevelBtns.forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            applyDictationHint(parseInt(btn.dataset.hint, 10));
+          });
+        });
+      }
 
       els.modeTabs.forEach((tab) => {
         tab.addEventListener("click", () => {
@@ -392,12 +471,13 @@
         speak(getCurrentAudioText());
       });
 
-      els.replayHardBtn.addEventListener("click", () => currentMission && speak(currentMission.hardPart, false));
-      els.playSlowerBtn.addEventListener("click", () => currentMission && speak(currentMission.transcript, false, "slow"));
-      els.revealLetterBtn.addEventListener("click", revealFirstLetter);
-      els.showConnectedBtn.addEventListener("click", () => { els.connectedPanel.hidden = false; });
-      els.showAnswerBtn.addEventListener("click", showFullAnswer);
-      els.checkBlanksBtn.addEventListener("click", checkDictation);
+      els.replayHardBtn?.addEventListener("click", () => currentMission && speak(currentMission.hardPart, false));
+      els.playSlowerBtn?.addEventListener("click", () => currentMission && speak(currentMission.transcript, false, "slow"));
+      els.revealLetterBtn?.addEventListener("click", revealFirstWord);
+      els.showConnectedBtn?.addEventListener("click", toggleConnectedPanel);
+      els.showAnswerBtn?.addEventListener("click", showFullAnswer);
+      els.resetDictationBtn?.addEventListener("click", resetDictationInputs);
+      els.checkBlanksBtn?.addEventListener("click", checkDictation);
       els.finishBtn.addEventListener("click", finishMission);
     }
 
@@ -434,16 +514,110 @@
     function renderDashboard() {
       els.goalChips.forEach((chip) => chip.classList.toggle("active", chip.dataset.goal === state.goal));
 
-      const score = Math.round(state.nativeScore || 72);
-      els.nativeScore.textContent = `${score}%`;
-      els.scoreRing.setAttribute("stroke-dasharray", `${score}, 100`);
-      els.listeningLevel.textContent = getLevelName(score);
-      els.streakCount.textContent = `Streak ${state.streak || 3} ngày`;
+      // Calculate REAL user metrics from state & API sync
+      const validCompletedMissions = missions.filter((m) => (state.scores[m.id] || (state.completed.includes(m.id) ? 85 : 0)) >= 70);
+      const totalCompletedCount = validCompletedMissions.length;
+      const totalMissionsCount = missions.length || 78;
+      const completionPercentage = Math.round((totalCompletedCount / totalMissionsCount) * 100);
+
+      // Real average score computed dynamically from state & database records
+      const scoredMissions = missions.filter((m) => typeof state.scores[m.id] === "number" && state.scores[m.id] > 0);
+      const avgScore = scoredMissions.length > 0
+        ? Math.round(scoredMissions.reduce((sum, m) => sum + state.scores[m.id], 0) / scoredMissions.length)
+        : (totalCompletedCount > 0 ? 85 : 0);
+
+      // Update Circle Ring & Overall Progress Score
+      const progressScoreEl = document.querySelector("[data-listening-progress-score]");
+      if (progressScoreEl) progressScoreEl.textContent = `${completionPercentage}%`;
+
+      const progressBarEl = document.querySelector("[data-listening-progress-bar]");
+      if (progressBarEl) progressBarEl.style.width = `${completionPercentage}%`;
+
+      const progressSummaryEl = document.querySelector("[data-listening-progress-summary]");
+      if (progressSummaryEl) {
+        progressSummaryEl.textContent = totalCompletedCount > 0
+          ? `Bạn đã hoàn thành ${totalCompletedCount}/${totalMissionsCount} session luyện nghe (đạt ≥ 70% điểm) với độ chính xác trung bình ${avgScore}%.`
+          : `Bạn chưa hoàn thành session nào. Hãy chọn một chủ đề bên trên và bắt đầu luyện nghe!`;
+      }
+
+      // Inside circle ring text shows total completed count vs overall (e.g. 9/78)
+      if (els.nativeScore) els.nativeScore.textContent = `${totalCompletedCount}/${totalMissionsCount}`;
+      if (els.scoreRing) els.scoreRing.setAttribute("stroke-dasharray", `${completionPercentage}, 100`);
+
+      // Accuracy Metric
+      const accuracyEl = document.querySelector("[data-listening-accuracy]");
+      if (accuracyEl) accuracyEl.textContent = `${avgScore}%`;
+
+      // Streak
+      if (els.streakCount) els.streakCount.textContent = `${state.streak || 1} ngày`;
+
+      // Session Completed Ratio
+      const ratioEl = document.querySelector("[data-listening-completed-ratio]");
+      if (ratioEl) ratioEl.textContent = `${totalCompletedCount}/${totalMissionsCount}`;
+
+      const totalCompletedStatEl = document.querySelector("[data-listening-completed-total]");
+      if (totalCompletedStatEl) totalCompletedStatEl.textContent = `${totalCompletedCount}/${totalMissionsCount}`;
+
+      // Distinct mistake types count (100% Real Data)
+      const activeMistakes = Object.entries(state.mistakes || {}).filter(([_, count]) => count > 0);
+      const mistakesTypesEl = document.querySelector("[data-listening-mistakes-types]");
+      if (mistakesTypesEl) {
+        mistakesTypesEl.textContent = `${activeMistakes.length} dạng`;
+      }
+
+      // Current Goal Progress (100% Real Data)
+      const goalTitleEl = document.querySelector("[data-listening-goal-title]");
+      if (goalTitleEl) {
+        goalTitleEl.textContent = goalText[state.goal] || "Giới thiệu bản thân";
+      }
+
+      const goalStatusEl = document.querySelector("[data-listening-goal-status]");
+      if (goalStatusEl) {
+        const goalMissions = missions.filter((m) => m.goal === state.goal);
+        const goalDone = goalMissions.filter((m) => (state.scores[m.id] || 0) >= 70).length;
+        goalStatusEl.textContent = `${goalDone}/${goalMissions.length} bài hoàn thành`;
+      }
+
+      // Level
+      let levelTitle = "Level 0: Chưa làm bài nào";
+      let shortLevel = "Level 0";
+      if (totalCompletedCount > 0) {
+        if (totalCompletedCount < 10) {
+          levelTitle = `Level 1: Nhận biết âm`;
+          shortLevel = "Level 1";
+        } else if (totalCompletedCount < 30) {
+          levelTitle = `Level 2: Nối âm & Cụm từ`;
+          shortLevel = "Level 2";
+        } else if (totalCompletedCount < 60) {
+          levelTitle = `Level 3: Thâm nhập câu`;
+          shortLevel = "Level 3";
+        } else {
+          levelTitle = `Level 4: Bản xứ thành thạo`;
+          shortLevel = "Level 4";
+        }
+      }
+
+      const shortLevelEl = document.querySelector("[data-listening-level-short]");
+      if (shortLevelEl) shortLevelEl.textContent = shortLevel;
+
+      const levelNameEl = document.querySelector("[data-listening-level-name]");
+      if (levelNameEl) levelNameEl.textContent = levelTitle;
+
+      const levelSubEl = document.querySelector("[data-listening-level-sub]");
+      if (levelSubEl) levelSubEl.textContent = `${completionPercentage}% tổng bài lab`;
+
+      if (els.listeningLevel) els.listeningLevel.textContent = `${levelTitle} (${totalCompletedCount}/${totalMissionsCount} bài)`;
 
       const topMistake = getTopMistake();
-      els.weaknessSummary.textContent = `Hay miss: ${mistakeLabels[topMistake] || "nối âm"}`;
-      els.nextDrill.textContent = getDrillSuggestion(topMistake);
-      els.openingScenario.textContent = getGoalScenario(state.goal);
+      if (els.weaknessSummary) {
+        els.weaknessSummary.textContent = totalCompletedCount > 0 ? `Hay miss: ${mistakeLabels[topMistake] || "nối âm"}` : "Chưa có dữ liệu lỗi";
+      }
+      if (els.nextDrill) {
+        els.nextDrill.textContent = getDrillSuggestion(topMistake);
+      }
+      if (els.openingScenario) {
+        els.openingScenario.textContent = getGoalScenario(state.goal);
+      }
 
       renderMissionGrid();
       renderMistakeBank();
@@ -457,7 +631,10 @@
 
     function renderMissionGrid() {
       const visibleMissions = getVisibleMissions();
-      els.missionCount.textContent = `${visibleMissions.length}/${missions.length} sessions`;
+      const completedCount = missions.filter((m) => (state.scores[m.id] || 0) >= 70).length;
+      if (els.missionCount) {
+        els.missionCount.textContent = `${completedCount}/${missions.length} sessions`;
+      }
 
       if (!visibleMissions.length) {
         els.missionGrid.innerHTML = `
@@ -470,10 +647,10 @@
       }
 
       els.missionGrid.innerHTML = visibleMissions.map((mission) => {
-        const completed = state.completed.includes(mission.id);
         const score = state.scores[mission.id] || 0;
+        const completed = score >= 70;
         const recommended = mission.goal === state.goal;
-        const progressLabel = completed ? `${score}% completed` : "Ready";
+        const progressLabel = score > 0 ? `${score}% completed` : "Ready";
 
         return `
           <button class="mission-card ${recommended ? "active" : ""}" type="button" data-mission="${escapeAttr(mission.id)}" data-tone="${escapeAttr(mission.tone)}">
@@ -506,10 +683,35 @@
     }
 
     function renderMistakeBank() {
-      els.mistakeBank.innerHTML = Object.entries(state.mistakes)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5)
-        .map(([key, count]) => `<li><span>${escapeHtml(mistakeLabels[key] || key)}</span><strong>${count} lần</strong></li>`)
+      if (!els.mistakeBank) return;
+      const entries = Object.entries(state.mistakes || {}).filter(([_, count]) => count > 0).sort((a, b) => b[1] - a[1]).slice(0, 5);
+      // Top mistake count acts as 420px benchmark bar length (approx 3/7 of card width)
+      const maxCount = entries.length > 0 && entries[0][1] > 0 ? entries[0][1] : 1;
+
+      if (entries.length === 0) {
+        els.mistakeBank.innerHTML = `<li class="mistake-empty" style="color: #94a3b8; padding: 12px 0; font-size: 0.92rem;">Chưa ghi nhận lỗi nào. Hãy hoàn thành thêm các bài luyện nghe!</li>`;
+        return;
+      }
+
+      els.mistakeBank.innerHTML = entries
+        .map(([key, count]) => {
+          // Benchmark scale: max count = 420px bar length
+          // Lower counts scale proportionally: ratio * 420px
+          const ratio = Math.max(0.08, count / maxCount);
+          const barPx = Math.round(ratio * 420);
+          const label = mistakeLabels[key] || key;
+          return `
+            <li class="mistake-item">
+              <span class="mistake-label">${escapeHtml(label)}</span>
+              <div class="mistake-bar-row">
+                <div class="mistake-track" style="width: ${barPx}px; min-width: ${barPx}px;">
+                  <div class="mistake-fill"></div>
+                </div>
+                <span class="mistake-count">${count} lần</span>
+              </div>
+            </li>
+          `;
+        })
         .join("");
     }
 
@@ -534,6 +736,10 @@
     }
 
     function getSessionRank(id, goal = state.goal) {
+      const foundMission = missions.find(m => m.id === id);
+      if (foundMission && typeof foundMission.sessionOrder === "number") {
+        return foundMission.sessionOrder;
+      }
       const input = `${sessionShuffleSeed}:${goal}:${id}`;
       let hash = 0;
       for (let index = 0; index < input.length; index += 1) {
@@ -542,10 +748,41 @@
       return hash;
     }
 
+    const translationMap = {
+      "coffee-shop": "Bạn đã sẵn sàng gọi món chưa, hay bạn cần thêm vài phút nữa?",
+      "airport": "Chuyến bay nối chuyến của bạn sẽ khởi hành từ cổng 24 trong 15 phút nữa.",
+      "office-call": "Bạn có thể chuyển cuộc họp khách hàng sang 3:30 và gửi lại chương trình họp mới không?",
+      "movie-sarcasm": "Đó thực sự là màn trình diễn tuyệt vời nhất mà tôi từng thấy.",
+      "asking-directions": "Xin lỗi, bạn có thể chỉ đường cho tôi tới ga tàu điện ngầm gần nhất không?",
+      "doctor-appointment": "Tôi muốn đặt lịch hẹn gặp bác sĩ vào chiều thứ Hai tới.",
+      "hotel-checkin": "Tôi đã đặt một phòng đơn dưới tên Nguyen cho 2 đêm.",
+      "job-interview": "Hãy kể cho tôi nghe về một lần bạn phải làm việc với một đồng nghiệp khó tính?"
+    };
+
+    function getTranslation(mission) {
+      if (!mission) return "";
+      if (mission.translation) return mission.translation;
+      if (translationMap[mission.id]) return translationMap[mission.id];
+      if (mission.story) return mission.story;
+      return mission.transcript;
+    }
+
     function getTopicSessions(goal) {
       return missions
         .filter((mission) => mission.goal === goal)
         .sort((a, b) => getSessionRank(a.id, goal) - getSessionRank(b.id, goal));
+    }
+
+    function getTopicSessionsSorted(goal) {
+      return getTopicSessions(goal).slice().sort((a, b) => {
+        const scoreA = state.scores[a.id] || 0;
+        const scoreB = state.scores[b.id] || 0;
+
+        if (scoreA !== scoreB) {
+          return scoreA - scoreB;
+        }
+        return getSessionRank(a.id, goal) - getSessionRank(b.id, goal);
+      });
     }
 
     function getTopicSessionLabel(mission) {
@@ -566,22 +803,25 @@
 
       stopSpeech();
       stopTimer();
+      currentHintPercent = 0;
+      resetStages();
       populateMission(mission);
       renderOptions(mission);
       renderKeywordHints(mission);
       renderDictation(mission);
       renderBreakdown(mission);
-      resetStages();
       resetModeTabs();
       updateListenLayers();
       updateModeStatus();
 
       els.dashboard.hidden = true;
       els.workspace.hidden = false;
-      els.resultPanel.hidden = true;
+      document.body.classList.add("workspace-active");
+      if (els.resultPanel) els.resultPanel.hidden = true;
+      switchWorkspaceTab("2");
 
       if (options.challenge) startTimer();
-      else els.challengeBox.hidden = true;
+      else if (els.challengeBox) els.challengeBox.hidden = true;
 
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -594,21 +834,51 @@
     }
 
     function populateMission(mission) {
-      els.missionKicker.textContent = `${goalText[mission.goal]} · ${getTopicSessionLabel(mission)}`;
-      els.missionTitle.textContent = mission.title;
-      els.stickySessionTitle.textContent = `${getTopicSessionLabel(mission)} · ${mission.title}`;
-      els.missionStory.textContent = mission.story;
-      els.missionRole.textContent = mission.role;
-      els.missionAccent.textContent = mission.accent;
-      els.missionNoise.textContent = mission.noise;
-      els.missionTarget.textContent = mission.target;
-      els.questionTitle.textContent = mission.questionTitle;
-      els.questionContext.textContent = mission.context;
-      els.connectedSpeech.textContent = mission.connectedSpeech;
-      els.transcript.textContent = `"${mission.transcript}"`;
-      els.nativeLine.textContent = mission.nativeLine;
-      els.missReason.textContent = mission.missReason;
-      els.answerFeedback.textContent = "";
+      if (els.missionKicker) els.missionKicker.textContent = `${goalText[mission.goal]} · ${getTopicSessionLabel(mission)}`;
+      if (els.missionTitle) els.missionTitle.textContent = mission.title;
+      if (els.stickySessionTitle) els.stickySessionTitle.textContent = `${getTopicSessionLabel(mission)} · ${mission.title}`;
+      if (els.missionStory) els.missionStory.textContent = mission.story;
+      if (els.missionRole) els.missionRole.textContent = mission.role;
+      if (els.missionAccent) els.missionAccent.textContent = mission.accent;
+      if (els.missionNoise) els.missionNoise.textContent = mission.noise;
+      if (els.missionTarget) els.missionTarget.textContent = mission.target;
+      if (els.questionTitle) els.questionTitle.textContent = mission.questionTitle;
+      if (els.questionContext) els.questionContext.textContent = mission.context;
+      if (els.connectedSpeech) els.connectedSpeech.textContent = mission.connectedSpeech;
+      if (els.transcript) els.transcript.textContent = `"${mission.transcript}"`;
+      if (els.nativeLine) els.nativeLine.textContent = mission.nativeLine;
+      if (els.translationText) els.translationText.textContent = getTranslation(mission);
+      if (els.missReason) els.missReason.textContent = mission.missReason;
+      if (els.answerFeedback) els.answerFeedback.textContent = "";
+
+      if (els.activeTopicName) els.activeTopicName.textContent = goalText[mission.goal];
+      const topicSessions = getTopicSessionsSorted(mission.goal);
+      if (els.sidebarSubtitle) els.sidebarSubtitle.textContent = `${topicSessions.length} bài`;
+      
+      const sessionIndex = topicSessions.findIndex(m => m.id === mission.id);
+      if (els.studyProgressText) els.studyProgressText.textContent = `${sessionIndex + 1}/${topicSessions.length} bài`;
+      if (els.miniIndexText) els.miniIndexText.textContent = `${sessionIndex + 1}/${topicSessions.length}`;
+      if (els.sidebarSessionList) {
+        els.sidebarSessionList.innerHTML = topicSessions.map((s, idx) => {
+          const isActive = s.id === mission.id;
+          const score = state.scores[s.id] || 0;
+          return `
+            <button class="sidebar-session-btn" type="button" data-mission="${escapeAttr(s.id)}" style="display: flex; flex-direction: column; width: 100%; padding: 10px 12px; border: none; text-align: left; background: ${isActive ? 'rgba(46, 232, 120, 0.15)' : 'transparent'}; border-left: 3px solid ${isActive ? '#2ee878' : 'transparent'}; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.03); border-radius: 4px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 8px;">
+                <span style="color: ${isActive ? '#2ee878' : '#cbd5e1'}; font-weight: 700; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0;">
+                  ${escapeHtml(s.title || '')}
+                </span>
+                <span style="color: ${score > 0 ? '#2ee878' : '#64748b'}; font-size: 11px; font-weight: 700; flex-shrink: 0;">${score}%</span>
+              </div>
+            </button>
+          `;
+        }).join("");
+
+        els.sidebarSessionList.querySelectorAll(".sidebar-session-btn").forEach(btn => {
+          btn.addEventListener("click", () => openMission(btn.dataset.mission));
+        });
+      }
+
       updateVoiceStatus();
       renderSessionAudit();
     }
@@ -634,6 +904,7 @@
     }
 
     function renderOptions(mission) {
+      if (!els.options) return;
       els.options.innerHTML = mission.options.map((option) => `
         <button class="roleplay-btn" type="button" data-correct="${option.correct}">
           <span class="option-key">${escapeHtml(option.key)}</span>
@@ -647,51 +918,44 @@
     }
 
     function renderKeywordHints(mission) {
+      if (!els.keywordHints) return;
       els.keywordHints.innerHTML = mission.keywords.map((keyword) => `<span>${escapeHtml(maskKeyword(keyword))}</span>`).join("");
       els.keywordHints.classList.add("is-hidden");
     }
 
     function renderDictation(mission) {
-      els.dictation.innerHTML = "";
-      mission.gapParts.forEach((part) => {
-        if (typeof part === "string") {
-          els.dictation.appendChild(document.createTextNode(part));
-          return;
-        }
-
-        const input = document.createElement("input");
-        input.type = "text";
-        input.dataset.answer = part.answer;
-        input.disabled = true;
-        input.setAttribute("aria-label", `Điền: ${part.answer}`);
-        input.addEventListener("keyup", (event) => {
-          if (event.key === "Enter") els.checkBlanksBtn.click();
-        });
-        els.dictation.appendChild(input);
-      });
+      renderDictationForHint(mission, currentHintPercent);
     }
 
     function renderBreakdown(mission) {
-      els.whyHard.innerHTML = mission.whyHard.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
-      els.phraseTimeline.innerHTML = mission.phrases.map((phrase) => `
-        <button class="phrase-chip" type="button" data-phrase="${escapeAttr(phrase)}"><span class="ti-control-play"></span>${escapeHtml(phrase)}</button>
-      `).join("");
+      if (els.whyHard) els.whyHard.innerHTML = mission.whyHard.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+      if (els.phraseTimeline) {
+        els.phraseTimeline.innerHTML = mission.phrases.map((phrase) => `
+          <button class="phrase-chip" type="button" data-phrase="${escapeAttr(phrase)}"><span class="ti-control-play"></span>${escapeHtml(phrase)}</button>
+        `).join("");
 
-      els.phraseTimeline.querySelectorAll("[data-phrase]").forEach((button) => {
-        button.addEventListener("click", () => speak(button.dataset.phrase, false));
-      });
+        els.phraseTimeline.querySelectorAll("[data-phrase]").forEach((button) => {
+          button.addEventListener("click", () => speak(button.dataset.phrase, false));
+        });
+      }
     }
 
     function resetStages() {
-      els.stage2.classList.add("stage-locked");
-      els.stage3.classList.add("stage-locked");
-      els.finishBtn.disabled = true;
-      els.connectedPanel.hidden = true;
-      setDictationControls(false);
-      els.options.querySelectorAll(".roleplay-btn").forEach((button) => {
-        button.disabled = false;
-        button.classList.remove("correct", "wrong");
-      });
+      currentHintPercent = 0;
+      if (els.stage2) els.stage2.classList.remove("stage-locked");
+      if (els.stage3) els.stage3.classList.remove("stage-locked");
+      if (els.finishBtn) els.finishBtn.disabled = false;
+      if (els.connectedPanel) els.connectedPanel.hidden = true;
+      if (els.hintLevelBtns) {
+        els.hintLevelBtns.forEach((b) => b.classList.toggle("active", b.dataset.hint === "0"));
+      }
+      setDictationControls(true);
+      if (els.options) {
+        els.options.querySelectorAll(".roleplay-btn").forEach((button) => {
+          button.disabled = false;
+          button.classList.remove("correct", "wrong");
+        });
+      }
       const medium = document.querySelector('input[name="confidence"][value="medium"]');
       if (medium) medium.checked = true;
     }
@@ -703,54 +967,81 @@
 
     function updateModeStatus() {
       const mode = modes[selectedMode] || modes.natural;
-      els.currentMode.textContent = mode.label;
-      els.audioNote.textContent = mode.note;
+      if (els.currentMode) els.currentMode.textContent = mode.label;
+      if (els.audioNote) els.audioNote.textContent = mode.note;
       updateVoiceStatus();
     }
 
     function updateListenLayers() {
       const capped = Math.min(listenCount, 3);
-      els.listenCount.textContent = capped;
+      if (els.listenCount) els.listenCount.textContent = capped;
 
-      els.layerSteps.forEach((step) => {
-        const index = Number(step.dataset.layerStep);
-        step.classList.toggle("done", capped >= index);
-        step.classList.toggle("active", capped + 1 === index || (capped === 3 && index === 3));
-      });
+      if (els.layerSteps) {
+        els.layerSteps.forEach((step) => {
+          const index = Number(step.dataset.layerStep);
+          step.classList.toggle("done", capped >= index);
+          step.classList.toggle("active", capped + 1 === index || (capped === 3 && index === 3));
+        });
+      }
 
       if (listenCount >= 2) {
-        els.stage2.classList.remove("stage-locked");
-        els.keywordHints.classList.remove("is-hidden");
+        if (els.stage2) els.stage2.classList.remove("stage-locked");
+        if (els.keywordHints) els.keywordHints.classList.remove("is-hidden");
       }
 
       setDictationControls(listenCount >= 3);
 
-      if (listenCount === 1) els.answerFeedback.textContent = "Lần 1: cố đoán ý chính trước, chưa cần transcript.";
-      if (listenCount === 2) els.answerFeedback.textContent = "Lần 2: từ khóa đã mở. Hãy nghe xem câu đang hỏi điều gì.";
-      if (listenCount >= 3) els.answerFeedback.textContent = "Lần 3: gap transcript đã mở. Điền chỗ trống trước khi xem breakdown.";
+      if (els.answerFeedback) {
+        if (listenCount === 1) els.answerFeedback.textContent = "Lần 1: cố đoán ý chính trước, chưa cần transcript.";
+        if (listenCount === 2) els.answerFeedback.textContent = "Lần 2: từ khóa đã mở. Hãy nghe xem câu đang hỏi điều gì.";
+        if (listenCount >= 3) els.answerFeedback.textContent = "Lần 3: gap transcript đã mở. Điền chỗ trống trước khi xem breakdown.";
+      }
     }
 
-    function setDictationControls(enabled) {
-      [els.revealLetterBtn, els.playSlowerBtn, els.showConnectedBtn, els.showAnswerBtn, els.checkBlanksBtn].forEach((button) => {
-        button.disabled = !enabled;
+    function setDictationControls(enabled = true) {
+      [els.revealLetterBtn, els.playSlowerBtn, els.showConnectedBtn, els.showAnswerBtn, els.checkBlanksBtn, els.resetDictationBtn].forEach((button) => {
+        if (button) button.disabled = false;
       });
       getBlankInputs().forEach((input) => {
-        input.disabled = !enabled;
-        if (!enabled) {
-          input.value = "";
-          input.classList.remove("correct", "wrong");
+        if (input) {
+          input.disabled = false;
         }
       });
     }
 
     function handleOption(button) {
       const correct = button.dataset.correct === "true";
-      els.options.querySelectorAll(".roleplay-btn").forEach((item) => item.classList.remove("correct", "wrong"));
+      if (els.options) {
+        els.options.querySelectorAll(".roleplay-btn").forEach((item) => item.classList.remove("correct", "wrong"));
+      }
 
       if (correct) {
         answerWasCorrect = true;
         button.classList.add("correct");
-        els.answerFeedback.textContent = "Đúng ngữ cảnh. Tiếp tục nghe lần 2 và lần 3 để bóc tách âm thanh.";
+
+        const inputs = getBlankInputs();
+        let dictationScore = 0;
+        if (inputs.length) {
+          let correctCount = 0;
+          inputs.forEach((input) => {
+            const val = normalize(input.value);
+            const ans = normalize(input.dataset.answer);
+            if (val !== "" && val === ans) correctCount += 1;
+          });
+          dictationScore = Math.round((correctCount / inputs.length) * 85);
+        }
+
+        const totalScore = Math.min(100, dictationScore + 15);
+        state.scores[currentMission.id] = Math.max(state.scores[currentMission.id] || 0, totalScore);
+
+        if (totalScore >= 70) {
+          state.completed = unique([...state.completed, currentMission.id]);
+        }
+
+        if (els.answerFeedback) els.answerFeedback.textContent = `Chính xác! Đã cộng +15% điểm Question. Tổng điểm: ${totalScore}%.`;
+        saveState();
+        renderDashboard();
+        if (currentMission) populateMission(currentMission);
         return;
       }
 
@@ -758,89 +1049,337 @@
       answerWasCorrect = false;
       button.classList.add("wrong");
       addMistakes(currentMission.mistakes, 1);
-      els.answerFeedback.textContent = `Bạn có thể đã miss phần khó: ${currentMission.missReason}`;
+      if (els.answerFeedback) els.answerFeedback.textContent = `Bạn có thể đã miss phần khó: ${currentMission.missReason}`;
       saveState();
       renderDashboard();
     }
 
     function checkDictation() {
-      let allCorrect = true;
-      getBlankInputs().forEach((input) => {
-        const isCorrect = normalize(input.value) === normalize(input.dataset.answer);
-        input.classList.toggle("correct", isCorrect);
-        input.classList.toggle("wrong", !isCorrect);
-        if (!isCorrect) allCorrect = false;
+      const inputs = getBlankInputs();
+      if (!inputs.length) return;
+
+      let correctCount = 0;
+
+      inputs.forEach((input) => {
+        const val = normalize(input.value);
+        const ans = normalize(input.dataset.answer);
+        const isCorrect = (val !== "") && (val === ans);
+
+        if (isCorrect) {
+          correctCount += 1;
+          input.classList.add("correct");
+          input.classList.remove("wrong");
+          input.style.border = "1.5px solid #10b981";
+          input.style.borderColor = "#10b981";
+          input.style.color = "#10b981";
+          input.style.background = "rgba(16, 185, 129, 0.15)";
+          input.style.boxShadow = "0 0 10px rgba(16, 185, 129, 0.35)";
+        } else {
+          input.classList.remove("correct");
+          input.classList.add("wrong");
+          input.style.border = "1.5px solid #ef4444";
+          input.style.borderColor = "#ef4444";
+          input.style.color = "#ef4444";
+          input.style.background = "rgba(239, 68, 68, 0.15)";
+          input.style.boxShadow = "0 0 10px rgba(239, 68, 68, 0.35)";
+        }
       });
 
-      if (allCorrect) {
-        els.answerFeedback.textContent = "Dictation đúng. Breakdown đã mở để xem vì sao câu này khó nghe.";
+      // Max dictation score is 85%
+      const dictationScore = Math.round((correctCount / inputs.length) * 85);
+      const questionBonus = answerWasCorrect ? 15 : 0;
+      const totalScore = Math.min(100, dictationScore + questionBonus);
+
+      state.scores[currentMission.id] = Math.max(state.scores[currentMission.id] || 0, totalScore);
+
+      if (totalScore >= 70) {
+        state.completed = unique([...state.completed, currentMission.id]);
+      }
+
+      saveState();
+      renderDashboard();
+      if (currentMission) populateMission(currentMission);
+
+      if (correctCount === inputs.length) {
+        if (els.answerFeedback) {
+          els.answerFeedback.textContent = answerWasCorrect
+            ? `Chính xác 100%! Đã lưu tiến độ.`
+            : `Đã điền đúng toàn bộ từ! Đạt ${dictationScore}% (Hoàn thành phần Question để đạt 100%).`;
+        }
         unlockStage3();
         return;
       }
 
       blankWrongAttempts += 1;
       addMistakes(currentMission.mistakes, 1);
-      saveState();
-      renderDashboard();
-      els.answerFeedback.textContent = "Chưa đúng. Hãy dùng Replay hard part hoặc Show connected speech trước khi hiện đáp án.";
+
+      if (els.answerFeedback) {
+        els.answerFeedback.textContent = `Bạn đã điền đúng ${correctCount}/${inputs.length} từ (${dictationScore}%). Ô sai có viền đỏ.`;
+      }
     }
 
-    function revealFirstLetter() {
-      const target = getBlankInputs().find((input) => normalize(input.value) !== normalize(input.dataset.answer));
-      if (!target) return;
-      target.value = target.dataset.answer.charAt(0);
-      target.focus();
+    function resetDictationInputs() {
+      if (!currentMission) return;
+      const inputs = getBlankInputs();
+      inputs.forEach((input) => {
+        input.value = "";
+        input.classList.remove("correct", "wrong");
+        input.style.border = "1.5px dashed rgba(56, 189, 248, 0.5)";
+        input.style.borderColor = "rgba(56, 189, 248, 0.5)";
+        input.style.color = "#38bdf8";
+        input.style.background = "rgba(15, 23, 42, 0.4)";
+        input.style.boxShadow = "none";
+      });
+
+      delete state.scores[currentMission.id];
+      state.completed = state.completed.filter((id) => id !== currentMission.id);
+      answerWasCorrect = false;
+
+      if (els.answerFeedback) els.answerFeedback.textContent = "Đã làm mới dữ liệu của session này.";
+
+      saveState();
+      deleteProgressFromDatabase(currentMission.id);
+      renderDashboard();
+      if (currentMission) populateMission(currentMission);
     }
+
+    function renderDictationForHint(mission, percent) {
+      if (!els.dictation || !mission || !mission.transcript) return;
+      
+      const isSameMission = (lastRenderedMissionId === mission.id);
+      lastRenderedMissionId = mission.id;
+      currentHintPercent = percent;
+
+      const userInputsMap = {};
+      if (isSameMission) {
+        getBlankInputs().forEach((input) => {
+          if (input.dataset.wordIndex !== undefined) {
+            userInputsMap[input.dataset.wordIndex] = input.value;
+          }
+        });
+      }
+
+      els.dictation.innerHTML = "";
+      els.dictation.style.lineHeight = "1.9";
+      els.dictation.style.display = "flex";
+      els.dictation.style.flexWrap = "wrap";
+      els.dictation.style.alignItems = "center";
+      els.dictation.style.gap = "6px 4px";
+      els.dictation.style.fontSize = "16px";
+      els.dictation.style.fontWeight = "500";
+      els.dictation.style.color = "#e2e8f0";
+
+      const transcript = mission.transcript;
+      const regex = /([a-zA-Z0-9'-]+)|([^a-zA-Z0-9'-]+)/g;
+      const tokens = [];
+      let match;
+      while ((match = regex.exec(transcript)) !== null) {
+        if (match[1]) {
+          tokens.push({ type: "word", text: match[1] });
+        } else if (match[2]) {
+          tokens.push({ type: "sep", text: match[2] });
+        }
+      }
+
+      const wordTokens = tokens.filter((t) => t.type === "word");
+      const totalWords = wordTokens.length;
+
+      let blankRatio = (100 - percent) / 100;
+      let numBlanks = Math.round(totalWords * blankRatio);
+      if (percent === 0) numBlanks = totalWords;
+      if (percent === 100) numBlanks = 0;
+
+      const isBlankMap = {};
+      if (numBlanks >= totalWords) {
+        wordTokens.forEach((_, idx) => {
+          isBlankMap[idx] = true;
+        });
+      } else if (numBlanks > 0) {
+        const step = totalWords / numBlanks;
+        for (let i = 0; i < numBlanks; i++) {
+          const targetIndex = Math.min(totalWords - 1, Math.floor(i * step + step / 2));
+          isBlankMap[targetIndex] = true;
+        }
+      }
+
+      let wordIndex = 0;
+      tokens.forEach((token) => {
+        if (token.type === "sep") {
+          const span = document.createElement("span");
+          span.style.color = "#94a3b8";
+          span.style.whiteSpace = "pre";
+          span.textContent = token.text;
+          els.dictation.appendChild(span);
+        } else {
+          const currentWordIdx = wordIndex;
+          wordIndex++;
+
+          if (isBlankMap[currentWordIdx]) {
+            const answer = token.text;
+            const input = document.createElement("input");
+            input.type = "text";
+            input.dataset.answer = answer;
+            input.dataset.wordIndex = currentWordIdx;
+            input.disabled = false;
+            input.setAttribute("aria-label", `Điền từ: ${answer}`);
+
+            let hintPrefix = "";
+            if (percent > 0 && percent < 100) {
+              const revealLetters = Math.floor(answer.length * (percent / 100));
+              if (revealLetters > 0) {
+                hintPrefix = answer.substring(0, revealLetters);
+              }
+            }
+
+            const prevValue = userInputsMap[currentWordIdx];
+            if (prevValue !== undefined && prevValue !== "") {
+              input.value = prevValue;
+            } else {
+              input.value = hintPrefix;
+            }
+
+            const minWidth = Math.max(42, answer.length * 13 + 14);
+            input.style.width = `${minWidth}px`;
+            input.style.background = "rgba(15, 23, 42, 0.4)";
+            input.style.border = "1.5px dashed rgba(56, 189, 248, 0.5)";
+            input.style.color = "#38bdf8";
+            input.style.textAlign = "center";
+            input.style.fontWeight = "700";
+            input.style.outline = "none";
+            input.style.margin = "0 2px";
+            input.style.borderRadius = "6px";
+            input.style.padding = "4px 6px";
+            input.style.fontSize = "15px";
+            input.style.transition = "all 0.2s ease";
+
+            input.addEventListener("input", () => {
+              input.classList.remove("correct", "wrong");
+              input.style.border = "1.5px dashed #22d3ee";
+              input.style.borderColor = "#22d3ee";
+              input.style.color = "#38bdf8";
+              input.style.background = "rgba(34, 211, 238, 0.08)";
+              input.style.boxShadow = "0 0 8px rgba(34, 211, 238, 0.3)";
+            });
+
+            input.addEventListener("focus", () => {
+              if (!input.classList.contains("correct") && !input.classList.contains("wrong")) {
+                input.style.borderColor = "#22d3ee";
+                input.style.boxShadow = "0 0 10px rgba(34, 211, 238, 0.35)";
+                input.style.background = "rgba(34, 211, 238, 0.1)";
+              }
+            });
+            input.addEventListener("blur", () => {
+              if (!input.classList.contains("correct") && !input.classList.contains("wrong")) {
+                input.style.border = "1.5px dashed rgba(56, 189, 248, 0.5)";
+                input.style.borderColor = "rgba(56, 189, 248, 0.5)";
+                input.style.boxShadow = "none";
+                input.style.background = "rgba(15, 23, 42, 0.4)";
+              }
+            });
+
+            input.addEventListener("keyup", (event) => {
+              if (event.key === "Enter") els.checkBlanksBtn.click();
+            });
+
+            els.dictation.appendChild(input);
+          } else {
+            const span = document.createElement("span");
+            span.style.color = "#f8fafc";
+            span.style.fontWeight = "600";
+            span.textContent = token.text;
+            els.dictation.appendChild(span);
+          }
+        }
+      });
+
+      if (percent === 100) {
+        usedFullAnswer = true;
+        unlockStage3();
+      }
+    }
+
+    function applyDictationHint(percent) {
+      renderDictationForHint(currentMission, percent);
+    }
+
+    function revealFirstWord() {
+      const inputs = getBlankInputs();
+      const target = inputs.find((input) => normalize(input.value) !== normalize(input.dataset.answer));
+      if (!target) return;
+      
+      target.value = target.dataset.answer;
+      target.classList.add("correct");
+      target.classList.remove("wrong");
+      target.style.border = "1.5px solid #10b981";
+      target.style.borderColor = "#10b981";
+      target.style.color = "#10b981";
+      target.style.background = "rgba(16, 185, 129, 0.15)";
+      target.style.boxShadow = "0 0 10px rgba(16, 185, 129, 0.35)";
+      
+      const nextTarget = inputs.find((input) => normalize(input.value) !== normalize(input.dataset.answer));
+      if (nextTarget) {
+        nextTarget.focus();
+      } else {
+        if (els.answerFeedback) els.answerFeedback.textContent = "Bạn đã mở hết các từ. Bấm Check hoặc chuyển sang Breakdown để xem lý do!";
+        unlockStage3();
+      }
+    }
+
+    function toggleConnectedPanel() {
+      if (!els.connectedPanel) return;
+      const willShow = els.connectedPanel.hidden;
+      els.connectedPanel.hidden = !willShow;
+      if (willShow && currentMission && els.connectedSpeech) {
+        els.connectedSpeech.textContent = currentMission.connectedSpeech || "Nối âm tự nhiên trong câu.";
+        els.connectedPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+
+
 
     function showFullAnswer() {
       usedFullAnswer = true;
-      getBlankInputs().forEach((input) => {
-        input.value = input.dataset.answer;
-        input.classList.add("correct");
-        input.classList.remove("wrong");
-      });
+      if (els.hintLevelBtns) {
+        els.hintLevelBtns.forEach((b) => b.classList.toggle("active", b.dataset.hint === "100"));
+      }
+      applyDictationHint(100);
       unlockStage3();
     }
 
     function unlockStage3() {
-      els.stage3.classList.remove("stage-locked");
-      els.finishBtn.disabled = false;
-      els.connectedPanel.hidden = false;
+      if (els.stage3) els.stage3.classList.remove("stage-locked");
+      if (els.finishBtn) els.finishBtn.disabled = false;
+      if (els.connectedPanel) els.connectedPanel.hidden = false;
+      switchWorkspaceTab("3");
     }
 
     function finishMission() {
-      const confidence = document.querySelector('input[name="confidence"]:checked')?.value || "medium";
-      let score = currentMission.baseScore;
-
-      if (answerWasCorrect && !wrongOptionAttempted) score += 8;
-      if (wrongOptionAttempted) score -= 8;
-      if (blankWrongAttempts === 0 && !usedFullAnswer) score += 8;
-      if (blankWrongAttempts > 0) score -= Math.min(10, blankWrongAttempts * 4);
-      if (usedFullAnswer) score -= 6;
-      if (selectedMode === "native") score += 3;
-      if (selectedMode === "chaos") score += 4;
-      if (confidence === "high" && wrongOptionAttempted) score -= 4;
-      if (confidence === "low" && answerWasCorrect) score += 2;
-      score = clamp(Math.round(score), 48, 96);
-
-      state.completed = unique([...state.completed, currentMission.id]);
-      state.scores[currentMission.id] = Math.max(state.scores[currentMission.id] || 0, score);
-      state.nativeScore = computeNativeScore(state.scores);
-      state.xp = (state.xp || 120) + 40;
-      state.streak = Math.max(state.streak || 3, 3);
       saveState();
-
-      els.resultTitle.textContent = `Bạn hiểu được ${score}% session "${currentMission.title}" ở ${modes[selectedMode].label}.`;
-      els.resultCopy.textContent = score >= 85
-        ? "Bạn đã đủ điều kiện mở các session khó hơn ở Native Mode."
-        : `Mục tiêu tiếp theo: đạt 85%. Gợi ý luyện tiếp: ${getDrillSuggestion(getTopMistake())}`;
-      els.earnedBadges.innerHTML = [currentMission.badge, "+40 XP", getLevelBadge(score)]
-        .map((badge) => `<span>${escapeHtml(badge)}</span>`)
-        .join("");
-      els.resultPanel.hidden = false;
-      els.finishBtn.disabled = true;
-      stopTimer();
       renderDashboard();
+
+      // Auto Advance to the TOP session in the sidebar list (lowest % score first)
+      const sortedSessions = getTopicSessionsSorted(currentMission.goal);
+      let nextMission = sortedSessions.find(m => m.id !== currentMission.id);
+      if (!nextMission) {
+        nextMission = sortedSessions[0];
+      }
+
+      const allCompleted100 = sortedSessions.every(s => (state.scores[s.id] || (state.completed.includes(s.id) ? 100 : 0)) >= 100);
+
+      if (nextMission && !allCompleted100) {
+        openMission(nextMission.id);
+        switchWorkspaceTab("2");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        if (els.resultTitle) els.resultTitle.textContent = `Bạn đã hoàn thành chủ đề "${goalText[currentMission.goal]}" với kết quả xuất sắc!`;
+        if (els.resultCopy) els.resultCopy.textContent = "Bạn đã hoàn thành 100% tất cả các session trong chủ đề này.";
+        if (els.earnedBadges) els.earnedBadges.innerHTML = [currentMission.badge, "+40 XP", getLevelBadge(finalScore)]
+          .map((badge) => `<span>${escapeHtml(badge)}</span>`)
+          .join("");
+        if (els.resultPanel) els.resultPanel.hidden = false;
+        if (els.finishBtn) els.finishBtn.disabled = true;
+        stopTimer();
+      }
     }
 
     function getCurrentAudioText() {
@@ -853,9 +1392,9 @@
       if (countListen) listenCount += 1;
       stopSpeech();
       isPlaying = true;
-      els.waveform.classList.add("playing");
-      els.playBtn.innerHTML = '<span class="ti-control-pause"></span> Stop audio';
-      els.currentMode.textContent = `Speaking · ${modes[modeOverride || selectedMode]?.label || "Audio"}`;
+      if (els.waveform) els.waveform.classList.add("playing");
+      if (els.playBtn) els.playBtn.innerHTML = '<span class="ti-control-pause"></span>';
+      if (els.currentMode) els.currentMode.textContent = `Speaking · ${modes[modeOverride || selectedMode]?.label || "Audio"}`;
 
       if (mode.noise) startNoise();
 
@@ -880,8 +1419,8 @@
       if ("speechSynthesis" in window) window.speechSynthesis.cancel();
       stopNoise();
       isPlaying = false;
-      els.waveform?.classList.remove("playing");
-      if (els.playBtn) els.playBtn.innerHTML = '<span class="ti-control-play"></span> Play session audio';
+      if (els.waveform) els.waveform.classList.remove("playing");
+      if (els.playBtn) els.playBtn.innerHTML = '<span class="ti-control-play"></span>';
       updateModeStatus();
     }
 
@@ -1000,26 +1539,39 @@
       }[key] || "Luyện 5 phút với did you -> didja, want to -> wanna, let me -> lemme.";
     }
 
+    function getStorageKey() {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+      const userId = currentUser?.id || currentUser?.email || localStorage.getItem("engWithMeUserId") || localStorage.getItem("user_id");
+      return userId ? `engWithMeListeningLabState_user_${userId}` : "engWithMeListeningLabState";
+    }
+
     function loadState() {
       const fallback = {
-        nativeScore: 72,
-        streak: 3,
-        xp: 120,
+        nativeScore: 0,
+        streak: 0,
+        xp: 0,
         goal: defaultGoal,
         completed: [],
         scores: {},
-        mistakes: { connected: 3, ending: 2, fast: 2, numbers: 1, noise: 1 }
+        mistakes: {}
       };
 
       try {
-        const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        const key = getStorageKey();
+        const parsed = JSON.parse(localStorage.getItem(key) || "null");
         if (!parsed) return fallback;
+
+        const loadedScores = parsed.scores || {};
+        const rawCompleted = Array.isArray(parsed.completed) ? parsed.completed : [];
+        // Only keep completed items whose score is >= 70
+        const validCompleted = rawCompleted.filter(id => (loadedScores[id] || 0) >= 70);
+
         return {
           ...fallback,
           ...parsed,
-          completed: Array.isArray(parsed.completed) ? parsed.completed : [],
-          scores: parsed.scores || {},
-          mistakes: { ...fallback.mistakes, ...(parsed.mistakes || {}) }
+          completed: validCompleted,
+          scores: loadedScores,
+          mistakes: parsed.mistakes || {}
         };
       } catch (error) {
         return fallback;
@@ -1027,13 +1579,95 @@
     }
 
     function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      const key = getStorageKey();
+      localStorage.setItem(key, JSON.stringify(state));
+      syncProgressToDatabase();
+    }
+
+    async function syncProgressToDatabase() {
+      const userId = localStorage.getItem("engWithMeUserId") || localStorage.getItem("user_id");
+      if (!userId || !currentMission) return;
+
+      const currentScore = state.scores[currentMission.id] || 0;
+      if (currentScore < 70) return; // Strictly block DB sync if score is under 70%
+
+      try {
+        const body = new FormData();
+        body.append("progress_id", `listening_${currentMission.id}`);
+        await fetch("api/sync_progress.php", {
+          method: "POST",
+          body,
+          credentials: "same-origin"
+        });
+        if (typeof AppCache !== "undefined") {
+          AppCache.invalidate(`progress_user_${userId}`);
+        }
+      } catch (e) {
+        console.warn("Lỗi sync DB Listening Lab:", e);
+      }
+    }
+
+    async function deleteProgressFromDatabase(missionId) {
+      const userId = localStorage.getItem("engWithMeUserId") || localStorage.getItem("user_id");
+      if (!userId || !missionId) return;
+
+      try {
+        const body = new FormData();
+        body.append("progress_id", `listening_${missionId}`);
+        body.append("action", "delete");
+        await fetch("api/sync_progress.php", {
+          method: "POST",
+          body,
+          credentials: "same-origin"
+        });
+        if (typeof AppCache !== "undefined") {
+          AppCache.invalidate(`progress_user_${userId}`);
+        }
+      } catch (e) {
+        console.warn("Lỗi delete DB Listening Lab:", e);
+      }
+    }
+
+    async function fetchProgressFromDatabase() {
+      const userId = localStorage.getItem("engWithMeUserId") || localStorage.getItem("user_id");
+      if (!userId) return;
+
+      try {
+        const res = await fetch("api/sync_progress.php", { credentials: "same-origin" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.ok && Array.isArray(data.progress)) {
+            let changed = false;
+            data.progress.forEach((pId) => {
+              if (typeof pId === "string" && pId.startsWith("listening_")) {
+                const missionId = pId.replace("listening_", "");
+                if (!state.completed.includes(missionId)) {
+                  state.completed.push(missionId);
+                  if (state.scores[missionId] === undefined) {
+                    state.scores[missionId] = 85;
+                  }
+                  changed = true;
+                }
+              }
+            });
+            if (changed) {
+              const key = getStorageKey();
+              localStorage.setItem(key, JSON.stringify(state));
+              renderDashboard();
+              if (currentMission) populateMission(currentMission);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("Lỗi fetch DB Listening Lab:", e);
+      }
     }
 
     function storageAvailable() {
       try {
-        localStorage.setItem(`${STORAGE_KEY}Check`, "1");
-        localStorage.removeItem(`${STORAGE_KEY}Check`);
+        const key = getStorageKey();
+        localStorage.setItem(`${key}Check`, "1");
+        localStorage.removeItem(`${key}Check`);
         return true;
       } catch (error) {
         return false;

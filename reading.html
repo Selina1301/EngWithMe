@@ -35,7 +35,7 @@
     <section class="study-hero">
       <p class="eyebrow">Reading</p>
       <h1>9 cuộc hội thoại ngắn theo cấp độ</h1>
-      <p>Chọn Easy, Medium hoặc Hard để đưa nhóm đó lên đầu danh sách. Mỗi bài là một card hội thoại đầy đủ, phần dịch tiếng Việt được che mặc định và có thể bật lại khi cần so nghĩa.</p>
+      <p>Chọn Easy, Medium hoặc Hard để lọc danh sách bài đọc theo cấp độ mong muốn. Mỗi bài là một card hội thoại đầy đủ, phần dịch tiếng Việt được che mặc định và có thể bật lại khi cần so nghĩa.</p>
     </section>
 
     <section class="study-shell">
@@ -59,49 +59,43 @@
             <div class="progress-track"><span data-reading-progress-bar style="width: 0%"></span></div>
           </div>
           <div class="reading-progress-metrics">
-            <span><strong data-reading-viewed-count>0/22</strong>Bài đã xem</span>
-            <span><strong data-reading-current-level>Easy</strong>Cấp đang ưu tiên</span>
-            <span><strong data-reading-remaining>22</strong>Bài còn lại</span>
+            <span><strong data-reading-viewed-count>0/0</strong>Bài đã xem</span>
+            <span><strong data-reading-current-level>Easy</strong>Cấp đang chọn</span>
+            <span><strong data-reading-remaining>0</strong>Bài còn lại</span>
           </div>
         </article>
       </section>
 
       <div class="reading-study-view" data-reading-study-view>
-      <div class="study-toolbar">
-        <label class="study-search">
-          <i class="ti-search"></i>
-          <input type="search" placeholder="Tìm chủ đề hoặc câu hội thoại" data-reading-search>
-        </label>
-        <button class="schedule-button" type="button" data-schedule-demo data-demo-meta="Lịch đọc" data-demo-title="Lịch luyện đọc" data-demo-message="Lịch đọc sẽ xếp bài chưa đọc theo mức Easy, Medium, Hard và đưa bài đã đọc xuống sau để bạn tiếp tục đúng thứ tự.">
-          <span class="schedule-button-icon" aria-hidden="true"><i class="ti-calendar"></i></span>
-          <span class="schedule-button-copy">
-            <strong>Lịch đọc</strong>
-            <small>Theo cấp độ</small>
-          </span>
-        </button>
-      </div>
-
-      <div class="reading-layout">
-        <div class="reading-level-rail">
-          <div class="level-tabs compact-tabs reading-level-tabs" aria-label="Ưu tiên cấp độ đọc">
-            <button class="level-tab active" type="button" data-reading-level-tab="easy">Easy</button>
-            <button class="level-tab" type="button" data-reading-level-tab="medium">Medium</button>
-            <button class="level-tab" type="button" data-reading-level-tab="hard">Hard</button>
-          </div>
+        <div class="study-toolbar">
+          <label class="study-search">
+            <i class="ti-search"></i>
+            <input type="search" placeholder="Tìm chủ đề hoặc câu hội thoại" data-reading-search>
+          </label>
+          <button class="schedule-button" type="button" data-schedule-demo data-demo-meta="Lịch đọc" data-demo-title="Lịch luyện đọc" data-demo-message="Lịch đọc sẽ hiển thị bài theo mức Easy, Medium, Hard tương ứng với bộ lọc bạn đang chọn.">
+            <span class="schedule-button-icon" aria-hidden="true"><i class="ti-calendar"></i></span>
+            <span class="schedule-button-copy">
+              <strong>Lịch đọc</strong>
+              <small>Theo cấp độ</small>
+            </span>
+          </button>
         </div>
-        <aside class="reading-topic-list" aria-label="Danh sách chủ đề đọc"></aside>
 
-        <div class="reading-passages" data-reading-passages></div>
-      </div>
+        <div class="reading-layout">
+          <div class="reading-level-rail">
+            <div class="level-tabs compact-tabs reading-level-tabs" aria-label="Ưu tiên cấp độ đọc">
+              <button class="level-tab active" type="button" data-reading-level-tab="easy">Easy</button>
+              <button class="level-tab" type="button" data-reading-level-tab="medium">Medium</button>
+              <button class="level-tab" type="button" data-reading-level-tab="hard">Hard</button>
+            </div>
+          </div>
+          <aside class="reading-topic-list" aria-label="Danh sách chủ đề đọc"></aside>
+
+          <div class="reading-passages" data-reading-passages></div>
+        </div>
       </div>
     </section>
   </main>
-
-
-
-
-
-
 
   <script src="js/core.js?v=1.0.2"></script>
   <script src="js/demo-actions.js"></script>
@@ -468,23 +462,54 @@
 
     readingLessons = await loadReadingLessonsFromApi(readingLessons);
 
+    const levelStorageKey = "engWithMeReadingMode";
+    const modeStorageKey = "engWithMeReadingViewMode";
+    const viewedStorageKey = "engWithMeViewedReadingTopics";
+
+    let activeReadingLevel = localStorage.getItem(levelStorageKey) || "easy";
+    let activeReadingMode = localStorage.getItem(modeStorageKey) || "study";
+    let viewedTopics = new Set(JSON.parse(localStorage.getItem(viewedStorageKey) || "[]"));
+
     function renderReadingLessons() {
       const topicList = document.querySelector(".reading-topic-list");
       const passageList = document.querySelector("[data-reading-passages]");
       if (!topicList || !passageList) return;
 
-      topicList.innerHTML = readingLessons.map((lesson, index) => `
-        <article class="reading-topic-card${index === 0 ? " is-active" : ""}" data-reading-topic-link="${safeText(lesson.id)}" data-reading-level="${safeText(lesson.level)}" data-original-index="${index}">
+      const query = readingSearch ? readingSearch.value.trim().toLowerCase() : "";
+
+      // Lazy Level Filtering: ONLY render lessons matching activeReadingLevel
+      const filteredLessons = readingLessons.filter(lesson => {
+        if (lesson.level !== activeReadingLevel) return false;
+        if (!query) return true;
+        const searchableText = `${lesson.title} ${lesson.description} ${lesson.lines.flat().join(" ")} ${lesson.vocab.join(" ")}`.toLowerCase();
+        return searchableText.includes(query);
+      });
+
+      if (filteredLessons.length === 0) {
+        topicList.innerHTML = `<div class="empty-state" style="padding:16px; color:rgba(255,255,255,0.6); font-size: 0.9rem;">Không tìm thấy bài nào.</div>`;
+        passageList.innerHTML = `<div class="empty-state" style="padding:40px; text-align:center; color:rgba(255,255,255,0.6);">Không tìm thấy bài đọc phù hợp cho từ khóa tìm kiếm.</div>`;
+        updateReadingProgress();
+        return;
+      }
+
+      // Render ONLY topic cards for active level (Lazy Rendering)
+      topicList.innerHTML = filteredLessons.map((lesson, index) => {
+        const isViewed = viewedTopics.has(lesson.id);
+        return `
+        <article class="reading-topic-card${index === 0 ? " is-active" : ""}${isViewed ? " is-viewed" : ""}" data-reading-topic-link="${safeText(lesson.id)}" data-reading-level="${safeText(lesson.level)}" data-original-index="${index}">
           <button class="reading-topic-open" type="button" data-reading-topic-open aria-label="Mở bài ${safeText(lesson.title)}"></button>
           <span>${safeText(lesson.level.charAt(0).toUpperCase() + lesson.level.slice(1))}</span>
           <strong>${safeText(lesson.title)}</strong>
           <small>${lesson.lines.length} dòng đọc</small>
           <i class="topic-check ti-check" aria-hidden="true"></i>
         </article>
-      `).join("");
+      `}).join("");
 
-      passageList.innerHTML = readingLessons.map((lesson, index) => `
-        <article class="reading-passage translations-muted" id="${safeText(lesson.id)}" data-reading-level="${safeText(lesson.level)}" data-original-index="${index}" data-reading-topic>
+      // Render ONLY passages for active level (Lazy Rendering)
+      passageList.innerHTML = filteredLessons.map((lesson, index) => {
+        const isViewed = viewedTopics.has(lesson.id);
+        return `
+        <article class="reading-passage translations-muted${isViewed ? " is-viewed" : ""}" id="${safeText(lesson.id)}" data-reading-level="${safeText(lesson.level)}" data-original-index="${index}" data-reading-topic>
           <div class="reading-passage-head">
             <div>
               <span class="level-chip ${safeText(lesson.level)}">${safeText(lesson.level.charAt(0).toUpperCase() + lesson.level.slice(1))}</span>
@@ -500,69 +525,44 @@
             ${lesson.lines.map(([en, vi]) => `<div class="sentence-row"><p class="sentence-en">${safeText(en)}</p><p class="sentence-vi">${safeText(vi)}</p></div>`).join("")}
             <div class="sentence-row"><p class="sentence-en">Key vocabulary: ${safeText(lesson.vocab.map((item) => item.split(" = ")[0]).join("; "))}</p><p class="sentence-vi">Từ hay: ${safeText(lesson.vocab.join("; "))}</p></div>
           </div>
+          <div class="reading-passage-foot">
+            <button class="btn btn-ghost btn-sm${isViewed ? " is-active" : ""}" type="button" data-reading-mark-read="${safeText(lesson.id)}">
+              <i class="ti-check"></i> ${isViewed ? "Đã xem" : "Đánh dấu đã xem"}
+            </button>
+          </div>
         </article>
-      `).join("");
+      `}).join("");
+
+      setActiveTopic(filteredLessons[0].id, false);
+      updateReadingProgress();
     }
 
-    renderReadingLessons();
-
-    const readingModeTabs = document.querySelectorAll("[data-reading-mode]");
     const readingStudyView = document.querySelector("[data-reading-study-view]");
     const readingProgressView = document.querySelector("[data-reading-progress-view]");
+    const readingModeTabs = document.querySelectorAll("[data-reading-mode]");
+    const readingLevelTabs = document.querySelectorAll("[data-reading-level-tab]");
+    const readingSearch = document.querySelector("[data-reading-search]");
     const readingProgressScore = document.querySelector("[data-reading-progress-score]");
-    const readingProgressSummary = document.querySelector("[data-reading-progress-summary]");
     const readingProgressBar = document.querySelector("[data-reading-progress-bar]");
     const readingViewedCount = document.querySelector("[data-reading-viewed-count]");
     const readingCurrentLevel = document.querySelector("[data-reading-current-level]");
     const readingRemaining = document.querySelector("[data-reading-remaining]");
-    const readingLevelTabs = document.querySelectorAll("[data-reading-level-tab]");
-    const readingTopicList = document.querySelector(".reading-topic-list");
-    const readingTopicCards = Array.from(document.querySelectorAll("[data-reading-topic-link]"));
-    const readingPassageList = document.querySelector("[data-reading-passages]");
-    const readingPassages = Array.from(document.querySelectorAll("[data-reading-topic]"));
-    const readingSearch = document.querySelector("[data-reading-search]");
-    const levelOrder = ["easy", "medium", "hard"];
-    const modeStorageKey = getAccountKey("engWithMeReadingMode");
-    const viewedStorageKey = getAccountKey("engWithMeViewedReadingTopics");
-    const viewedTopics = new Set(JSON.parse(localStorage.getItem(viewedStorageKey) || "[]"));
-    let activeReadingLevel = "easy";
-    let activeReadingMode = localStorage.getItem(modeStorageKey) === "progress" ? "progress" : "study";
-    if (window.location.hash) activeReadingMode = "study";
-
-    function getReadingSortValue(element, includeViewed = true) {
-      const level = element.dataset.readingLevel;
-      const base = level === activeReadingLevel ? 0 : levelOrder.indexOf(level) + 1;
-      const topicId = element.dataset.readingTopicLink || element.id;
-      const viewedOffset = includeViewed && viewedTopics.has(topicId) ? 50 : 0;
-      return base * 100 + viewedOffset + Number(element.dataset.originalIndex || 0);
-    }
-
-    function ensureReadingPassageControls() {
-      readingPassages.forEach((passage) => {
-        const translationButton = passage.querySelector("[data-toggle-translation]");
-        if (!translationButton || passage.querySelector("[data-reading-mark-read]")) return;
-
-        translationButton.insertAdjacentHTML("afterend", `
-          <button class="topic-view-toggle reading-read-toggle" type="button" data-reading-mark-read="${passage.id}" aria-pressed="false">
-            <span class="topic-view-toggle-track" aria-hidden="true"><span class="topic-view-toggle-thumb"></span></span>
-            <span class="topic-view-toggle-text">Đánh dấu đã đọc</span>
-          </button>
-        `);
-      });
-    }
+    const readingProgressSummary = document.querySelector("[data-reading-progress-summary]");
+    const topicListEl = document.querySelector(".reading-topic-list");
+    const passageListEl = document.querySelector("[data-reading-passages]");
 
     function updateViewedCards() {
-      readingTopicCards.forEach((card) => {
-        const topicId = card.dataset.readingTopicLink;
-        const isViewed = viewedTopics.has(topicId);
-        const toggle = document.querySelector(`[data-reading-mark-read="${topicId}"]`);
-
+      document.querySelectorAll(".reading-topic-card").forEach((card) => {
+        const isViewed = viewedTopics.has(card.dataset.readingTopicLink);
         card.classList.toggle("is-viewed", isViewed);
-        toggle?.classList.toggle("is-on", isViewed);
-        if (toggle) {
-          toggle.setAttribute("aria-pressed", String(isViewed));
-          const text = toggle.querySelector(".topic-view-toggle-text");
-          if (text) text.textContent = isViewed ? "Đã đọc" : "Đánh dấu đã đọc";
+      });
+      document.querySelectorAll(".reading-passage").forEach((passage) => {
+        const isViewed = viewedTopics.has(passage.id);
+        passage.classList.toggle("is-viewed", isViewed);
+        const markBtn = passage.querySelector("[data-reading-mark-read]");
+        if (markBtn) {
+          markBtn.classList.toggle("is-active", isViewed);
+          markBtn.innerHTML = isViewed ? '<i class="ti-check"></i> Đã xem' : '<i class="ti-check"></i> Đánh dấu đã xem';
         }
       });
     }
@@ -571,30 +571,22 @@
       localStorage.setItem(viewedStorageKey, JSON.stringify([...viewedTopics]));
     }
 
-    function getReadingProgressSnapshot() {
-      const total = readingTopicCards.length;
-      const validTopicIds = new Set(readingTopicCards.map(card => card.dataset.readingTopicLink));
-      const viewedCount = Array.from(viewedTopics).filter(topicId => validTopicIds.has(topicId)).length;
-      const progress = total ? Math.round((viewedCount / total) * 100) : 0;
-
-      return {
-        total,
-        viewedCount,
-        progress,
-        remaining: Math.max(0, total - viewedCount)
-      };
-    }
-
     function updateReadingProgress() {
-      const snapshot = getReadingProgressSnapshot();
-      readingProgressScore.textContent = `${snapshot.progress}%`;
-      readingProgressBar.style.width = `${snapshot.progress}%`;
-      readingViewedCount.textContent = `${snapshot.viewedCount}/${snapshot.total}`;
-      readingCurrentLevel.textContent = activeReadingLevel.charAt(0).toUpperCase() + activeReadingLevel.slice(1);
-      readingRemaining.textContent = snapshot.remaining;
-      readingProgressSummary.textContent = snapshot.total
-        ? `Bạn đã tự đánh dấu ${snapshot.viewedCount}/${snapshot.total} bài đọc. Điểm tiến độ tính trực tiếp từ bài đã đọc.`
-        : "Chưa có dữ liệu bài đọc.";
+      const totalInApp = readingLessons.length;
+      const viewedCount = Array.from(viewedTopics).length;
+      const progress = totalInApp ? Math.round((viewedCount / totalInApp) * 100) : 0;
+      const remaining = Math.max(0, totalInApp - viewedCount);
+
+      if (readingProgressScore) readingProgressScore.textContent = `${progress}%`;
+      if (readingProgressBar) readingProgressBar.style.width = `${progress}%`;
+      if (readingViewedCount) readingViewedCount.textContent = `${viewedCount}/${totalInApp}`;
+      if (readingCurrentLevel) readingCurrentLevel.textContent = activeReadingLevel.charAt(0).toUpperCase() + activeReadingLevel.slice(1);
+      if (readingRemaining) readingRemaining.textContent = remaining;
+      if (readingProgressSummary) {
+        readingProgressSummary.textContent = totalInApp
+          ? `Bạn đã tự đánh dấu ${viewedCount}/${totalInApp} bài đọc. Chế độ lọc hiện tại: ${activeReadingLevel.toUpperCase()}.`
+          : "Chưa có dữ liệu bài đọc.";
+      }
     }
 
     function syncReadingModeTabs() {
@@ -612,22 +604,12 @@
       if (activeReadingMode === "progress") updateReadingProgress();
     }
 
-    function sortReadingItems() {
-      [...readingTopicCards]
-        .sort((a, b) => getReadingSortValue(a) - getReadingSortValue(b))
-        .forEach((card) => readingTopicList.appendChild(card));
-
-      [...readingPassages]
-        .sort((a, b) => getReadingSortValue(a, false) - getReadingSortValue(b, false))
-        .forEach((passage) => readingPassageList.appendChild(passage));
-    }
-
     function setActiveTopic(topicId, shouldScroll = false) {
       const target = document.getElementById(topicId);
       const card = document.querySelector(`[data-reading-topic-link="${topicId}"]`);
       if (!target || !card) return;
 
-      readingTopicCards.forEach((item) => item.classList.remove("is-active"));
+      document.querySelectorAll(".reading-topic-card").forEach((item) => item.classList.remove("is-active"));
       card.classList.add("is-active");
 
       if (shouldScroll) {
@@ -635,68 +617,67 @@
       }
     }
 
-    function syncReadingView(selectFirst = false) {
-      const query = readingSearch.value.trim().toLowerCase();
-      let firstVisibleTopicId = null;
-
-      sortReadingItems();
-
-      readingTopicCards.forEach((card) => {
-        const target = document.getElementById(card.dataset.readingTopicLink);
-        const searchableText = `${card.textContent} ${target?.textContent || ""}`.toLowerCase();
-        const isVisible = !query || searchableText.includes(query);
-        card.hidden = !isVisible;
-        if (isVisible && !firstVisibleTopicId) firstVisibleTopicId = card.dataset.readingTopicLink;
+    // Event delegation for Topic Cards
+    if (topicListEl) {
+      topicListEl.addEventListener("click", (e) => {
+        const card = e.target.closest(".reading-topic-card");
+        if (!card) return;
+        const topicId = card.dataset.readingTopicLink;
+        const isOpenBtn = e.target.closest("[data-reading-topic-open]");
+        setActiveTopic(topicId, !!isOpenBtn || e.target.tagName !== "BUTTON");
       });
-
-      readingPassages.forEach((passage) => {
-        const card = document.querySelector(`[data-reading-topic-link="${passage.id}"]`);
-        const searchableText = `${card?.textContent || ""} ${passage.textContent}`.toLowerCase();
-        const isVisible = !query || searchableText.includes(query);
-        passage.hidden = !isVisible;
-      });
-
-      const activeCard = document.querySelector(".reading-topic-card.is-active:not([hidden])");
-      if ((selectFirst || !activeCard) && firstVisibleTopicId) {
-        setActiveTopic(firstVisibleTopicId);
-      }
     }
 
+    // Event delegation for Passages (mark read, toggle translation, click sentence)
+    if (passageListEl) {
+      passageListEl.addEventListener("click", (e) => {
+        const markBtn = e.target.closest("[data-reading-mark-read]");
+        if (markBtn) {
+          const topicId = markBtn.dataset.readingMarkRead;
+          if (viewedTopics.has(topicId)) {
+            viewedTopics.delete(topicId);
+          } else {
+            viewedTopics.add(topicId);
+          }
+          saveViewedTopics();
+          updateViewedCards();
+          updateReadingProgress();
+          return;
+        }
+
+        const toggleBtn = e.target.closest("[data-toggle-translation]");
+        if (toggleBtn) {
+          const target = document.getElementById(toggleBtn.dataset.toggleTranslation);
+          if (!target) return;
+          const isHidden = target.classList.toggle("translations-muted");
+          target.querySelectorAll(".sentence-vi").forEach(el => el.classList.remove("is-revealed"));
+          toggleBtn.classList.toggle("is-showing", !isHidden);
+          toggleBtn.innerHTML = isHidden
+            ? '<i class="ti-eye"></i> Bật dịch'
+            : '<i class="ti-eye"></i> Tắt dịch';
+          return;
+        }
+
+        const sentenceVi = e.target.closest(".sentence-vi");
+        if (sentenceVi && sentenceVi.closest(".translations-muted")) {
+          sentenceVi.classList.toggle("is-revealed");
+        }
+      });
+    }
+
+    // Level Tab Switching with Lazy Dynamic Re-rendering
     readingLevelTabs.forEach((tab) => {
+      if (tab.dataset.readingLevelTab === activeReadingLevel) {
+        tab.classList.add("active");
+      } else {
+        tab.classList.remove("active");
+      }
       tab.addEventListener("click", () => {
         activeReadingLevel = tab.dataset.readingLevelTab;
+        localStorage.setItem(levelStorageKey, activeReadingLevel);
         readingLevelTabs.forEach((item) => item.classList.remove("active"));
         tab.classList.add("active");
-        syncReadingView(true);
-        updateReadingProgress();
-      });
-    });
-
-    readingTopicCards.forEach((card) => {
-      card.addEventListener("click", (event) => {
-        setActiveTopic(card.dataset.readingTopicLink, true);
-      });
-
-      card.querySelector("[data-reading-topic-open]")?.addEventListener("click", (event) => {
-        event.stopPropagation();
-        setActiveTopic(card.dataset.readingTopicLink, true);
-      });
-    });
-
-    ensureReadingPassageControls();
-
-    document.querySelectorAll("[data-reading-mark-read]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const topicId = button.dataset.readingMarkRead;
-        if (viewedTopics.has(topicId)) {
-          viewedTopics.delete(topicId);
-        } else {
-          viewedTopics.add(topicId);
-        }
-        saveViewedTopics();
-        updateViewedCards();
-        updateReadingProgress();
-        syncReadingView(false);
+        renderReadingLessons();
       });
     });
 
@@ -706,37 +687,13 @@
       });
     });
 
-    document.querySelectorAll("[data-toggle-translation]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const target = document.getElementById(button.dataset.toggleTranslation);
-        if (!target) return;
-        const isHidden = target.classList.toggle("translations-muted");
+    if (readingSearch) {
+      readingSearch.addEventListener("input", () => renderReadingLessons());
+    }
 
-        // Luôn dọn dẹp class is-revealed của các câu đơn lẻ khi bật/tắt toàn bộ
-        target.querySelectorAll(".sentence-vi").forEach(el => el.classList.remove("is-revealed"));
-
-        button.classList.toggle("is-showing", !isHidden);
-        button.innerHTML = isHidden
-          ? '<i class="ti-eye"></i> Bật dịch'
-          : '<i class="ti-eye"></i> Tắt dịch';
-      });
-    });
-
-    // Lắng nghe click trực tiếp trên từng câu dịch tiếng Việt
-    document.querySelectorAll(".sentence-vi").forEach((sentence) => {
-      sentence.addEventListener("click", () => {
-        // Chỉ cho phép click toggle khi toàn bộ bài đang ở chế độ che (translations-muted)
-        if (sentence.closest(".translations-muted")) {
-          sentence.classList.toggle("is-revealed");
-        }
-      });
-    });
-
-    readingSearch.addEventListener("input", () => syncReadingView(true));
-    updateViewedCards();
-    updateReadingProgress();
-    syncReadingView(true);
+    renderReadingLessons();
     setReadingMode(activeReadingMode);
+
     const initialReadingTopic = window.location.hash.replace("#", "");
     if (initialReadingTopic && document.getElementById(initialReadingTopic)) {
       setActiveTopic(initialReadingTopic, true);
@@ -744,4 +701,3 @@
   </script>
 </body>
 </html>
-
