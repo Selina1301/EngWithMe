@@ -19,13 +19,62 @@ async function initGrammarLearning() {
     const grammarQuestionRemaining = document.querySelector("[data-grammar-question-remaining]");
     const stateKey = getAccountKey("engWithMeGrammarPractice");
     const modeKey = getAccountKey("engWithMeGrammarMode");
+    const rewardedQuestionsKey = getAccountKey("engWithMeRewardedGrammarQuestions");
     let practiceState = getGrammarPracticeState(stateKey);
     let activeGrammarMode = localStorage.getItem(modeKey) === "progress" ? "progress" : "study";
     if (window.location.hash) activeGrammarMode = "study";
 
+    let rewardedQuestions = new Set(JSON.parse(localStorage.getItem(rewardedQuestionsKey) || "[]"));
+    Object.entries(practiceState).forEach(([tId, qIndices]) => {
+      if (Array.isArray(qIndices)) {
+        qIndices.forEach(idx => rewardedQuestions.add(`${tId}_${idx}`));
+      }
+    });
+
     const getTopic = (topicId) => grammarTopics.find((topic) => topic.id === topicId) || grammarTopics[0];
     const getSolvedQuestions = (topicId) => new Set(practiceState[topicId] || []);
-    const savePracticeState = () => localStorage.setItem(stateKey, JSON.stringify(practiceState));
+    const savePracticeState = () => {
+      localStorage.setItem(stateKey, JSON.stringify(practiceState));
+      localStorage.setItem(rewardedQuestionsKey, JSON.stringify([...rewardedQuestions]));
+
+      const userId = localStorage.getItem("engWithMeUserId");
+      if (userId) {
+        try {
+          const body = new FormData();
+          body.append("state_json", JSON.stringify(practiceState));
+          fetch("api/sync_grammar.php", {
+            method: "POST",
+            body,
+            credentials: "same-origin"
+          });
+        } catch (e) {}
+      }
+    };
+
+    // Restore grammar practice state from DB on init
+    const userIdForGrammarInit = localStorage.getItem("engWithMeUserId");
+    if (userIdForGrammarInit) {
+      fetch("api/sync_grammar.php", { credentials: "same-origin" })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (data && data.ok && data.state && typeof data.state === "object") {
+            Object.entries(data.state).forEach(([tId, qIndices]) => {
+              if (Array.isArray(qIndices)) {
+                const currentSet = new Set(practiceState[tId] || []);
+                qIndices.forEach(idx => {
+                  currentSet.add(idx);
+                  rewardedQuestions.add(`${tId}_${idx}`);
+                });
+                practiceState[tId] = Array.from(currentSet).sort((a, b) => a - b);
+              }
+            });
+            localStorage.setItem(stateKey, JSON.stringify(practiceState));
+            localStorage.setItem(rewardedQuestionsKey, JSON.stringify([...rewardedQuestions]));
+            updateGrammarProgress();
+          }
+        })
+        .catch(() => {});
+    }
 
     const tenseProTips = [
       "Với chủ ngữ số ít (He/She/It/Danh từ số ít), thêm -s hoặc -es vào động từ. Khi đã dùng trợ động từ do/does trong câu phủ định và nghi vấn, động từ chính giữ nguyên mẫu.",
@@ -378,11 +427,16 @@ async function initGrammarLearning() {
         const solved = getSolvedQuestions(topic.id);
         solved.add(questionIndex);
         practiceState[topic.id] = Array.from(solved).sort((a, b) => a - b);
-        savePracticeState();
 
-        if (typeof addXP === "function") {
-          addXP(1, "Ngữ pháp tiếng Anh");
+        const qKey = `${topic.id}_${questionIndex}`;
+        if (!rewardedQuestions.has(qKey)) {
+          rewardedQuestions.add(qKey);
+          if (typeof addXP === "function") {
+            addXP(3, "Làm đúng câu hỏi Ngữ pháp");
+          }
         }
+
+        savePracticeState();
 
         question.classList.add("is-correct");
         question.querySelectorAll("[data-grammar-option]").forEach((button) => {

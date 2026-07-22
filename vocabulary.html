@@ -203,9 +203,14 @@
 
     <section class="quick-quiz-section" data-vocab-quiz-section>
       <div class="vocab-container">
-        <div class="section-heading">
-          <h2>Fast question</h2>
-          <p class="quiz-note">Chọn nghĩa đúng. Sau khi trả lời, câu mới sẽ tự đổi sau 5 giây.</p>
+        <div class="section-heading" style="max-width: 100%; width: 100%; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h2>Fast question</h2>
+            <p class="quiz-note">Chọn nghĩa đúng. Sau khi trả lời, câu mới sẽ tự đổi sau 5 giây.</p>
+          </div>
+          <div class="fast-question-streak-badge" data-fast-streak-badge style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 99px; background: rgba(249, 115, 22, 0.15); border: 1px solid rgba(249, 115, 22, 0.35); color: #f97316; font-weight: 800; font-size: 0.95rem; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2); margin-top: 4px;">
+            <span style="font-size: 1.1rem; color: #f97316;">⚡</span> <span data-fast-streak-text>Streak: 0 (+2 XP)</span>
+          </div>
         </div>
 
         <div class="mini-quiz" data-vocab-quiz>
@@ -233,6 +238,7 @@
   </main>
 
   <script src="js/core.js?v=1.0.2"></script>
+  <script src="js/level-system.js"></script>
   <script src="js/demo-actions.js"></script>
   <script src="js/vocabulary/easy.js"></script>
   <script src="js/vocabulary/medium.js"></script>

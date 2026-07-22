@@ -71,10 +71,69 @@
     };
   }
 
+  function recalculateMinimumXPFromProgress() {
+    try {
+      const accountKeyFn = typeof global.getAccountKey === "function" ? global.getAccountKey : (k) => {
+        const uid = localStorage.getItem("engWithMeUserId") || localStorage.getItem("user_id");
+        return uid ? `${k}_user_${uid}` : `${k}_guest`;
+      };
+
+      // 1. Vocab mastered words (+3 XP each)
+      const savedVocab = JSON.parse(
+        localStorage.getItem(accountKeyFn("engWithMeSavedVocabularyWords")) ||
+        localStorage.getItem("engWithMeSavedVocabularyWords") || "[]"
+      );
+      const vocabCount = Array.isArray(savedVocab) ? savedVocab.length : 0;
+
+      // 2. Reading completed passages (+10 XP each)
+      const readingTopics = JSON.parse(
+        localStorage.getItem(accountKeyFn("engWithMeViewedReadingTopics")) ||
+        localStorage.getItem("engWithMeViewedReadingTopics") ||
+        localStorage.getItem(accountKeyFn("engWithMeReadingViewedTopics")) ||
+        localStorage.getItem("engWithMeReadingViewedTopics") ||
+        localStorage.getItem(accountKeyFn("engWithMeReadingProgress")) ||
+        localStorage.getItem("engWithMeReadingProgress") || "[]"
+      );
+      const readingCount = Array.isArray(readingTopics) ? readingTopics.length : 0;
+
+      // 3. Listening completed missions (+5 XP each)
+      const listeningTopics = JSON.parse(
+        localStorage.getItem(accountKeyFn("engWithMeListeningProgress")) ||
+        localStorage.getItem("engWithMeListeningProgress") || "[]"
+      );
+      const listeningCount = Array.isArray(listeningTopics) ? listeningTopics.length : 0;
+
+      // 4. Grammar solved questions (+3 XP each)
+      const grammarState = JSON.parse(
+        localStorage.getItem(accountKeyFn("engWithMeGrammarPracticeState")) ||
+        localStorage.getItem("engWithMeGrammarPracticeState") ||
+        localStorage.getItem(accountKeyFn("engWithMeGrammarPractice")) ||
+        localStorage.getItem("engWithMeGrammarPractice") || "{}"
+      );
+      let grammarCount = 0;
+      if (grammarState && typeof grammarState === "object") {
+        Object.values(grammarState).forEach(arr => {
+          if (Array.isArray(arr)) grammarCount += arr.length;
+        });
+      }
+
+      return (vocabCount * 3) + (readingCount * 10) + (listeningCount * 5) + (grammarCount * 3);
+    } catch (e) {
+      return 0;
+    }
+  }
+
   function getUserTotalXP() {
     const key = getAccountStorageKey("engWithMeUserXP");
     const val = localStorage.getItem(key);
-    return Math.max(0, Math.floor(Number(val) || 0));
+    const storedXp = Math.max(0, Math.floor(Number(val) || 0));
+    const minXp = recalculateMinimumXPFromProgress();
+    const finalXp = Math.max(storedXp, minXp);
+    if (finalXp > storedXp) {
+      localStorage.setItem(key, String(finalXp));
+      syncXpToServer(finalXp);
+    }
+    return finalXp;
   }
 
   function getUserLevelInfo() {
@@ -269,7 +328,12 @@
         .then(data => {
           if (data && data.ok && typeof data.total_xp === "number") {
             const key = getAccountStorageKey("engWithMeUserXP");
-            localStorage.setItem(key, String(data.total_xp));
+            const localXp = getUserTotalXP();
+            const maxXp = Math.max(localXp, data.total_xp);
+            localStorage.setItem(key, String(maxXp));
+            if (maxXp > data.total_xp) {
+              syncXpToServer(maxXp);
+            }
             updateLevelUI();
           }
         })

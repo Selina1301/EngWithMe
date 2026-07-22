@@ -49,6 +49,7 @@
   const modeStorageKey = getAccountKey("engWithMeVocabMode");
   const savedStorageKey = getAccountKey("engWithMeSavedVocabularyWords");
   const quizStatsKey = getAccountKey("engWithMeVocabQuizStats");
+  const fastStreakKey = getAccountKey("engWithMeFastStreak");
   const activityStorageKey = getAccountKey("engWithMeVocabActivityDays");
   let activeLevel = vocabularyData[initialLevel] ? initialLevel : "easy";
   let activeMode = ["study", "progress", "my-vocab"].includes(localStorage.getItem(modeStorageKey)) ? localStorage.getItem(modeStorageKey) : "study";
@@ -57,6 +58,7 @@
   let savedWords = new Set(savedWordRecords.keys());
   const quizStats = normalizeQuizStats(readLocalObject(quizStatsKey));
   let quizTimer = null;
+  let fastQuestionStreak = Math.max(0, parseInt(localStorage.getItem(fastStreakKey) || "0", 10));
 
   function normalizeQuizStats(value) {
     if (!value || typeof value !== "object") {
@@ -179,6 +181,7 @@
 
   function saveQuizStats() {
     localStorage.setItem(quizStatsKey, JSON.stringify(quizStats));
+    localStorage.setItem(fastStreakKey, String(fastQuestionStreak));
 
     const userId = localStorage.getItem("engWithMeUserId");
     if (userId) {
@@ -186,6 +189,7 @@
         const body = new FormData();
         body.append("correct", quizStats.correct || 0);
         body.append("total", quizStats.total || 0);
+        body.append("fast_streak", fastQuestionStreak || 0);
         body.append("wrong_words", JSON.stringify(quizStats.wrongWords || {}));
         body.append("activity_day", todayKey());
         fetch("api/sync_quiz.php", {
@@ -202,6 +206,26 @@
         console.error("Failed to sync quiz stats to database:", e);
       }
     }
+  }
+
+  // Sync quiz stats & fast streak from server DB on init
+  const userIdForInit = localStorage.getItem("engWithMeUserId");
+  if (userIdForInit) {
+    fetch("api/sync_quiz.php", { credentials: "same-origin" })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && data.ok && data.stats) {
+          if (typeof data.stats.fastStreak === "number") {
+            fastQuestionStreak = Math.max(fastQuestionStreak, data.stats.fastStreak);
+            localStorage.setItem(fastStreakKey, String(fastQuestionStreak));
+            const streakTextEl = document.querySelector("[data-fast-streak-text]");
+            if (streakTextEl) {
+              streakTextEl.textContent = `Streak: ${fastQuestionStreak} (+2 XP)`;
+            }
+          }
+        }
+      })
+      .catch(() => {});
   }
 
   function updateSavedCount() {
@@ -757,6 +781,11 @@
       quizTimer = null;
     }
 
+    const streakTextEl = document.querySelector("[data-fast-streak-text]");
+    if (streakTextEl) {
+      streakTextEl.textContent = `Streak: ${fastQuestionStreak} (+2 XP)`;
+    }
+
     const correctWord = allQuizWords[Math.floor(Math.random() * allQuizWords.length)];
     const wrongPool = allQuizWords.filter(item => item.meaning !== correctWord.meaning);
     const wrongAnswers = shuffle(wrongPool).slice(0, 3).map(item => item.meaning);
@@ -794,9 +823,21 @@
         quizStats.total += 1;
         if (isCorrect) {
           quizStats.correct += 1;
+          fastQuestionStreak += 1;
+          const addXpFn = typeof addXP === "function" ? addXP : (window.LevelSystem && window.LevelSystem.addXP);
+          if (typeof addXpFn === "function") {
+            addXpFn(2, "Trả lời đúng Fast Question");
+          }
         } else {
           quizStats.wrongWords[correctWord.word] = (quizStats.wrongWords[correctWord.word] || 0) + 1;
+          fastQuestionStreak = 0;
         }
+
+        const streakTextEl = document.querySelector("[data-fast-streak-text]");
+        if (streakTextEl) {
+          streakTextEl.textContent = `Streak: ${fastQuestionStreak} (+2 XP)`;
+        }
+
         saveQuizStats();
         recordVocabActivity();
         updateProgressView();

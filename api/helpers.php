@@ -410,3 +410,30 @@ function ensure_user_level_table(): void
         error_log("Failed to ensure user_levels table: " . $e->getMessage());
     }
 }
+
+/**
+ * Đảm bảo bảng user_vocab_quiz_stats lưu trữ điểm quiz & streak fast question
+ */
+function ensure_vocab_quiz_tables(): void
+{
+    try {
+        $pdo = db();
+        $pdo->exec(
+            'CREATE TABLE IF NOT EXISTS user_vocab_quiz_stats (
+                user_id INT PRIMARY KEY,
+                correct_count INT NOT NULL DEFAULT 0,
+                total_count INT NOT NULL DEFAULT 0,
+                fast_streak INT NOT NULL DEFAULT 0,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4'
+        );
+
+        try {
+            $pdo->exec('ALTER TABLE user_vocab_quiz_stats ADD COLUMN fast_streak INT NOT NULL DEFAULT 0');
+        } catch (\Throwable $e) {
+            // Column already exists
+        }
+    } catch (\Throwable $e) {
+        error_log("Failed to ensure user_vocab_quiz_stats table: " . $e->getMessage());
+    }
+}

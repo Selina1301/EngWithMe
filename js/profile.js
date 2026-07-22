@@ -389,7 +389,7 @@ function renderDashboardProgressUI() {
   const vocabTotal = 468;
   const vocabPercent = Math.min(100, Math.round((vocabCount / vocabTotal) * 100));
 
-  // 2. Listening (Total: 78 sessions)
+  // 2. Listening (Total: 100 sessions = 78 Topic + 22 TOEIC)
   let listeningCount = 0;
   try {
     const rawState = localStorage.getItem(accountKeyFn("engWithMeListeningLabState")) || 
@@ -412,8 +412,17 @@ function renderDashboardProgressUI() {
         listeningCount = Math.max(listeningCount, list.length);
       }
     }
+    const rawExam = localStorage.getItem(accountKeyFn("engWithMeExamProgress")) || 
+                    localStorage.getItem("engWithMeExamProgress");
+    if (rawExam) {
+      const examList = JSON.parse(rawExam);
+      if (Array.isArray(examList)) {
+        const toeicCount = new Set(examList.filter((id) => String(id).includes("exam"))).size;
+        listeningCount += toeicCount;
+      }
+    }
   } catch (e) {}
-  const listeningTotal = 78;
+  const listeningTotal = 100; // 78 Topic + 22 TOEIC
   const listeningPercent = Math.min(100, Math.round((listeningCount / listeningTotal) * 100));
 
   // 3. Reading (Total: 22 passages)

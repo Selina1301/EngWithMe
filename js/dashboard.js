@@ -6,6 +6,12 @@ function updateDashboardProgressDisplay(progress) {
   });
 }
 
+function renderDashboardProgressUI() {
+  if (typeof LevelSystem !== "undefined") {
+    LevelSystem.updateLevelUI();
+  }
+}
+
 async function initDashboard() {
   if (typeof renderDashboardProgressUI === "function") {
     renderDashboardProgressUI();

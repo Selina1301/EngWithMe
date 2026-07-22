@@ -594,11 +594,20 @@
     function renderDashboard() {
       els.goalChips.forEach((chip) => chip.classList.toggle("active", chip.dataset.goal === state.goal));
 
-      // Calculate REAL user metrics from state & API sync
+      // Calculate REAL user metrics from state & API sync (78 Topic + 22 TOEIC = 100 Total)
+      let toeicCompletedCount = 0;
+      try {
+        const accountKeyFn = typeof getAccountKey === "function" ? getAccountKey : (k) => k;
+        const examProg = JSON.parse(localStorage.getItem(accountKeyFn("engWithMeExamProgress")) || "[]");
+        if (Array.isArray(examProg)) {
+          toeicCompletedCount = new Set(examProg.filter((id) => String(id).includes("exam"))).size;
+        }
+      } catch (e) {}
+
       const validCompletedMissions = missions.filter((m) => (state.scores[m.id] || (state.completed.includes(m.id) ? 85 : 0)) >= 70);
-      const totalCompletedCount = validCompletedMissions.length;
-      const totalMissionsCount = missions.length || 78;
-      const completionPercentage = Math.round((totalCompletedCount / totalMissionsCount) * 100);
+      const totalCompletedCount = validCompletedMissions.length + toeicCompletedCount;
+      const totalMissionsCount = 100; // 78 Topic + 22 TOEIC
+      const completionPercentage = Math.min(100, Math.round((totalCompletedCount / totalMissionsCount) * 100));
 
       // Real average score computed dynamically from state & database records
       const scoredMissions = missions.filter((m) => typeof state.scores[m.id] === "number" && state.scores[m.id] > 0);

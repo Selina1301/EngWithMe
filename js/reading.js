@@ -3,10 +3,25 @@
   const modeStorageKey = "engWithMeReadingViewMode";
   const viewedStorageKey = "engWithMeViewedReadingTopics";
 
+  const getAccountKey = (baseKey) => {
+    if (typeof window.getAccountKey === "function") {
+      return window.getAccountKey(baseKey);
+    }
+    try {
+      const userId = localStorage.getItem("engWithMeUserId") || localStorage.getItem("user_id");
+      return userId ? `${baseKey}_user_${userId}` : `${baseKey}_guest`;
+    } catch (e) {
+      return baseKey;
+    }
+  };
+
+  const rewardedReadingKey = getAccountKey("engWithMeRewardedReadingTopics");
   let readingLessons = window.READING_LESSONS_FALLBACK || [];
   let activeReadingLevel = localStorage.getItem(levelStorageKey) || "easy";
   let activeReadingMode = localStorage.getItem(modeStorageKey) || "study";
   let viewedTopics = new Set(JSON.parse(localStorage.getItem(viewedStorageKey) || "[]"));
+  let rewardedReadingTopics = new Set(JSON.parse(localStorage.getItem(rewardedReadingKey) || "[]"));
+  viewedTopics.forEach(id => rewardedReadingTopics.add(id));
 
   const readingStudyView = document.querySelector("[data-reading-study-view]");
   const readingProgressView = document.querySelector("[data-reading-progress-view]");
@@ -262,8 +277,12 @@
             viewedTopics.delete(topicId);
           } else {
             viewedTopics.add(topicId);
-            if (typeof addXP === "function") {
-              addXP(5, "Đọc hiểu bài đọc");
+            if (!rewardedReadingTopics.has(topicId)) {
+              rewardedReadingTopics.add(topicId);
+              localStorage.setItem(rewardedReadingKey, JSON.stringify([...rewardedReadingTopics]));
+              if (typeof addXP === "function") {
+                addXP(10, "Hoàn thành bài đọc");
+              }
             }
           }
           saveViewedTopics();

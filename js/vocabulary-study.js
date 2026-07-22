@@ -73,6 +73,7 @@ function initVocabularyStudy() {
   let isStudySettingsOpen = false;
   let isModesSettingsOpen = false;
   let lastSpokenKey = "";
+  let studySessionPoints = 0;
 
   let confirmMasteredWordKey = null;
   let activeReportWord = null;
@@ -135,8 +136,11 @@ function initVocabularyStudy() {
   window.addEventListener("keydown", handleGlobalKeydown);
 
   const getSavedWordsKey = () => getAccountKey("engWithMeSavedVocabularyWords");
+  const getRewardedWordsKey = () => getAccountKey("engWithMeRewardedVocabWords");
   let savedWordRecords = normalizeSavedWordRecords(readLocalArray(getSavedWordsKey()));
   let savedWords = new Set(savedWordRecords.keys());
+  let rewardedWords = new Set(readLocalArray(getRewardedWordsKey()));
+  savedWords.forEach(key => rewardedWords.add(key));
   let activeLevelPickerWordKey = null;
 
   const getTopic = () => vocabularyData[activeLevel]?.topics.find(topic => topic.id === currentTopicId);
@@ -177,7 +181,26 @@ function initVocabularyStudy() {
   const reloadSavedWordsFromStorage = () => {
     savedWordRecords = normalizeSavedWordRecords(readLocalArray(getSavedWordsKey()));
     savedWords = new Set(savedWordRecords.keys());
+    savedWords.forEach(key => rewardedWords.add(key));
   };
+
+  // Sync mastered words history from Database on init
+  const userIdForVocabInit = localStorage.getItem("engWithMeUserId");
+  if (userIdForVocabInit) {
+    fetch("api/sync_vocab.php", { credentials: "same-origin" })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && data.ok && Array.isArray(data.saved)) {
+          data.saved.forEach(item => {
+            if (item && item.key) {
+              rewardedWords.add(item.key);
+            }
+          });
+          saveArray(getRewardedWordsKey(), rewardedWords);
+        }
+      })
+      .catch(() => {});
+  }
 
   let currentTopicLeaderboard = null;
   let cannonLeaderboardSubmitted = false;
@@ -873,7 +896,7 @@ function initVocabularyStudy() {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="fill: #f97316;">
                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
               </svg>
-              <span class="study-points-add" style="color: #f97316; font-weight: 800;">+0</span>
+              <span class="study-points-add" style="color: #f97316; font-weight: 800; display: inline-block; transition: transform 0.2s, color 0.2s;">+${studySessionPoints}</span>
               <span class="study-progress-text" style="color: #94a3b8; font-weight: 500; margin-left: 2px;">${counts.learned}/${topic.words.length} từ</span>
             </div>
           </div>
@@ -2531,6 +2554,22 @@ function initVocabularyStudy() {
       });
     });
 
+    function handleMasteredWordReward(wordKey, amount = 3, reason = "Đã thuộc từ vựng") {
+      if (!wordKey) return false;
+      if (rewardedWords.has(wordKey) || savedWords.has(wordKey)) {
+        rewardedWords.add(wordKey);
+        saveArray(getRewardedWordsKey(), rewardedWords);
+        return false;
+      }
+      rewardedWords.add(wordKey);
+      saveArray(getRewardedWordsKey(), rewardedWords);
+      studySessionPoints += amount;
+      if (typeof addXP === "function") {
+        addXP(amount, reason);
+      }
+      return true;
+    }
+
     root.querySelectorAll("[data-select-level]").forEach(button => {
       button.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -2538,6 +2577,7 @@ function initVocabularyStudy() {
         const wordKey = button.dataset.levelWordKey;
         if (!wordKey || !lvl) return;
 
+        handleMasteredWordReward(wordKey, 3, "Lưu từ vựng thành thạo");
         savedWords.add(wordKey);
         savedWordRecords.set(wordKey, {
           key: wordKey,
@@ -2545,9 +2585,6 @@ function initVocabularyStudy() {
         });
         saveSavedWords("save", wordKey, lvl);
         activeLevelPickerWordKey = null;
-        if (typeof addXP === "function") {
-          addXP(1, "Lưu từ vựng");
-        }
         render();
       });
     });
@@ -2575,6 +2612,7 @@ function initVocabularyStudy() {
       if (confirmMasteredWordKey) {
         const wordKey = confirmMasteredWordKey;
         const wordText = wordKey.split("-").pop();
+        handleMasteredWordReward(wordKey, 3, "Đã thuộc từ vựng");
         savedWords.add(wordKey);
         savedWordRecords.set(wordKey, {
           key: wordKey,
@@ -2741,7 +2779,9 @@ function initVocabularyStudy() {
         if (isAnswered) return;
         const card = button.closest(".study-card");
         const input = card?.querySelector("[data-type-answer]");
-        const item = activeWords[currentWordIndex];
+        const activeWords = currentWorkspaceMode === "study" ? getStudyWords(topic) : topic.words;
+        const item = activeWords[currentWordIndex] || topic.words[currentWordIndex] || topic.words[0];
+        if (!item) return;
         const isCorrect = input?.value.trim().toLowerCase() === item.word.toLowerCase();
 
         isAnswered = true;
@@ -2877,10 +2917,14 @@ function initVocabularyStudy() {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         const lvl = btn.dataset.classify;
-        const item = activeWords[currentWordIndex];
-        const wordKey = getWordKey(topic, item);
-        savedWordRecords.set(wordKey, { key: wordKey, studyLevel: lvl });
-        saveSavedWords("save", wordKey, lvl);
+        const activeWords = currentWorkspaceMode === "study" ? getStudyWords(topic) : topic.words;
+        const item = activeWords[currentWordIndex] || topic.words[currentWordIndex] || topic.words[0];
+        if (item) {
+          const wordKey = getWordKey(topic, item);
+          handleMasteredWordReward(wordKey, 3, "Đã thuộc từ vựng");
+          savedWordRecords.set(wordKey, { key: wordKey, studyLevel: lvl });
+          saveSavedWords("save", wordKey, lvl);
+        }
         nextWord(topic);
       });
     });
@@ -2910,7 +2954,9 @@ function initVocabularyStudy() {
         return;
       }
       
-      const item = activeWords[currentWordIndex];
+      const activeWords = currentWorkspaceMode === "study" ? getStudyWords(topic) : topic.words;
+      const item = activeWords[currentWordIndex] || topic.words[currentWordIndex] || topic.words[0];
+      if (!item) return;
       const micBtn = root.querySelector("[data-start-speech]");
       const resText = root.querySelector("[data-speech-result]");
       

@@ -5,6 +5,8 @@ require_once __DIR__ . '/helpers.php';
 
 start_app_session();
 
+ensure_vocab_quiz_tables();
+
 $user = require_current_user();
 $userId = (int) $user['id'];
 $pdo = db();
@@ -41,12 +43,13 @@ function normalize_wrong_words(array $input): array
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        $stmt = $pdo->prepare('SELECT correct_count, total_count FROM user_vocab_quiz_stats WHERE user_id = ?');
+        $stmt = $pdo->prepare('SELECT correct_count, total_count, fast_streak FROM user_vocab_quiz_stats WHERE user_id = ?');
         $stmt->execute([$userId]);
         $stats = $stmt->fetch();
 
         $correct = $stats ? (int) $stats['correct_count'] : 0;
         $total = $stats ? (int) $stats['total_count'] : 0;
+        $fastStreak = $stats ? (int) ($stats['fast_streak'] ?? 0) : 0;
 
         $stmt = $pdo->prepare('SELECT word_key, wrong_count FROM user_vocab_wrong_words WHERE user_id = ?');
         $stmt->execute([$userId]);
@@ -73,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             'stats' => [
                 'correct' => $correct,
                 'total' => $total,
+                'fastStreak' => $fastStreak,
                 'wrongWords' => $wrongWords,
                 'activityDays' => $activityDays
             ]
@@ -85,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $correct = max(0, (int) ($_POST['correct'] ?? 0));
     $total = max(0, (int) ($_POST['total'] ?? 0));
+    $fastStreak = max(0, (int) ($_POST['fast_streak'] ?? 0));
     if ($correct > $total) {
         $correct = $total;
     }
@@ -105,8 +110,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $pdo->beginTransaction();
 
-        $stmt = $pdo->prepare('INSERT INTO user_vocab_quiz_stats (user_id, correct_count, total_count) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE correct_count = VALUES(correct_count), total_count = VALUES(total_count)');
-        $stmt->execute([$userId, $correct, $total]);
+        $stmt = $pdo->prepare('INSERT INTO user_vocab_quiz_stats (user_id, correct_count, total_count, fast_streak) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE correct_count = VALUES(correct_count), total_count = VALUES(total_count), fast_streak = VALUES(fast_streak)');
+        $stmt->execute([$userId, $correct, $total, $fastStreak]);
 
         $stmt = $pdo->prepare('DELETE FROM user_vocab_wrong_words WHERE user_id = ?');
         $stmt->execute([$userId]);
