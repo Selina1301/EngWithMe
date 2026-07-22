@@ -172,7 +172,9 @@
   }
 
   function saveViewedTopics() {
-    localStorage.setItem(viewedStorageKey, JSON.stringify([...viewedTopics]));
+    const list = [...viewedTopics];
+    localStorage.setItem(viewedStorageKey, JSON.stringify(list));
+    localStorage.setItem("engWithMeReadingProgress", JSON.stringify(list));
   }
 
   function updateReadingProgress() {
@@ -260,6 +262,9 @@
             viewedTopics.delete(topicId);
           } else {
             viewedTopics.add(topicId);
+            if (typeof addXP === "function") {
+              addXP(5, "Đọc hiểu bài đọc");
+            }
           }
           saveViewedTopics();
           updateViewedCards();

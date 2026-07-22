@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hồ sơ cá nhân - EngWithMe</title>
+  <title>Hồ sơ cá nhân & Cài đặt tài khoản - EngWithMe</title>
   <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
   <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/pages/profile.css">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
@@ -14,158 +15,346 @@
   <header class="site-header">
     <a class="brand" href="index.html">EngWithMe</a>
     <nav class="nav-links" aria-label="Menu học viên">
-        <a href="index.html">Home</a>
-        <a href="vocabulary.html">Vocabulary</a>
-        <a href="listening.html">Listening</a>
-        <a href="reading.html">Reading</a>
-        <a href="grammar.html">Grammar</a>
-        <a href="quiz.html">Exam</a>
-        <a href="blog.html">Blog</a>
-        <a href="pricing.html">Premium</a>
-      </nav>
+      <a href="index.html">Home</a>
+      <a href="vocabulary.html">Vocabulary</a>
+      <a href="listening.html">Listening</a>
+      <a href="reading.html">Reading</a>
+      <a href="grammar.html">Grammar</a>
+      <a href="quiz.html">Exam</a>
+      <a href="blog.html">Blog</a>
+      <a href="pricing.html">Premium</a>
+    </nav>
     <div class="nav-actions"></div>
   </header>
 
   <main class="page-main">
-    <section class="page-title">
-      <p class="eyebrow">Profile</p>
-      <h1>Hồ sơ cá nhân</h1>
-      <p>Thông tin tài khoản, ảnh đại diện, trình độ hiện tại và mục tiêu học tập của bạn.</p>
-    </section>
-
-    <section class="section compact">
+    <section class="section compact" style="padding-top: 24px;">
       <div class="profile-layout">
+        <!-- Sidebar Profile Summary -->
         <aside class="profile-summary">
-          <span class="profile-avatar" data-profile-avatar>U</span>
+          <button type="button" class="profile-corner-edit-btn" data-tab-target="info" title="Chỉnh sửa hồ sơ cá nhân">
+            <span class="ti-pencil"></span>
+          </button>
+
+          <div class="profile-avatar-wrapper">
+            <span class="profile-avatar" data-profile-avatar>U</span>
+          </div>
           <h2 data-profile-name>Đang tải...</h2>
-          <p data-profile-email></p>
+          <p data-profile-email class="profile-email-line"></p>
+
           <div class="profile-summary-grid">
             <span>Vai trò <strong data-profile-role>Học viên</strong></span>
-            <span>Trình độ <strong data-profile-level>A1</strong></span>
+            <span>Giới tính <strong data-profile-gender>Nam</strong></span>
+            <span>Cấp độ <strong data-profile-user-level style="color: #00f0ff; font-weight: 800;">LV 1</strong></span>
             <span>Trạng thái <strong data-profile-status>Đang hoạt động</strong></span>
             <span>Mục tiêu <strong data-profile-goal>Chưa đặt</strong></span>
           </div>
-        </aside>
 
-        <form class="auth-card profile-card profile-form" data-profile-form enctype="multipart/form-data">
-          <div class="auth-card-heading">
-            <span class="auth-icon ti-pencil"></span>
-            <div>
-              <p class="eyebrow">Account details</p>
-              <h2>Cập nhật hồ sơ</h2>
+          <div style="margin-top: 10px; text-align: center;">
+            <span data-user-title style="display: inline-block; padding: 6px 14px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,215,0,0.3); border-radius: 99px; font-size: 0.85rem; font-weight: 900; letter-spacing: 0.5px;">🥉 Học Viên Tập Sự</span>
+          </div>
+
+          <div class="user-level-xp-panel" style="margin-top: 12px; padding: 10px 14px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 700; color: #cbd5e1; margin-bottom: 6px;">
+              <span>✨ Kinh nghiệm</span>
+              <strong data-level-xp-text style="color: #00f0ff;">0/10 XP</strong>
+            </div>
+            <div style="height: 6px; background: rgba(255, 255, 255, 0.08); border-radius: 99px; overflow: hidden;">
+              <div data-level-xp-fill style="height: 100%; width: 0%; background: linear-gradient(90deg, #00f0ff, #3b82f6); border-radius: 99px; transition: width 0.4s ease;"></div>
             </div>
           </div>
 
-          <div class="avatar-upload-panel">
-            <span class="profile-avatar is-large" data-profile-form-avatar>U</span>
-            <label class="avatar-upload-control">Ảnh đại diện
-              <input type="file" name="avatar" accept="image/png,image/jpeg,image/webp,image/gif" data-avatar-input>
-              <small>JPG, PNG, WEBP hoặc GIF. Tối đa 2MB.</small>
-            </label>
+          <div class="profile-bio-box" style="margin-top: 12px;">
+            <span class="ti-quote-left"></span> <span data-profile-bio-text>Sẵn sàng chinh phục tiếng Anh!</span>
           </div>
 
-          <label>Họ tên
-            <input type="text" name="name" autocomplete="name" required>
-          </label>
-          <label>Email
-            <input type="email" name="email" autocomplete="email" readonly>
-          </label>
-          <div class="form-grid two">
-            <label>Trình độ hiện tại
-              <select name="level">
-                <option>A1</option>
-                <option>A2</option>
-                <option>B1</option>
-                <option>B2</option>
-                <option>C1</option>
-              </select>
-            </label>
-            <label>Mục tiêu học
-              <input type="text" name="goal" placeholder="Ví dụ: Giao tiếp hằng ngày">
-            </label>
+          <!-- Navigation Tabs -->
+          <div class="profile-tabs-nav">
+            <button type="button" class="profile-tab-btn active" data-tab-target="info">
+              <span class="ti-user"></span> Thông tin cá nhân
+            </button>
+            <button type="button" class="profile-tab-btn" data-tab-target="security">
+              <span class="ti-lock"></span> Bảo mật & Đổi mật khẩu
+            </button>
+          </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="profile-content-area">
+          <!-- TAB 1: Thông tin cá nhân -->
+          <div class="profile-tab-content active" id="tab-info">
+            <form class="auth-card profile-card profile-form" data-profile-form enctype="multipart/form-data">
+              <div class="auth-card-heading">
+                <span class="auth-icon ti-id-badge"></span>
+                <div>
+                  <p class="eyebrow">Personal Information</p>
+                  <h2>Chỉnh sửa thông tin cá nhân</h2>
+                </div>
+              </div>
+
+              <!-- Avatar Upload Container -->
+              <div class="avatar-upload-panel">
+                <div class="avatar-preview-box">
+                  <span class="profile-avatar is-large" data-profile-form-avatar>U</span>
+                  <label class="avatar-camera-btn" title="Đổi ảnh đại diện">
+                    <span class="ti-camera"></span>
+                    <input type="file" name="avatar" accept="image/png,image/jpeg,image/webp,image/gif" data-avatar-input style="display: none;">
+                  </label>
+                </div>
+                <div class="avatar-upload-control">
+                  <label class="btn btn-light avatar-select-btn">
+                    <span class="ti-cloud-up"></span> Tải ảnh đại diện mới
+                    <input type="file" name="avatar_button" accept="image/png,image/jpeg,image/webp,image/gif" data-avatar-input-btn style="display: none;">
+                  </label>
+                  <small>Định dạng: JPG, PNG, WEBP hoặc GIF. Kích thước tối đa 2MB.</small>
+                </div>
+              </div>
+
+              <!-- Form Inputs Grid -->
+              <div class="form-grid two">
+                <label>Họ và tên
+                  <input type="text" name="name" autocomplete="name" placeholder="Nhập họ và tên đầy đủ" required>
+                </label>
+                <label>Địa chỉ Email (Cố định)
+                  <div class="input-with-badge">
+                    <input type="email" name="email" autocomplete="email" readonly disabled title="Email Gmail là định danh tài khoản quan trọng và không thể thay đổi">
+                    <span class="badge-verified"><span class="ti-lock"></span> Cố định</span>
+                  </div>
+                </label>
+              </div>
+
+              <div class="form-grid three">
+                <label>Giới tính
+                  <select name="gender">
+                    <option value="male">👨 Nam</option>
+                    <option value="female">👩 Nữ</option>
+                    <option value="other">🌈 Khác / Khóa riêng tư</option>
+                  </select>
+                </label>
+                <label>Số điện thoại
+                  <input type="tel" name="phone" placeholder="Ví dụ: 0912345678">
+                </label>
+                <label>Trình độ tiếng Anh
+                  <select name="level">
+                    <option value="A1">A1 - Mới bắt đầu (Beginner)</option>
+                    <option value="A2">A2 - Sơ cấp (Elementary)</option>
+                    <option value="B1">B1 - Trung cấp (Intermediate)</option>
+                    <option value="B2">B2 - Trung cao cấp (Upper-Int)</option>
+                    <option value="C1">C1 - Cao cấp (Advanced)</option>
+                  </select>
+                </label>
+              </div>
+
+              <!-- Learning Goal Section -->
+              <div class="form-group">
+                <label>Mục tiêu học tập cá nhân
+                  <input type="text" name="goal" id="goalInput" placeholder="Ví dụ: Giao tiếp hằng ngày, Thi TOEIC 700+...">
+                </label>
+                <div class="goal-chips-container">
+                  <span class="goal-chip-label">Gợi ý nhanh:</span>
+                  <button type="button" class="goal-chip" data-goal-preset="Giao tiếp hằng ngày tự tin">💬 Giao tiếp hằng ngày</button>
+                  <button type="button" class="goal-chip" data-goal-preset="Luyện thi TOEIC 650+">🏆 Luyện thi TOEIC</button>
+                  <button type="button" class="goal-chip" data-goal-preset="Luyện thi IELTS 6.5+">🎯 Luyện thi IELTS</button>
+                  <button type="button" class="goal-chip" data-goal-preset="Tiếng Anh công sở & Viết Email">💼 Tiếng Anh công sở</button>
+                  <button type="button" class="goal-chip" data-goal-preset="Phục vụ Du học & Định cư">✈ Du học & Định cư</button>
+                </div>
+              </div>
+
+              <!-- Bio TextArea -->
+              <div class="form-group">
+                <label>Trạng thái cá nhân / Giới thiệu (Bio)
+                  <textarea name="bio" rows="3" placeholder="Viết một vài dòng ngắn về bản thân hoặc phương châm học tập của bạn..."></textarea>
+                </label>
+              </div>
+
+              <p class="feedback" data-auth-feedback></p>
+
+              <div class="profile-actions-bar">
+                <button class="btn btn-primary btn-save-back" type="submit" data-submit-action="save_and_back">
+                  <span class="ti-arrow-left"></span> Save & Back
+                </button>
+              </div>
+            </form>
           </div>
 
-          <p class="feedback" data-auth-feedback></p>
+          <!-- TAB 2: Bảo mật & Đổi mật khẩu -->
+          <div class="profile-tab-content" id="tab-security">
+            <form class="auth-card profile-card profile-form" data-password-form>
+              <div class="auth-card-heading">
+                <span class="auth-icon ti-shield"></span>
+                <div>
+                  <p class="eyebrow">Security</p>
+                  <h2>Đổi mật khẩu riêng</h2>
+                </div>
+              </div>
 
-          <button class="btn btn-primary" type="submit"><span class="ti-save"></span> Lưu hồ sơ</button>
-        </form>
-      </div>
-    </section>
+              <div class="form-group">
+                <label>Mật khẩu hiện tại
+                  <div class="input-password-wrapper">
+                    <input type="password" name="current_password" placeholder="Nhập mật khẩu hiện tại" required>
+                    <span class="toggle-password ti-eye" title="Hiện/ẩn mật khẩu"></span>
+                  </div>
+                </label>
+              </div>
 
-    <section class="section profile-dashboard-section" id="dashboard">
-      <div class="dashboard-hero profile-dashboard-hero">
-        <div>
-          <p class="eyebrow">Dashboard</p>
-          <h2>Tiến độ học tập</h2>
-          <p>Xin chào <strong data-student-name>Học viên</strong>. Trình độ hiện tại: <strong data-student-level>A1</strong>. Gợi ý hôm nay: luyện nghe 15 phút và ôn Present Simple.</p>
+              <div class="form-grid two">
+                <label>Mật khẩu mới
+                  <div class="input-password-wrapper">
+                    <input type="password" name="new_password" id="newPasswordInput" placeholder="Tối thiểu 6 ký tự" required>
+                    <span class="toggle-password ti-eye" title="Hiện/ẩn mật khẩu"></span>
+                  </div>
+                </label>
+                <label>Xác nhận mật khẩu mới
+                  <div class="input-password-wrapper">
+                    <input type="password" name="confirm_password" id="confirmPasswordInput" placeholder="Nhập lại mật khẩu mới" required>
+                    <span class="toggle-password ti-eye" title="Hiện/ẩn mật khẩu"></span>
+                  </div>
+                </label>
+              </div>
+
+              <!-- Password Strength Meter -->
+              <div class="password-strength-container" id="passwordStrengthBox" style="display: none;">
+                <div class="strength-bar-track">
+                  <div class="strength-bar-fill" id="strengthBarFill"></div>
+                </div>
+                <span class="strength-text" id="strengthText">Mức độ bảo mật</span>
+              </div>
+
+              <p class="feedback" data-password-feedback></p>
+
+              <button class="btn btn-primary btn-save-password" type="submit">
+                <span class="ti-key"></span> Đổi mật khẩu bảo mật
+              </button>
+            </form>
+          </div>
+
+          <!-- TAB 3: Tiến độ & Thống kê (Dashboard cá nhân) -->
+          <div class="profile-tab-content" id="tab-dashboard">
+            <div class="dashboard-progress-container">
+
+              <!-- 1. Top Banner: Tiến độ tổng -->
+              <div class="overall-progress-card">
+                <div class="overall-progress-header">
+                  <div class="overall-title-group">
+                    <div class="overall-trophy-box">
+                      <span class="ti-cup"></span>
+                    </div>
+                    <span class="overall-title-text">Tiến độ tổng</span>
+                  </div>
+                  <div class="overall-score-group">
+                    <span class="overall-count" data-overall-count>0/4</span>
+                    <span class="overall-percent" data-overall-percent>0%</span>
+                  </div>
+                </div>
+                <div class="overall-progress-track">
+                  <div class="overall-progress-fill" data-overall-fill style="width: 0%"></div>
+                </div>
+              </div>
+
+              <!-- 2. Skill Breakdown Rows (4 Kỹ Năng Chuẩn) -->
+              <div class="skill-progress-list">
+                <!-- Skill 1: Từ vựng (Vocabulary) -->
+                <div class="skill-progress-row skill-vocab">
+                  <div class="skill-row-left">
+                    <div class="skill-icon-ring ring-vocab">
+                      <span class="ti-id-badge"></span>
+                    </div>
+                    <span class="skill-name">Từ vựng (Vocabulary)</span>
+                  </div>
+                  <div class="skill-row-right">
+                    <div class="skill-metrics">
+                      <span class="skill-count" data-vocab-count>0/468 từ</span>
+                      <span class="skill-percent percent-vocab" data-vocab-percent>0%</span>
+                    </div>
+                    <div class="skill-progress-track">
+                      <div class="skill-progress-fill fill-vocab" data-vocab-fill style="width: 0%"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Skill 2: Nghe (Listening) -->
+                <div class="skill-progress-row skill-listening">
+                  <div class="skill-row-left">
+                    <div class="skill-icon-ring ring-listening">
+                      <span class="ti-headphone-alt"></span>
+                    </div>
+                    <span class="skill-name">Nghe (Listening)</span>
+                  </div>
+                  <div class="skill-row-right">
+                    <div class="skill-metrics">
+                      <span class="skill-count" data-listening-count>0/78 bài</span>
+                      <span class="skill-percent percent-listening" data-listening-percent>0%</span>
+                    </div>
+                    <div class="skill-progress-track">
+                      <div class="skill-progress-fill fill-listening" data-listening-fill style="width: 0%"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Skill 3: Đọc (Reading) -->
+                <div class="skill-progress-row skill-reading">
+                  <div class="skill-row-left">
+                    <div class="skill-icon-ring ring-reading">
+                      <span class="ti-book"></span>
+                    </div>
+                    <span class="skill-name">Đọc (Reading)</span>
+                  </div>
+                  <div class="skill-row-right">
+                    <div class="skill-metrics">
+                      <span class="skill-count" data-reading-count>0/22 bài</span>
+                      <span class="skill-percent percent-reading" data-reading-percent>0%</span>
+                    </div>
+                    <div class="skill-progress-track">
+                      <div class="skill-progress-fill fill-reading" data-reading-fill style="width: 0%"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Skill 4: Ngữ pháp (Grammar) -->
+                <div class="skill-progress-row skill-grammar">
+                  <div class="skill-row-left">
+                    <div class="skill-icon-ring ring-exam" style="background: rgba(16, 185, 129, 0.15); border-color: #10b981;">
+                      <span class="ti-write" style="color: #10b981;"></span>
+                    </div>
+                    <span class="skill-name">Ngữ pháp (Grammar)</span>
+                  </div>
+                  <div class="skill-row-right">
+                    <div class="skill-metrics">
+                      <span class="skill-count" data-grammar-count>0/180 câu</span>
+                      <span class="skill-percent percent-grammar" data-grammar-percent style="color: #10b981;">0%</span>
+                    </div>
+                    <div class="skill-progress-track">
+                      <div class="skill-progress-fill fill-grammar" data-grammar-fill style="width: 0%; background: linear-gradient(90deg, #10b981, #00f0ff);"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. Exam Results History Section -->
+              <div class="exam-history-card" style="margin-top: 24px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 16px; padding: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                  <h3 style="margin: 0; font-size: 1.05rem; color: #f8fafc; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                    <span class="ti-notepad" style="color: #00f0ff;"></span> Đánh giá Lịch sử Luyện đề (TOEIC Exam)
+                  </h3>
+                </div>
+                <div data-exam-history-container>
+                  <div class="exam-empty-state" style="text-align: center; padding: 28px 16px; color: #94a3b8; font-size: 0.92rem; background: rgba(2, 6, 23, 0.4); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+                    <span class="ti-info-alt" style="font-size: 1.5rem; color: #38bdf8; display: block; margin-bottom: 8px;"></span>
+                    Sau khi bạn hoàn thành đề thi thì sẽ đươc lưu ở đây!
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
-        <a class="btn btn-primary" href="quiz.html"><span class="ti-pencil-alt"></span> Làm test hôm nay</a>
-      </div>
-
-      <div class="stat-grid">
-        <article class="stat-card">
-          <span>Tiến độ tuần này</span>
-          <strong data-dashboard-progress>0%</strong>
-          <div class="progress-track"><span style="width: 0%"></span></div>
-        </article>
-        <article class="stat-card">
-          <span>Streak</span>
-          <strong>5 ngày</strong>
-          <div class="progress-track"><span style="width: 71%"></span></div>
-        </article>
-        <article class="stat-card">
-          <span>Bài học tiếp theo</span>
-          <strong>Present Simple</strong>
-          <a href="grammar.html">Học ngay</a>
-        </article>
-        <article class="stat-card">
-          <span>Kỹ năng yếu</span>
-          <strong>Listening</strong>
-          <a href="listening.html">Luyện nghe</a>
-        </article>
-      </div>
-    </section>
-
-    <section class="section section-muted profile-roadmap-section">
-      <div class="section-heading">
-        <p class="eyebrow">Lộ trình học</p>
-        <h2>4 tuần đầu tiên</h2>
-      </div>
-      <div class="roadmap">
-        <article>
-          <span>1</span>
-          <div>
-            <h3>Từ vựng giao tiếp cơ bản</h3>
-            <p>Greetings, introductions, classroom words.</p>
-          </div>
-        </article>
-        <article>
-          <span>2</span>
-          <div>
-            <h3>Present Simple</h3>
-            <p>Công thức, ví dụ đúng/sai và bài tập áp dụng.</p>
-          </div>
-        </article>
-        <article>
-          <span>3</span>
-          <div>
-            <h3>Luyện nghe hội thoại ngắn</h3>
-            <p>Audio, transcript, câu hỏi trắc nghiệm và điền từ.</p>
-          </div>
-        </article>
-        <article>
-          <span>4</span>
-          <div>
-            <h3>Kiểm tra tổng hợp</h3>
-            <p>Quiz cuối module và đề xuất bài nên ôn lại.</p>
-          </div>
-        </article>
       </div>
     </section>
   </main>
 
   <script src="js/core.js?v=1.0.2"></script>
   <script src="js/progress.js"></script>
+  <script src="js/level-system.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/main.js"></script>
 </body>

@@ -270,3 +270,96 @@ body.modal-open {
   top: 16px;
   right: 16px;
 }
+
+/* Sleek Save Level Picker Popover */
+.word-save-col {
+  position: relative;
+}
+
+.save-level-picker-popover {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  z-index: 120;
+  padding: 10px 14px;
+  background: #0f172a;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  white-space: nowrap;
+  animation: pickerPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes pickerPop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.save-level-picker-popover .picker-title {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.save-level-picker-popover .picker-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.save-level-picker-popover .btn-picker-opt {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.save-level-picker-popover .opt-easy {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+.save-level-picker-popover .opt-easy:hover {
+  background: #10b981;
+  color: #0f172a;
+}
+
+.save-level-picker-popover .opt-medium {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+.save-level-picker-popover .opt-medium:hover {
+  background: #f59e0b;
+  color: #0f172a;
+}
+
+.save-level-picker-popover .opt-hard {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+.save-level-picker-popover .opt-hard:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.save-word-btn.saved {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(46, 232, 120, 0.4)) !important;
+  border: 1px solid rgba(46, 232, 120, 0.6) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 12px rgba(46, 232, 120, 0.3);
+}

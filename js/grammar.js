@@ -380,6 +380,10 @@ async function initGrammarLearning() {
         practiceState[topic.id] = Array.from(solved).sort((a, b) => a - b);
         savePracticeState();
 
+        if (typeof addXP === "function") {
+          addXP(1, "Ngữ pháp tiếng Anh");
+        }
+
         question.classList.add("is-correct");
         question.querySelectorAll("[data-grammar-option]").forEach((button) => {
           button.disabled = true;

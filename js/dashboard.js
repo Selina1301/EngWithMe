@@ -7,6 +7,10 @@ function updateDashboardProgressDisplay(progress) {
 }
 
 async function initDashboard() {
+  if (typeof renderDashboardProgressUI === "function") {
+    renderDashboardProgressUI();
+  }
+
   const nameElement = document.querySelector("[data-student-name]");
   const levelElement = document.querySelector("[data-student-level]");
   const progressElement = document.querySelector("[data-dashboard-progress]");

@@ -137,6 +137,7 @@ function initVocabularyStudy() {
   const getSavedWordsKey = () => getAccountKey("engWithMeSavedVocabularyWords");
   let savedWordRecords = normalizeSavedWordRecords(readLocalArray(getSavedWordsKey()));
   let savedWords = new Set(savedWordRecords.keys());
+  let activeLevelPickerWordKey = null;
 
   const getTopic = () => vocabularyData[activeLevel]?.topics.find(topic => topic.id === currentTopicId);
   const getListHref = () => `vocabulary.html?level=${activeLevel}`;
@@ -177,6 +178,99 @@ function initVocabularyStudy() {
     savedWordRecords = normalizeSavedWordRecords(readLocalArray(getSavedWordsKey()));
     savedWords = new Set(savedWordRecords.keys());
   };
+
+  let currentTopicLeaderboard = null;
+  let cannonLeaderboardSubmitted = false;
+  let isNewRecordAchievement = false;
+
+  async function fetchTopicLeaderboard(topicId) {
+    if (!topicId) return;
+    try {
+      const response = await fetch(`api/leaderboard.php?topic_id=${encodeURIComponent(topicId)}`, { credentials: "same-origin" });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.ok && data.champion) {
+          currentTopicLeaderboard = { ...data.champion, _topicId: topicId };
+          localStorage.setItem(`engWithMeTopicLeaderboard_${topicId}`, JSON.stringify(currentTopicLeaderboard));
+          return;
+        }
+      }
+    } catch (e) {}
+
+    try {
+      const saved = localStorage.getItem(`engWithMeTopicLeaderboard_${topicId}`);
+      if (saved) {
+        currentTopicLeaderboard = { ...JSON.parse(saved), _topicId: topicId };
+      }
+    } catch (err) {}
+  }
+
+  const getLoggedInUserName = () => {
+    try {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+      if (currentUser && (currentUser.name || currentUser.username || currentUser.email)) {
+        return currentUser.name || currentUser.username || currentUser.email.split("@")[0];
+      }
+    } catch (e) {}
+
+    try {
+      const user = JSON.parse(localStorage.getItem("user") || "null");
+      if (user && (user.name || user.username || user.email)) {
+        return user.name || user.username || user.email.split("@")[0];
+      }
+    } catch (e) {}
+
+    const headerBtn = document.querySelector(".header-user-btn, .user-name, [data-user-name], .profile-name, .nav-user-name");
+    if (headerBtn) {
+      const txt = (headerBtn.innerText || headerBtn.textContent || "").split("\n")[0];
+      const cleanTxt = txt.replace(/\b(A1|A2|B1|B2|C1|C2)\b/gi, "").trim();
+      if (cleanTxt && cleanTxt !== "Tài khoản") {
+        return cleanTxt;
+      }
+    }
+
+    return localStorage.getItem("engWithMeUserName") ||
+           localStorage.getItem("engWithMeStudentName") ||
+           localStorage.getItem("userName") ||
+           "Học viên";
+  };
+
+  async function submitTopicHighScore(topicId, correctCount, timeSeconds, score) {
+    const userName = getLoggedInUserName();
+    let isNewRecord = false;
+
+    try {
+      const body = new FormData();
+      body.append("topic_id", topicId);
+      body.append("correct_count", String(correctCount));
+      body.append("time_seconds", String(timeSeconds));
+      body.append("score", String(score));
+      body.append("user_name", userName);
+
+      const response = await fetch("api/leaderboard.php", {
+        method: "POST",
+        body,
+        credentials: "same-origin"
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.ok && data.is_new_record && data.champion) {
+          isNewRecord = true;
+          currentTopicLeaderboard = { ...data.champion, _topicId: topicId };
+          localStorage.setItem(`engWithMeTopicLeaderboard_${topicId}`, JSON.stringify(currentTopicLeaderboard));
+        }
+      }
+    } catch (e) {
+      const old = currentTopicLeaderboard;
+      if (!old || correctCount > old.correct_count || (correctCount === old.correct_count && timeSeconds < old.time_seconds)) {
+        isNewRecord = true;
+        currentTopicLeaderboard = { user_name: userName, correct_count: correctCount, time_seconds: timeSeconds, score, _topicId: topicId };
+        localStorage.setItem(`engWithMeTopicLeaderboard_${topicId}`, JSON.stringify(currentTopicLeaderboard));
+      }
+    }
+
+    return isNewRecord;
+  }
   window.refreshVocabularyStudyState = () => {
     reloadSavedWordsFromStorage();
     recordCurrentTopicView();
@@ -662,22 +756,6 @@ function initVocabularyStudy() {
     };
 
     let confirmPopupHtml = "";
-    if (confirmMasteredWordKey) {
-      confirmPopupHtml = `
-        <div class="modal-overlay" data-close-confirm style="position: fixed; inset: 0; background: rgba(2, 6, 23, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 1000;">
-          <div class="confirm-modal-card" style="width: min(90vw, 410px); min-height: 180px; background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.08); padding: 24px; border-radius: 16px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); text-align: left; display: flex; flex-direction: column; justify-content: space-between;">
-            <h3 style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0 0 8px 0;">Đánh dấu thành thạo?</h3>
-            <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.5; margin: 0 0 20px 0;">
-               Từ này sẽ được đánh dấu là đã thành thạo và không xuất hiện trong hàng đợi ôn tập nữa. Bạn có chắc chắn không?
-            </p>
-            <div style="display: flex; justify-content: flex-end; gap: 10px;">
-              <button class="modal-btn-cancel" type="button" data-close-confirm style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1); color: #ffffff; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.88rem; transition: background 0.2s;">Hủy</button>
-              <button class="modal-btn-confirm" type="button" data-confirm-mastered style="background: #0ea5e9; border: none; color: #ffffff; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.88rem; transition: background 0.2s;">Xác nhận</button>
-            </div>
-          </div>
-        </div>
-      `;
-    }
 
     let reportPopupHtml = "";
     if (activeReportWord) {
@@ -813,7 +891,6 @@ function initVocabularyStudy() {
         <div class="workspace-panel">
           ${renderWorkspacePanel(topic)}
         </div>
-        ${confirmPopupHtml}
         ${reportPopupHtml}
       </div>
     `;
@@ -840,6 +917,7 @@ function initVocabularyStudy() {
     const list = topic.words.map((word, index) => {
       const wordKey = getWordKey(topic, word);
       const isSaved = savedWords.has(wordKey);
+      const isPickerOpen = activeLevelPickerWordKey === wordKey;
 
       return `
         <article class="word-list-card">
@@ -852,10 +930,26 @@ function initVocabularyStudy() {
             <p><strong>${word.meaning}</strong></p>
             <p>${word.example}</p>
           </div>
-          <div class="word-save-col">
+          <div class="word-save-col" style="position: relative;">
             <button class="save-word-btn ${isSaved ? "saved" : ""}" type="button" data-save-word="${wordKey}">
-              ${isSaved ? `Đã lưu (${(savedWordRecords.get(wordKey)?.studyLevel || "easy").toUpperCase()})` : "Lưu từ"}
+              ${isSaved ? `<i class="ti-check" style="margin-right: 4px;"></i>Đã lưu` : "Lưu từ"}
             </button>
+            ${isPickerOpen ? `
+              <div class="save-level-picker-popover">
+                <p class="picker-title">Chọn mức độ lưu:</p>
+                <div class="picker-btn-group">
+                  <button type="button" class="btn-picker-opt opt-easy" data-select-level="easy" data-level-word-key="${wordKey}">
+                    🟢 Easy
+                  </button>
+                  <button type="button" class="btn-picker-opt opt-medium" data-select-level="medium" data-level-word-key="${wordKey}">
+                    🟡 Medium
+                  </button>
+                  <button type="button" class="btn-picker-opt opt-hard" data-select-level="hard" data-level-word-key="${wordKey}">
+                    🔴 Hard
+                  </button>
+                </div>
+              </div>
+            ` : ""}
           </div>
         </article>
       `;
@@ -1022,7 +1116,10 @@ function initVocabularyStudy() {
   }
 
   function triggerAutoSpeak(word, mode) {
-    if (!autoSpeak) return;
+    if (!autoSpeak || currentWorkspaceMode === "study") {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      return;
+    }
     if (mode === "type") return;
     
     const speakKey = `${word.word}-${mode}`;
@@ -1616,6 +1713,40 @@ function initVocabularyStudy() {
         cancelAnimationFrame(cannonRequestFrameId);
         cannonRequestFrameId = null;
       }
+
+      if (!cannonLeaderboardSubmitted) {
+        cannonLeaderboardSubmitted = true;
+        if (typeof addXP === "function") {
+          addXP(5, "Trò chơi Bắn Pháo");
+        }
+        const correctCount = Math.max(0, 12 - cannonMissedWords.length);
+        const timeSecs = gameTimeSeconds;
+        submitTopicHighScore(topic.id, correctCount, timeSecs, cannonScore).then(isNewRecord => {
+          if (isNewRecord) {
+            isNewRecordAchievement = true;
+            render();
+          }
+        });
+      }
+    } else {
+      if (!currentTopicLeaderboard || currentTopicLeaderboard._topicId !== topic.id) {
+        fetchTopicLeaderboard(topic.id).then(() => {
+          const badgeEl = root.querySelector("[data-bxh-badge]");
+          if (badgeEl) {
+            const activeName = getLoggedInUserName();
+            if (currentTopicLeaderboard && currentTopicLeaderboard.correct_count !== undefined) {
+              const champName = currentTopicLeaderboard.user_name || activeName;
+              const champCorrect = currentTopicLeaderboard.correct_count;
+              const champTime = currentTopicLeaderboard.time_seconds;
+              const minStr = String(Math.floor(champTime / 60)).padStart(2, "0");
+              const secStr = String(champTime % 60).padStart(2, "0");
+              badgeEl.textContent = `🏆 BXH: ${champName} (${champCorrect}/12 · ${minStr}:${secStr}) - Rank 1`;
+            } else {
+              badgeEl.textContent = `🏆 BXH: ${activeName} - Top 1 (Đang thi đấu)`;
+            }
+          }
+        });
+      }
     }
 
     if (!cannonCurrentQuestion && !isGameEnded) {
@@ -1669,6 +1800,17 @@ function initVocabularyStudy() {
     const minutes = String(Math.floor(gameTimeSeconds / 60)).padStart(2, "0");
     const seconds = String(gameTimeSeconds % 60).padStart(2, "0");
 
+    const activeUserName = getLoggedInUserName();
+    let bxhBadgeText = `🏆 BXH: ${activeUserName} - Top 1 (Đang thi đấu)`;
+    if (currentTopicLeaderboard && currentTopicLeaderboard.correct_count !== undefined) {
+      const champName = currentTopicLeaderboard.user_name || activeUserName;
+      const champCorrect = currentTopicLeaderboard.correct_count;
+      const champTime = currentTopicLeaderboard.time_seconds;
+      const minStr = String(Math.floor(champTime / 60)).padStart(2, "0");
+      const secStr = String(champTime % 60).padStart(2, "0");
+      bxhBadgeText = `🏆 BXH: ${champName} (${champCorrect}/12 · ${minStr}:${secStr}) - Rank 1`;
+    }
+
     let livesHtml = "";
     for (let i = 1; i <= 3; i++) {
       if (i <= cannonLives) {
@@ -1692,8 +1834,8 @@ function initVocabularyStudy() {
         <div style="${isGameEnded ? 'filter: blur(5px) brightness(0.35); pointer-events: none; transition: filter 0.3s ease;' : 'transition: filter 0.3s ease;'}">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 4px 8px; color: #cbd5e1; font-weight: 600; font-size: 0.95rem; width: 100%;">
             <div style="display: flex; align-items: center;">
-              <span style="color: #ffd700; font-size: 0.85rem; letter-spacing: 0.5px; background: rgba(255, 215, 0, 0.1); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255, 215, 0, 0.2); display: flex; align-items: center; gap: 4px; font-weight: 700;">
-                🏆 BXH: ___ - Rank 1
+              <span data-bxh-badge style="color: #ffd700; font-size: 0.85rem; letter-spacing: 0.5px; background: rgba(255, 215, 0, 0.1); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255, 215, 0, 0.2); display: flex; align-items: center; gap: 4px; font-weight: 700;">
+                ${bxhBadgeText}
               </span>
             </div>
             <div style="display: flex; align-items: center; gap: 12px; font-weight: 700; color: #00f0ff; font-size: 0.95rem; letter-spacing: 1px;">
@@ -1744,6 +1886,23 @@ function initVocabularyStudy() {
             <p style="color: #94a3b8; font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; margin: 0 0 10px 0; text-align: center;">
               SCORE: ${cannonScore} // ĐÚNG: ${12 - cannonMissedWords.length}/12
             </p>
+            
+            ${isNewRecordAchievement ? `
+              <div style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.22), rgba(245, 158, 11, 0.35)); border: 1.5px solid #ffd700; border-radius: 12px; padding: 8px 10px; margin-bottom: 12px; width: 100%; text-align: center; box-shadow: 0 0 20px rgba(255, 215, 0, 0.35); animation: modalFadeIn 0.3s ease;">
+                <div style="color: #ffd700; font-size: 0.92rem; font-weight: 900; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                  👑 TOP 1 VINH DANH CHỦ ĐỀ!
+                </div>
+                <div style="color: #ffffff; font-size: 0.76rem; font-weight: 600; margin-top: 2px;">
+                  Kỷ lục mới: <strong>${12 - cannonMissedWords.length}/12 câu đúng</strong> trong <strong>${minutes}:${seconds}</strong>!
+                </div>
+              </div>
+            ` : (currentTopicLeaderboard ? `
+              <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 10px; padding: 6px 10px; margin-bottom: 10px; width: 100%; text-align: center;">
+                <div style="color: #ffd700; font-size: 0.75rem; font-weight: 700;">
+                  🏆 TOP 1 CHỦ ĐỀ: <strong>${currentTopicLeaderboard.user_name}</strong> (${currentTopicLeaderboard.correct_count}/12 · ${String(Math.floor(currentTopicLeaderboard.time_seconds / 60)).padStart(2, "0")}:${String(currentTopicLeaderboard.time_seconds % 60).padStart(2, "0")})
+                </div>
+              </div>
+            ` : '')}
             
             <!-- Stats Grid -->
             <div style="display: flex; gap: 8px; width: 100%; justify-content: center; margin-bottom: 12px;">
@@ -1990,28 +2149,26 @@ function initVocabularyStudy() {
                 if (cannonWrongFlashTimeout) clearTimeout(cannonWrongFlashTimeout);
                 cannonWrongFlashTimeout = setTimeout(() => {
                   gamePanel.classList.remove("game-wrong-flash");
-                  cannonQuestionsPlayed++;
-                  cannonCurrentQuestion = null;
-                  render();
-                }, 1200);
-              } else {
-                cannonQuestionsPlayed++;
-                cannonCurrentQuestion = null;
-                setTimeout(() => {
-                  render();
-                }, 100);
+                }, 300);
               }
-              
-              setTimeout(() => {
-                render();
-              }, 100);
-              return;
+
+              // Update lives display in header immediately
+              const heartsHtml = [1, 2, 3].map(i => 
+                i <= cannonLives 
+                  ? `<i class="ti-heart" style="color: #00f0ff; font-size: 1.1rem; filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.6)); margin-right: 4px;"></i>` 
+                  : `<i class="ti-heart" style="color: rgba(255,255,255,0.15); font-size: 1.1rem; margin-right: 4px;"></i>`
+              ).join("");
+              const heartsWrap = gamePanel?.querySelector(".ti-heart")?.parentElement;
+              if (heartsWrap) {
+                heartsWrap.innerHTML = `<button type="button" data-game-menu style="background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 0 4px 0 0; font-size: 1.15rem; line-height: 1; transition: color 0.2s;">←</button>${heartsHtml}`;
+              }
             }
           }
         }
       }
 
       cannonTargets.forEach(t => {
+        if (t.isHitIncorrect) return;
         t.x += t.vx;
         t.y += t.vy;
         
@@ -2252,6 +2409,11 @@ function initVocabularyStudy() {
     root.querySelectorAll("[data-workspace-mode]").forEach(button => {
       button.addEventListener("click", () => {
         currentWorkspaceMode = button.dataset.workspaceMode;
+        if (currentWorkspaceMode === "study") {
+          autoSpeak = false;
+          localStorage.setItem("vocab_settings_autoSpeak", "false");
+          if (window.speechSynthesis) window.speechSynthesis.cancel();
+        }
         isWordRevealed = false;
         isClassifyingWord = false;
         resetGameState();
@@ -2345,19 +2507,48 @@ function initVocabularyStudy() {
     });
 
     root.querySelectorAll("[data-save-word]").forEach(button => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", (e) => {
+        e.stopPropagation();
         const wordKey = button.dataset.saveWord;
         if (!wordKey) return;
 
         if (savedWords.has(wordKey)) {
+          // Bỏ lưu -> Trở lại "Lưu từ"
           savedWords.delete(wordKey);
           savedWordRecords.delete(wordKey);
           saveSavedWords("remove", wordKey);
+          activeLevelPickerWordKey = null;
           render();
         } else {
-          confirmMasteredWordKey = wordKey;
+          // Bấm "Lưu từ" -> Mở menu chọn 3 mức (Easy, Medium, Hard)
+          if (activeLevelPickerWordKey === wordKey) {
+            activeLevelPickerWordKey = null;
+          } else {
+            activeLevelPickerWordKey = wordKey;
+          }
           render();
         }
+      });
+    });
+
+    root.querySelectorAll("[data-select-level]").forEach(button => {
+      button.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const lvl = button.dataset.selectLevel;
+        const wordKey = button.dataset.levelWordKey;
+        if (!wordKey || !lvl) return;
+
+        savedWords.add(wordKey);
+        savedWordRecords.set(wordKey, {
+          key: wordKey,
+          studyLevel: lvl
+        });
+        saveSavedWords("save", wordKey, lvl);
+        activeLevelPickerWordKey = null;
+        if (typeof addXP === "function") {
+          addXP(1, "Lưu từ vựng");
+        }
+        render();
       });
     });
 

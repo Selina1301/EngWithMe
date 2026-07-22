@@ -6,6 +6,7 @@
   <title>Dashboard học viên - EngWithMe</title>
   <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
   <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/pages/profile.css">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
@@ -30,57 +31,130 @@
   </header>
 
   <main class="page-main">
-    <section class="dashboard-hero">
-      <div>
-        <p class="eyebrow">Xin chào</p>
-        <h1 data-student-name>Nguyễn Văn A</h1>
-        <p>Trình độ hiện tại: <strong data-student-level>A2</strong>. <span data-dashboard-today-summary>Hôm nay học theo lộ trình 15 ngày.</span></p>
-      </div>
-      <a class="btn btn-primary" href="vocabulary.html" data-dashboard-today-link>Nhiệm vụ hôm nay</a>
-    </section>
+    <section class="section compact" style="padding-top: 24px;">
+      <div class="dashboard-progress-container">
 
-    <section class="section compact">
-      <div class="stat-grid">
-        <article class="stat-card">
-          <span>Tiến độ lộ trình</span>
-          <strong data-dashboard-progress>0%</strong>
-          <div class="progress-track"><span style="width: 0%"></span></div>
-        </article>
-        <article class="stat-card">
-          <span>Streak</span>
-          <strong data-dashboard-streak>1 ngày</strong>
-          <div class="progress-track"><span data-dashboard-streak-bar style="width: 7%"></span></div>
-        </article>
-        <article class="stat-card">
-          <span>Bài học hôm nay</span>
-          <strong data-dashboard-today-skill>Vocabulary</strong>
-          <a href="vocabulary.html" data-dashboard-today-study-link>Học ngay</a>
-        </article>
-        <article class="stat-card">
-          <span>Ngày hiện tại</span>
-          <strong data-dashboard-plan-day>Ngày 1/15</strong>
-          <a href="#dashboard-roadmap">Xem lộ trình</a>
-        </article>
-      </div>
-    </section>
+        <!-- 1. Top Banner: Tiến độ tổng -->
+        <div class="overall-progress-card">
+          <div class="overall-progress-header">
+            <div class="overall-title-group">
+              <div class="overall-trophy-box">
+                <span class="ti-cup"></span>
+              </div>
+              <span class="overall-title-text">Tiến độ tổng</span>
+            </div>
+            <div class="overall-score-group">
+              <span class="overall-count" data-overall-count>0/4</span>
+              <span class="overall-percent" data-overall-percent>0%</span>
+            </div>
+          </div>
+          <div class="overall-progress-track">
+            <div class="overall-progress-fill" data-overall-fill style="width: 0%"></div>
+          </div>
+        </div>
 
-    <section class="section section-muted" id="dashboard-roadmap">
-      <div class="section-heading">
-        <p class="eyebrow">Lộ trình học</p>
-        <h2>17 ngày đầu tiên</h2>
-        <p>7 ngày học từ vựng, 3 ngày luyện đọc và 7 ngày ôn ngữ pháp. Bài sau chỉ mở khi bài trước được hoàn thành thật trong từng khu học.</p>
+        <!-- 2. Skill Breakdown Rows (4 Kỹ Năng Chuẩn) -->
+        <div class="skill-progress-list">
+          <!-- Skill 1: Từ vựng (Vocabulary) -->
+          <div class="skill-progress-row skill-vocab">
+            <div class="skill-row-left">
+              <div class="skill-icon-ring ring-vocab">
+                <span class="ti-id-badge"></span>
+              </div>
+              <span class="skill-name">Từ vựng (Vocabulary)</span>
+            </div>
+            <div class="skill-row-right">
+              <div class="skill-metrics">
+                <span class="skill-count" data-vocab-count>0/468 từ</span>
+                <span class="skill-percent percent-vocab" data-vocab-percent>0%</span>
+              </div>
+              <div class="skill-progress-track">
+                <div class="skill-progress-fill fill-vocab" data-vocab-fill style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skill 2: Nghe (Listening) -->
+          <div class="skill-progress-row skill-listening">
+            <div class="skill-row-left">
+              <div class="skill-icon-ring ring-listening">
+                <span class="ti-headphone-alt"></span>
+              </div>
+              <span class="skill-name">Nghe (Listening)</span>
+            </div>
+            <div class="skill-row-right">
+              <div class="skill-metrics">
+                <span class="skill-count" data-listening-count>0/78 bài</span>
+                <span class="skill-percent percent-listening" data-listening-percent>0%</span>
+              </div>
+              <div class="skill-progress-track">
+                <div class="skill-progress-fill fill-listening" data-listening-fill style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skill 3: Đọc (Reading) -->
+          <div class="skill-progress-row skill-reading">
+            <div class="skill-row-left">
+              <div class="skill-icon-ring ring-reading">
+                <span class="ti-book"></span>
+              </div>
+              <span class="skill-name">Đọc (Reading)</span>
+            </div>
+            <div class="skill-row-right">
+              <div class="skill-metrics">
+                <span class="skill-count" data-reading-count>0/22 bài</span>
+                <span class="skill-percent percent-reading" data-reading-percent>0%</span>
+              </div>
+              <div class="skill-progress-track">
+                <div class="skill-progress-fill fill-reading" data-reading-fill style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skill 4: Ngữ pháp (Grammar) -->
+          <div class="skill-progress-row skill-grammar">
+            <div class="skill-row-left">
+              <div class="skill-icon-ring ring-exam" style="background: rgba(16, 185, 129, 0.15); border-color: #10b981;">
+                <span class="ti-write" style="color: #10b981;"></span>
+              </div>
+              <span class="skill-name">Ngữ pháp (Grammar)</span>
+            </div>
+            <div class="skill-row-right">
+              <div class="skill-metrics">
+                <span class="skill-count" data-grammar-count>0/180 câu</span>
+                <span class="skill-percent percent-grammar" data-grammar-percent style="color: #10b981;">0%</span>
+              </div>
+              <div class="skill-progress-track">
+                <div class="skill-progress-fill fill-grammar" data-grammar-fill style="width: 0%; background: linear-gradient(90deg, #10b981, #00f0ff);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Exam Results History Section -->
+        <div class="exam-history-card" style="margin-top: 24px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 16px; padding: 20px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <h3 style="margin: 0; font-size: 1.05rem; color: #f8fafc; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+              <span class="ti-notepad" style="color: #00f0ff;"></span> Đánh giá Lịch sử Luyện đề (TOEIC Exam)
+            </h3>
+          </div>
+          <div data-exam-history-container>
+            <div class="exam-empty-state" style="text-align: center; padding: 28px 16px; color: #94a3b8; font-size: 0.92rem; background: rgba(2, 6, 23, 0.4); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+              <span class="ti-info-alt" style="font-size: 1.5rem; color: #38bdf8; display: block; margin-bottom: 8px;"></span>
+              Sau khi bạn hoàn thành đề thi thì sẽ đươc lưu ở đây!
+            </div>
+          </div>
+        </div>
+
       </div>
-      <div class="roadmap" data-dashboard-roadmap></div>
     </section>
   </main>
 
   <script src="js/core.js?v=1.0.2"></script>
-  <script src="js/vocabulary/easy.js"></script>
-  <script src="js/vocabulary/medium.js"></script>
-  <script src="js/vocabulary/hard.js"></script>
-  <script src="js/vocabulary-data.js"></script>
-  <script src="js/grammar-data.js"></script>
   <script src="js/progress.js"></script>
+  <script src="js/level-system.js"></script>
+  <script src="js/profile.js"></script>
   <script src="js/dashboard.js"></script>
   <script src="js/main.js"></script>
 </body>

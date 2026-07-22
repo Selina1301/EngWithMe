@@ -127,6 +127,9 @@ function current_user_payload(array $user): array
         'role' => $user['role'] ?? 'user',
         'level' => $user['level'] ?? 'A1',
         'goal' => $user['learning_goal'] ?? '',
+        'phone' => $user['phone'] ?? '',
+        'bio' => $user['bio'] ?? '',
+        'gender' => $user['gender'] ?? 'male',
         'avatar' => $user['avatar_path'] ?? '',
         'status' => $user['status'] ?? 'active',
         'createdAt' => $user['created_at'] ?? null,
@@ -152,8 +155,25 @@ function ensure_user_remember_column(): void
     } catch (\Throwable $e) {}
 }
 
+function ensure_user_profile_columns(): void
+{
+    static $checked = false;
+    if ($checked) return;
+    $checked = true;
+    try {
+        db()->exec("ALTER TABLE users ADD COLUMN phone VARCHAR(20) NULL AFTER learning_goal;");
+    } catch (\Throwable $e) {}
+    try {
+        db()->exec("ALTER TABLE users ADD COLUMN bio TEXT NULL AFTER phone;");
+    } catch (\Throwable $e) {}
+    try {
+        db()->exec("ALTER TABLE users ADD COLUMN gender VARCHAR(10) NULL AFTER bio;");
+    } catch (\Throwable $e) {}
+}
+
 function find_current_user(): ?array
 {
+    ensure_user_profile_columns();
     $userId = (int) ($_SESSION['user_id'] ?? 0);
     if ($userId <= 0) {
         if (isset($_COOKIE['ewm_logged_in'])) {
@@ -166,7 +186,7 @@ function find_current_user(): ?array
     }
 
     $statement = db()->prepare(
-        'SELECT id, full_name, email, role, level, learning_goal, avatar_path, status, created_at, last_login_at
+        'SELECT id, full_name, email, role, level, learning_goal, phone, bio, gender, avatar_path, status, created_at, last_login_at
          FROM users
          WHERE id = ?
          LIMIT 1'
@@ -342,5 +362,51 @@ function log_user_activity(string $eventName, array $payload = []): void
     } catch (\Throwable $e) {
         // Luồng ghi log phụ trợ không được làm crash luồng nghiệp vụ chính
         error_log("Telemetry logging error: " . $e->getMessage());
+    }
+}
+
+/**
+ * Đảm bảo bảng topic_leaderboard phục vụ BXH Vinh Danh Top 1 theo từng chủ đề bài học
+ */
+function ensure_leaderboard_table(): void
+{
+    try {
+        $pdo = db();
+        $pdo->exec(
+            'CREATE TABLE IF NOT EXISTS topic_leaderboard (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                topic_id VARCHAR(64) NOT NULL,
+                user_id INT NULL,
+                user_name VARCHAR(100) NOT NULL,
+                correct_count INT NOT NULL DEFAULT 0,
+                time_seconds INT NOT NULL DEFAULT 999,
+                score INT NOT NULL DEFAULT 0,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                UNIQUE KEY uq_topic (topic_id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4'
+        );
+    } catch (\Throwable $e) {
+        error_log("Failed to ensure topic_leaderboard table: " . $e->getMessage());
+    }
+}
+
+/**
+ * Đảm bảo bảng user_levels lưu trữ XP và Level vô hạn của người dùng
+ */
+function ensure_user_level_table(): void
+{
+    try {
+        $pdo = db();
+        $pdo->exec(
+            'CREATE TABLE IF NOT EXISTS user_levels (
+                user_id INT PRIMARY KEY,
+                total_xp INT NOT NULL DEFAULT 0,
+                level INT NOT NULL DEFAULT 1,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4'
+        );
+    } catch (\Throwable $e) {
+        error_log("Failed to ensure user_levels table: " . $e->getMessage());
     }
 }

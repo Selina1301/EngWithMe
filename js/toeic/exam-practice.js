@@ -602,6 +602,40 @@ function initToeicExamPractice() {
     completedPartNumbers.forEach((partNumber) => localStorage.setItem(getExamCompletionKey(selectedSet, partNumber), "done"));
     localStorage.setItem("engWithMeLevel", level);
 
+    if (typeof addXP === "function" && correct > 0) {
+      addXP(correct, "Luyện đề TOEIC");
+    }
+
+    try {
+      const examKey = getAccountKey("engWithMeExamProgress");
+      let examProgress = JSON.parse(localStorage.getItem(examKey) || "[]");
+      if (!Array.isArray(examProgress)) examProgress = [];
+      for (let k = 0; k < correct; k++) {
+        examProgress.push(`exam_${selectedSet}_${Date.now()}_${k}`);
+      }
+      localStorage.setItem(examKey, JSON.stringify(examProgress));
+    } catch (e) {}
+
+    try {
+      const historyKey = getAccountKey("engWithMeExamHistoryList");
+      let historyList = JSON.parse(localStorage.getItem(historyKey) || "[]");
+      if (!Array.isArray(historyList)) historyList = [];
+      
+      const record = {
+        id: `exam_${Date.now()}`,
+        test_set: selectedSet,
+        test_parts: selectedParts.join(","),
+        correct_count: correct,
+        total_questions: total,
+        score_percent: Math.round((correct / total) * 100),
+        level: level,
+        timestamp: new Date().toLocaleString("vi-VN", { dateStyle: "short", timeStyle: "short" })
+      };
+      
+      historyList.unshift(record);
+      localStorage.setItem(historyKey, JSON.stringify(historyList));
+    } catch (e) {}
+
     // Sync to DB
     const userId = localStorage.getItem("engWithMeUserId");
     if (userId) {

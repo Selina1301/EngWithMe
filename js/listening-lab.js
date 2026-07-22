@@ -2065,11 +2065,25 @@
     }
 
     async function syncProgressToDatabase() {
-      const userId = localStorage.getItem("engWithMeUserId") || localStorage.getItem("user_id");
-      if (!userId || !currentMission) return;
-
+      if (!currentMission) return;
       const currentScore = state.scores[currentMission.id] || 0;
-      if (currentScore < 70) return; // Strictly block DB sync if score is under 70%
+      if (currentScore < 70) return;
+
+      try {
+        const listenKey = typeof getAccountKey === "function" ? getAccountKey("engWithMeListeningProgress") : "engWithMeListeningProgress";
+        let listeningProgress = JSON.parse(localStorage.getItem(listenKey) || "[]");
+        if (!Array.isArray(listeningProgress)) listeningProgress = [];
+        if (!listeningProgress.includes(currentMission.id)) {
+          listeningProgress.push(currentMission.id);
+          localStorage.setItem(listenKey, JSON.stringify(listeningProgress));
+          if (typeof addXP === "function") {
+            addXP(5, "Luyện nghe bài học");
+          }
+        }
+      } catch (e) {}
+
+      const userId = localStorage.getItem("engWithMeUserId") || localStorage.getItem("user_id");
+      if (!userId) return;
 
       try {
         const body = new FormData();

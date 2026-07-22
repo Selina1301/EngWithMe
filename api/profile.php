@@ -7,10 +7,15 @@ start_app_session();
 require_post();
 
 $currentUser = require_current_user();
+ensure_user_profile_columns();
 $name = trim((string) ($_POST['name'] ?? ''));
 $level = strtoupper(trim((string) ($_POST['level'] ?? 'A1')));
 $goal = trim((string) ($_POST['goal'] ?? ''));
+$phone = trim((string) ($_POST['phone'] ?? ''));
+$bio = trim((string) ($_POST['bio'] ?? ''));
+$gender = strtolower(trim((string) ($_POST['gender'] ?? 'male')));
 $validLevels = ['A1', 'A2', 'B1', 'B2', 'C1'];
+$validGenders = ['male', 'female', 'other'];
 
 if ($name === '') {
     json_response(['ok' => false, 'message' => 'Vui lòng nhập họ tên.'], 422);
@@ -18,6 +23,10 @@ if ($name === '') {
 
 if (!in_array($level, $validLevels, true)) {
     json_response(['ok' => false, 'message' => 'Trình độ không hợp lệ.'], 422);
+}
+
+if (!in_array($gender, $validGenders, true)) {
+    $gender = 'male';
 }
 
 try {
@@ -29,13 +38,16 @@ try {
 
     $update = db()->prepare(
         'UPDATE users
-         SET full_name = ?, level = ?, learning_goal = ?, avatar_path = ?
+         SET full_name = ?, level = ?, learning_goal = ?, phone = ?, bio = ?, gender = ?, avatar_path = ?
          WHERE id = ?'
     );
     $update->execute([
         $name,
         $level,
         $goal !== '' ? $goal : null,
+        $phone !== '' ? $phone : null,
+        $bio !== '' ? $bio : null,
+        $gender,
         $avatarPath ?: null,
         (int) $currentUser['id'],
     ]);
