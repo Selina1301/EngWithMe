@@ -312,6 +312,13 @@ function initAuthNav() {
   ensureNavActions(header);
   bindAuthNavInteractions();
 
+  // If URL has login parameter (e.g. from Google OAuth), flush stale user cache
+  if (window.location.search.includes("login=")) {
+    if (typeof AppCache !== "undefined" && AppCache.invalidate) {
+      AppCache.invalidate("me");
+    }
+  }
+
   // Kiểm tra nhanh cookie đăng nhập trước khi gọi API để tiết kiệm tài nguyên
   const hasCookie = document.cookie.split(';').some((item) => item.trim().startsWith('ewm_logged_in='));
   if (!hasCookie) {
@@ -334,11 +341,11 @@ function initAuthNav() {
     }
     persistAuthUser(result.user);
     renderAuthenticatedNav(result.user);
-    redirectAuthPages(result.user);
+    redirectAuthPages(result.user, isCached);
     
     // Tải dữ liệu tương thích dựa theo Route
     triggerRouteBasedFetch();
-  }, { ttl: 10 * 60 * 1000 });
+  }, { ttl: 0 });
 }
 
 function refreshPageAfterUserDataSync() {
@@ -565,17 +572,20 @@ function closeUserMenus() {
 }
 
 async function logoutAuthenticatedUser() {
+  clearAuthUser();
+
   try {
     await fetch("api/logout.php", {
       method: "POST",
-      credentials: "same-origin"
+      credentials: "same-origin",
+      cache: "no-store"
     });
   } catch (error) {
-    // Local state is still cleared so the UI cannot keep showing a stale user.
+    console.warn("Logout API failed:", error);
   }
 
   clearAuthUser();
-  window.location.href = "login.html";
+  window.location.replace("login.html");
 }
 
 function getCachedAuthUser() {
@@ -598,14 +608,26 @@ function getCachedAuthUser() {
 
 function persistAuthUser(user) {
   if (!user) return;
+  const name = user.name || user.full_name || "";
+  const goal = user.goal || user.learning_goal || "";
+  const avatar = user.avatar || user.avatar_path || "";
+
   localStorage.setItem("engWithMeUserId", String(user.id || ""));
-  localStorage.setItem("engWithMeStudentName", user.name || "");
+  localStorage.setItem("engWithMeStudentName", name);
   localStorage.setItem("engWithMeUserEmail", user.email || "");
   localStorage.setItem("engWithMeUserRole", user.role || "user");
   localStorage.setItem("engWithMeLevel", user.level || "A1");
-  localStorage.setItem("engWithMeGoal", user.goal || "");
+  localStorage.setItem("engWithMeGoal", goal);
   localStorage.setItem("engWithMeUserStatus", user.status || "active");
-  localStorage.setItem("engWithMeUserAvatar", user.avatar || "");
+  localStorage.setItem("engWithMeUserAvatar", avatar);
+
+  if (typeof AppCache !== "undefined" && AppCache.set) {
+    AppCache.set("me", { ok: true, user: { ...user, name, goal, avatar } });
+  }
+
+  if (typeof renderAuthenticatedNav === "function") {
+    renderAuthenticatedNav({ ...user, name, goal, avatar });
+  }
 }
 
 function clearAuthUser() {
@@ -619,11 +641,21 @@ function clearAuthUser() {
     "engWithMeUserId",
     "engWithMeUserAvatar"
   ].forEach((key) => localStorage.removeItem(key));
+
+  if (typeof AppCache !== "undefined" && AppCache.clear) {
+    AppCache.clear();
+  }
+
+  document.cookie = "ewm_logged_in=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie = "ewm_logged_in=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
 }
 
-function redirectAuthPages(user) {
+function redirectAuthPages(user, isCached = false) {
   const currentPage = getCurrentPage();
   if (!["login.html", "register.html"].includes(currentPage)) return;
+  // NEVER perform automatic redirect from login/register pages based on client-side cache!
+  // Only redirect if live server response from api/me.php confirms an active session.
+  if (isCached) return;
   window.location.href = "index.html";
 }
 

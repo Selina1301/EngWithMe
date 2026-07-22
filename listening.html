@@ -52,7 +52,11 @@
       <div class="listening-mode-switch" aria-label="Chế độ xem">
         <button class="listening-mode-tab is-active" type="button" data-listening-mode="study">
           <span class="ti-headphone"></span>
-          <span>Luyện nghe</span>
+          <span>Chủ đề</span>
+        </button>
+        <button class="listening-mode-tab" type="button" data-listening-mode="toeic">
+          <span class="ti-target"></span>
+          <span>Toeic</span>
         </button>
         <button class="listening-mode-tab" type="button" data-listening-mode="progress">
           <span class="ti-bar-chart"></span>
@@ -116,6 +120,46 @@
               <div class="mission-grid" data-mission-grid></div>
             </section>
           </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: Luyện nghe TOEIC (TOEIC Listening View) -->
+      <div class="listening-toeic-view" data-listening-toeic-view hidden>
+        <div class="mission-map" style="display: flex; flex-direction: column; gap: 24px; padding: 32px 36px 32px 36px; margin-bottom: 28px;">
+          
+          <!-- TOEIC Header -->
+          <div class="toeic-header-card" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding: 24px 28px; background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(16, 185, 129, 0.15)); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 16px;">
+            <div>
+              <span class="eyebrow" style="color: #38bdf8; font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Chuyên sâu TOEIC Listening</span>
+              <h2 style="font-size: 1.6rem; font-weight: 900; margin: 4px 0 6px; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+                <span class="ti-target" style="color: #10b981;"></span> Luyện nghe mô phỏng Đề thi TOEIC
+              </h2>
+              <p style="color: #94a3b8; font-size: 0.95rem; margin: 0; max-width: 620px;">Luyện tập theo cấu trúc bài thi TOEIC Listening chuẩn quốc tế từ Part 1 đến Part 4 với phân tích bẫy phát âm và giải thích chi tiết.</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div class="toeic-target-badge" style="background: rgba(2, 6, 23, 0.6); border: 1px solid rgba(56, 189, 248, 0.25); padding: 10px 18px; border-radius: 12px; text-align: center;">
+                <span style="display: block; font-size: 11px; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Target Đề xuất</span>
+                <strong style="font-size: 1.2rem; color: #38bdf8; font-weight: 900;">450 - 990+</strong>
+              </div>
+            </div>
+          </div>
+
+
+
+          <!-- TOEIC Sessions Grid -->
+          <div class="lab-dashboard-grid full-width" style="padding: 0; background: none; border: none; box-shadow: none;">
+            <section aria-label="TOEIC Listening Map">
+              <div class="mission-toolbar" aria-label="Bộ lọc TOEIC session" style="margin-top: 0;">
+                <label class="mission-search">
+                  <span class="ti-search"></span>
+                  <input type="search" data-toeic-search placeholder="Tìm đề TOEIC, Part, bối cảnh công sở...">
+                </label>
+                <span class="mission-count" data-toeic-mission-count>Bài nghe TOEIC</span>
+              </div>
+              <div class="toeic-main-grid" data-toeic-mission-grid></div>
+            </section>
+          </div>
+
         </div>
       </div>
 
@@ -187,13 +231,15 @@
 
     <section class="section compact lab-workspace" id="lab-workspace" hidden>
       <div class="workspace-header">
-        <button class="btn" id="back-to-map" type="button" style="display: flex; align-items: center; gap: 6px; background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(125, 211, 252, 0.15); color: #94a3b8; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 6px; transition: all 0.2s ease; cursor: pointer;" onmouseover="this.style.background='rgba(51, 65, 85, 0.8)'; this.style.color='#f8fafc'; this.style.borderColor='rgba(125, 211, 252, 0.3)';" onmouseout="this.style.background='rgba(30, 41, 59, 0.7)'; this.style.color='#94a3b8'; this.style.borderColor='rgba(125, 211, 252, 0.15)';">
-          <span class="ti-arrow-left" style="font-weight: bold; font-size: 12px;"></span> Quay lại
-        </button>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="btn" id="back-to-map" type="button" style="display: flex; align-items: center; gap: 6px; background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(125, 211, 252, 0.15); color: #94a3b8; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 6px; transition: all 0.2s ease; cursor: pointer;" onmouseover="this.style.background='rgba(51, 65, 85, 0.8)'; this.style.color='#f8fafc'; this.style.borderColor='rgba(125, 211, 252, 0.3)';" onmouseout="this.style.background='rgba(30, 41, 59, 0.7)'; this.style.color='#94a3b8'; this.style.borderColor='rgba(125, 211, 252, 0.15)';">
+            <span class="ti-arrow-left" style="font-weight: bold; font-size: 12px;"></span> Quay lại
+          </button>
+        </div>
         
         <!-- Center Tabs matching Đậu TOEIC -->
         <div class="workspace-tabs" style="margin: 0 auto; display: flex; gap: 6px;">
-          <button class="workspace-tab is-active" data-workspace-stage="2" type="button">Nghe điền</button>
+          <button class="workspace-tab is-active" data-workspace-stage="2" type="button">Nghe Check</button>
           <button class="workspace-tab" data-workspace-stage="1" type="button">Question</button>
           <button class="workspace-tab" data-workspace-stage="3" type="button">Answer</button>
         </div>
@@ -256,7 +302,7 @@
             </div>
 
             <!-- STAGE 1: Trắc nghiệm -->
-            <div class="stage-view-panel" id="stage-panel-1">
+            <div class="stage-view-panel" id="stage-panel-1" hidden>
               <div class="stage-intro" style="margin-bottom: 12px;">
                 <h3>Câu hỏi hiểu ý chính</h3>
                 <p data-question-context>Chọn phản hồi phù hợp với vai của bạn.</p>
@@ -271,7 +317,7 @@
             </div>
 
             <!-- STAGE 2: Chép chính tả -->
-            <div class="stage-view-panel" id="stage-panel-2" hidden>
+            <div class="stage-view-panel" id="stage-panel-2">
               <div class="stage-intro" style="margin-bottom: 12px;">
                 <h3>Nghe và điền từ còn thiếu</h3>
                 <p>Điền các từ nghe được vào ô trống. Sử dụng gợi ý nếu gặp từ khó.</p>
@@ -280,13 +326,14 @@
               <!-- Dictation filling area -->
               <div class="dictation-filling-box" id="fill-blanks" data-dictation style="padding: 14px 18px; border: 1px solid rgba(125, 211, 252, 0.12); border-radius: 12px; background: rgba(15, 23, 42, 0.35);"></div>
 
-              <!-- Hint Actions matching Đậu TOEIC -->
-              <div class="dictation-hints-bar" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; border-top: 1px solid rgba(125, 211, 252, 0.08); padding-top: 14px;">
-                <button class="hint-btn" id="reveal-letter" type="button"><span class="ti-eye"></span> Gợi ý 1 từ</button>
-                <button class="hint-btn" id="show-connected" type="button"><span class="ti-light-bulb"></span> Nối âm</button>
-                <button class="hint-btn" id="show-answer" type="button"><span class="ti-layout-grid3"></span> Hiện tất cả</button>
+              <!-- Hint Actions matching Image 1 -->
+              <div class="dictation-hints-bar" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; border-top: 1px solid rgba(125, 211, 252, 0.08); padding-top: 14px;">
+                <button class="hint-btn" id="reveal-letter" type="button" data-hint-words="1"><span class="ti-eye"></span> 1 từ</button>
+                <button class="hint-btn" id="reveal-2-words" type="button" data-hint-words="2"><span class="ti-eye"></span> 2 từ</button>
+                <button class="hint-btn" id="reveal-3-words" type="button" data-hint-words="3"><span class="ti-eye"></span> 3 từ</button>
+                <button class="hint-btn" id="show-answer" type="button"><span class="ti-layout-grid3"></span> Tất cả</button>
                 <div style="margin-left: auto; display: flex; gap: 8px;">
-                  <button class="hint-btn" id="check-dictation-btn" type="button" style="background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4); color: #10b981; font-weight: bold;"><span class="ti-check"></span> Check</button>
+                  <button class="hint-btn check-btn" id="check-dictation-btn" type="button" style="border-color: #38bdf8; color: #38bdf8; background: rgba(56, 189, 248, 0.05);"><span class="ti-check"></span> Check</button>
                   <button class="hint-btn reset-btn" id="reset-dictation-btn" type="button"><span class="ti-reload"></span> Reset</button>
                 </div>
               </div>
@@ -295,41 +342,49 @@
                 Ctrl: phát lại &nbsp;&bull;&nbsp; Tab: lật từ &nbsp;&bull;&nbsp; Enter: check nhanh
               </div>
 
-              <div class="connected-panel" data-connected-panel hidden style="margin-top: 18px; padding: 14px; border: 1px dashed rgba(34, 211, 238, 0.2); border-radius: 8px; background: rgba(34, 211, 238, 0.02);">
-                <strong style="color: #22d3ee; font-size: 13px;">Nghe như người bản xứ:</strong>
-                <p data-connected-speech style="margin: 6px 0 0; font-size: 13.5px; color: #e2e8f0; font-style: italic;"></p>
-              </div>
             </div>
 
-            <!-- STAGE 3: Giải thích -->
+            <!-- STAGE 3: Giải thích / Nghe Full -->
             <div class="stage-view-panel" id="stage-panel-3" hidden>
-              <div class="stage-intro">
-                <h3>Bóc tách phát âm bản xứ</h3>
-                <p>Xem phân tích chi tiết nối âm, nuốt âm của câu này dưới đây:</p>
+              
+              <!-- TOEIC Nghe Full Container -->
+              <div id="toeic-full-listening" hidden>
+                <div class="stage-intro">
+                  <h3>Nghe toàn bài (Full Audio)</h3>
+                  <p>Phát lần lượt toàn bộ các câu trong phần này.</p>
+                </div>
+                <div id="toeic-full-script" style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;"></div>
               </div>
 
-              <div class="transcript-display-box">
-                <p class="transcript" data-transcript></p>
-                <div class="native-line">
-                  <span>Native speech:</span>
-                  <strong data-native-line></strong>
+              <!-- Study Breakdown Container -->
+              <div id="study-breakdown-container">
+                <div class="stage-intro">
+                  <h3>Bóc tách phát âm bản xứ</h3>
+                  <p>Xem phân tích chi tiết nối âm, nuốt âm của câu này dưới đây:</p>
                 </div>
-                <div class="translation-line" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 13.5px; color: #94a3b8; line-height: 1.5; display: flex; align-items: baseline; gap: 8px;">
-                  <span style="color: #38bdf8; font-weight: 700; text-transform: uppercase; font-size: 13.5px; letter-spacing: 0.5px; white-space: nowrap;">Bản dịch:</span>
-                  <span data-translation-text style="color: #e2e8f0; font-weight: 500; font-size: 13.5px;"></span>
-                </div>
-              </div>
 
-              <!-- Keyword list with Save to Notebook button and Finish button inside same card -->
-              <div class="keywords-box" style="margin-top: 14px; padding: 16px; border: 1px dashed rgba(125, 211, 252, 0.2); border-radius: 12px; background: rgba(2, 6, 23, 0.35); display: flex; flex-direction: column; gap: 12px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                  <div style="font-weight: 700; font-size: 13.5px; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
-                    <span class="ti-book"></span> Từ khóa quan trọng (Keywords):
+                <div class="transcript-display-box">
+                  <p class="transcript" data-transcript></p>
+                  <div class="native-line">
+                    <span>Native speech:</span>
+                    <strong data-native-line></strong>
                   </div>
-                  <button class="btn btn-primary" id="finish-mission" type="button" style="background: linear-gradient(135deg, #10b981, #06b6d4); border: none; font-weight: 700; padding: 8px 18px; font-size: 13px; border-radius: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); transition: all 0.2s; margin-left: auto; cursor: pointer;"><span class="ti-control-forward"></span> Next listening</button>
+                  <div class="translation-line" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 13.5px; color: #94a3b8; line-height: 1.5; display: flex; align-items: baseline; gap: 8px;">
+                    <span style="color: #38bdf8; font-weight: 700; text-transform: uppercase; font-size: 13.5px; letter-spacing: 0.5px; white-space: nowrap;">Bản dịch:</span>
+                    <span data-translation-text style="color: #e2e8f0; font-weight: 500; font-size: 13.5px;"></span>
+                  </div>
                 </div>
-                <div id="breakdown-keywords" style="display: flex; gap: 8px; flex-wrap: wrap;">
-                  <!-- Keywords will be rendered dynamically here -->
+
+                <div class="keywords-box" style="margin-top: 14px; padding: 16px; border: 1px dashed rgba(125, 211, 252, 0.2); border-radius: 12px; background: rgba(2, 6, 23, 0.35); display: flex; flex-direction: column; gap: 12px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                    <div style="font-weight: 700; font-size: 13.5px; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
+                      <span class="ti-book"></span> Từ khóa quan trọng (Keywords):
+                    </div>
+                    <button class="btn btn-primary" id="finish-mission" type="button" style="background: linear-gradient(135deg, #10b981, #06b6d4); border: none; font-weight: 700; padding: 8px 18px; font-size: 13px; border-radius: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); transition: all 0.2s; margin-left: auto; cursor: pointer;"><span class="ti-control-forward"></span> Next listening</button>
+                  </div>
+                  <div id="breakdown-keywords" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <!-- Keywords will be rendered dynamically here -->
+                  </div>
                 </div>
               </div>
             </div>
@@ -346,6 +401,12 @@
   </main>
 
   <script src="js/core.js?v=1.0.2"></script>
+  <script src="js/listening_toeic/listening_toeic_part1.js?v=1.0.0"></script>
+  <script src="js/listening_toeic/listening_toeic_part2.js?v=1.0.0"></script>
+  <script src="js/listening_toeic/listening_toeic_part3.js?v=1.0.0"></script>
+  <script src="js/listening_toeic/listening_toeic_part4.js?v=1.0.0"></script>
+  <script src="js/listening_toeic/listening_toeic_index.js?v=1.0.0"></script>
+  <script src="js/toeic-data.js?v=1.0.0"></script>
   <script src="js/listening-lab.js?v=1.1.2"></script>
   <script src="js/main.js"></script>
 </body>

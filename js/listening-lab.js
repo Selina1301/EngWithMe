@@ -327,6 +327,8 @@
         keywordHints: document.getElementById("breakdown-keywords") || document.querySelector("[data-keyword-hints]"),
         dictation: document.querySelector("[data-dictation]"),
         revealLetterBtn: document.getElementById("reveal-letter"),
+        reveal2WordsBtn: document.getElementById("reveal-2-words"),
+        reveal3WordsBtn: document.getElementById("reveal-3-words"),
         playSlowerBtn: document.getElementById("play-slower"),
         showConnectedBtn: document.getElementById("show-connected"),
         showAnswerBtn: document.getElementById("show-answer"),
@@ -353,8 +355,11 @@
         studyProgressText: document.getElementById("study-progress-text"),
         workspaceTabs: document.querySelectorAll(".workspace-tab"),
         hintLevelBtns: document.querySelectorAll(".toolbar-hints .hint-btn"),
+        playbackSpeedBtns: document.querySelectorAll(".playback-speed-selector .playback-speed-btn"),
         resetDictationBtn: document.getElementById("reset-dictation-btn"),
-        stage1: document.getElementById("stage-panel-1")
+        stage1: document.getElementById("stage-panel-1"),
+        stage2: document.getElementById("stage-panel-2"),
+        stage3: document.getElementById("stage-panel-3")
       };
     }
 
@@ -373,26 +378,35 @@
         });
       });
 
-      // Bind Mode Tabs: "Luyện nghe" vs "Tiến độ"
+      // Bind Mode Tabs: "Chủ đề", "Toeic", "Tiến độ"
       const listeningModeTabs = document.querySelectorAll("[data-listening-mode]");
       const studyView = document.querySelector("[data-listening-study-view]");
+      const toeicView = document.querySelector("[data-listening-toeic-view]");
       const progressView = document.querySelector("[data-listening-progress-view]");
+
+      const heroBanner = document.querySelector(".command-hero");
 
       listeningModeTabs.forEach((tab) => {
         tab.addEventListener("click", () => {
           const mode = tab.dataset.listeningMode;
           listeningModeTabs.forEach((t) => t.classList.toggle("is-active", t === tab));
 
+          if (heroBanner) heroBanner.hidden = mode !== "study";
+          if (studyView) studyView.hidden = mode !== "study";
+          if (toeicView) toeicView.hidden = mode !== "toeic";
+          if (progressView) progressView.hidden = mode !== "progress";
+
           if (mode === "progress") {
-            if (studyView) studyView.hidden = true;
-            if (progressView) progressView.hidden = false;
             renderDashboard();
+          } else if (mode === "toeic") {
+            renderToeicMissionGrid();
           } else {
-            if (studyView) studyView.hidden = false;
-            if (progressView) progressView.hidden = true;
+            renderDashboard();
           }
         });
       });
+
+      bindToeicEvents();
 
       els.missionSearch?.addEventListener("input", () => {
         missionSearch = els.missionSearch.value.trim().toLowerCase();
@@ -406,11 +420,30 @@
       if (els.workspaceTabs) {
         els.workspaceTabs.forEach((tab) => {
           tab.classList.toggle("is-active", tab.dataset.workspaceStage === String(stage));
+          if (tab.dataset.workspaceStage === "1") {
+            tab.style.display = currentToeicTest ? "none" : "";
+          }
         });
       }
       if (els.stage1) els.stage1.hidden = String(stage) !== "1";
       if (els.stage2) els.stage2.hidden = String(stage) !== "2";
-      if (els.stage3) els.stage3.hidden = String(stage) !== "3";
+      if (els.stage3) {
+        els.stage3.hidden = String(stage) !== "3";
+        if (String(stage) === "3") {
+          const studyBreakdown = document.getElementById("study-breakdown-container");
+          const toeicFull = document.getElementById("toeic-full-listening");
+          if (currentToeicTest) {
+             if (studyBreakdown) studyBreakdown.hidden = true;
+             if (toeicFull) {
+                toeicFull.hidden = false;
+                renderToeicFullScript();
+             }
+          } else {
+             if (studyBreakdown) studyBreakdown.hidden = false;
+             if (toeicFull) toeicFull.hidden = true;
+          }
+        }
+      }
     }
 
     function scrollToMissionMap() {
@@ -431,7 +464,36 @@
         stopSpeech();
         stopTimer();
         els.workspace.hidden = true;
-        els.dashboard.hidden = false;
+        
+        const modeSwitch = document.querySelector(".listening-mode-switch");
+        if (modeSwitch) modeSwitch.hidden = false;
+
+        const activeTab = document.querySelector(".listening-mode-tab.is-active")?.dataset.listeningMode;
+        const toeicView = document.querySelector("[data-listening-toeic-view]");
+        const progressView = document.querySelector("[data-listening-progress-view]");
+
+        const heroBanner = document.querySelector(".command-hero");
+        if (heroBanner) heroBanner.hidden = (activeTab !== "study");
+
+        const mainDashboard = document.querySelector(".lab-dashboard-grid");
+
+        if (activeTab === "toeic" && toeicView) {
+          if (els.dashboard) els.dashboard.hidden = false;
+          if (mainDashboard) mainDashboard.hidden = true;
+          toeicView.hidden = false;
+          if (progressView) progressView.hidden = true;
+        } else if (activeTab === "progress" && progressView) {
+          if (els.dashboard) els.dashboard.hidden = false;
+          if (mainDashboard) mainDashboard.hidden = true;
+          progressView.hidden = false;
+          if (toeicView) toeicView.hidden = true;
+        } else {
+          if (els.dashboard) els.dashboard.hidden = false;
+          if (mainDashboard) mainDashboard.hidden = false;
+          if (toeicView) toeicView.hidden = true;
+          if (progressView) progressView.hidden = true;
+        }
+
         document.body.classList.remove("workspace-active");
         scrollToMissionMap();
       });
@@ -452,6 +514,16 @@
         });
       }
 
+      if (els.playbackSpeedBtns) {
+        els.playbackSpeedBtns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            els.playbackSpeedBtns.forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentPlaybackSpeed = parseFloat(btn.dataset.speed) || 1.0;
+          });
+        });
+      }
+
       els.modeTabs.forEach((tab) => {
         tab.addEventListener("click", () => {
           selectedMode = tab.dataset.mode || "natural";
@@ -461,11 +533,17 @@
       });
 
       els.playBtn.addEventListener("click", () => {
-        if (!currentMission) return;
         if (isPlaying) {
           stopSpeech();
           return;
         }
+        
+        if (currentToeicTest && els.stage3 && !els.stage3.hidden) {
+          playToeicFullAudio();
+          return;
+        }
+
+        if (!currentMission) return;
         listenCount += 1;
         updateListenLayers();
         speak(getCurrentAudioText());
@@ -473,7 +551,9 @@
 
       els.replayHardBtn?.addEventListener("click", () => currentMission && speak(currentMission.hardPart, false));
       els.playSlowerBtn?.addEventListener("click", () => currentMission && speak(currentMission.transcript, false, "slow"));
-      els.revealLetterBtn?.addEventListener("click", revealFirstWord);
+      els.revealLetterBtn?.addEventListener("click", () => revealWords(1));
+      els.reveal2WordsBtn?.addEventListener("click", () => revealWords(2));
+      els.reveal3WordsBtn?.addEventListener("click", () => revealWords(3));
       els.showConnectedBtn?.addEventListener("click", toggleConnectedPanel);
       els.showAnswerBtn?.addEventListener("click", showFullAnswer);
       els.resetDictationBtn?.addEventListener("click", resetDictationInputs);
@@ -682,6 +762,377 @@
       });
     }
 
+    let activeToeicPart = "all";
+    let toeicSearchQuery = "";
+    let currentToeicTest = null;
+    let currentToeicGroupIdx = 0;
+    let currentPlaybackSpeed = 1.0;
+    let toeicAudioTimeout = null;
+    let currentToeicItemIdx = 0;
+
+    function bindToeicEvents() {
+      const toeicPartCards = document.querySelectorAll("[data-toeic-part]");
+      const toeicSearchInput = document.querySelector("[data-toeic-search]");
+      const toggleSidebarBtn = document.getElementById("toggle-sidebar-btn");
+
+      toeicPartCards.forEach((card) => {
+        card.addEventListener("click", () => {
+          activeToeicPart = card.dataset.toeicPart;
+          toeicPartCards.forEach((c) => {
+            const isActive = c === card;
+            c.classList.toggle("active", isActive);
+            c.style.borderColor = isActive ? "rgba(56, 189, 248, 0.4)" : "rgba(255, 255, 255, 0.08)";
+            c.style.background = isActive ? "rgba(30, 41, 59, 0.6)" : "rgba(30, 41, 59, 0.4)";
+          });
+          renderToeicMissionGrid();
+        });
+      });
+
+      if (toeicSearchInput) {
+        toeicSearchInput.addEventListener("input", () => {
+          toeicSearchQuery = toeicSearchInput.value.trim().toLowerCase();
+          renderToeicMissionGrid();
+        });
+      }
+
+      if (toggleSidebarBtn) {
+        toggleSidebarBtn.addEventListener("click", () => {
+          const sidebar = document.querySelector(".workspace-sidebar");
+          if (sidebar) {
+            sidebar.classList.toggle("is-hidden");
+            const isHidden = sidebar.classList.contains("is-hidden");
+            toggleSidebarBtn.innerHTML = isHidden 
+              ? `<span class="ti-layout-sidebar-left" style="font-weight: bold; font-size: 13px;"></span> Hiện sidebar`
+              : `<span class="ti-layout-sidebar-left" style="font-weight: bold; font-size: 13px;"></span> Ẩn sidebar`;
+          }
+        });
+      }
+    }
+
+    function renderToeicMissionGrid() {
+      const toeicGrid = document.querySelector("[data-toeic-mission-grid]");
+      const toeicCount = document.querySelector("[data-toeic-mission-count]");
+      if (!toeicGrid) return;
+
+      const tests = window.TOEIC_PART1_TESTS || [];
+      const part2Counts = ["100 câu", "100 câu", "100 câu", "100 câu", "100 câu", "100 câu", "100 câu"];
+      const part3Counts = ["111 câu", "132 câu", "111 câu", "125 câu", "118 câu", "120 câu", "130 câu"];
+      const part4Counts = ["75 câu", "79 câu", "75 câu", "80 câu", "78 câu", "82 câu", "85 câu"];
+
+      let html = "";
+      let visibleCount = 0;
+
+      tests.forEach((test, idx) => {
+        const testNum = test.testNumber || (idx + 1);
+        const p1Count = test.totalItems || "20 câu";
+
+        const partsData = [
+          { partKey: "part1", partNum: 1, label: "Part 1", badgeClass: "part1-badge", count: p1Count },
+          { partKey: "part2", partNum: 2, label: "Part 2", badgeClass: "part2-badge", count: part2Counts[idx % part2Counts.length] },
+          { partKey: "part3", partNum: 3, label: "Part 3", badgeClass: "part3-badge", count: part3Counts[idx % part3Counts.length] },
+          { partKey: "part4", partNum: 4, label: "Part 4", badgeClass: "part4-badge", count: part4Counts[idx % part4Counts.length] }
+        ];
+
+        const matchingParts = partsData.filter((p) => {
+          if (activeToeicPart !== "all" && activeToeicPart !== p.partKey) return false;
+          if (toeicSearchQuery) {
+            const query = toeicSearchQuery.toLowerCase();
+            return `test ${testNum} ${p.label} ${test.title}`.toLowerCase().includes(query);
+          }
+          return true;
+        });
+
+        if (matchingParts.length > 0) {
+          visibleCount += matchingParts.length;
+          matchingParts.forEach((p) => {
+            const isPremium = p.partNum === 3 || p.partNum === 4;
+            const statusHtml = isPremium
+              ? `<span class="toeic-card-status" style="color: #f59e0b; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;"><span class="ti-crown"></span> PRO</span>`
+              : `<span class="toeic-card-status">Chưa bắt đầu</span>`;
+            const btnHtml = isPremium
+              ? `<button class="toeic-card-btn premium-lock-btn" type="button" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.3)); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24;" data-open-toeic-test="${test.id}" data-toeic-part-num="${p.partNum}">
+                  <span class="ti-lock" style="margin-right: 4px;"></span> Premium
+                </button>`
+              : `<button class="toeic-card-btn" type="button" data-open-toeic-test="${test.id}" data-toeic-part-num="${p.partNum}">
+                  Luyện tập <span class="ti-angle-right"></span>
+                </button>`;
+
+            html += `
+              <article class="toeic-grid-card ${isPremium ? 'is-premium-card' : ''}">
+                <div class="toeic-card-header">
+                  <div class="toeic-card-badges">
+                    <span class="toeic-badge test-badge">Test ${testNum}</span>
+                    <span class="toeic-badge ${p.badgeClass}">${p.label}</span>
+                  </div>
+                  <span class="toeic-folder-icon"><span class="ti-folder"></span> 0</span>
+                </div>
+                <div class="toeic-card-body">
+                  <h3 class="toeic-card-count">
+                    <span class="ti-headphone" style="color: #38bdf8; font-size: 1.2rem;"></span> ${p.count}
+                  </h3>
+                </div>
+                <div class="toeic-card-footer">
+                  ${statusHtml}
+                  ${btnHtml}
+                </div>
+              </article>
+            `;
+          });
+        }
+      });
+
+      if (toeicCount) {
+        toeicCount.textContent = `${visibleCount} phần nghe TOEIC`;
+      }
+
+      if (!html) {
+        toeicGrid.innerHTML = `
+          <div class="mission-empty" style="grid-column: 1 / -1; padding: 40px; text-align: center; color: #94a3b8;">
+            <strong>Không tìm thấy bài nghe TOEIC phù hợp.</strong>
+            <p style="margin-top: 6px; font-size: 13px;">Thử chọn Part khác hoặc từ khóa tìm kiếm khác.</p>
+          </div>
+        `;
+        return;
+      }
+
+      toeicGrid.innerHTML = html;
+
+      toeicGrid.querySelectorAll("[data-open-toeic-test]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const testId = btn.dataset.openToeicTest;
+          const partNum = parseInt(btn.dataset.toeicPartNum, 10);
+          openToeicTest(testId, partNum);
+        });
+      });
+    }
+
+    function showPremiumUpgradeModal(partNum) {
+      let modal = document.getElementById("premium-upgrade-modal");
+      if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "premium-upgrade-modal";
+        modal.style.cssText = "position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,0.8);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;";
+        document.body.appendChild(modal);
+      }
+
+      modal.innerHTML = `
+        <div style="background:#1e293b;border:1px solid rgba(245,158,11,0.4);border-radius:20px;max-width:440px;width:100%;padding:32px 28px;text-align:center;box-shadow:0 25px 50px -12px rgba(0,0,0,0.6), 0 0 30px rgba(245,158,11,0.2);position:relative;">
+          <button type="button" onclick="document.getElementById('premium-upgrade-modal').style.display='none'" style="position:absolute;top:16px;right:16px;background:transparent;border:none;color:#94a3b8;font-size:20px;cursor:pointer;line-height:1;">✕</button>
+          
+          <div style="width:64px;height:64px;margin:0 auto 18px;background:rgba(245,158,11,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f59e0b;font-size:32px;border:1px solid rgba(245,158,11,0.3);">
+            👑
+          </div>
+          
+          <h3 style="font-size:22px;font-weight:700;color:#fff;margin:0 0 10px;">Cần nâng cấp Premium</h3>
+          <p style="font-size:14px;color:#cbd5e1;margin:0 0 24px;line-height:1.6;">
+            Tính năng luyện nghe <strong style="color:#f59e0b;">Part ${partNum}</strong> dành riêng cho tài khoản cao cấp. Nâng cấp Premium ngay để mở khóa toàn bộ bài nghe TOEIC & tính năng không giới hạn!
+          </p>
+          
+          <div style="display:flex;gap:12px;justify-content:center;">
+            <button type="button" onclick="document.getElementById('premium-upgrade-modal').style.display='none'" style="padding:10px 20px;border-radius:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:#cbd5e1;font-weight:600;cursor:pointer;font-size:14px;">Để sau</button>
+            <a href="pricing.html" style="padding:10px 24px;border-radius:10px;background:linear-gradient(135deg, #f59e0b, #d97706);color:#fff;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(245,158,11,0.35);font-size:14px;">Nâng cấp ngay ✨</a>
+          </div>
+        </div>
+      `;
+      modal.style.display = "flex";
+    }
+
+    function openToeicTest(testId, partNum) {
+      if (partNum === 3 || partNum === 4) {
+        showPremiumUpgradeModal(partNum);
+        return;
+      }
+
+      let tests = window.TOEIC_PART1_TESTS || [];
+      if (partNum === 2 && window.TOEIC_PART2_TESTS) tests = window.TOEIC_PART2_TESTS;
+      else if (partNum === 3 && window.TOEIC_PART3_TESTS) tests = window.TOEIC_PART3_TESTS;
+      else if (partNum === 4 && window.TOEIC_PART4_TESTS) tests = window.TOEIC_PART4_TESTS;
+
+      const testNum = parseInt(testId.replace(/\D/g, ''), 10);
+      const test = tests.find((t) => t.id === testId || t.testNumber === testNum) || tests[0];
+      if (!test) return;
+
+      currentToeicTest = test;
+      currentToeicGroupIdx = 0;
+      currentToeicItemIdx = 0;
+
+      const mainDashboard = document.querySelector(".lab-dashboard-grid");
+      const toeicView = document.querySelector("[data-listening-toeic-view]");
+      const progressView = document.querySelector("[data-listening-progress-view]");
+      const workspace = document.getElementById("lab-workspace");
+
+      if (els.dashboard) els.dashboard.hidden = true;
+      if (mainDashboard) mainDashboard.hidden = true;
+      if (toeicView) toeicView.hidden = true;
+      if (progressView) progressView.hidden = true;
+      if (workspace) workspace.hidden = false;
+      document.body.classList.add("workspace-active");
+
+      const modeSwitch = document.querySelector(".listening-mode-switch");
+      if (modeSwitch) modeSwitch.hidden = true;
+
+      const topicNameEl = document.getElementById("active-topic-name");
+      const subtitleEl = document.getElementById("sidebar-subtitle");
+
+      if (topicNameEl) topicNameEl.textContent = test.title.toUpperCase();
+      if (subtitleEl) subtitleEl.textContent = `${test.groups.length} bài • ${test.totalItems}`;
+
+      switchWorkspaceTab(2);
+      renderToeicSidebarTree();
+      loadToeicSentence(0, 0);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderToeicSidebarTree() {
+      const sidebarList = document.getElementById("sidebar-session-list");
+      if (!sidebarList || !currentToeicTest) return;
+
+      let html = "";
+      currentToeicTest.groups.forEach((group, gIdx) => {
+        const isGroupActive = gIdx === currentToeicGroupIdx;
+        html += `
+          <div class="sidebar-group-block" style="margin-bottom: 6px;">
+            <button class="sidebar-group-header ${isGroupActive ? "is-active" : ""}" type="button" data-group-idx="${gIdx}">
+              <span><span class="ti-headphone" style="margin-right: 6px;"></span> ${group.groupTitle}</span>
+            </button>
+            <div class="sidebar-group-items" ${isGroupActive ? "" : 'style="display: none;"'}>
+        `;
+
+        group.items.forEach((item, iIdx) => {
+          const isItemActive = isGroupActive && iIdx === currentToeicItemIdx;
+          const missionId = `toeic-${currentToeicTest.id}-${gIdx}-${iIdx}`;
+          const isCompleted = (state.scores[missionId] || 0) >= 70;
+          html += `
+            <div class="sidebar-item-row ${isItemActive ? "is-active" : ""}" data-group-idx="${gIdx}" data-item-idx="${iIdx}" style="display: flex; justify-content: space-between; align-items: center;">
+              <span>${item.label}</span>
+              ${isCompleted ? '<span class="ti-check" style="color: #10b981; font-weight: bold;"></span>' : ''}
+            </div>
+          `;
+        });
+
+        html += `
+            </div>
+          </div>
+        `;
+      });
+
+      sidebarList.innerHTML = html;
+
+      sidebarList.querySelectorAll(".sidebar-group-header").forEach((hdr) => {
+        hdr.addEventListener("click", () => {
+          const gIdx = parseInt(hdr.dataset.groupIdx, 10);
+          currentToeicGroupIdx = gIdx;
+          currentToeicItemIdx = 0;
+          renderToeicSidebarTree();
+          loadToeicSentence(currentToeicGroupIdx, currentToeicItemIdx);
+        });
+      });
+
+      sidebarList.querySelectorAll(".sidebar-item-row").forEach((row) => {
+        row.addEventListener("click", () => {
+          const gIdx = parseInt(row.dataset.groupIdx, 10);
+          const iIdx = parseInt(row.dataset.itemIdx, 10);
+          currentToeicGroupIdx = gIdx;
+          currentToeicItemIdx = iIdx;
+          renderToeicSidebarTree();
+          loadToeicSentence(gIdx, iIdx);
+        });
+      });
+    }
+
+    function loadToeicSentence(gIdx, iIdx) {
+      if (!currentToeicTest || !currentToeicTest.groups[gIdx]) return;
+      const item = currentToeicTest.groups[gIdx].items[iIdx];
+      if (!item) return;
+
+      currentMission = {
+        id: `toeic-${currentToeicTest.id}-${gIdx}-${iIdx}`,
+        transcript: item.text,
+        partNum: currentToeicTest.partNum,
+      };
+
+      currentHintPercent = 0;
+      if (els.hintLevelBtns) {
+        els.hintLevelBtns.forEach(b => b.classList.toggle("active", parseInt(b.dataset.hint, 10) === 0));
+      }
+
+      switchWorkspaceTab(2);
+      renderDictationForHint(currentMission, currentHintPercent);
+    }
+
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = currentPlaybackSpeed;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function renderToeicFullScript() {
+      const container = document.getElementById("toeic-full-script");
+      if (!container || !currentToeicTest) return;
+      
+      const group = currentToeicTest.groups[currentToeicGroupIdx];
+      if (!group) return;
+      
+      let html = "";
+      group.items.forEach((item, idx) => {
+        html += `
+          <div class="toeic-full-item" data-full-item-idx="${idx}" style="padding: 12px; border-radius: 8px; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(125, 211, 252, 0.1); display: flex; gap: 12px; transition: all 0.3s ease;">
+            <span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; font-weight: 800; padding: 4px 10px; border-radius: 8px; height: fit-content; border: 1px solid rgba(56, 189, 248, 0.4);">${item.option}</span>
+            <span style="color: #ffffff; font-size: 1.05rem; line-height: 1.6;">${item.text}</span>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function playToeicFullAudio() {
+       if (!currentToeicTest || !currentToeicTest.groups[currentToeicGroupIdx]) return;
+       const group = currentToeicTest.groups[currentToeicGroupIdx];
+       let currentIndex = 0;
+
+       isPlaying = true;
+       if (els.waveform) els.waveform.classList.add("playing");
+       if (els.playBtn) els.playBtn.innerHTML = '<span class="ti-control-pause"></span>';
+
+       function playNext() {
+         if (!isPlaying || currentIndex >= group.items.length) {
+            stopSpeech();
+            return;
+         }
+         
+         const text = group.items[currentIndex].text;
+         const items = document.querySelectorAll(".toeic-full-item");
+         items.forEach((el, i) => {
+            el.style.borderColor = i === currentIndex ? "#38bdf8" : "rgba(125, 211, 252, 0.1)";
+            el.style.background = i === currentIndex ? "rgba(56, 189, 248, 0.15)" : "rgba(15, 23, 42, 0.4)";
+         });
+
+         if ('speechSynthesis' in window) {
+           window.speechSynthesis.cancel();
+           const utterance = new SpeechSynthesisUtterance(text);
+           utterance.lang = 'en-US';
+           utterance.rate = currentPlaybackSpeed;
+           utterance.onend = () => {
+             if (!isPlaying) return;
+             currentIndex++;
+             toeicAudioTimeout = setTimeout(playNext, 2000);
+           };
+           utterance.onerror = () => {
+             if (!isPlaying) return;
+             currentIndex++;
+             toeicAudioTimeout = setTimeout(playNext, 2000);
+           };
+           window.speechSynthesis.speak(utterance);
+         }
+       }
+       
+       playNext();
+    }
+
     function renderMistakeBank() {
       if (!els.mistakeBank) return;
       const entries = Object.entries(state.mistakes || {}).filter(([_, count]) => count > 0).sort((a, b) => b[1] - a[1]).slice(0, 5);
@@ -794,6 +1245,7 @@
     function openMission(id, options = {}) {
       const mission = missions.find((item) => item.id === id) || missions[0];
       currentMission = mission;
+      currentToeicTest = null;
       selectedMode = "natural";
       listenCount = 0;
       wrongOptionAttempted = false;
@@ -817,8 +1269,12 @@
       els.dashboard.hidden = true;
       els.workspace.hidden = false;
       document.body.classList.add("workspace-active");
+      
+      const modeSwitch = document.querySelector(".listening-mode-switch");
+      if (modeSwitch) modeSwitch.hidden = true;
+
+      switchWorkspaceTab(1);
       if (els.resultPanel) els.resultPanel.hidden = true;
-      switchWorkspaceTab("2");
 
       if (options.challenge) startTimer();
       else if (els.challengeBox) els.challengeBox.hidden = true;
@@ -999,7 +1455,7 @@
     }
 
     function setDictationControls(enabled = true) {
-      [els.revealLetterBtn, els.playSlowerBtn, els.showConnectedBtn, els.showAnswerBtn, els.checkBlanksBtn, els.resetDictationBtn].forEach((button) => {
+      [els.revealLetterBtn, els.reveal2WordsBtn, els.reveal3WordsBtn, els.playSlowerBtn, els.showConnectedBtn, els.showAnswerBtn, els.checkBlanksBtn, els.resetDictationBtn].forEach((button) => {
         if (button) button.disabled = false;
       });
       getBlankInputs().forEach((input) => {
@@ -1098,7 +1554,11 @@
 
       saveState();
       renderDashboard();
-      if (currentMission) populateMission(currentMission);
+      if (currentToeicTest) {
+        renderToeicSidebarTree();
+      } else if (currentMission) {
+        populateMission(currentMission);
+      }
 
       if (correctCount === inputs.length) {
         if (els.answerFeedback) {
@@ -1122,7 +1582,15 @@
       if (!currentMission) return;
       const inputs = getBlankInputs();
       inputs.forEach((input) => {
-        input.value = "";
+        let hintPrefix = "";
+        if (currentHintPercent > 0 && currentHintPercent < 100) {
+          const answer = input.dataset.answer;
+          const revealLetters = Math.floor(answer.length * (currentHintPercent / 100));
+          if (revealLetters > 0) {
+            hintPrefix = answer.substring(0, revealLetters);
+          }
+        }
+        input.value = hintPrefix;
         input.classList.remove("correct", "wrong");
         input.style.border = "1.5px dashed rgba(56, 189, 248, 0.5)";
         input.style.borderColor = "rgba(56, 189, 248, 0.5)";
@@ -1140,7 +1608,11 @@
       saveState();
       deleteProgressFromDatabase(currentMission.id);
       renderDashboard();
-      if (currentMission) populateMission(currentMission);
+      if (currentToeicTest) {
+        renderToeicSidebarTree();
+      } else if (currentMission) {
+        populateMission(currentMission);
+      }
     }
 
     function renderDictationForHint(mission, percent) {
@@ -1302,19 +1774,23 @@
       renderDictationForHint(currentMission, percent);
     }
 
-    function revealFirstWord() {
+    function revealWords(count) {
       const inputs = getBlankInputs();
-      const target = inputs.find((input) => normalize(input.value) !== normalize(input.dataset.answer));
-      if (!target) return;
+      const targets = inputs.filter((input) => normalize(input.value) !== normalize(input.dataset.answer));
+      if (!targets.length) return;
       
-      target.value = target.dataset.answer;
-      target.classList.add("correct");
-      target.classList.remove("wrong");
-      target.style.border = "1.5px solid #10b981";
-      target.style.borderColor = "#10b981";
-      target.style.color = "#10b981";
-      target.style.background = "rgba(16, 185, 129, 0.15)";
-      target.style.boxShadow = "0 0 10px rgba(16, 185, 129, 0.35)";
+      const countToReveal = Math.min(count, targets.length);
+      for (let i = 0; i < countToReveal; i++) {
+        const target = targets[i];
+        target.value = target.dataset.answer;
+        target.classList.add("correct");
+        target.classList.remove("wrong");
+        target.style.border = "1.5px solid #10b981";
+        target.style.borderColor = "#10b981";
+        target.style.color = "#10b981";
+        target.style.background = "rgba(16, 185, 129, 0.15)";
+        target.style.boxShadow = "0 0 10px rgba(16, 185, 129, 0.35)";
+      }
       
       const nextTarget = inputs.find((input) => normalize(input.value) !== normalize(input.dataset.answer));
       if (nextTarget) {
@@ -1405,7 +1881,7 @@
 
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = getMissionVoiceRoute(currentMission).lang;
-      utterance.rate = mode.rate;
+      utterance.rate = (mode.rate * currentPlaybackSpeed) || 1.0;
       utterance.pitch = 1;
       utterance.volume = 1;
       const voice = pickVoice(utterance.lang, currentMission);
@@ -1417,6 +1893,10 @@
 
     function stopSpeech() {
       if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      if (toeicAudioTimeout) {
+         clearTimeout(toeicAudioTimeout);
+         toeicAudioTimeout = null;
+      }
       stopNoise();
       isPlaying = false;
       if (els.waveform) els.waveform.classList.remove("playing");

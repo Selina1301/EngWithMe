@@ -8,14 +8,16 @@ require_once __DIR__ . '/helpers.php';
 $clientId = getenv('GOOGLE_CLIENT_ID');
 $clientSecret = getenv('GOOGLE_CLIENT_SECRET');
 
-// Tự động nhận diện Redirect URI động theo domain hoặc lấy từ cấu hình .env
-$redirectUri = getenv('GOOGLE_REDIRECT_URI');
-$currentHost = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$isLocalhost = (str_starts_with($currentHost, 'localhost') || str_starts_with($currentHost, '127.0.0.1'));
+// Sử dụng cấu hình GOOGLE_REDIRECT_URI chuẩn từ .env để khớp 100% với Google Console
+$redirectUri = trim((string) getenv('GOOGLE_REDIRECT_URI'));
+if ($redirectUri !== '') {
+    // Tự động làm sạch các tiền tố trùng lặp như https://https://
+    while (preg_match('#^https?://https?://#i', $redirectUri)) {
+        $redirectUri = preg_replace('#^https?://#i', '', $redirectUri);
+    }
+}
 
-// Nếu cấu hình .env là localhost nhưng người dùng đang truy cập qua Tunnel (như Cloudflare, ngrok...)
-// ta sẽ tự động chuyển sang sử dụng Redirect URI động theo domain thực tế để tránh lỗi redirect_uri_mismatch
-if (empty($redirectUri) || (!$isLocalhost && str_contains($redirectUri, 'localhost'))) {
+if (empty($redirectUri)) {
     $protocol = "http";
     if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || 
         (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')) {

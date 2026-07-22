@@ -196,18 +196,24 @@ async function submitAuthForm(form, endpoint) {
 
 function saveAuthenticatedUser(user) {
   if (!user) return;
+  if (typeof AppCache !== "undefined" && AppCache.clear) {
+    AppCache.clear();
+  }
   if (typeof persistAuthUser === "function") {
     persistAuthUser(user);
     return;
   }
-  localStorage.setItem("engWithMeStudentName", user.name || "Nguyễn Văn A");
-  localStorage.setItem("engWithMeGoal", user.goal || "Giao tiếp hằng ngày");
+  const name = user.name || user.full_name || "Học viên";
+  const goal = user.goal || user.learning_goal || "";
+  const avatar = user.avatar || user.avatar_path || "";
+  localStorage.setItem("engWithMeStudentName", name);
+  localStorage.setItem("engWithMeGoal", goal);
   localStorage.setItem("engWithMeLevel", user.level || "A1");
   localStorage.setItem("engWithMeUserEmail", user.email || "");
   localStorage.setItem("engWithMeUserRole", user.role || "user");
   localStorage.setItem("engWithMeUserStatus", user.status || "active");
   localStorage.setItem("engWithMeUserId", String(user.id || ""));
-  localStorage.setItem("engWithMeUserAvatar", user.avatar || "");
+  localStorage.setItem("engWithMeUserAvatar", avatar);
 }
 
 function showAuthFeedback(form, message, isSuccess = true) {
@@ -427,4 +433,24 @@ function openConflictModal(email) {
     };
   }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const otpSent = urlParams.get("otp_sent");
+  const email = urlParams.get("email");
+
+  if (otpSent === "1" && email) {
+    const form = document.querySelector("[data-login-form]") || document.querySelector("form");
+    if (typeof openOtpModal === "function") {
+      setTimeout(() => {
+        openOtpModal(email, form, true);
+        const feedback = document.getElementById("otpErrorMsg");
+        if (feedback) {
+          feedback.textContent = `Mã OTP 6 số đã được gửi tới email Google: ${email}`;
+          feedback.style.color = "var(--success)";
+        }
+      }, 250);
+    }
+  }
+});
 

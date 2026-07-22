@@ -23,8 +23,8 @@ if ($email === '' || $otp === '') {
 try {
     $pdo = db();
     
-    // Tìm user đang hoạt động theo email
-    $statement = $pdo->prepare('SELECT * FROM users WHERE email = ? AND status = "active" LIMIT 1');
+    // Tìm user theo email (bao gồm cả tài khoản mới chưa kích hoạt - pending)
+    $statement = $pdo->prepare('SELECT * FROM users WHERE email = ? AND status IN ("active", "pending") LIMIT 1');
     $statement->execute([$email]);
     $user = $statement->fetch();
     
@@ -50,39 +50,45 @@ try {
         }
     }
     
-    // Xóa mã OTP sau khi xác thực thành công
-    $update = $pdo->prepare('UPDATE users SET verification_token = NULL WHERE id = ?');
+    // Kích hoạt tài khoản và xóa mã OTP sau khi xác thực thành công
+    $update = $pdo->prepare('UPDATE users SET status = "active", verification_token = NULL WHERE id = ?');
     $update->execute([(int) $user['id']]);
     
     // Đọc trạng thái Ghi nhớ từ client
-    $remember = isset($data['remember']) && ($data['remember'] === '1' || $data['remember'] === true || $data['remember'] === 1 || $data['remember'] === 'true');
+    $remember = isset($data['remember']) && ($data['remember'] === '1' || $data['remember'] === true || $data['remember'] === 1 || $data['remember'] === 'true' || $data['remember'] === 'on');
 
     // Tạo session đăng nhập chính thức
     session_regenerate_id(true);
     $_SESSION['user_id'] = (int) $user['id'];
     
     if ($remember) {
-        // Ghi nhớ thiết bị: Cấu hình cookie session PHPSESSID tồn tại 30 ngày giống các web lớn
+        // Ghi nhớ thiết bị trong 7 ngày: Tạo token ngẫu nhiên mới lưu DB và Cookie
+        ensure_user_remember_column();
+        $token = generate_remember_token();
+        $updateRemember = $pdo->prepare('UPDATE users SET remember_until = DATE_ADD(NOW(), INTERVAL 7 DAY), remember_token = ?, last_login_at = NOW(), login_attempts = 0, attempt_lock_until = NULL WHERE id = ?');
+        $updateRemember->execute([$token, (int) $user['id']]);
+
         $cookieParams = session_get_cookie_params();
         setcookie(
             session_name(),
             session_id(),
-            time() + 86400 * 30, // 30 ngày
-            $cookieParams['path'],
+            time() + 86400 * 7,
+            $cookieParams['path'] ?? '/',
             $cookieParams['domain'] ?? '',
-            $cookieParams['secure'],
-            $cookieParams['httponly']
+            (bool) ($cookieParams['secure'] ?? false),
+            (bool) ($cookieParams['httponly'] ?? true)
         );
-        // Đặt cookie đăng nhập cho frontend tồn tại 30 ngày
-        setcookie('ewm_logged_in', '1', time() + 86400 * 30, '/');
+        setcookie('ewm_logged_in', '1', time() + 86400 * 7, '/');
+        setcookie('ewm_trusted_device', $user['id'] . ':' . $token, time() + 86400 * 7, '/');
     } else {
-        // Không ghi nhớ: Cookie session biến mất khi đóng trình duyệt
+        // Không ghi nhớ: Xóa sạch token thiết bị tin cậy trong DB và Cookie
+        ensure_user_remember_column();
+        $updateLogin = $pdo->prepare('UPDATE users SET remember_until = NULL, remember_token = NULL, last_login_at = NOW(), login_attempts = 0, attempt_lock_until = NULL WHERE id = ?');
+        $updateLogin->execute([(int) $user['id']]);
+
         setcookie('ewm_logged_in', '1', 0, '/');
+        setcookie('ewm_trusted_device', '', time() - 3600, '/');
     }
-    
-    // Cập nhật log đăng nhập cuối
-    $updateLogin = $pdo->prepare('UPDATE users SET last_login_at = NOW(), login_attempts = 0, attempt_lock_until = NULL WHERE id = ?');
-    $updateLogin->execute([(int) $user['id']]);
     
     log_user_activity('login_otp_verify_success', ['email' => $email]);
     

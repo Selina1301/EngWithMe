@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $statement = db()->prepare('UPDATE users SET status = "locked" WHERE id = ?');
             $statement->execute([$targetId]);
+            destroy_user_sessions($targetId);
         } elseif ($action === 'unlock') {
             $statement = db()->prepare('UPDATE users SET status = "active" WHERE id = ?');
             $statement->execute([$targetId]);
@@ -67,12 +68,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $statement = db()->prepare('UPDATE users SET role = "user" WHERE id = ?');
             $statement->execute([$targetId]);
+            destroy_user_sessions($targetId);
         } elseif ($action === 'delete') {
             if ($isSelf) {
                 json_response(['ok' => false, 'message' => 'Không thể xóa chính tài khoản admin đang dùng.'], 422);
             }
             $statement = db()->prepare('DELETE FROM users WHERE id = ?');
             $statement->execute([$targetId]);
+            destroy_user_sessions($targetId);
         } else {
             json_response(['ok' => false, 'message' => 'Hành động không hợp lệ.'], 422);
         }
@@ -80,6 +83,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         json_response(['ok' => true, 'message' => 'Đã cập nhật người dùng.'] + admin_users_payload());
     } catch (Throwable $error) {
         json_response(['ok' => false, 'message' => 'Không thể cập nhật người dùng.'], 500);
+    }
+}
+
+function destroy_user_sessions(int $userId): void
+{
+    if ($userId <= 0) return;
+    $sessionPath = __DIR__ . '/sessions';
+    if (!is_dir($sessionPath)) return;
+
+    $files = glob($sessionPath . '/sess_*');
+    if (!$files) return;
+
+    $targetPattern = 'user_id|i:' . $userId . ';';
+    $targetPatternAlt = '"user_id";i:' . $userId . ';';
+
+    foreach ($files as $file) {
+        if (!is_file($file)) continue;
+        $content = @file_get_contents($file);
+        if ($content && (str_contains($content, $targetPattern) || str_contains($content, $targetPatternAlt))) {
+            @unlink($file);
+        }
     }
 }
 

@@ -134,12 +134,33 @@ function current_user_payload(array $user): array
     ];
 }
 
+function generate_remember_token(): string
+{
+    return bin2hex(random_bytes(32));
+}
+
+function ensure_user_remember_column(): void
+{
+    static $checked = false;
+    if ($checked) return;
+    $checked = true;
+    try {
+        db()->exec("ALTER TABLE users ADD COLUMN remember_until DATETIME NULL AFTER attempt_lock_until;");
+    } catch (\Throwable $e) {}
+    try {
+        db()->exec("ALTER TABLE users ADD COLUMN remember_token VARCHAR(64) NULL AFTER remember_until;");
+    } catch (\Throwable $e) {}
+}
+
 function find_current_user(): ?array
 {
     $userId = (int) ($_SESSION['user_id'] ?? 0);
     if ($userId <= 0) {
         if (isset($_COOKIE['ewm_logged_in'])) {
             setcookie('ewm_logged_in', '', time() - 3600, '/');
+        }
+        if (isset($_COOKIE['ewm_trusted_device'])) {
+            setcookie('ewm_trusted_device', '', time() - 3600, '/');
         }
         return null;
     }
@@ -157,6 +178,9 @@ function find_current_user(): ?array
         unset($_SESSION['user_id']);
         if (isset($_COOKIE['ewm_logged_in'])) {
             setcookie('ewm_logged_in', '', time() - 3600, '/');
+        }
+        if (isset($_COOKIE['ewm_trusted_device'])) {
+            setcookie('ewm_trusted_device', '', time() - 3600, '/');
         }
         return null;
     }
@@ -285,7 +309,7 @@ function log_user_activity(string $eventName, array $payload = []): void
             substr($ipAddress, 0, 45),
             substr($userAgent, 0, 255)
         ]);
-    } catch (Throwable $e) {
+    } catch (\Throwable $e) {
         // Luồng ghi log phụ trợ không được làm crash luồng nghiệp vụ chính
         error_log("Telemetry logging error: " . $e->getMessage());
     }

@@ -44,6 +44,9 @@ async function initProfile() {
     if (typeof persistAuthUser === "function") {
       persistAuthUser(result.user);
     }
+    if (typeof renderAuthenticatedNav === "function") {
+      renderAuthenticatedNav(result.user);
+    }
     fillProfileForm(form, result.user);
   } catch (error) {
     if (feedback) {

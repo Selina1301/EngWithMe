@@ -13,9 +13,14 @@ if ($email === '' || $password === '') {
     json_response(['ok' => false, 'message' => 'Vui lòng nhập email và mật khẩu.'], 422);
 }
 
+ensure_user_remember_column();
+
+$inputData = json_decode(file_get_contents('php://input'), true) ?? $_POST;
+$remember = isset($inputData['remember']) && ($inputData['remember'] === '1' || $inputData['remember'] === true || $inputData['remember'] === 1 || $inputData['remember'] === 'true' || $inputData['remember'] === 'on');
+
 try {
     $statement = db()->prepare(
-        'SELECT id, full_name, email, password, role, level, learning_goal, avatar_path, status, created_at, last_login_at, login_attempts, attempt_lock_until
+        'SELECT id, full_name, email, password, role, level, learning_goal, avatar_path, status, created_at, last_login_at, login_attempts, attempt_lock_until, remember_until, remember_token
          FROM users
          WHERE email = ?
          LIMIT 1'
@@ -57,59 +62,61 @@ try {
         json_response(['ok' => false, 'message' => 'Email hoặc mật khẩu không đúng.'], 401);
     }
 
-    if (($user['status'] ?? 'active') === 'pending') {
-        json_response(['ok' => false, 'message' => 'Tài khoản chưa được kích hoạt email. Vui lòng xác thực qua liên kết kích hoạt đã gửi tới email của bạn.'], 403);
+    if (($user['status'] ?? 'active') !== 'active' && ($user['status'] ?? 'active') !== 'pending') {
+        json_response(['ok' => false, 'message' => 'Tài khoản hiện đang bị khóa.'], 403);
     }
 
-    if (($user['status'] ?? 'active') !== 'active') {
-        json_response(['ok' => false, 'message' => 'Tài khoản đang bị khóa.'], 403);
+    // Kiểm tra thiết bị đã ghi nhớ (Trusted Device trong 7 ngày theo Token ngẫu nhiên)
+    $trustedCookie = (string) ($_COOKIE['ewm_trusted_device'] ?? '');
+    $isDeviceTrusted = false;
+    if ($trustedCookie !== '' && str_contains($trustedCookie, ':')) {
+        list($cookieUserId, $cookieToken) = explode(':', $trustedCookie, 2);
+        if ((int) $cookieUserId === (int) $user['id'] 
+            && !empty($user['remember_token']) 
+            && hash_equals((string) $user['remember_token'], $cookieToken)) {
+            $isDeviceTrusted = true;
+        }
     }
+    $isRememberValid = !empty($user['remember_until']) && strtotime($user['remember_until']) > time();
+    $isAdmin = ($user['role'] ?? 'user') === 'admin';
 
-    // Kiểm tra nếu là Admin -> Bỏ qua OTP, đăng nhập trực tiếp
-    if (($user['role'] ?? 'user') === 'admin') {
-        // Xóa mã OTP cũ (nếu có), cập nhật log đăng nhập cuối, reset login_attempts
-        $updateAdmin = db()->prepare('UPDATE users SET verification_token = NULL, last_login_at = NOW(), login_attempts = 0, attempt_lock_until = NULL WHERE id = ?');
-        $updateAdmin->execute([(int) $user['id']]);
-
-        // Đọc trạng thái Ghi nhớ từ client (nếu có)
-        // Dữ liệu client gửi lên dưới dạng JSON hoặc Form Data
-        $inputData = json_decode(file_get_contents('php://input'), true) ?? $_POST;
-        $remember = isset($inputData['remember']) && ($inputData['remember'] === '1' || $inputData['remember'] === true || $inputData['remember'] === 1 || $inputData['remember'] === 'true');
+    // Bỏ qua OTP nếu:
+    // 1) Là tài khoản Admin
+    // HOẶC 2) Thiết bị này đã hoàn thành OTP trước đó và còn hiệu lực ghi nhớ 7 ngày (Trusted Device Token khớp DB)
+    if ($isAdmin || ($isDeviceTrusted && $isRememberValid)) {
+        $token = !empty($user['remember_token']) ? $user['remember_token'] : generate_remember_token();
+        $updateAdmin = db()->prepare('UPDATE users SET verification_token = NULL, last_login_at = NOW(), login_attempts = 0, attempt_lock_until = NULL, remember_until = DATE_ADD(NOW(), INTERVAL 7 DAY), remember_token = ? WHERE id = ?');
+        $updateAdmin->execute([$token, (int) $user['id']]);
 
         // Tạo session đăng nhập chính thức
         session_regenerate_id(true);
         $_SESSION['user_id'] = (int) $user['id'];
 
-        if ($remember) {
+        if ($remember || $isDeviceTrusted) {
             $cookieParams = session_get_cookie_params();
             setcookie(
                 session_name(),
                 session_id(),
-                time() + 86400 * 30,
-                $cookieParams['path'],
-                $cookieParams['domain'],
-                $cookieParams['secure'],
-                $cookieParams['httponly']
+                time() + 86400 * 7,
+                $cookieParams['path'] ?? '/',
+                $cookieParams['domain'] ?? '',
+                (bool) ($cookieParams['secure'] ?? false),
+                (bool) ($cookieParams['httponly'] ?? true)
             );
-            setcookie('ewm_logged_in', '1', time() + 86400 * 30, '/');
+            setcookie('ewm_logged_in', '1', time() + 86400 * 7, '/');
+            setcookie('ewm_trusted_device', $user['id'] . ':' . $token, time() + 86400 * 7, '/');
         } else {
             setcookie('ewm_logged_in', '1', 0, '/');
         }
 
-        log_user_activity('login_success_direct_admin', ['email' => $user['email']]);
+        log_user_activity($isAdmin ? 'login_success_admin' : 'login_success_remembered_device', ['email' => $user['email']]);
 
         json_response([
             'ok' => true,
             'requires_otp' => false,
-            'message' => 'Đăng nhập Admin thành công. Đang chuyển hướng...',
-            'redirect' => 'index.html',
-            'user' => [
-                'id' => (int) $user['id'],
-                'full_name' => $user['full_name'],
-                'email' => $user['email'],
-                'role' => $user['role'],
-                'level' => $user['level']
-            ]
+            'message' => 'Đăng nhập thành công. Đang chuyển hướng...',
+            'redirect' => $isAdmin ? 'admin.html' : 'profile.html#dashboard',
+            'user' => current_user_payload($user)
         ]);
     }
 
@@ -148,6 +155,15 @@ try {
     $mailSent = send_mail($user['email'], $subject, $htmlBody);
     
     if (!$mailSent) {
+        if ((defined('APP_DEBUG') && APP_DEBUG) || empty(MAIL_USERNAME)) {
+            log_user_activity('login_otp_generated', ['email' => $user['email'], 'note' => 'debug_fallback']);
+            json_response([
+                'ok' => true,
+                'requires_otp' => true,
+                'email' => $user['email'],
+                'message' => 'Mã xác thực OTP của bạn là: ' . $otp . ' (Hệ thống chưa cấu hình gửi Gmail tự động).'
+            ]);
+        }
         json_response(['ok' => false, 'message' => 'Không thể gửi mã xác thực đăng nhập qua email. Vui lòng thử lại.'], 500);
     }
     
