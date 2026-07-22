@@ -297,20 +297,39 @@ function openOtpModal(email, originalForm, isLoginOtp = false) {
     e.preventDefault();
     if (resendBtn.classList.contains("disabled")) return;
     
+    const targetEmail = document.getElementById("otpFormEmail")?.value || email || "";
+    if (!targetEmail) {
+      const errEl = document.getElementById("otpErrorMsg");
+      if (errEl) {
+        errEl.textContent = "Không tìm thấy địa chỉ email để gửi lại mã.";
+        errEl.style.color = "var(--danger)";
+      }
+      return;
+    }
+
     try {
       resendBtn.classList.add("disabled");
-      document.getElementById("otpErrorMsg").textContent = "Đang gửi lại mã...";
-      document.getElementById("otpErrorMsg").style.color = "var(--success)";
+      const errEl = document.getElementById("otpErrorMsg");
+      if (errEl) {
+        errEl.textContent = "Đang gửi lại mã OTP mới...";
+        errEl.style.color = "var(--success)";
+      }
       
-      const response = await fetch(resendEndpoint, {
+      const formData = new FormData();
+      formData.append("email", targetEmail);
+
+      const response = await fetch("api/resend_otp.php", {
         method: "POST",
-        body: new FormData(originalForm),
+        body: formData,
         credentials: "same-origin"
       });
       const res = await response.json();
+
       if (res.ok) {
-        document.getElementById("otpErrorMsg").textContent = "Mã mới đã được gửi!";
-        document.getElementById("otpErrorMsg").style.color = "var(--success)";
+        if (errEl) {
+          errEl.textContent = res.message || "Mã OTP mới đã được gửi thành công!";
+          errEl.style.color = "var(--success)";
+        }
         
         countdown = 60;
         countdownSpan.textContent = `(${countdown}s)`;
@@ -326,13 +345,18 @@ function openOtpModal(email, originalForm, isLoginOtp = false) {
           }
         }, 1000);
       } else {
-        document.getElementById("otpErrorMsg").textContent = res.message || "Không thể gửi lại mã.";
-        document.getElementById("otpErrorMsg").style.color = "var(--danger)";
+        if (errEl) {
+          errEl.textContent = res.message || "Không thể gửi lại mã OTP.";
+          errEl.style.color = "var(--danger)";
+        }
         resendBtn.classList.remove("disabled");
       }
     } catch (err) {
-      document.getElementById("otpErrorMsg").textContent = "Lỗi kết nối mạng.";
-      document.getElementById("otpErrorMsg").style.color = "var(--danger)";
+      const errEl = document.getElementById("otpErrorMsg");
+      if (errEl) {
+        errEl.textContent = "Lỗi kết nối mạng. Vui lòng thử lại.";
+        errEl.style.color = "var(--danger)";
+      }
       resendBtn.classList.remove("disabled");
     }
   };

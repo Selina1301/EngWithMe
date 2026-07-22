@@ -271,6 +271,36 @@ function send_mail(string $to, string $subject, string $htmlBody, string $altBod
 }
 
 /**
+ * Gửi email chứa mã xác thực OTP dùng chung cho Đăng ký, Đăng nhập & Gửi lại mã OTP
+ */
+function send_otp_mail(string $to, string $name, string $otp): bool
+{
+    $subject = "Mã xác thực OTP của bạn - EngWithMe";
+    $safeName = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+    $safeOtp = htmlspecialchars($otp, ENT_QUOTES, 'UTF-8');
+
+    $htmlBody = "
+        <div style='font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background: #ffffff;'>
+            <div style='text-align: center; margin-bottom: 20px;'>
+                <h2 style='color: #0f172a; margin: 0 0 8px; font-size: 22px;'>Xác Thực Tài Khoản EngWithMe</h2>
+                <p style='color: #64748b; font-size: 14px; margin: 0;'>Nền tảng học tiếng Anh thông minh</p>
+            </div>
+            <div style='background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 20px;'>
+                <p style='margin: 0 0 12px; color: #334155; font-size: 15px;'>Xin chào <strong>{$safeName}</strong>,</p>
+                <p style='margin: 0 0 16px; color: #475569; font-size: 14px;'>Mã xác thực OTP 6 chữ số của bạn là:</p>
+                <div style='font-size: 36px; font-weight: 900; letter-spacing: 8px; color: #16a34a; background: #0f172a; padding: 18px; text-align: center; border-radius: 12px; margin: 16px 0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);'>
+                    {$safeOtp}
+                </div>
+                <p style='margin: 0; color: #e11d48; font-size: 13px; font-weight: 600;'>⏱ Mã này có hiệu lực trong vòng 10 phút. Tuyệt đối không chia sẻ mã này cho bất kỳ ai.</p>
+            </div>
+            <p style='color: #94a3b8; font-size: 12px; text-align: center; margin: 0;'>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.</p>
+        </div>
+    ";
+
+    return send_mail($to, $subject, $htmlBody);
+}
+
+/**
  * Ghi nhận sự kiện hoạt động của người dùng phục vụ telemetry phân tích dữ liệu (BigQuery/Analytics)
  */
 function log_user_activity(string $eventName, array $payload = []): void
