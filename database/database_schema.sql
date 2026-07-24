@@ -191,6 +191,7 @@ CREATE TABLE user_vocab_quiz_stats (
   user_id INT PRIMARY KEY,
   correct_count INT NOT NULL DEFAULT 0,
   total_count INT NOT NULL DEFAULT 0,
+  fast_streak INT NOT NULL DEFAULT 0,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
@@ -246,3 +247,20 @@ CREATE TABLE learning_content_items (
   KEY idx_learning_content_level (section, level_key),
   KEY idx_learning_content_goal (section, goal_key)
 ) ENGINE=InnoDB;
+
+-- 19. User Level & XP Progress
+CREATE TABLE IF NOT EXISTS user_levels (
+  user_id INT PRIMARY KEY,
+  total_xp INT NOT NULL DEFAULT 0,
+  level INT NOT NULL DEFAULT 1,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 20. User Grammar Practice State
+CREATE TABLE IF NOT EXISTS user_grammar_practice (
+  user_id INT PRIMARY KEY,
+  state_json LONGTEXT NOT NULL,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

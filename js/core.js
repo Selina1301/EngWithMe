@@ -700,6 +700,7 @@ function getAccountKey(baseKey) {
   const userId = localStorage.getItem("engWithMeUserId");
   return userId ? `${baseKey}_user_${userId}` : `${baseKey}_guest`;
 }
+window.getAccountKey = getAccountKey;
 
 function getSavedWords() {
   return JSON.parse(localStorage.getItem(getAccountKey("engWithMeSavedWords")) || "[]");

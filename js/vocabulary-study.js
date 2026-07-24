@@ -22,6 +22,7 @@ function initVocabularyStudy() {
   let currentMatchTiles = [];
   let isProcessingMatch = false;
   let pendingSaveWord = null;
+  let isTransitioningStep = false;
 
   // Word Cannon Game State Variables
   let cannonScore = 0;
@@ -47,6 +48,7 @@ function initVocabularyStudy() {
   let lastTypedAnswer = "";
   let lastQuizSelectedIndex = -1;
   let currentQuizOptions = [];
+  let currentQuizWordKey = null;
 
   function initWordState(item, topic) {
     isWordRevealed = false;
@@ -56,7 +58,12 @@ function initVocabularyStudy() {
     lastQuizSelectedIndex = -1;
     
     if (item && topic) {
-      const wrongCandidates = topic.words.filter(w => w.word !== item.word);
+      let wrongCandidates = topic.words.filter(w => w.word !== item.word);
+      if (wrongCandidates.length < 3) {
+        const levelTopics = vocabularyData[activeLevel]?.topics || [];
+        const allLevelWords = levelTopics.flatMap(t => t.words || []).filter(w => w && w.word !== item.word);
+        wrongCandidates = [...wrongCandidates, ...allLevelWords];
+      }
       const chosenWrong = shuffle(wrongCandidates).slice(0, 3);
       currentQuizOptions = shuffle([item, ...chosenWrong]);
     } else {
@@ -143,12 +150,26 @@ function initVocabularyStudy() {
   savedWords.forEach(key => rewardedWords.add(key));
   let activeLevelPickerWordKey = null;
 
+  const saveArray = (key, setOrArray) => {
+    try {
+      const arr = setOrArray instanceof Set ? Array.from(setOrArray) : (Array.isArray(setOrArray) ? setOrArray : []);
+      localStorage.setItem(key, JSON.stringify(arr));
+    } catch (e) {
+      console.error("Error saving array to localStorage:", e);
+    }
+  };
+
   const getTopic = () => vocabularyData[activeLevel]?.topics.find(topic => topic.id === currentTopicId);
   const getListHref = () => `vocabulary.html?level=${activeLevel}`;
   const getWordKey = (topic, word) => `${activeLevel}-${topic.id}-${word.word}`;
   const getStudyWords = (topic) => topic ? topic.words.filter(w => !savedWords.has(getWordKey(topic, w))) : [];
   const saveSavedWords = (action, vocabKey, studyLevel) => {
-    savedWords = new Set(savedWordRecords.keys());
+    savedWords = new Set();
+    savedWordRecords.forEach((record, key) => {
+      if (record && record.studyLevel && record.studyLevel !== "hard" && record.studyLevel !== "again") {
+        savedWords.add(key);
+      }
+    });
     localStorage.setItem(getSavedWordsKey(), JSON.stringify(Array.from(savedWordRecords.values())));
     recordVocabActivity();
 
@@ -1325,16 +1346,10 @@ function initVocabularyStudy() {
     let actionsHtml = "";
     let shortcutText = "";
 
-    const options = shuffle([
-      item,
-      ...topic.words.filter(w => w.word !== item.word).slice(0, 3)
-    ]).map(w => `
-      <button class="study-answer-btn" type="button" data-study-answer="${w.word}" data-correct="${w.word === item.word}">
-        ${w.meaning}
-      </button>
-    `).join("");
-
     if (currentStudyMode === "quiz") {
+      if (!currentQuizOptions || !currentQuizOptions.length || currentQuizWordKey !== wordKey) {
+        initWordState(item, topic);
+      }
       const optionsHtml = currentQuizOptions.map((w, optIdx) => {
         const isCorrectOpt = w.word === item.word;
         let btnClass = "study-answer-btn";
@@ -1372,22 +1387,17 @@ function initVocabularyStudy() {
         </div>
       `;
 
-      if (isAnswered) {
-        actionsHtml = `
-          <div class="study-action-row fade-in">
-            <button class="study-action-btn learned-btn" type="button" data-mark-learned>
-              <i class="ti-check"></i> Đã thuộc
-            </button>
-            <button class="study-action-btn continue-btn" type="button" data-next-step>
-              Học tiếp
-            </button>
-          </div>
-        `;
-        shortcutText = "<kbd>Tab</kbd> Đã thuộc · <kbd>Enter</kbd> Học tiếp";
-      } else {
-        actionsHtml = ``;
-        shortcutText = ``;
-      }
+      actionsHtml = `
+        <div class="study-action-row fade-in">
+          <button class="study-action-btn learned-btn" type="button" data-mark-learned>
+            <i class="ti-check"></i> Đã thuộc
+          </button>
+          <button class="study-action-btn continue-btn" type="button" data-next-step>
+            Học tiếp
+          </button>
+        </div>
+      `;
+      shortcutText = "<kbd>Tab</kbd> Đã thuộc · <kbd>Enter</kbd> Học tiếp";
     } else if (currentStudyMode === "type") {
       if (isAnswered) {
         if (lastAnswerIsCorrect) {
@@ -1401,22 +1411,22 @@ function initVocabularyStudy() {
 
           cardBody = `
             <div class="study-card-body type-checked-body correct-spelling-body" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; height: 100%;">
-              ${wordClassBadge}
-              <h2 class="meaning-word" style="font-size: 2.2rem !important; font-weight: 700; color: #ffffff; margin: 4px 0 2px 0; text-align: center;">
-                ${item.meaning}
-              </h2>
-              <div class="status-indicator-row" style="margin: 4px 0; color: #2ee878; font-weight: 600; font-size: 1.3rem; display: inline-flex; align-items: center; gap: 8px;">
-                <i class="ti-check"></i> Chính xác!
+              <div class="status-indicator-row" style="margin: 0; color: #10b981; font-weight: 700; font-size: 1.4rem; display: inline-flex; align-items: center; gap: 8px;">
+                <i class="ti-check" style="font-size: 1.6rem; stroke-width: 2.5;"></i> Chính xác!
               </div>
-              <h2 class="vocab-word" style="font-size: 2.2rem !important; font-weight: 800; color: #2ee878; margin: 2px 0 0 0;">
+              <h2 class="correct-word-heading" style="color: #ffffff; font-size: 2.2rem; font-weight: 800; margin: 4px 0 0 0; letter-spacing: -0.5px;">
                 ${item.word}
               </h2>
+              ${wordClassBadge}
+              <p class="meaning-subtext" style="color: #cbd5e1; font-size: 1.15rem; font-weight: 500; margin: 2px 0 0 0;">
+                ${item.meaning}
+              </p>
             </div>
           `;
         } else {
           cardBody = `
-            <div class="study-card-body type-checked-body incorrect-spelling-body" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; height: 100%;">
-              <h2 class="vocab-word" style="font-size: 2.2rem !important; font-weight: 800; color: #ffffff; margin: 0; display: flex; align-items: baseline; justify-content: center; gap: 8px; flex-wrap: wrap;">
+            <div class="study-card-body type-checked-body wrong-spelling-body" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; height: 100%;">
+              <h2 class="correct-word-heading" style="color: #ffffff; font-size: 2rem; font-weight: 800; margin: 0; display: flex; align-items: baseline; justify-content: center; gap: 8px;">
                 <span>${item.word}</span>
                 ${showWordClass ? `<span class="vocab-class" style="font-size: 1.1rem; font-style: italic; color: #38bdf8; font-weight: 600;">(${getWordClass(item.word)})</span>` : ""}
                 <span style="color: #94a3b8; font-weight: 400; font-size: 1.8rem; margin: 0 6px;">-</span>
@@ -1588,7 +1598,7 @@ function initVocabularyStudy() {
         `;
 
         actionsHtml = "";
-        shortcutText = "";
+        shortcutText = "<kbd>Space</kbd> Xem nghĩa";
       }
     }
 
@@ -1643,7 +1653,18 @@ function initVocabularyStudy() {
     return activeModes.length ? activeModes : ["flashcard"];
   }
 
+  function scheduleStudyAdvance(topic) {
+    if (studyAdvanceTimer) clearTimeout(studyAdvanceTimer);
+    studyAdvanceTimer = setTimeout(() => {
+      moveStudyStep(1, topic);
+    }, 1200);
+  }
+
   function moveStudyStep(direction, topic) {
+    if (isTransitioningStep) return;
+    isTransitioningStep = true;
+    setTimeout(() => { isTransitioningStep = false; }, 300);
+
     if (studyAdvanceTimer) clearTimeout(studyAdvanceTimer);
     studyAdvanceTimer = null;
 
@@ -1653,37 +1674,57 @@ function initVocabularyStudy() {
     const currentModeIndex = activeStudyModes.indexOf(currentStudyMode);
     let nextModeIndex = currentModeIndex + direction;
 
+    if (direction > 0 && nextModeIndex >= activeStudyModes.length) {
+      currentStudyMode = activeStudyModes[0];
+      nextWord(topic, false);
+      return;
+    }
+
     if (nextModeIndex < 0) {
       nextModeIndex = activeStudyModes.length - 1;
     }
 
-    if (nextModeIndex >= activeStudyModes.length) {
-      nextModeIndex = 0;
-    }
-
     currentStudyMode = activeStudyModes[nextModeIndex];
     
-    // Reset answers but keep quiz options since it's the same word
+    // Reset answers and classification state for the new step
+    isClassifyingWord = false;
     isWordRevealed = false;
     isAnswered = false;
     lastAnswerIsCorrect = false;
     lastTypedAnswer = "";
     lastQuizSelectedIndex = -1;
+
+    const activeWords = currentWorkspaceMode === "study" ? getStudyWords(topic) : topic.words;
+    if (activeWords && activeWords[currentWordIndex]) {
+      initWordState(activeWords[currentWordIndex], topic);
+    }
     render();
   }
 
-  function nextWord(topic) {
+  function nextWord(topic, isWordRemoved = false) {
     isClassifyingWord = false;
+    isWordRevealed = false;
+    isAnswered = false;
+    lastAnswerIsCorrect = false;
+    lastTypedAnswer = "";
+    lastQuizSelectedIndex = -1;
+
     const activeWords = currentWorkspaceMode === "study" ? getStudyWords(topic) : topic.words;
-    if (activeWords.length > 0) {
-      currentWordIndex = (currentWordIndex + 1) % activeWords.length;
-    } else {
+    if (!activeWords || activeWords.length === 0) {
       currentWordIndex = 0;
+    } else {
+      if (!isWordRemoved) {
+        currentWordIndex = (currentWordIndex + 1) % activeWords.length;
+      } else {
+        if (currentWordIndex >= activeWords.length) {
+          currentWordIndex = 0;
+        }
+      }
     }
-    const activeStudyModes = getActiveStudyModes();
-    currentStudyMode = activeStudyModes[0];
     
-    initWordState(activeWords[currentWordIndex], topic);
+    if (activeWords && activeWords[currentWordIndex]) {
+      initWordState(activeWords[currentWordIndex], topic);
+    }
     render();
   }
 
@@ -2762,20 +2803,23 @@ function initVocabularyStudy() {
     });
 
     root.querySelectorAll("[data-study-answer]").forEach(button => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", (e) => {
+        e.stopPropagation();
         if (isAnswered) return;
         const isCorrect = button.dataset.correct === "true";
         
         isAnswered = true;
+        isClassifyingWord = false;
         lastAnswerIsCorrect = isCorrect;
-        lastQuizSelectedIndex = parseInt(button.dataset.answerIndex);
+        lastQuizSelectedIndex = parseInt(button.dataset.answerIndex, 10);
 
         render();
       });
     });
 
     root.querySelectorAll("[data-check-type]").forEach(button => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", (e) => {
+        e.stopPropagation();
         if (isAnswered) return;
         const card = button.closest(".study-card");
         const input = card?.querySelector("[data-type-answer]");
@@ -2785,6 +2829,7 @@ function initVocabularyStudy() {
         const isCorrect = input?.value.trim().toLowerCase() === item.word.toLowerCase();
 
         isAnswered = true;
+        isClassifyingWord = false;
         lastAnswerIsCorrect = isCorrect;
         lastTypedAnswer = input?.value.trim() || "";
 
@@ -2905,6 +2950,24 @@ function initVocabularyStudy() {
       });
     });
 
+    root.querySelectorAll("[data-switch-study-mode]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const mode = btn.dataset.switchStudyMode;
+        if (mode) {
+          if (!enabledStudyModes.has(mode)) enabledStudyModes.add(mode);
+          currentStudyMode = mode;
+          isWordRevealed = false;
+          isAnswered = false;
+          isClassifyingWord = false;
+          lastAnswerIsCorrect = false;
+          lastTypedAnswer = "";
+          lastQuizSelectedIndex = -1;
+          render();
+        }
+      });
+    });
+
     root.querySelectorAll("[data-mark-learned]").forEach(btn => {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -2921,11 +2984,21 @@ function initVocabularyStudy() {
         const item = activeWords[currentWordIndex] || topic.words[currentWordIndex] || topic.words[0];
         if (item) {
           const wordKey = getWordKey(topic, item);
-          handleMasteredWordReward(wordKey, 3, "Đã thuộc từ vựng");
-          savedWordRecords.set(wordKey, { key: wordKey, studyLevel: lvl });
-          saveSavedWords("save", wordKey, lvl);
+          if (lvl === "again" || lvl === "hard") {
+            savedWordRecords.set(wordKey, { key: wordKey, studyLevel: "hard" });
+            saveSavedWords("save", wordKey, "hard");
+            isClassifyingWord = false;
+            currentStudyMode = "flashcard";
+            nextWord(topic, false);
+          } else {
+            handleMasteredWordReward(wordKey, 3, "Đã thuộc từ vựng");
+            savedWordRecords.set(wordKey, { key: wordKey, studyLevel: lvl });
+            saveSavedWords("save", wordKey, lvl);
+            isClassifyingWord = false;
+            currentStudyMode = "flashcard";
+            nextWord(topic, true);
+          }
         }
-        nextWord(topic);
       });
     });
 

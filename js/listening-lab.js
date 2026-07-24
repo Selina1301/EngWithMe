@@ -1282,7 +1282,7 @@
       const modeSwitch = document.querySelector(".listening-mode-switch");
       if (modeSwitch) modeSwitch.hidden = true;
 
-      switchWorkspaceTab(1);
+      switchWorkspaceTab(2);
       if (els.resultPanel) els.resultPanel.hidden = true;
 
       if (options.challenge) startTimer();

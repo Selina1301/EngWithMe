@@ -24,14 +24,13 @@ const TOEIC_READING_YEAR_IDS = [
 ];
 
 const TOEIC_READING_SETS = TOEIC_READING_YEAR_IDS
-  .map((id) => TOEIC_READING_EXAMS[id]?.meta)
+  .map((id) => (window.TOEIC_READING_EXAMS && window.TOEIC_READING_EXAMS[id]?.meta))
   .filter(Boolean);
 
-const TOEIC_LISTENING_YEAR_IDS = Object.keys(TOEIC_LISTENING_EXAMS);
-
 function buildToeicReadingQuestionBank() {
+  const readingExams = window.TOEIC_READING_EXAMS || {};
   return TOEIC_READING_YEAR_IDS.flatMap((setId) => {
-    const exam = TOEIC_READING_EXAMS[setId];
+    const exam = readingExams[setId];
     if (!exam || !Array.isArray(exam.questions)) return [];
 
     const set = exam.meta || { id: setId, label: `TOEIC Reading ${setId.replace("y", "")}` };
@@ -58,8 +57,10 @@ function buildToeicReadingQuestionBank() {
 }
 
 function buildToeicListeningQuestionBank() {
-  return TOEIC_LISTENING_YEAR_IDS.flatMap((setId) => {
-    const exam = TOEIC_LISTENING_EXAMS[setId];
+  const listeningExams = window.TOEIC_LISTENING_EXAMS || {};
+  const listeningYearIds = Object.keys(listeningExams);
+  return listeningYearIds.flatMap((setId) => {
+    const exam = listeningExams[setId];
     if (!exam || !Array.isArray(exam.questions)) return [];
 
     const set = exam.meta || { id: setId, label: `TOEIC Listening ${setId.replace("y", "")}` };
@@ -94,3 +95,11 @@ const toeicExamQuestionBank = [
   ...toeicListeningQuestionBank,
   ...toeicReadingQuestionBank
 ];
+
+window.TOEIC_READING_SETS = TOEIC_READING_SETS;
+window.buildToeicReadingQuestionBank = buildToeicReadingQuestionBank;
+window.buildToeicListeningQuestionBank = buildToeicListeningQuestionBank;
+window.toeicReadingQuestionBank = toeicReadingQuestionBank;
+window.toeicListeningQuestionBank = toeicListeningQuestionBank;
+window.toeicExamQuestionBank = toeicExamQuestionBank;
+

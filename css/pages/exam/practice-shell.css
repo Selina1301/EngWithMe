@@ -123,15 +123,17 @@
   top: 88px;
   grid-column: 2;
   grid-row: 1;
-  height: calc(100vh - 100px);
-  overflow-y: auto;
+  max-height: calc(100vh - 100px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   border: 0;
   border-left: 1px solid rgba(125, 211, 252, 0.16);
   border-radius: 0;
   background: rgba(248, 250, 252, 0.02);
   color: #f8fbff;
   box-shadow: none;
-  padding: 17px 24px 24px;
+  padding: 17px 20px 20px;
 }
 
 .exam-practice-shell .wireframe-question h3,
@@ -504,4 +506,101 @@
 .exam-practice-shell .exam-score-grid strong,
 .exam-practice-shell .exam-finished-title {
   color: #a7fbc0;
+}
+
+/* Exam Group Navigation Bar & Lazy Cluster Controls */
+.exam-group-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: 14px;
+  padding: 12px 18px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.exam-group-nav.nav-bottom {
+  margin-top: 28px;
+  margin-bottom: 0;
+}
+
+.exam-group-nav .group-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 9px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.exam-group-nav .group-nav-btn:hover:not(:disabled) {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: #00f0ff;
+  color: #ffffff;
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.exam-group-nav .group-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #64748b;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.exam-group-nav .group-nav-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #f8fafc;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.exam-group-nav .group-badge {
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: #00f0ff;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+/* Minimap current group highlight */
+.exam-minimap button.is-current-group {
+  border-color: #00f0ff !important;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.6) !important;
+  transform: scale(1.05);
+}
+
+.exam-minimap button.is-current-group:not(.is-done) {
+  background: rgba(0, 240, 255, 0.22) !important;
+  color: #ffffff !important;
+  font-weight: 900;
+}
+
+/* Target question pulse when jumped from Answer Sheet */
+.exam-question-card.highlight-target,
+.exam-grouped-question.highlight-target {
+  animation: targetPulse 1.6s ease;
+}
+
+@keyframes targetPulse {
+  0% { box-shadow: 0 0 0 3px #00f0ff; border-color: #00f0ff; }
+  50% { box-shadow: 0 0 30px 6px rgba(0, 240, 255, 0.7); border-color: #00f0ff; }
+  100% { box-shadow: none; }
 }

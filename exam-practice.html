@@ -62,22 +62,28 @@
     </section>
   </main>
 
-  <script src="js/core.js?v=1.0.2"></script>
-  <script src="js/toeic/2017.js"></script>
-  <script src="js/toeic/2017-listening.js"></script>
-  <script src="js/toeic/2018.js"></script>
-  <script src="js/toeic/2018-listening.js"></script>
-  <script src="js/toeic/2019.js"></script>
-  <script src="js/toeic/2020.js"></script>
-  <script src="js/toeic/2021.js"></script>
-  <script src="js/toeic/2022.js"></script>
-  <script src="js/toeic/2023.js"></script>
-  <script src="js/toeic/2024.js"></script>
-  <script src="js/toeic/2025.js"></script>
-  <script src="js/toeic-reading-data.js"></script>
-  <script src="js/toeic/exam-core.js"></script>
-  <script src="js/toeic/exam-practice.js"></script>
-  <script src="js/toeic/exam-app.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/core.js?v=1.8.0"></script>
+  <script src="js/level-system.js?v=1.8.0"></script>
+  <script src="js/toeic/2017.js?v=1.8.0"></script>
+  <script src="js/toeic/2017-listening.js?v=1.8.0"></script>
+  <script src="js/toeic/2018.js?v=1.8.0"></script>
+  <script src="js/toeic/2018-listening.js?v=1.8.0"></script>
+  <script src="js/toeic/2019.js?v=1.8.0"></script>
+  <script src="js/toeic/2020.js?v=1.8.0"></script>
+  <script src="js/toeic/2021.js?v=1.8.0"></script>
+  <script src="js/toeic/2022.js?v=1.8.0"></script>
+  <script src="js/toeic/2023.js?v=1.8.0"></script>
+  <script src="js/toeic/2024.js?v=1.8.0"></script>
+  <script src="js/toeic/2025.js?v=1.8.0"></script>
+  <script src="js/toeic-reading-data.js?v=1.8.0"></script>
+  <script src="js/toeic/exam-core.js?v=1.8.0"></script>
+  <script src="js/toeic/exam-practice.js?v=1.8.0"></script>
+  <script src="js/toeic/exam-app.js?v=1.8.0"></script>
+  <script src="js/main.js?v=1.8.0"></script>
+  <script>
+    if (typeof initToeicExamPractice === "function") {
+      initToeicExamPractice();
+    }
+  </script>
 </body>
 </html>

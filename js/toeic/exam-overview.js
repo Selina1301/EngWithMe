@@ -78,6 +78,16 @@ function initToeicExamOverview() {
     form?.querySelector('input[name="minutes"][value="custom"]')?.click();
   });
 
+  form?.querySelectorAll('input[name="minutes"]').forEach((radio) => {
+    radio.addEventListener("change", () => {
+      if (radio.value !== "custom") {
+        if (customMinutes) customMinutes.value = "";
+      } else {
+        customMinutes?.focus();
+      }
+    });
+  });
+
   form?.addEventListener("submit", (event) => {
     event.preventDefault();
     const parts = [...form.querySelectorAll('input[name="part"]:checked')].map((input) => input.value);

@@ -54,7 +54,7 @@
 .wireframe-question {
   height: fit-content;
   max-height: calc(100vh - 110px);
-  overflow-y: auto;
+  overflow: hidden;
   position: sticky;
   top: 88px;
   z-index: 5;
@@ -255,10 +255,30 @@
   grid-template-columns: repeat(5, 1fr);
   gap: 8px;
   margin-top: 14px;
-  max-height: min(54vh, 560px);
+  flex: 1;
+  max-height: calc(100vh - 280px);
   overflow-y: auto;
-  padding-right: 4px;
+  padding-right: 6px;
   scrollbar-width: thin;
+  scrollbar-color: rgba(56, 189, 248, 0.3) rgba(15, 23, 42, 0.3);
+}
+
+.exam-minimap::-webkit-scrollbar {
+  width: 5px;
+}
+
+.exam-minimap::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.3);
+  border-radius: 99px;
+}
+
+.exam-minimap::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.3);
+  border-radius: 99px;
+}
+
+.exam-minimap::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.5);
 }
 
 .exam-side-head {

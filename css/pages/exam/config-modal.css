@@ -1,86 +1,179 @@
 .exam-config-modal {
-  width: min(620px, calc(100vw - 32px));
+  width: min(860px, calc(100vw - 32px));
   max-height: calc(100vh - 32px);
-  overflow-y: auto;
-  border: 1px solid rgba(125, 211, 252, 0.24);
-  border-radius: 18px;
-  background: #07111f;
+  overflow: hidden;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 24px;
+  background: linear-gradient(165deg, rgba(13, 22, 38, 0.96) 0%, rgba(7, 14, 27, 0.98) 100%);
   color: #e5eefc;
   padding: 0;
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.58);
+  box-shadow: 0 32px 100px rgba(0, 0, 0, 0.8), 0 0 50px rgba(0, 240, 255, 0.12);
+  backdrop-filter: blur(20px);
+  position: relative;
+}
+
+.exam-config-modal::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #00f0ff, #a855f7, #3b82f6);
 }
 
 .exam-config-modal::backdrop {
-  background: rgba(2, 6, 23, 0.72);
-  backdrop-filter: blur(5px);
+  background: rgba(2, 6, 23, 0.82);
+  backdrop-filter: blur(8px);
 }
 
 .exam-config-panel {
-  display: grid;
-  gap: 18px;
-  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 28px 30px;
 }
 
-.exam-config-head,
-.exam-config-actions {
+.exam-config-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.exam-config-head .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #00f0ff;
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  padding: 4px 12px;
+  border-radius: 99px;
+  margin-bottom: 4px;
 }
 
 .exam-config-head h2 {
-  margin: 6px 0 0;
-  color: #ffffff;
+  margin: 4px 0 0;
+  font-size: 1.65rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .exam-modal-close {
-  width: 38px;
-  height: 38px;
-  border: 1px solid rgba(125, 211, 252, 0.22);
-  border-radius: 12px;
-  background: rgba(248, 250, 252, 0.04);
-  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #94a3b8;
   cursor: pointer;
-  font-size: 1.35rem;
-  font-weight: 900;
+  font-size: 1.4rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.exam-modal-close:hover {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  transform: rotate(90deg);
+}
+
+.exam-config-grid-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 22px;
+  align-items: stretch;
 }
 
 .exam-config-section {
-  display: grid;
-  gap: 10px;
-  border: 1px solid rgba(125, 211, 252, 0.16);
-  border-radius: 14px;
-  background: rgba(248, 250, 252, 0.035);
-  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.5);
+  padding: 20px;
+  backdrop-filter: blur(10px);
 }
 
 .exam-config-section h3 {
   margin: 0;
-  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.exam-config-section h3::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 16px;
+  background: #00f0ff;
+  border-radius: 99px;
+  box-shadow: 0 0 10px #00f0ff;
 }
 
 [data-exam-part-options] {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .exam-config-section label {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 10px;
+  display: flex;
   align-items: center;
-  border: 1px solid rgba(125, 211, 252, 0.14);
-  border-radius: 12px;
-  background: rgba(2, 6, 23, 0.32);
-  color: #dbeafe;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(2, 6, 23, 0.4);
+  color: #cbd5e1;
   cursor: pointer;
-  font-weight: 800;
-  padding: 10px 12px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 11px 12px;
+  transition: all 0.2s ease;
+  user-select: none;
 }
 
-.exam-config-section input {
-  accent-color: #22c55e;
+.exam-config-section label:hover {
+  border-color: rgba(0, 240, 255, 0.3);
+  background: rgba(0, 240, 255, 0.05);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.exam-config-section label:has(input:checked) {
+  border-color: rgba(0, 240, 255, 0.5);
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.12), rgba(59, 130, 246, 0.12));
+  color: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 240, 255, 0.15);
+}
+
+.exam-config-section input[type="checkbox"],
+.exam-config-section input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #00f0ff;
+  cursor: pointer;
 }
 
 .exam-time-grid {
@@ -91,41 +184,67 @@
 
 .exam-custom-time {
   width: 100%;
-  border: 1px solid rgba(125, 211, 252, 0.22);
-  border-radius: 12px;
-  background: rgba(2, 6, 23, 0.56);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(2, 6, 23, 0.6);
   color: #ffffff;
   font: inherit;
-  font-weight: 800;
-  padding: 11px 12px;
+  font-weight: 700;
+  padding: 12px 14px;
+  transition: all 0.2s ease;
 }
 
-.exam-config-error {
-  margin: 0;
-  color: #fecaca;
-  font-weight: 800;
+.exam-custom-time:focus {
+  outline: none;
+  border-color: #00f0ff;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.25);
 }
 
-.exam-card-actions {
+.exam-config-right {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.exam-card-actions .practice-link {
-  min-width: 0;
-  padding: 10px 14px;
+.exam-config-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 6px;
 }
 
-.practice-link.is-completed {
-  border-color: rgba(46, 232, 120, 0.46);
-  background: rgba(46, 232, 120, 0.12);
+.exam-config-actions .btn-ghost {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  border-radius: 14px;
+  padding: 12px 20px;
+  font-weight: 700;
+  transition: all 0.2s ease;
 }
 
-.practice-link.is-completed::after {
-  content: "✓ Đã làm";
-  margin-left: 6px;
-  color: #a7fbc0;
-  font-size: 0.78rem;
-  font-weight: 900;
+.exam-config-actions .btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.exam-config-actions .btn-primary {
+  background: linear-gradient(135deg, #00f0ff 0%, #3b82f6 100%);
+  border: none;
+  color: #020617;
+  border-radius: 14px;
+  padding: 12px 24px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  box-shadow: 0 6px 24px rgba(0, 240, 255, 0.35);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.exam-config-actions .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(0, 240, 255, 0.5);
+  filter: brightness(1.1);
 }

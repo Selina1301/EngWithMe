@@ -113,30 +113,35 @@
         <button type="button" class="exam-modal-close" data-exam-modal-close aria-label="Đóng">×</button>
       </div>
 
-      <div class="exam-config-section">
-        <h3>Chọn Part</h3>
-        <div data-exam-part-options>
-          <label><input type="checkbox" name="part" value="5" checked> <span>Part 5 - 30 câu (101-130)</span></label>
-          <label><input type="checkbox" name="part" value="6"> <span>Part 6 - 16 câu (131-146)</span></label>
-          <label><input type="checkbox" name="part" value="7"> <span>Part 7 - 54 câu (147-200)</span></label>
+      <div class="exam-config-grid-layout">
+        <div class="exam-config-section exam-config-left">
+          <h3>Chọn Part</h3>
+          <div data-exam-part-options>
+            <label><input type="checkbox" name="part" value="5" checked> <span>Part 5 - 30 câu (101-130)</span></label>
+            <label><input type="checkbox" name="part" value="6"> <span>Part 6 - 16 câu (131-146)</span></label>
+            <label><input type="checkbox" name="part" value="7"> <span>Part 7 - 54 câu (147-200)</span></label>
+          </div>
         </div>
-      </div>
 
-      <div class="exam-config-section">
-        <h3>Thời gian</h3>
-        <div class="exam-time-grid">
-          <label><input type="radio" name="minutes" value="15"> <span>15 phút</span></label>
-          <label><input type="radio" name="minutes" value="30" checked> <span>30 phút</span></label>
-          <label><input type="radio" name="minutes" value="60"> <span>60 phút</span></label>
-          <label><input type="radio" name="minutes" value="custom"> <span>Tự nhập</span></label>
+        <div class="exam-config-right">
+          <div class="exam-config-section">
+            <h3>Thời gian</h3>
+            <div class="exam-time-grid">
+              <label><input type="radio" name="minutes" value="15"> <span>15 phút</span></label>
+              <label><input type="radio" name="minutes" value="30" checked> <span>30 phút</span></label>
+              <label><input type="radio" name="minutes" value="60"> <span>60 phút</span></label>
+              <label><input type="radio" name="minutes" value="custom"> <span>Tự nhập</span></label>
+            </div>
+            <input class="exam-custom-time" type="number" min="1" max="180" step="1" name="customMinutes" data-custom-minutes placeholder="Nhập số phút">
+          </div>
+
+          <p class="exam-config-error" data-exam-config-error hidden>Hãy chọn ít nhất một Part và thời gian hợp lệ.</p>
+
+          <div class="exam-config-actions">
+            <button type="button" class="btn btn-ghost" data-exam-modal-close>Hủy</button>
+            <button type="submit" class="btn btn-primary">Bắt đầu làm bài</button>
+          </div>
         </div>
-        <input class="exam-custom-time" type="number" min="1" max="180" step="1" name="customMinutes" data-custom-minutes placeholder="Nhập số phút">
-      </div>
-
-      <p class="exam-config-error" data-exam-config-error hidden>Hãy chọn ít nhất một Part và thời gian hợp lệ.</p>
-      <div class="exam-config-actions">
-        <button type="button" class="btn btn-ghost" data-exam-modal-close>Hủy</button>
-        <button type="submit" class="btn btn-primary">Bắt đầu làm bài</button>
       </div>
     </form>
   </dialog>

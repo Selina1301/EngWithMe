@@ -326,3 +326,493 @@
     min-width: 56px;
   }
 }
+
+/* ==========================================================================
+   TOEIC EXAM SYSTEM BLUEPRINT STYLING (Part 1-7 Rules, Split View & Review)
+   ========================================================================== */
+
+/* 1. Flagging System & Minimap Filters */
+.exam-question-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.exam-question-title-group {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.exam-question-no {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #ffffff;
+  white-space: nowrap;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.exam-question-inline-prompt {
+  font-size: 0.98rem;
+  color: #cbd5e1;
+  font-weight: 500;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.btn-flag-question {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  height: 26px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  line-height: 1;
+  white-space: nowrap;
+  align-self: center;
+}
+
+.btn-flag-question:hover,
+.btn-flag-question.is-flagged {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: #f59e0b;
+  color: #fbbf24;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+.exam-minimap-filters {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 12px;
+  padding: 4px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(125, 211, 252, 0.15);
+  border-radius: 10px;
+}
+
+.exam-minimap-filters button {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  color: #94a3b8;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 6px 8px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.exam-minimap-filters button.is-active {
+  background: rgba(56, 189, 248, 0.2);
+  color: #00f0ff;
+  border: 1px solid rgba(0, 240, 255, 0.35);
+}
+
+.exam-minimap button.is-flagged-item::after {
+  content: "🚩";
+  position: absolute;
+  top: -4px;
+  right: -3px;
+  font-size: 0.62rem;
+}
+
+/* 2. Part 1 & Part 2 Audio Lock & Option Rules */
+.exam-option-list.is-audio-locked label {
+  pointer-events: none;
+  opacity: 0.5;
+  filter: grayscale(40%);
+  cursor: not-allowed;
+}
+
+.exam-option-list.is-audio-locked::before {
+  content: "🔒 Đang phát Audio... Hãy lắng nghe trước khi chọn đáp án";
+  display: block;
+  grid-column: 1 / -1;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px dashed rgba(245, 158, 11, 0.35);
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+
+.exam-option-list label.is-part2-hidden-d {
+  display: none !important;
+}
+
+/* 3. Part 6 Gap Markers & Interactive Highlight */
+.gap-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  height: 26px;
+  padding: 0 8px;
+  margin: 0 4px;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1.5px dashed rgba(56, 189, 248, 0.5);
+  border-radius: 6px;
+  color: #38bdf8;
+  font-weight: 900;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  vertical-align: middle;
+}
+
+.gap-marker:hover,
+.gap-marker.is-active-gap {
+  background: #00f0ff;
+  color: #0f172a;
+  border-color: #ffffff;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.7);
+  transform: scale(1.08);
+}
+
+/* 4. Part 7 Split View & Text Highlighting */
+.exam-split-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .exam-split-view {
+    grid-template-columns: 1fr;
+  }
+}
+
+.exam-passage-pane {
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  padding-right: 12px;
+  border-right: 1px solid rgba(125, 211, 252, 0.16);
+  position: sticky;
+  top: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.exam-questions-pane {
+  max-height: none;
+  overflow: visible;
+  padding-right: 4px;
+}
+
+/* ==========================================================================
+   HIDE ALL INNER SCROLLBARS VISUALLY (CLEAN ZERO-SCROLLBAR LOOK)
+   ========================================================================== */
+.exam-study-page * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.exam-study-page ::-webkit-scrollbar,
+.exam-passage-pane::-webkit-scrollbar,
+.exam-questions-pane::-webkit-scrollbar,
+.exam-sidebar-body::-webkit-scrollbar,
+.wireframe-answers::-webkit-scrollbar,
+.wireframe-question::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+mark.exam-user-highlight {
+  background: rgba(0, 240, 255, 0.35);
+  color: #ffffff;
+  border-bottom: 2px solid #00f0ff;
+  border-radius: 3px;
+  padding: 1px 3px;
+}
+
+.exam-highlight-toolbar {
+  position: absolute;
+  z-index: 1000;
+  background: #0f172a;
+  border: 1px solid #00f0ff;
+  border-radius: 8px;
+  padding: 4px 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  display: flex;
+  gap: 6px;
+  transform: translate(-50%, -100%);
+  margin-top: -8px;
+}
+
+.exam-highlight-toolbar button {
+  background: rgba(0, 240, 255, 0.18);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: #00f0ff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.exam-highlight-toolbar button:hover {
+  background: #00f0ff;
+  color: #0f172a;
+}
+
+/* 5. 3-Color Review Mode Styling */
+.exam-review-card {
+  border: 1px solid rgba(125, 211, 252, 0.2);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.8);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.exam-review-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-top: 8px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+/* 🟩 Xanh lá: Đáp án thí sinh chọn ĐÚNG */
+.exam-review-option.review-ans-correct {
+  background: rgba(34, 197, 94, 0.2) !important;
+  border-color: rgba(34, 197, 94, 0.6) !important;
+  color: #86efac !important;
+}
+
+/* 🟥 Đỏ: Đáp án thí sinh chọn SAI */
+.exam-review-option.review-ans-wrong {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: rgba(239, 68, 68, 0.6) !important;
+  color: #fca5a5 !important;
+}
+
+/* 🟨 Vàng / Cyan: Đáp án ĐÚNG chuẩn của câu làm sai hoặc bỏ trống */
+.exam-review-option.review-ans-target {
+  background: rgba(245, 158, 11, 0.2) !important;
+  border-color: rgba(245, 158, 11, 0.6) !important;
+  color: #fde047 !important;
+}
+
+/* ==========================================================================
+   6. SIDEBAR QUESTION MINIMAP & STATUS PANEL
+   ========================================================================== */
+.exam-sidebar-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: calc(100vh - 110px);
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 16px;
+  gap: 14px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.exam-sidebar-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-timer-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(2, 6, 23, 0.6);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+
+.timer-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-timer-value {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #00f0ff;
+  font-family: monospace;
+}
+
+.sidebar-progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  margin-bottom: 4px;
+}
+
+.sidebar-progress-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.sidebar-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  transition: width 0.3s ease;
+}
+
+.exam-sidebar-legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 6px 8px;
+  background: rgba(2, 6, 23, 0.5);
+  border-radius: 8px;
+}
+
+.legend-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.legend-answered { color: #34d399; }
+.legend-unanswered { color: #64748b; }
+.legend-flag { color: #fbbf24; }
+
+.exam-sidebar-body {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.exam-sidebar-part-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.exam-sidebar-part-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #a7fbc0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.exam-sidebar-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.exam-sidebar-qbtn {
+  position: relative;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+/* UNANSWERED / CHƯA CHỌN: Tối hơn, viền mờ */
+.exam-sidebar-qbtn.is-unanswered {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  color: #64748b;
+}
+
+.exam-sidebar-qbtn.is-unanswered:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #f1f5f9;
+  background: rgba(30, 41, 59, 0.8);
+}
+
+/* ANSWERED / ĐÃ CHỌN: VIỀN XANH LÁ NỔI BẬT */
+.exam-sidebar-qbtn.is-answered {
+  background: rgba(16, 185, 129, 0.16);
+  border: 2px solid #10b981;
+  color: #34d399;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+}
+
+.exam-sidebar-qbtn.is-answered:hover {
+  background: rgba(16, 185, 129, 0.3);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
+}
+
+/* FLAGGED / ĐÃ CỜ */
+.exam-sidebar-qbtn.is-flagged {
+  border-color: #f59e0b !important;
+  color: #fbbf24 !important;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.35) !important;
+}
+
+.flag-dot {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  font-size: 0.6rem;
+}
+
+/* FOOTER SUBMIT BUTTON */
+.exam-sidebar-footer {
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-sidebar-submit {
+  width: 100%;
+  padding: 11px 16px;
+  background: linear-gradient(135deg, #00f0ff, #3b82f6);
+  color: #020617;
+  font-weight: 800;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 240, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.btn-sidebar-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0, 240, 255, 0.45);
+}
+
