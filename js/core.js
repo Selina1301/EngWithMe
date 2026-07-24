@@ -478,7 +478,7 @@ async function syncUserDataFromServer() {
 window.triggerRouteBasedFetch = triggerRouteBasedFetch;
 
 function ensureNavActions(header) {
-  if (header.querySelector(".nav-actions")) return;
+  if (header.querySelector(".nav-actions, .auth-buttons, #auth-actions")) return;
 
   const actions = document.createElement("div");
   actions.className = "nav-actions";
@@ -490,7 +490,7 @@ function renderGuestNav() {
   const authPages = ["login.html", "register.html"];
   if (authPages.includes(currentPage)) return;
 
-  document.querySelectorAll(".nav-actions").forEach((actions) => {
+  document.querySelectorAll(".nav-actions, .auth-buttons, #auth-actions").forEach((actions) => {
     actions.innerHTML = `
       <a class="btn btn-ghost" href="login.html">Đăng nhập</a>
       <a class="btn btn-primary" href="register.html">Đăng ký</a>
@@ -505,7 +505,7 @@ function renderAuthenticatedNav(user) {
     ? '<a href="admin.html"><span class="ti-shield"></span> Quản trị</a>'
     : "";
 
-  document.querySelectorAll(".nav-actions").forEach((actions) => {
+  document.querySelectorAll(".nav-actions, .auth-buttons, #auth-actions").forEach((actions) => {
     actions.innerHTML = `
       <div class="user-menu" data-user-menu>
         <button class="user-menu-trigger" type="button" data-user-menu-toggle aria-haspopup="true" aria-expanded="false">
@@ -601,7 +601,9 @@ function getCachedAuthUser() {
     level: localStorage.getItem("engWithMeLevel") || "A1",
     goal: localStorage.getItem("engWithMeGoal") || "",
     status: localStorage.getItem("engWithMeUserStatus") || "active",
-    avatar: localStorage.getItem("engWithMeUserAvatar") || ""
+    avatar: localStorage.getItem("engWithMeUserAvatar") || "",
+    is_vip: localStorage.getItem("engWithMeUserIsVip") || "0",
+    vip_expires_at: localStorage.getItem("engWithMeUserVipExpires") || null
   };
 }
 
@@ -610,6 +612,8 @@ function persistAuthUser(user) {
   const name = user.name || user.full_name || "";
   const goal = user.goal || user.learning_goal || "";
   const avatar = user.avatar || user.avatar_path || "";
+  const isVip = user.is_vip == 1 || user.is_vip === true ? "1" : "0";
+  const vipExpires = user.vip_expires_at || "";
 
   localStorage.setItem("engWithMeUserId", String(user.id || ""));
   localStorage.setItem("engWithMeStudentName", name);
@@ -619,13 +623,18 @@ function persistAuthUser(user) {
   localStorage.setItem("engWithMeGoal", goal);
   localStorage.setItem("engWithMeUserStatus", user.status || "active");
   localStorage.setItem("engWithMeUserAvatar", avatar);
+  localStorage.setItem("engWithMeUserIsVip", isVip);
+  localStorage.setItem("engWithMeUserVipExpires", vipExpires);
+  if (user.session_token || user.remember_token) {
+    localStorage.setItem("engWithMeAuthToken", String(user.session_token || user.remember_token));
+  }
 
   if (typeof AppCache !== "undefined" && AppCache.set) {
-    AppCache.set("me", { ok: true, user: { ...user, name, goal, avatar } });
+    AppCache.set("me", { ok: true, user: { ...user, name, goal, avatar, is_vip: isVip, vip_expires_at: vipExpires } });
   }
 
   if (typeof renderAuthenticatedNav === "function") {
-    renderAuthenticatedNav({ ...user, name, goal, avatar });
+    renderAuthenticatedNav({ ...user, name, goal, avatar, is_vip: isVip, vip_expires_at: vipExpires });
   }
 }
 
@@ -638,7 +647,9 @@ function clearAuthUser() {
     "engWithMeUserRole",
     "engWithMeUserStatus",
     "engWithMeUserId",
-    "engWithMeUserAvatar"
+    "engWithMeUserAvatar",
+    "engWithMeUserIsVip",
+    "engWithMeUserVipExpires"
   ].forEach((key) => localStorage.removeItem(key));
 
   if (typeof AppCache !== "undefined" && AppCache.clear) {
@@ -729,4 +740,50 @@ function escapeAttribute(value) {
 }
 function initLogoutButtons() {
   if (typeof bindAuthNavInteractions === "function") bindAuthNavInteractions();
+}
+
+function isUserVip() {
+  const cachedUser = typeof getCachedAuthUser === "function" ? getCachedAuthUser() : null;
+  if (!cachedUser) return false;
+  return cachedUser.is_vip == 1 || cachedUser.is_vip === true || cachedUser.role === 'admin';
+}
+
+function showVipLockModal(sectionName = "nội dung Khó (Hard Mode)") {
+  let modal = document.getElementById("vip-lock-modal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "vip-lock-modal";
+    modal.style.cssText = "position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(12px); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px;";
+    modal.innerHTML = `
+      <div style="background: #0f172a; border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 20px; max-width: 440px; width: 100%; padding: 28px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); position: relative;">
+        <button type="button" onclick="document.getElementById('vip-lock-modal').style.display='none'" style="position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.1); border: none; color: #94a3b8; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;">✕</button>
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 1.8rem; color: #f87171;">🔒</div>
+        <h3 style="color: #ffffff; font-size: 1.35rem; font-weight: 800; margin: 0 0 10px 0;">Yêu Cầu Nâng Cấp VIP</h3>
+        <p style="color: #cbd5e1; font-size: 0.92rem; line-height: 1.6; margin-bottom: 20px;">
+          Chế độ Khó (<strong id="vip-lock-target">${escapeHtml(sectionName)}</strong>) chỉ dành riêng cho học viên đã nâng cấp gói <strong>Pro (7.777đ)</strong> hoặc <strong>Premium (999.999đ Trọn Đời)</strong>.
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <a href="pricing.html" class="btn btn-primary" style="padding: 12px; font-weight: 800; border-radius: 10px; width: 100%;">⚡ Nâng cấp VIP Ngay (Từ 7.777đ)</a>
+          <button type="button" onclick="document.getElementById('vip-lock-modal').style.display='none'" class="btn btn-ghost" style="color: #94a3b8;">Đóng</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  } else {
+    const targetEl = modal.querySelector("#vip-lock-target");
+    if (targetEl) targetEl.textContent = sectionName;
+    modal.style.display = "flex";
+  }
+}
+
+function checkHardModeAccess(e, targetSectionName = "nội dung Khó (Hard Mode)") {
+  if (isUserVip()) return true;
+
+  if (e && typeof e.preventDefault === "function") {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  showVipLockModal(targetSectionName);
+  return false;
 }

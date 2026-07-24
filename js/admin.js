@@ -729,28 +729,35 @@ async function loadPendingBlogs(container) {
         </button>
       `;
 
-      const displayContent = blog.content.length > 23
-        ? blog.content.substring(0, 23) + "..."
+      const displayTitle = blog.title.length > 15
+        ? blog.title.substring(0, 15) + "..."
+        : blog.title;
+
+      const displayContent = blog.content.length > 20
+        ? blog.content.substring(0, 20) + "..."
         : blog.content;
 
       return `
         <tr data-blog-row-id="${blog.id}">
-          <td>
-            <strong>${escapeHtml(blog.author_name)}</strong><br>
-            <small style="color: var(--muted);">${escapeHtml(blog.author_email)}</small>
+          <td style="padding: 10px 4px;">
+            <strong style="font-size: 0.88rem; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px;">${escapeHtml(blog.author_name)}</strong>
+            <small style="color: var(--muted); font-size: 0.76rem; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px;">${escapeHtml(blog.author_email)}</small>
           </td>
-          <td style="text-align: center;">
-            <div style="display: inline-flex; justify-content: center; gap: 2px;">${starsHtml}</div>
+          <td style="text-align: center; padding: 10px 2px;">
+            <div style="display: inline-flex; justify-content: center; gap: 1px;">${starsHtml}</div>
           </td>
-          <td style="font-weight: bold; color: #ffffff;">${escapeHtml(blog.title)}</td>
-          <td class="admin-blog-content-cell">
+          <td class="admin-blog-content-cell" style="padding: 10px 4px;">
+            <div class="content-preview" style="font-weight: bold; color: #ffffff;">${escapeHtml(displayTitle)}</div>
+            <div class="content-full-popup"><strong style="color: #00ff87;">Tiêu đề:</strong> ${escapeHtml(blog.title)}</div>
+          </td>
+          <td class="admin-blog-content-cell" style="padding: 10px 4px;">
             <div class="content-preview">${escapeHtml(displayContent)}</div>
-            <div class="content-full-popup">${escapeHtml(blog.content)}</div>
+            <div class="content-full-popup"><strong style="color: #38bdf8;">Nội dung:</strong> ${escapeHtml(blog.content)}</div>
           </td>
-          <td style="text-align: center;">${statusBadge}</td>
-          <td style="color: var(--muted); font-size: 12px; line-height: 1.3;">${formattedDate}</td>
-          <td>
-            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: nowrap;">
+          <td style="text-align: center; padding: 10px 2px;">${statusBadge}</td>
+          <td style="color: var(--muted); font-size: 11px; line-height: 1.3; padding: 10px 2px;">${formattedDate}</td>
+          <td style="padding: 10px 4px;">
+            <div style="display: flex; gap: 4px; align-items: center; flex-wrap: nowrap;">
               ${actionButtons}
             </div>
           </td>

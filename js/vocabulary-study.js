@@ -74,6 +74,7 @@ function initVocabularyStudy() {
     lastQuizSelectedIndex = -1;
     
     if (item && topic) {
+      currentQuizWordKey = getWordKey(topic, item);
       let wrongCandidates = topic.words.filter(w => w.word !== item.word);
       if (wrongCandidates.length < 3) {
         const levelTopics = vocabularyData[activeLevel]?.topics || [];
@@ -83,6 +84,7 @@ function initVocabularyStudy() {
       const chosenWrong = shuffle(wrongCandidates).slice(0, 3);
       currentQuizOptions = shuffle([item, ...chosenWrong]);
     } else {
+      currentQuizWordKey = null;
       currentQuizOptions = [];
     }
   }

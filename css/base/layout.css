@@ -96,7 +96,7 @@
 }
 
 .section.compact {
-  padding-top: 16px;
+  padding: 16px 24px;
 }
 
 .section-muted {
@@ -326,8 +326,7 @@
 }
 
 .stat-panel strong,
-.stat-card strong,
-.pricing-card strong {
+.stat-card strong {
   display: block;
   color: #ffffff;
   font-size: 30px;

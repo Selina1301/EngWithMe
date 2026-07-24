@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bảng giá - EngWithMe</title>
+  <title>Gói Học & Bảng Giá - EngWithMe</title>
   <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/pages/pricing.css">
+  <link rel="stylesheet" href="css/base.css?v=20260724fixfont">
+  <link rel="stylesheet" href="css/pages/pricing.css?v=20260724modalfix">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
@@ -22,43 +22,83 @@
         <a href="grammar.html">Grammar</a>
         <a href="quiz.html">Exam</a>
         <a href="blog.html">Blog</a>
-        <a href="pricing.html">Premium</a>
-      </nav>
-    <div class="nav-actions">
+        <a href="pricing.html" class="active">Premium</a>
+    </nav>
+    <div class="nav-actions auth-buttons" id="auth-actions">
       <a class="btn btn-ghost" href="login.html">Đăng nhập</a>
       <a class="btn btn-primary" href="register.html">Đăng ký</a>
     </div>
   </header>
 
-  <main class="page-main">
-    <section class="page-title">
-      <p class="eyebrow">Pricing</p>
-      <h1>Gói học linh hoạt</h1>
-      <p>Bản demo hiển thị bảng giá mẫu. Thanh toán online sẽ được thêm khi có backend.</p>
+  <main class="page-container container">
+    <section class="pricing-hero">
+      <h1 class="pricing-title">Chọn Gói Học Phù Hợp Để Bứt Phá Tiếng Anh</h1>
+      <p class="pricing-subtitle">Đăng ký một lần, làm chủ kiến thức và nhận sự hỗ trợ tối đa trên hành trình của bạn.</p>
     </section>
 
-    <section class="section compact">
-      <div class="pricing-grid">
-        <article class="pricing-card">
-          <h2>Free</h2>
-          <strong>0đ</strong>
-          <p>Test trình độ, xem bài học mẫu, học 20 flashcard.</p>
-          <a class="btn btn-secondary" href="register.html">Bắt đầu</a>
-        </article>
-        <article class="pricing-card featured">
-          <h2>Pro</h2>
-          <strong>99.000đ/tháng</strong>
-          <p>Mở khóa khóa học A1-A2, quiz, lưu từ vựng và dashboard tiến độ.</p>
-          <a class="btn btn-primary" href="register.html">Chọn Pro</a>
-        </article>
-        <article class="pricing-card">
-          <h2>Premium</h2>
-          <strong>199.000đ/tháng</strong>
-          <p>Thêm luyện nói, đề kiểm tra nâng cao và gợi ý học cá nhân hóa.</p>
-          <a class="btn btn-secondary" href="register.html">Chọn Premium</a>
-        </article>
-      </div>
+    <section class="pricing-grid">
+      <!-- Gói Học thử -->
+      <article class="pricing-card">
+        <div class="pricing-header">
+          <h3>Học Thử</h3>
+          <p>Trải nghiệm các nội dung cơ bản</p>
+          <div class="pricing-price">
+            <strong>0đ</strong>
+            <span>Miễn phí</span>
+          </div>
+        </div>
+        <ul class="pricing-features">
+          <li>Học chế độ Dễ (Easy) & Vừa (Medium)</li>
+          <li>Trắc nghiệm & Flashcard cơ bản</li>
+          <li class="disabled">Khóa chế độ Khó (Hard) ở mọi nội dung</li>
+        </ul>
+        <button type="button" class="btn btn-ghost full-width" data-buy-plan="free">Trải nghiệm Miễn phí</button>
+      </article>
+
+      <!-- Gói Pro -->
+      <article class="pricing-card featured">
+        <div class="badge">⚡ SIU TIẾT KIỆM</div>
+        <div class="pricing-header">
+          <h3>Gói Pro</h3>
+          <p>Mở khóa chế độ Khó (Hard)</p>
+          <div class="pricing-price">
+            <strong>7.777đ</strong><span>/Month</span>
+          </div>
+        </div>
+        <ul class="pricing-features">
+          <li>Mở khóa chế độ KHÓ (Hard Mode)</li>
+          <li>Từ vựng Khó, Luyện nghe Khó & Ngữ pháp Khó</li>
+          <li>Đề thi thử Exam Hard & Bảng xếp hạng</li>
+        </ul>
+        <button type="button" class="btn btn-primary full-width" data-buy-plan="pro">⚡ Nâng cấp Pro (7.777đ)</button>
+      </article>
+
+      <!-- Gói Premium -->
+      <article class="pricing-card lifetime">
+        <div class="badge gold">🔥 BẢO HÀNH CHỌN ĐỜI ĐỜI KIẾP KIẾP</div>
+        <div class="pricing-header">
+          <h3>Gói Premium</h3>
+          <p>Sử dụng Trọn Đời không phí ẩn</p>
+          <div class="pricing-price">
+            <strong>999.999đ</strong>
+          </div>
+        </div>
+        <ul class="pricing-features">
+          <li>Mở khóa toàn bộ tính năng TRỌN ĐỜI</li>
+          <li>Mở khóa 100% chế độ KHÓ (Hard Mode)</li>
+          <li>Huy hiệu VIP Elite mạ vàng nổi bật</li>
+          <li>Hỗ trợ ưu tiên 1:1 từ Chuyên gia</li>
+        </ul>
+        <button type="button" class="btn btn-gold full-width" data-buy-plan="premium">👑 Nâng cấp Premium Trọn Đời (999.999đ)</button>
+      </article>
     </section>
+
+    <!-- Modal PayOS Thanh Toán VietQR Tự Động -->
+    <div id="payos-modal" class="payos-modal-backdrop payos-modal-overlay">
+      <div class="payos-modal-box">
+        <!-- Nội dung sẽ được render động từ JS -->
+      </div>
+    </div>
   </main>
 
   <footer class="site-footer">
@@ -67,13 +107,17 @@
       <p>Học tiếng Anh theo lộ trình cá nhân.</p>
     </div>
     <div class="footer-links">
-      <a href="about.html">Giới thiệu</a>
-      <a href="quiz.html">Kiểm tra miễn phí</a>
+      <a href="lessons.html">Khóa học</a>
+      <a href="listening.html">Luyện nghe</a>
+      <a href="grammar.html">Ngữ pháp</a>
+      <a href="privacy.html">Chính sách bảo mật</a>
     </div>
     <p>&copy; <span data-current-year></span> EngWithMe.</p>
   </footer>
 
-  <script src="js/core.js?v=1.0.2"></script>
-  <script src="js/main.js"></script>
+  <script src="js/core.js?v=20260724nav"></script>
+  <script src="js/level-system.js?v=20260724titles"></script>
+  <script src="js/pricing.js?v=20260724bigqr"></script>
+  <script src="js/main.js?v=1.2"></script>
 </body>
 </html>

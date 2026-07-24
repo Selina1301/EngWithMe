@@ -763,9 +763,13 @@
       }).join("");
 
       els.missionGrid.querySelectorAll("[data-mission]").forEach((card) => {
-        card.addEventListener("click", () => {
+        card.addEventListener("click", (e) => {
           const mission = missions.find((item) => item.id === card.dataset.mission);
           if (!mission) return;
+          const hardGoals = ["work-career", "news-society", "tech-internet"];
+          if (hardGoals.includes(mission.goal) && typeof checkHardModeAccess === "function") {
+            if (!checkHardModeAccess(e, "Luyện nghe Nâng cao Hard Mode")) return;
+          }
           openMission(mission.id);
         });
       });

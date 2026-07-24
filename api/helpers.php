@@ -118,6 +118,11 @@ function require_post(): void
     }
 }
 
+function require_post_method(): void
+{
+    require_post();
+}
+
 function current_user_payload(array $user): array
 {
     return [
@@ -132,6 +137,9 @@ function current_user_payload(array $user): array
         'gender' => $user['gender'] ?? 'male',
         'avatar' => $user['avatar_path'] ?? '',
         'status' => $user['status'] ?? 'active',
+        'is_vip' => (int) ($user['is_vip'] ?? 0),
+        'vip_expires_at' => $user['vip_expires_at'] ?? null,
+        'session_token' => $user['remember_token'] ?? null,
         'createdAt' => $user['created_at'] ?? null,
         'lastLoginAt' => $user['last_login_at'] ?? null,
     ];
@@ -174,7 +182,36 @@ function ensure_user_profile_columns(): void
 function find_current_user(): ?array
 {
     ensure_user_profile_columns();
+    ensure_payment_tables();
+    $pdo = db();
+
     $userId = (int) ($_SESSION['user_id'] ?? 0);
+
+    // 🌟 SSO Multi-Domain Token Auto-Login Support:
+    if ($userId <= 0) {
+        $authToken = '';
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '';
+        if ($authHeader !== '' && str_starts_with($authHeader, 'Bearer ')) {
+            $authToken = trim(substr($authHeader, 7));
+        } else if (!empty($_REQUEST['auth_token'])) {
+            $authToken = trim((string) $_REQUEST['auth_token']);
+        } else if (!empty($_COOKIE['ewm_trusted_device']) && str_contains($_COOKIE['ewm_trusted_device'], ':')) {
+            list($dummyId, $authToken) = explode(':', $_COOKIE['ewm_trusted_device'], 2);
+        }
+
+        if ($authToken !== '') {
+            $stmtToken = $pdo->prepare(
+                'SELECT id FROM users WHERE remember_token = ? AND status = "active" LIMIT 1'
+            );
+            $stmtToken->execute([$authToken]);
+            $tokenUser = $stmtToken->fetch();
+            if ($tokenUser && !empty($tokenUser['id'])) {
+                $userId = (int) $tokenUser['id'];
+                $_SESSION['user_id'] = $userId;
+            }
+        }
+    }
+
     if ($userId <= 0) {
         if (isset($_COOKIE['ewm_logged_in'])) {
             setcookie('ewm_logged_in', '', time() - 3600, '/');
@@ -185,8 +222,8 @@ function find_current_user(): ?array
         return null;
     }
 
-    $statement = db()->prepare(
-        'SELECT id, full_name, email, role, level, learning_goal, phone, bio, gender, avatar_path, status, created_at, last_login_at
+    $statement = $pdo->prepare(
+        'SELECT id, full_name, email, role, level, learning_goal, phone, bio, gender, avatar_path, status, is_vip, vip_expires_at, remember_token, created_at, last_login_at
          FROM users
          WHERE id = ?
          LIMIT 1'
@@ -220,6 +257,11 @@ function require_current_user(): array
     }
 
     return $user;
+}
+
+function require_auth_user(): array
+{
+    return require_current_user();
 }
 
 function require_admin_user(): array
@@ -435,5 +477,106 @@ function ensure_vocab_quiz_tables(): void
         }
     } catch (\Throwable $e) {
         error_log("Failed to ensure user_vocab_quiz_stats table: " . $e->getMessage());
+    }
+}
+
+/**
+ * Đảm bảo bảng blogs có cột views, likes và tạo bảng blog_likes lưu trữ lượt thích chuẩn CSDL
+ */
+function ensure_blog_social_table(): void
+{
+    try {
+        $pdo = db();
+        try {
+            $pdo->exec("ALTER TABLE blogs ADD COLUMN views INT NOT NULL DEFAULT 1");
+        } catch (\Throwable $e) {}
+
+        try {
+            $pdo->exec("ALTER TABLE blogs ADD COLUMN likes INT NOT NULL DEFAULT 0");
+        } catch (\Throwable $e) {}
+
+        $pdo->exec(
+            'CREATE TABLE IF NOT EXISTS blog_likes (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                blog_id INT NOT NULL,
+                user_id INT NULL,
+                user_ip VARCHAR(64) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE KEY unique_like (blog_id, user_ip)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;'
+        );
+    } catch (\Throwable $e) {
+        error_log("Failed to ensure blog_social_table: " . $e->getMessage());
+    }
+}
+
+/**
+ * Đảm bảo bảng orders tồn tại và bổ sung cột is_vip, vip_expires_at vào bảng users
+ */
+function ensure_payment_tables(): void
+{
+    try {
+        $pdo = db();
+        try {
+            $pdo->exec("ALTER TABLE users ADD COLUMN is_vip TINYINT(1) NOT NULL DEFAULT 0");
+        } catch (\Throwable $e) {}
+
+        try {
+            $pdo->exec("ALTER TABLE users ADD COLUMN vip_expires_at DATETIME NULL AFTER is_vip;");
+        } catch (\Throwable $e) {}
+
+        $pdo->exec(
+            'CREATE TABLE IF NOT EXISTS orders (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                order_code BIGINT NOT NULL UNIQUE,
+                user_id INT NOT NULL,
+                plan_id VARCHAR(32) NOT NULL,
+                amount INT NOT NULL,
+                status VARCHAR(20) NOT NULL DEFAULT "PENDING",
+                payment_link_id VARCHAR(128) NULL,
+                qr_code TEXT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;'
+        );
+    } catch (\Throwable $e) {
+        error_log("Failed to ensure payment_tables: " . $e->getMessage());
+    }
+}
+
+/**
+ * Nâng cấp hoặc Gia hạn VIP cho người dùng theo gói đăng ký
+ */
+function activate_user_vip(int $userId, string $planId): bool
+{
+    if ($userId <= 0) return false;
+    ensure_payment_tables();
+    $pdo = db();
+
+    $stmt = $pdo->prepare("SELECT id, is_vip, vip_expires_at FROM users WHERE id = ? LIMIT 1");
+    $stmt->execute([$userId]);
+    $user = $stmt->fetch();
+    if (!$user) return false;
+
+    $isCurrentlyVip = (int) ($user['is_vip'] ?? 0) === 1;
+    $currentExpires = !empty($user['vip_expires_at']) ? strtotime((string) $user['vip_expires_at']) : 0;
+    $now = time();
+
+    $cleanPlan = strtolower(trim($planId));
+    if ($cleanPlan === 'premium' || $cleanPlan === 'premium_lifetime') {
+        // Premium: VIP Trọn Đời (Lifetime - vip_expires_at = NULL)
+        $update = $pdo->prepare("UPDATE users SET is_vip = 1, vip_expires_at = NULL WHERE id = ?");
+        return $update->execute([$userId]);
+    } else {
+        // Pro: VIP Theo Tháng (+30 ngày)
+        // Nếu user đang còn hạn Pro, cộng dồn +30 ngày từ mốc hết hạn cũ
+        if ($isCurrentlyVip && $currentExpires > $now) {
+            $newExpire = date('Y-m-d H:i:s', $currentExpires + (30 * 86400));
+        } else {
+            $newExpire = date('Y-m-d H:i:s', $now + (30 * 86400));
+        }
+
+        $update = $pdo->prepare("UPDATE users SET is_vip = 1, vip_expires_at = ? WHERE id = ?");
+        return $update->execute([$newExpire, $userId]);
     }
 }

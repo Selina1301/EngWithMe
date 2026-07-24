@@ -261,6 +261,9 @@
       topicListEl.addEventListener("click", (e) => {
         const card = e.target.closest(".reading-topic-card");
         if (!card) return;
+        if (card.dataset.readingLevel === "hard" && typeof checkHardModeAccess === "function") {
+          if (!checkHardModeAccess(e, "Bài đọc Nâng cao Hard Mode")) return;
+        }
         const topicId = card.dataset.readingTopicLink;
         const isOpenBtn = e.target.closest("[data-reading-topic-open]");
         setActiveTopic(topicId, !!isOpenBtn || e.target.tagName !== "BUTTON");
@@ -316,8 +319,12 @@
       } else {
         tab.classList.remove("active");
       }
-      tab.addEventListener("click", () => {
-        activeReadingLevel = tab.dataset.readingLevelTab;
+      tab.addEventListener("click", (e) => {
+        const lvl = tab.dataset.readingLevelTab;
+        if (lvl === "hard" && typeof checkHardModeAccess === "function") {
+          if (!checkHardModeAccess(e, "Bài đọc Nâng cao Hard Mode")) return;
+        }
+        activeReadingLevel = lvl;
         localStorage.setItem(levelStorageKey, activeReadingLevel);
         readingLevelTabs.forEach((item) => item.classList.remove("active"));
         tab.classList.add("active");

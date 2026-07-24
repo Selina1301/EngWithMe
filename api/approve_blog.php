@@ -30,6 +30,25 @@ try {
     $statement = db()->prepare('UPDATE blogs SET status = ? WHERE id = ?');
     $statement->execute([$status, $id]);
 
+    if ($action === 'approve') {
+        $getBlog = db()->prepare('SELECT user_id FROM blogs WHERE id = ? LIMIT 1');
+        $getBlog->execute([$id]);
+        $blogItem = $getBlog->fetch();
+
+        if ($blogItem) {
+            $blogUserId = (int) $blogItem['user_id'];
+            ensure_user_level_table();
+            $stmtLvl = db()->prepare('SELECT total_xp FROM user_levels WHERE user_id = ? LIMIT 1');
+            $stmtLvl->execute([$blogUserId]);
+            $lvlRow = $stmtLvl->fetch();
+
+            if (!$lvlRow) {
+                $insertXp = db()->prepare('INSERT INTO user_levels (user_id, total_xp, level) VALUES (?, 50, 1)');
+                $insertXp->execute([$blogUserId]);
+            }
+        }
+    }
+
     json_response([
         'ok' => true,
         'message' => ($action === 'approve') ? 'Đã duyệt bài viết thành công!' : 'Đã từ chối bài viết.'

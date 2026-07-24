@@ -630,12 +630,18 @@
     document.querySelectorAll("[data-topic-open]").forEach(button => {
       button.addEventListener("click", (event) => {
         event.stopPropagation();
+        if (activeLevel === "hard" && typeof checkHardModeAccess === "function") {
+          if (!checkHardModeAccess(event, "Từ vựng Nâng cao C1-C2 (Hard Mode)")) return;
+        }
         window.location.href = `vocabulary-study.html?level=${activeLevel}&topic=${button.dataset.topicId}`;
       });
     });
 
     document.querySelectorAll(".topic-card[data-topic-id]").forEach(card => {
       card.addEventListener("click", (event) => {
+        if (activeLevel === "hard" && typeof checkHardModeAccess === "function") {
+          if (!checkHardModeAccess(event, "Từ vựng Nâng cao C1-C2 (Hard Mode)")) return;
+        }
         window.location.href = `vocabulary-study.html?level=${activeLevel}&topic=${card.dataset.topicId}`;
       });
     });
@@ -727,11 +733,15 @@
   }
 
   levelTabs.forEach(tab => {
-    tab.addEventListener("click", () => {
+    tab.addEventListener("click", (e) => {
+      const targetLvl = tab.dataset.level;
+      if (targetLvl === "hard" && typeof checkHardModeAccess === "function") {
+        if (!checkHardModeAccess(e, "Từ vựng Nâng cao C1-C2 (Hard Mode)")) return;
+      }
       levelTabs.forEach(item => item.classList.remove("active"));
       tab.classList.add("active");
 
-      activeLevel = tab.dataset.level;
+      activeLevel = targetLvl;
       syncLevelTabs();
       renderLevelIntro();
       renderTopics();
