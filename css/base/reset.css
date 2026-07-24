@@ -1,22 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&display=swap');
-
 * {
   box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   margin: 0;
   background:
-    radial-gradient(circle at 20% 0%, rgba(46, 232, 120, 0.16), transparent 32%),
-    radial-gradient(circle at 80% 8%, rgba(56, 189, 248, 0.14), transparent 34%),
-    linear-gradient(180deg, #05080d 0%, #07111d 48%, #05080d 100%);
+    radial-gradient(circle at 15% 0%, rgba(16, 185, 129, 0.12), transparent 40%),
+    radial-gradient(circle at 85% 15%, rgba(56, 189, 248, 0.08), transparent 45%),
+    radial-gradient(circle at 50% 60%, rgba(16, 185, 129, 0.04), transparent 50%),
+    linear-gradient(180deg, #06090e 0%, #0a111a 45%, #06090e 100%);
+  background-attachment: fixed;
   color: var(--text);
-  font-family: "Plus Jakarta Sans", "Segoe UI", "Inter", "SF Pro Display", Roboto, Arial, sans-serif;
+  font-family: var(--font-main);
   line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
 }
 
 a {

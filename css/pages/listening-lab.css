@@ -2,7 +2,7 @@
 
 html {
   scrollbar-width: thin;
-  scrollbar-color: #2ee878 rgba(5, 8, 13, 0.95);
+  scrollbar-color: #10b981 rgba(6, 9, 14, 0.95);
 }
 
 html::-webkit-scrollbar,
@@ -13,19 +13,19 @@ body::-webkit-scrollbar {
 
 html::-webkit-scrollbar-track,
 body::-webkit-scrollbar-track {
-  background: rgba(5, 8, 13, 0.95) !important;
+  background: rgba(6, 9, 14, 0.95) !important;
 }
 
 html::-webkit-scrollbar-thumb,
 body::-webkit-scrollbar-thumb {
-  background: #2ee878 !important;
+  background: #10b981 !important;
   border-radius: 999px !important;
-  box-shadow: 0 0 10px rgba(46, 232, 120, 0.6) !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6) !important;
 }
 
 html::-webkit-scrollbar-thumb:hover,
 body::-webkit-scrollbar-thumb:hover {
-  background: #22d3ee !important;
+  background: #34d399 !important;
 }
 
 body.workspace-active {
@@ -117,10 +117,14 @@ body.workspace-active #lab-workspace {
 
 .command-copy {
   min-height: 390px;
-  padding: 40px;
+  padding: 44px;
+  border-radius: 20px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
   background:
-    linear-gradient(90deg, rgba(3, 7, 18, 0.96), rgba(3, 7, 18, 0.76), rgba(3, 7, 18, 0.45)),
-    url("https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=60&fm=webp") center/cover;
+    linear-gradient(90deg, rgba(6, 9, 14, 0.82) 0%, rgba(6, 9, 14, 0.65) 50%, rgba(6, 9, 14, 0.25) 100%),
+    radial-gradient(circle at 85% 25%, rgba(16, 185, 129, 0.28), transparent 45%),
+    url("https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=1920&q=90") center/cover;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), 0 0 30px rgba(16, 185, 129, 0.12);
 }
 
 .command-copy h1 {

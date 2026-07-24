@@ -178,7 +178,7 @@ async function submitAuthForm(form, endpoint) {
       debugLinkEl.innerHTML = `<strong>Link kích hoạt (Debug):</strong> <a href="${result.debug_verify_link}" target="_blank">${result.debug_verify_link}</a>`;
     }
 
-    const redirect = result.redirect || "index.html";
+    const redirect = result.redirect || "profile.html#dashboard";
     setTimeout(() => {
       if (!result.debug_verify_link) {
         window.location.href = redirect;

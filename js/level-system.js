@@ -17,19 +17,20 @@
   };
 
   /**
-   * Bảng Danh Hiệu Học Viên theo các mốc Level từ 1 đến 200+
+  /**
+   * Bảng Danh Hiệu Học Viên theo các mốc Level lớn: 1, 10, 30, 50, 70, 100, 150, 200, 270, 400, 500
    */
   const LEVEL_TITLES = [
+    { minLevel: 500, title: "🌌 Bậc Thầy Tối Cao Vô Song", color: "linear-gradient(135deg, #00f0ff, #a855f7, #ec4899, #ffd700)", border: "rgba(0, 240, 255, 0.8)" },
+    { minLevel: 400, title: "👑 Chí Tôn Ngôn Ngữ Vĩnh Cửu", color: "linear-gradient(135deg, #ffd700, #ec4899, #a855f7)", border: "rgba(255, 215, 0, 0.8)" },
+    { minLevel: 270, title: "⚡ Thánh Tri Thức Thần Thoại", color: "linear-gradient(135deg, #38bdf8, #a855f7, #00f0ff)", border: "rgba(56, 189, 248, 0.8)" },
     { minLevel: 200, title: "💎 Thần Thoại Bất Tử EngWithMe", color: "linear-gradient(135deg, #a855f7, #ec4899, #00f0ff)", border: "rgba(236, 72, 153, 0.6)" },
     { minLevel: 150, title: "🔥 Bá Chủ Ngôn Ngữ Bất Bại", color: "linear-gradient(135deg, #ef4444, #f97316, #eab308)", border: "rgba(249, 115, 22, 0.6)" },
     { minLevel: 100, title: "🌟 Đại Sứ Tiếng Anh Toàn Cầu", color: "linear-gradient(135deg, #ffd700, #3b82f6, #00f0ff)", border: "rgba(255, 215, 0, 0.6)" },
     { minLevel: 70,  title: "🔮 Cao Thủ Thông Thái", color: "linear-gradient(135deg, #8b5cf6, #00f0ff)", border: "rgba(139, 92, 246, 0.6)" },
-    { minLevel: 50,  title: "⚡ Thánh Bắn Pháo Từ Vựng", color: "linear-gradient(135deg, #00f0ff, #eab308)", border: "rgba(0, 240, 255, 0.6)" },
+    { minLevel: 50,  title: "⚡ Tướng Quân Từ Vựng", color: "linear-gradient(135deg, #00f0ff, #eab308)", border: "rgba(0, 240, 255, 0.6)" },
     { minLevel: 30,  title: "👑 Huyền Thoại EngWithMe", color: "linear-gradient(135deg, #ffd700, #ff8c00)", border: "rgba(255, 215, 0, 0.6)" },
-    { minLevel: 20,  title: "🗡️ Chiến Sĩ Ngôn Ngữ", color: "linear-gradient(135deg, #3b82f6, #00f0ff)", border: "rgba(59, 130, 246, 0.6)" },
-    { minLevel: 15,  title: "📘 Bậc Thầy Từ Vựng", color: "linear-gradient(135deg, #10b981, #00f0ff)", border: "rgba(16, 185, 129, 0.6)" },
     { minLevel: 10,  title: "🛡️ Học Sinh Chăm Chỉ", color: "linear-gradient(135deg, #38bdf8, #818cf8)", border: "rgba(56, 189, 248, 0.6)" },
-    { minLevel: 5,   title: "🎗️ Tân Binh Tiếng Anh", color: "linear-gradient(135deg, #38bdf8, #cbd5e1)", border: "rgba(148, 163, 184, 0.6)" },
     { minLevel: 1,   title: "🥉 Học Viên Tập Sự", color: "linear-gradient(135deg, #94a3b8, #64748b)", border: "rgba(148, 163, 184, 0.4)" }
   ];
 
@@ -246,6 +247,15 @@
     } catch (e) {}
   }
 
+  const MAJOR_MILESTONE_LEVELS = [10, 30, 50, 70, 100, 150, 200, 270, 400, 500];
+
+  function checkAndShowMajorLevelUpModal(newLevel, oldLevel) {
+    const crossedMilestone = MAJOR_MILESTONE_LEVELS.find(m => oldLevel < m && newLevel >= m);
+    if (crossedMilestone) {
+      showLevelUpModal(crossedMilestone, oldLevel);
+    }
+  }
+
   function addXP(amount, sourceName) {
     const safeAmount = Math.max(1, Math.floor(Number(amount) || 1));
     const currentTotal = getUserTotalXP();
@@ -259,9 +269,9 @@
     // Toast XP
     showXpToast(safeAmount, sourceName);
 
-    // Level Up!
+    // Level Up! Show modal ONLY on major milestones
     if (newInfo.level > oldInfo.level) {
-      showLevelUpModal(newInfo.level, oldInfo.level);
+      checkAndShowMajorLevelUpModal(newInfo.level, oldInfo.level);
     }
 
     updateLevelUI();

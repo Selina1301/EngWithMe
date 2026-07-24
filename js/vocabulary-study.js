@@ -50,6 +50,22 @@ function initVocabularyStudy() {
   let currentQuizOptions = [];
   let currentQuizWordKey = null;
 
+  function loadVocabExtrasLazy() {
+    if (window.VOCAB_EXTRAS || document.querySelector("script[data-vocab-extras-script]")) return;
+    const script = document.createElement("script");
+    script.src = "js/vocabulary/extras-data.js?v=20260717";
+    script.async = true;
+    script.dataset.vocabExtrasScript = "true";
+    script.onload = () => {
+      if (currentStudyMode === "flashcard" && isWordRevealed) {
+        render();
+      }
+    };
+    document.head.appendChild(script);
+  }
+
+  loadVocabExtrasLazy();
+
   function initWordState(item, topic) {
     isWordRevealed = false;
     isAnswered = false;

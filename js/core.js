@@ -518,7 +518,6 @@ function renderAuthenticatedNav(user) {
         </button>
         <div class="user-menu-panel" role="menu">
           <a href="profile.html" role="menuitem"><span class="ti-user"></span> Hồ sơ cá nhân</a>
-          <a href="${dashboardHref}" role="menuitem"><span class="ti-dashboard"></span> Dashboard</a>
           ${adminLink}
           <button type="button" data-logout-button role="menuitem"><span class="ti-power-off"></span> Đăng xuất</button>
         </div>
