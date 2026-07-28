@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/config.php';
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 // Cấu hình Error & Exception Handling chuẩn Production
 (function () {
@@ -69,12 +70,11 @@ function start_app_session(): void
     }
     session_save_path($sessionPath);
 
-    $secure = defined('SESSION_SECURE') && SESSION_SECURE !== null 
-        ? SESSION_SECURE 
-        : (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') 
+        || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https');
 
     session_set_cookie_params([
-        'lifetime' => 0,
+        'lifetime' => 86400 * 30,
         'path' => '/',
         'httponly' => true,
         'samesite' => 'Lax',
@@ -125,6 +125,17 @@ function require_post_method(): void
 
 function current_user_payload(array $user): array
 {
+    $isVip = (int) ($user['is_vip'] ?? 0);
+    $plan = 'free';
+    if ($isVip === 1) {
+        $expires = $user['vip_expires_at'] ?? null;
+        if (empty($expires) || str_starts_with((string)$expires, '2099')) {
+            $plan = 'premium';
+        } else {
+            $plan = 'pro';
+        }
+    }
+
     return [
         'id' => (int) $user['id'],
         'name' => $user['full_name'] ?? $user['name'] ?? '',
@@ -137,7 +148,8 @@ function current_user_payload(array $user): array
         'gender' => $user['gender'] ?? 'male',
         'avatar' => $user['avatar_path'] ?? '',
         'status' => $user['status'] ?? 'active',
-        'is_vip' => (int) ($user['is_vip'] ?? 0),
+        'is_vip' => $isVip,
+        'plan' => $plan,
         'vip_expires_at' => $user['vip_expires_at'] ?? null,
         'session_token' => $user['remember_token'] ?? null,
         'createdAt' => $user['created_at'] ?? null,
@@ -189,6 +201,7 @@ function find_current_user(): ?array
 
     // 🌟 SSO Multi-Domain Token Auto-Login Support:
     if ($userId <= 0) {
+        $cookieUserId = 0;
         $authToken = '';
         $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '';
         if ($authHeader !== '' && str_starts_with($authHeader, 'Bearer ')) {
@@ -196,14 +209,22 @@ function find_current_user(): ?array
         } else if (!empty($_REQUEST['auth_token'])) {
             $authToken = trim((string) $_REQUEST['auth_token']);
         } else if (!empty($_COOKIE['ewm_trusted_device']) && str_contains($_COOKIE['ewm_trusted_device'], ':')) {
-            list($dummyId, $authToken) = explode(':', $_COOKIE['ewm_trusted_device'], 2);
+            list($cookieUserIdStr, $authToken) = explode(':', $_COOKIE['ewm_trusted_device'], 2);
+            $cookieUserId = (int) $cookieUserIdStr;
         }
 
         if ($authToken !== '') {
-            $stmtToken = $pdo->prepare(
-                'SELECT id FROM users WHERE remember_token = ? AND status = "active" LIMIT 1'
-            );
-            $stmtToken->execute([$authToken]);
+            if ($cookieUserId > 0) {
+                $stmtToken = $pdo->prepare(
+                    'SELECT id FROM users WHERE id = ? AND remember_token = ? AND status = "active" LIMIT 1'
+                );
+                $stmtToken->execute([$cookieUserId, $authToken]);
+            } else {
+                $stmtToken = $pdo->prepare(
+                    'SELECT id FROM users WHERE remember_token = ? AND status = "active" LIMIT 1'
+                );
+                $stmtToken->execute([$authToken]);
+            }
             $tokenUser = $stmtToken->fetch();
             if ($tokenUser && !empty($tokenUser['id'])) {
                 $userId = (int) $tokenUser['id'];

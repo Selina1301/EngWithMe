@@ -277,3 +277,35 @@
   background: rgba(239, 68, 68, 0.2);
   border-color: #ef4444;
 }
+
+/* Star Rating Input Styles */
+.star-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+}
+
+.star-btn {
+  cursor: pointer;
+  display: inline-block;
+  line-height: 1;
+  font-size: 1.25rem;
+  color: rgba(166, 180, 201, 0.25);
+  padding: 2px 3px;
+  user-select: none;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.star-btn.active {
+  color: #2ee878;
+  background: linear-gradient(135deg, #2ee878, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 4px rgba(46, 232, 120, 0.6));
+}
+
+.star-btn:hover {
+  transform: scale(1.25);
+}
+

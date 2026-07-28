@@ -32,28 +32,60 @@
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
 }
 
-/* PRO Featured Card Style (Soft, Matte Emerald Accent) */
+/* PRO Featured Card Style (Glowing Neon Emerald Border) */
+.pricing-card.featured,
 .pricing-card.featured-pro {
-  border: 1.5px solid rgba(16, 185, 129, 0.5);
-  background: linear-gradient(170deg, rgba(16, 185, 129, 0.06) 0%, rgba(15, 23, 42, 0.95) 100%);
-  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.45);
+  border: 2px solid #10b981;
+  background: linear-gradient(175deg, rgba(16, 185, 129, 0.12) 0%, rgba(15, 23, 42, 0.95) 100%);
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.3), 0 14px 40px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
 }
 
+.pricing-card.featured::before,
+.pricing-card.featured-pro::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #10b981, #00ff87, #10b981);
+}
+
+.pricing-card.featured:hover,
 .pricing-card.featured-pro:hover {
-  border-color: #10b981;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6);
+  border-color: #00ff87;
+  box-shadow: 0 0 35px rgba(0, 255, 135, 0.5), 0 20px 55px rgba(0, 0, 0, 0.65);
+  transform: translateY(-6px);
 }
 
-/* PREMIUM Gold Card Style (Soft, Matte Amber Accent) */
+/* PREMIUM Gold Card Style (Glowing Luxury Amber Gold Border) */
+.pricing-card.lifetime,
 .pricing-card.featured-premium {
-  border: 1.5px solid rgba(245, 158, 11, 0.4);
-  background: linear-gradient(170deg, rgba(245, 158, 11, 0.05) 0%, rgba(15, 23, 42, 0.95) 100%);
-  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.45);
+  border: 2px solid #f59e0b;
+  background: linear-gradient(175deg, rgba(245, 158, 11, 0.14) 0%, rgba(15, 23, 42, 0.95) 100%);
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.35), 0 14px 40px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
 }
 
+.pricing-card.lifetime::before,
+.pricing-card.featured-premium::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b);
+}
+
+.pricing-card.lifetime:hover,
 .pricing-card.featured-premium:hover {
-  border-color: #f59e0b;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6);
+  border-color: #fbbf24;
+  box-shadow: 0 0 40px rgba(251, 191, 36, 0.55), 0 20px 55px rgba(0, 0, 0, 0.65);
+  transform: translateY(-6px);
 }
 
 /* Inline Pill Badges */

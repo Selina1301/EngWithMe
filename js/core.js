@@ -155,7 +155,7 @@ function getEnhancedFooterMarkup() {
       ${getFooterColumnMarkup("Cộng đồng", [
         ["blog.html", "ti-comments", "Blog học viên"],
         ["speaking.html", "ti-microphone", "Luyện nói"],
-        ["dashboard.html", "ti-dashboard", "Dashboard"]
+        ["profile.html", "ti-user", "Trang cá nhân"]
       ])}
 
       ${getFooterColumnMarkup("Hỗ trợ", [
@@ -312,22 +312,23 @@ function initAuthNav() {
   ensureNavActions(header);
   bindAuthNavInteractions();
 
-  // If URL has login parameter (e.g. from Google OAuth), flush stale user cache
-  if (window.location.search.includes("login=")) {
+  // If URL has login parameter or payment=success parameter, flush stale user cache completely
+  const isFreshLogin = window.location.search.includes("login=") || window.location.search.includes("payment=success");
+  if (isFreshLogin) {
     if (typeof AppCache !== "undefined" && AppCache.invalidate) {
       AppCache.invalidate("me");
+      if (AppCache.memoryStore) AppCache.memoryStore.clear();
     }
+    localStorage.removeItem("ewm_cache_me");
+    localStorage.removeItem("engWithMeUserId");
+    localStorage.removeItem("engWithMeStudentName");
+    localStorage.removeItem("engWithMeUserEmail");
+    localStorage.removeItem("engWithMeUserAvatar");
+    localStorage.removeItem("engWithMeAuthToken");
   }
 
-  // Kiểm tra nhanh cookie đăng nhập trước khi gọi API để tiết kiệm tài nguyên
-  const hasCookie = document.cookie.split(';').some((item) => item.trim().startsWith('ewm_logged_in='));
-  if (!hasCookie) {
-    clearAuthUser();
-    renderGuestNav();
-    return;
-  }
-
-  const cachedUser = getCachedAuthUser();
+  // Kiểm tra nhanh cache đăng nhập trước khi gọi API me.php
+  const cachedUser = !isFreshLogin ? getCachedAuthUser() : null;
   if (cachedUser) {
     renderAuthenticatedNav(cachedUser);
   }
@@ -507,19 +508,69 @@ function renderAuthenticatedNav(user) {
 
   document.querySelectorAll(".nav-actions, .auth-buttons, #auth-actions").forEach((actions) => {
     actions.innerHTML = `
-      <div class="user-menu" data-user-menu>
-        <button class="user-menu-trigger" type="button" data-user-menu-toggle aria-haspopup="true" aria-expanded="false">
-          ${getAvatarMarkup(user, "user-avatar")}
-          <span class="user-menu-meta">
-            <strong>${escapeHtml(user.name || "Tài khoản")}</strong>
-            <small>${escapeHtml(roleLabel)}</small>
-          </span>
-          <span class="ti-angle-down user-menu-caret"></span>
-        </button>
-        <div class="user-menu-panel" role="menu">
-          <a href="profile.html" role="menuitem"><span class="ti-user"></span> Hồ sơ cá nhân</a>
-          ${adminLink}
-          <button type="button" data-logout-button role="menuitem"><span class="ti-power-off"></span> Đăng xuất</button>
+      <div class="user-nav-wrapper" style="display: flex; align-items: center; gap: 12px;">
+        <!-- Notification Bell Button & Popover -->
+        <div class="notification-dropdown" data-notification-dropdown style="position: relative;">
+          <button type="button" class="notification-bell-btn" data-notification-toggle style="position: relative; background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.12); color: #cbd5e1; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; font-size: 1.15rem;" title="Thông báo hệ thống">
+            <span class="ti-bell"></span>
+            <span class="notification-badge" data-notification-badge style="position: absolute; top: 0px; right: 0px; background: #ef4444; color: #ffffff; font-size: 0.68rem; font-weight: 800; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #0f172a; box-shadow: 0 0 10px rgba(239,68,68,0.8);">3</span>
+          </button>
+
+          <!-- Notification Popover Menu -->
+          <div class="notification-panel" data-notification-panel style="display: none; position: absolute; right: 0; top: calc(100% + 12px); width: 340px; background: #1e293b; border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); z-index: 1000; overflow: hidden; backdrop-filter: blur(12px); animation: fadeIn 0.2s ease;">
+            <div style="padding: 14px 18px; background: rgba(15, 23, 42, 0.8); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between;">
+              <h4 style="margin: 0; color: #ffffff; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                <span class="ti-bell" style="color: #38bdf8;"></span> Thông Báo Hệ Thống
+              </h4>
+              <button type="button" data-mark-all-read style="background: none; border: none; color: #38bdf8; font-size: 0.78rem; font-weight: 700; cursor: pointer;">Đánh dấu đã đọc</button>
+            </div>
+
+            <div class="notification-list" style="max-height: 320px; overflow-y: auto; padding: 6px 0;">
+              <div class="notification-item unread" style="padding: 12px 18px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; gap: 12px; transition: background 0.2s ease; cursor: pointer; background: rgba(56, 189, 248, 0.06);">
+                <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; display: flex; align-items: center; justify-content: center; color: #00ff87; font-size: 1rem; flex-shrink: 0;">⚡</div>
+                <div style="flex: 1;">
+                  <div style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin-bottom: 2px;">Nâng cấp VIP Ưu Đãi!</div>
+                  <div style="font-size: 0.78rem; color: #94a3b8; line-height: 1.4;">Gói Pro chỉ 7.777đ/tháng mở khóa toàn bộ chế độ KHÓ Luyện nghe & Từ vựng.</div>
+                  <div style="font-size: 0.7rem; color: #64748b; margin-top: 4px;">10 phút trước</div>
+                </div>
+              </div>
+
+              <div class="notification-item unread" style="padding: 12px 18px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; gap: 12px; transition: background 0.2s ease; cursor: pointer; background: rgba(56, 189, 248, 0.06);">
+                <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; display: flex; align-items: center; justify-content: center; color: #38bdf8; font-size: 1rem; flex-shrink: 0;">🎧</div>
+                <div style="flex: 1;">
+                  <div style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin-bottom: 2px;">78 Bài Luyện Nghe Mới</div>
+                  <div style="font-size: 0.78rem; color: #94a3b8; line-height: 1.4;">Hệ thống vừa cập nhật danh sách bài luyện nghe chuẩn giọng Mỹ & Anh!</div>
+                  <div style="font-size: 0.7rem; color: #64748b; margin-top: 4px;">1 giờ trước</div>
+                </div>
+              </div>
+
+              <div class="notification-item unread" style="padding: 12px 18px; display: flex; gap: 12px; transition: background 0.2s ease; cursor: pointer; background: rgba(56, 189, 248, 0.06);">
+                <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; display: flex; align-items: center; justify-content: center; color: #fbbf24; font-size: 1rem; flex-shrink: 0;">🎉</div>
+                <div style="flex: 1;">
+                  <div style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin-bottom: 2px;">Chào mừng Học viên!</div>
+                  <div style="font-size: 0.78rem; color: #94a3b8; line-height: 1.4;">Chúc bạn có một hành trình bứt phá tiếng Anh thành công rực rỡ cùng EngWithMe.</div>
+                  <div style="font-size: 0.7rem; color: #64748b; margin-top: 4px;">Hôm nay</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Menu Dropdown -->
+        <div class="user-menu" data-user-menu>
+          <button class="user-menu-trigger" type="button" data-user-menu-toggle aria-haspopup="true" aria-expanded="false">
+            ${getAvatarMarkup(user, "user-avatar")}
+            <span class="user-menu-meta">
+              <strong>${escapeHtml(user.name || "Tài khoản")}</strong>
+              <small>${escapeHtml(roleLabel)}</small>
+            </span>
+            <span class="ti-angle-down user-menu-caret"></span>
+          </button>
+          <div class="user-menu-panel" role="menu">
+            <a href="profile.html" role="menuitem"><span class="ti-user"></span> Hồ sơ cá nhân</a>
+            ${adminLink}
+            <button type="button" data-logout-button role="menuitem"><span class="ti-power-off"></span> Đăng xuất</button>
+          </div>
         </div>
       </div>
     `;
@@ -533,6 +584,40 @@ function bindAuthNavInteractions() {
   document.addEventListener("click", (event) => {
     const menuToggle = event.target.closest("[data-user-menu-toggle]");
     const logoutButton = event.target.closest("[data-logout-button]");
+    const notifToggle = event.target.closest("[data-notification-toggle]");
+    const markReadBtn = event.target.closest("[data-mark-all-read]");
+
+    if (markReadBtn) {
+      event.preventDefault();
+      const notifWrapper = markReadBtn.closest("[data-notification-dropdown]");
+      if (notifWrapper) {
+        const badge = notifWrapper.querySelector("[data-notification-badge]");
+        if (badge) badge.style.display = "none";
+        const items = notifWrapper.querySelectorAll(".notification-item");
+        items.forEach((item) => item.style.background = "none");
+      }
+      return;
+    }
+
+    if (notifToggle) {
+      event.preventDefault();
+      event.stopPropagation();
+      const notifWrapper = notifToggle.closest("[data-notification-dropdown]");
+      const panel = notifWrapper?.querySelector("[data-notification-panel]");
+      if (panel) {
+        const isShown = panel.style.display === "block";
+        document.querySelectorAll("[data-notification-panel]").forEach((p) => p.style.display = "none");
+        closeUserMenus();
+        if (!isShown) {
+          panel.style.display = "block";
+        }
+      }
+      return;
+    }
+
+    if (!event.target.closest("[data-notification-dropdown]")) {
+      document.querySelectorAll("[data-notification-panel]").forEach((p) => p.style.display = "none");
+    }
 
     if (logoutButton) {
       event.preventDefault();
@@ -543,6 +628,7 @@ function bindAuthNavInteractions() {
 
     if (menuToggle) {
       event.preventDefault();
+      document.querySelectorAll("[data-notification-panel]").forEach((p) => p.style.display = "none");
       const menu = menuToggle.closest("[data-user-menu]");
       const willOpen = !menu?.classList.contains("is-open");
       closeUserMenus();
@@ -606,6 +692,33 @@ function getCachedAuthUser() {
     vip_expires_at: localStorage.getItem("engWithMeUserVipExpires") || null
   };
 }
+
+function showVipUpgradeModal(featureName = "chế độ KHÓ (HARD Mode)") {
+  const existingModal = document.getElementById("vip-upgrade-modal");
+  if (existingModal) existingModal.remove();
+
+  const modalHtml = `
+    <div id="vip-upgrade-modal" style="position: fixed; inset: 0; z-index: 99999; display: flex; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); padding: 20px; animation: fadeIn 0.25s ease;">
+      <div style="background: linear-gradient(145deg, #1e293b, #0f172a); border: 2px solid #10b981; border-radius: 20px; max-width: 440px; width: 100%; padding: 28px 24px; text-align: center; box-shadow: 0 0 35px rgba(16, 185, 129, 0.4), 0 20px 50px rgba(0,0,0,0.6); position: relative;">
+        <button type="button" onclick="document.getElementById('vip-upgrade-modal').remove()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; line-height: 1;">&times;</button>
+        <div style="width: 70px; height: 70px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); border: 2px solid #10b981; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px auto; font-size: 2.2rem; color: #00ff87; box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);">
+          🔒
+        </div>
+        <h3 style="color: #ffffff; margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 800;">Tính Năng Dành Cho Học Viên PRO / PREMIUM</h3>
+        <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px;">
+          Vui lòng nâng cấp gói <strong style="color: #00ff87;">Pro</strong> hoặc <strong style="color: #fbbf24;">Premium</strong> để mở khóa <strong style="color: #00ff87;">${featureName}</strong> trong phần Luyện nghe!
+        </p>
+        <div style="display: flex; gap: 12px;">
+          <button type="button" onclick="document.getElementById('vip-upgrade-modal').remove()" style="flex: 1; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: #cbd5e1; font-weight: 700; cursor: pointer;">Để Sau</button>
+          <button type="button" onclick="window.location.href='pricing.html'" style="flex: 1.5; padding: 12px; border-radius: 12px; border: none; background: linear-gradient(135deg, #10b981, #059669); color: #ffffff; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(16,185,129,0.4);">⚡ Nâng Cấp Ngay</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML("beforeend", modalHtml);
+}
+window.showVipUpgradeModal = showVipUpgradeModal;
 
 function persistAuthUser(user) {
   if (!user) return;

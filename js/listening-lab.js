@@ -370,9 +370,25 @@
         button.addEventListener("click", () => openMission(getRecommendedMission().id, { challenge: true }));
       });
 
+      const hardGoals = ["work-career", "news-society", "tech-internet"];
+
       els.goalChips.forEach((chip) => {
         chip.addEventListener("click", () => {
-          state.goal = chip.dataset.goal || "travel";
+          const targetGoal = chip.dataset.goal || "travel";
+          const currentUser = typeof getCachedAuthUser === "function" ? getCachedAuthUser() : null;
+          const isVip = currentUser && (currentUser.is_vip == 1 || currentUser.is_vip === true);
+
+          if (hardGoals.includes(targetGoal) && !isVip) {
+            if (typeof window.showVipUpgradeModal === "function") {
+              window.showVipUpgradeModal("Chủ đề KHÓ (HARD Mode)");
+            } else {
+              alert("Vui lòng nâng cấp tài khoản Pro hoặc Premium để mở khóa chế độ KHÓ (HARD Mode) trong Luyện nghe!");
+              window.location.href = "pricing.html";
+            }
+            return;
+          }
+
+          state.goal = targetGoal;
           saveState();
           renderDashboard();
         });
@@ -767,8 +783,17 @@
           const mission = missions.find((item) => item.id === card.dataset.mission);
           if (!mission) return;
           const hardGoals = ["work-career", "news-society", "tech-internet"];
-          if (hardGoals.includes(mission.goal) && typeof checkHardModeAccess === "function") {
-            if (!checkHardModeAccess(e, "Luyện nghe Nâng cao Hard Mode")) return;
+          const currentUser = typeof getCachedAuthUser === "function" ? getCachedAuthUser() : null;
+          const isVip = currentUser && (currentUser.is_vip == 1 || currentUser.is_vip === true);
+
+          if ((hardGoals.includes(mission.goal) || (mission.level && mission.level.toLowerCase().includes("hard"))) && !isVip) {
+            if (typeof window.showVipUpgradeModal === "function") {
+              window.showVipUpgradeModal("Bài Luyện Nghe Chế Độ KHÓ (HARD Mode)");
+            } else {
+              alert("Vui lòng nâng cấp tài khoản Pro hoặc Premium để mở khóa chế độ KHÓ (HARD Mode) trong Luyện nghe!");
+              window.location.href = "pricing.html";
+            }
+            return;
           }
           openMission(mission.id);
         });

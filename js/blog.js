@@ -504,12 +504,12 @@ function renderReviewForm(container, user) {
       <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(2, 6, 23, 0.35); border: 1px solid rgba(125, 211, 252, 0.16); padding: 10px 14px; border-radius: 10px;">
         <span style="font-size: 0.9rem; font-weight: 600; color: #cbd5e1;">Đánh giá trải nghiệm</span>
         <div style="display: flex; align-items: center; gap: 10px;">
-          <div class="star-rating" style="display: flex; gap: 4px; font-size: 1.2rem;">
-            <span class="star-btn" data-value="1" style="cursor: pointer; transition: all 0.2s; display: inline-block; line-height: 1;">★</span>
-            <span class="star-btn" data-value="2" style="cursor: pointer; transition: all 0.2s; display: inline-block; line-height: 1;">★</span>
-            <span class="star-btn" data-value="3" style="cursor: pointer; transition: all 0.2s; display: inline-block; line-height: 1;">★</span>
-            <span class="star-btn" data-value="4" style="cursor: pointer; transition: all 0.2s; display: inline-block; line-height: 1;">★</span>
-            <span class="star-btn" data-value="5" style="cursor: pointer; transition: all 0.2s; display: inline-block; line-height: 1;">★</span>
+          <div class="star-rating">
+            <span class="star-btn active" data-value="1">★</span>
+            <span class="star-btn active" data-value="2">★</span>
+            <span class="star-btn active" data-value="3">★</span>
+            <span class="star-btn active" data-value="4">★</span>
+            <span class="star-btn active" data-value="5">★</span>
           </div>
           <span id="rating-text-badge" style="font-size: 0.8rem; font-weight: 700; color: #00ff87; background: rgba(0, 255, 135, 0.1); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(0, 255, 135, 0.2);">5/5 Rất tốt</span>
         </div>
@@ -587,42 +587,38 @@ function renderReviewForm(container, user) {
 
   titleInput.addEventListener("input", checkTitleLimit);
   contentInput.addEventListener("input", checkContentLimit);
+  const starContainer = form.querySelector(".star-rating");
   const stars = form.querySelectorAll(".star-btn");
   let currentRating = 5;
 
   const updateStars = (rating) => {
     if (ratingTextBadge) ratingTextBadge.textContent = ratingLabels[rating] || `${rating}/5`;
     stars.forEach((s) => {
-      const val = parseInt(s.getAttribute("data-value"));
+      const val = parseInt(s.getAttribute("data-value"), 10);
       if (val <= rating) {
-        s.style.background = "linear-gradient(135deg, #2ee878, #38bdf8)";
-        s.style.webkitBackgroundClip = "text";
-        s.style.webkitTextFillColor = "transparent";
-        s.style.filter = "drop-shadow(0 0 4px rgba(46, 232, 120, 0.7))";
-        s.style.opacity = "1";
+        s.classList.add("active");
       } else {
-        s.style.background = "none";
-        s.style.webkitBackgroundClip = "initial";
-        s.style.webkitTextFillColor = "rgba(166, 180, 201, 0.15)";
-        s.style.filter = "none";
-        s.style.opacity = "0.4";
+        s.classList.remove("active");
       }
     });
   };
 
   stars.forEach((star) => {
     star.addEventListener("click", () => {
-      currentRating = parseInt(star.getAttribute("data-value"));
+      currentRating = parseInt(star.getAttribute("data-value"), 10);
       form.querySelector("#review-rating-value").value = currentRating;
       updateStars(currentRating);
     });
-    star.addEventListener("mouseover", () => {
-      updateStars(parseInt(star.getAttribute("data-value")));
-    });
-    star.addEventListener("mouseleave", () => {
-      updateStars(currentRating);
+    star.addEventListener("mouseenter", () => {
+      updateStars(parseInt(star.getAttribute("data-value"), 10));
     });
   });
+
+  if (starContainer) {
+    starContainer.addEventListener("mouseleave", () => {
+      updateStars(currentRating);
+    });
+  }
 
   // Handle submit
   form.addEventListener("submit", async (e) => {

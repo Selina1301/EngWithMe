@@ -327,11 +327,15 @@ function showPaymentSuccessState(data) {
       <p style="color: #cbd5e1; font-size: 0.95rem; margin-bottom: 24px; line-height: 1.6;">
         Tài khoản của bạn đã được mở khóa toàn bộ bài học, từ vựng, ngữ pháp và tính năng luyện tập Trọn Đời.
       </p>
-      <button type="button" class="btn btn-primary" onclick="window.location.href='dashboard.html'" style="padding: 14px 28px; font-weight: 800; font-size: 1rem; border-radius: 12px; width: 100%;">
-        🚀 Khám phá Dashboard Học viên ngay
+      <button type="button" class="btn btn-primary" onclick="window.location.href='profile.html'" style="padding: 14px 28px; font-weight: 800; font-size: 1rem; border-radius: 12px; width: 100%;">
+        👤 Đến Trang Thông Tin Cá Nhân Ngay
       </button>
     </div>
   `;
+
+  setTimeout(() => {
+    window.location.href = "profile.html";
+  }, 3000);
 }
 
 function closePayosModal() {

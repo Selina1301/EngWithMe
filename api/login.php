@@ -92,22 +92,30 @@ try {
         session_regenerate_id(true);
         $_SESSION['user_id'] = (int) $user['id'];
 
-        if ($remember || $isDeviceTrusted) {
-            $cookieParams = session_get_cookie_params();
-            setcookie(
-                session_name(),
-                session_id(),
-                time() + 86400 * 7,
-                $cookieParams['path'] ?? '/',
-                $cookieParams['domain'] ?? '',
-                (bool) ($cookieParams['secure'] ?? false),
-                (bool) ($cookieParams['httponly'] ?? true)
-            );
-            setcookie('ewm_logged_in', '1', time() + 86400 * 7, '/');
-            setcookie('ewm_trusted_device', $user['id'] . ':' . $token, time() + 86400 * 7, '/');
-        } else {
-            setcookie('ewm_logged_in', '1', 0, '/');
-        }
+        $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') 
+            || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https');
+
+        setcookie(session_name(), session_id(), [
+            'expires' => time() + 86400 * 30,
+            'path' => '/',
+            'secure' => $isHttps,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+        setcookie('ewm_logged_in', '1', [
+            'expires' => time() + 86400 * 30,
+            'path' => '/',
+            'secure' => $isHttps,
+            'httponly' => false,
+            'samesite' => 'Lax'
+        ]);
+        setcookie('ewm_trusted_device', $user['id'] . ':' . $token, [
+            'expires' => time() + 86400 * 30,
+            'path' => '/',
+            'secure' => $isHttps,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
 
         log_user_activity($isAdmin ? 'login_success_admin' : 'login_success_remembered_device', ['email' => $user['email']]);
 

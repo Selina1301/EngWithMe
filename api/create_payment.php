@@ -106,7 +106,7 @@ $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'ht
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $baseUrl = $scheme . '://' . $host . rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\') . '/..';
 
-$returnUrl = $baseUrl . '/pricing.html?payment=success&orderCode=' . $orderCode;
+$returnUrl = $baseUrl . '/profile.html?payment=success&orderCode=' . $orderCode;
 $cancelUrl = $baseUrl . '/pricing.html?payment=cancelled';
 $description = 'EngWithMe ' . strtoupper($plan) . ' ' . $orderCode;
 if (mb_strlen($description) > 25) {

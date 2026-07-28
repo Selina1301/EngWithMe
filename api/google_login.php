@@ -40,6 +40,9 @@ if (!$isConfigured) {
 start_app_session();
 $state = bin2hex(random_bytes(16));
 $_SESSION['oauth_state'] = $state;
+if (!empty($_GET['redirect'])) {
+    $_SESSION['auth_redirect'] = preg_replace('/[^a-zA-Z0-9_\-\.\/]/', '', (string)$_GET['redirect']);
+}
 
 $authUrl = "https://accounts.google.com/o/oauth2/v2/auth?" . http_build_query([
     'client_id' => $clientId,

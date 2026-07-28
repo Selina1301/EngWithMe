@@ -19,10 +19,8 @@ try {
 
     if ($user) {
         $token = bin2hex(random_bytes(32));
-        $expires = date('Y-m-d H:i:s', time() + 3600); // 1 hour
-
-        $update = db()->prepare('UPDATE users SET reset_token = ?, reset_token_expires_at = ? WHERE id = ?');
-        $update->execute([$token, $expires, (int) $user['id']]);
+        $update = db()->prepare('UPDATE users SET reset_token = ?, reset_token_expires_at = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = ?');
+        $update->execute([$token, (int) $user['id']]);
 
         // Tạo đường dẫn đổi mật khẩu tuyệt đối (sử dụng APP_URL từ .env hoặc tự động nhận diện)
         if (defined('APP_URL') && APP_URL !== '') {

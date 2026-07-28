@@ -23,13 +23,13 @@ if ($email === '' || $otp === '') {
 try {
     $pdo = db();
     
-    // Tìm user theo email và status = pending
-    $statement = $pdo->prepare('SELECT * FROM users WHERE email = ? AND status = "pending" LIMIT 1');
+    // Tìm user theo email (bao gồm cả tài khoản mới chưa kích hoạt - pending)
+    $statement = $pdo->prepare('SELECT * FROM users WHERE email = ? AND status IN ("active", "pending") LIMIT 1');
     $statement->execute([$email]);
     $user = $statement->fetch();
     
     if (!$user) {
-        json_response(['ok' => false, 'message' => 'Yêu cầu kích hoạt không hợp lệ hoặc tài khoản đã kích hoạt.'], 400);
+        json_response(['ok' => false, 'message' => 'Yêu cầu không hợp lệ hoặc tài khoản đã bị khóa.'], 400);
     }
     
     if (empty($user['verification_token'])) {
@@ -39,10 +39,10 @@ try {
     if ($user['verification_token'] !== $otp) {
         $attempts = (int) $user['login_attempts'] + 1;
         if ($attempts >= 5) {
-            // Hủy mã OTP đăng ký và reset lượt thử
-            $clear = $pdo->prepare('UPDATE users SET verification_token = NULL, login_attempts = 0 WHERE id = ?');
-            $clear->execute([(int) $user['id']]);
-            json_response(['ok' => false, 'message' => 'Bạn đã nhập sai mã OTP quá 5 lần. Vui lòng đăng ký/gửi lại yêu cầu để nhận mã mới.'], 400);
+            // Hủy mã OTP và reset lượt thử
+            $lock = $pdo->prepare('UPDATE users SET verification_token = NULL, login_attempts = 0 WHERE id = ?');
+            $lock->execute([(int) $user['id']]);
+            json_response(['ok' => false, 'message' => 'Bạn đã nhập sai mã OTP quá 5 lần. Vui lòng gửi lại yêu cầu để nhận mã mới.'], 400);
         } else {
             $inc = $pdo->prepare('UPDATE users SET login_attempts = ? WHERE id = ?');
             $inc->execute([$attempts, (int) $user['id']]);
@@ -50,27 +50,40 @@ try {
         }
     }
     
-    // Kích hoạt tài khoản và xóa mã OTP
-    $update = $pdo->prepare('UPDATE users SET status = "active", verification_token = NULL WHERE id = ?');
-    $update->execute([(int) $user['id']]);
-    
-    // Tạo session đăng nhập tự động ngay lập tức
+    $token = generate_remember_token();
+    $update = $pdo->prepare('UPDATE users SET status = "active", verification_token = NULL, last_login_at = NOW(), login_attempts = 0, attempt_lock_until = NULL, remember_token = ?, remember_until = DATE_ADD(NOW(), INTERVAL 30 DAY) WHERE id = ?');
+    $update->execute([$token, (int) $user['id']]);
+    $user['remember_token'] = $token;
+    $user['status'] = 'active';
+
+    // Tạo session đăng nhập chính thức
     session_regenerate_id(true);
     $_SESSION['user_id'] = (int) $user['id'];
     
-    // Đặt cookie trạng thái đăng nhập cho frontend
-    setcookie('ewm_logged_in', '1', time() + 86400 * 30, '/');
-    
-    // Cập nhật log đăng nhập cuối
-    $updateLogin = $pdo->prepare('UPDATE users SET last_login_at = NOW(), login_attempts = 0, attempt_lock_until = NULL WHERE id = ?');
-    $updateLogin->execute([(int) $user['id']]);
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') 
+        || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https');
+
+    setcookie('ewm_logged_in', '1', [
+        'expires' => time() + 86400 * 30,
+        'path' => '/',
+        'secure' => $isHttps,
+        'httponly' => false,
+        'samesite' => 'Lax'
+    ]);
+    setcookie('ewm_trusted_device', $user['id'] . ':' . $token, [
+        'expires' => time() + 86400 * 30,
+        'path' => '/',
+        'secure' => $isHttps,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
     
     log_user_activity('otp_verify_success', ['email' => $email]);
     
     json_response([
         'ok' => true,
         'message' => 'Xác thực tài khoản thành công! Đang chuyển hướng...',
-        'redirect' => 'profile.html#dashboard',
+        'redirect' => (($user['role'] ?? 'user') === 'admin') ? 'admin.html' : 'profile.html',
         'user' => current_user_payload($user)
     ]);
     

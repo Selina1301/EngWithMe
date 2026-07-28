@@ -52,6 +52,13 @@ function initAuthForms() {
       // Xóa tham số lỗi trên thanh địa chỉ để tránh lặp lại thông báo khi F5
       window.history.replaceState({}, document.title, window.location.pathname);
     }
+
+    const redirectParam = params.get("redirect");
+    if (redirectParam) {
+      document.querySelectorAll('a[href*="api/google_login.php"]').forEach((a) => {
+        a.href = `api/google_login.php?redirect=${encodeURIComponent(redirectParam)}`;
+      });
+    }
   }
 
   // Toggle Password Visibility
@@ -234,7 +241,7 @@ function showAuthFeedback(form, message, isSuccess = true) {
 }
 
 function openOtpModal(email, originalForm, isLoginOtp = false) {
-  const verifyEndpoint = isLoginOtp ? "api/verify_login_otp.php" : "api/verify_otp.php";
+  const verifyEndpoint = "api/verify_otp.php";
   const resendEndpoint = isLoginOtp ? "api/login.php" : "api/register.php";
 
   document.getElementById("otpFormEmail").value = email;

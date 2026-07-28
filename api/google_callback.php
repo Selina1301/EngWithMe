@@ -106,102 +106,78 @@ try {
     $statement->execute([$email]);
     $user = $statement->fetch();
 
-    $trustedCookie = (string) ($_COOKIE['ewm_trusted_device'] ?? '');
-    $isDeviceTrusted = false;
-    if ($user && $trustedCookie !== '' && str_contains($trustedCookie, ':')) {
-        list($cookieUserId, $cookieToken) = explode(':', $trustedCookie, 2);
-        if ((int) $cookieUserId === (int) $user['id'] 
-            && !empty($user['remember_token']) 
-            && hash_equals((string) $user['remember_token'], $cookieToken)
-            && !empty($user['remember_until'])
-            && strtotime($user['remember_until']) > time()) {
-            $isDeviceTrusted = true;
-        }
-    }
+    if (!$user) {
+        $randomPassword = bin2hex(random_bytes(16));
+        $insert = $pdo->prepare(
+            'INSERT INTO users (full_name, email, password, role, level, status, avatar_path, created_at)
+             VALUES (?, ?, ?, "user", "A1", "active", ?, NOW())'
+        );
+        $insert->execute([
+            $fullName,
+            $email,
+            password_hash($randomPassword, PASSWORD_DEFAULT),
+            $avatar !== '' ? $avatar : null
+        ]);
+        $newId = (int) $pdo->lastInsertId();
 
-    $isAdmin = $user && ($user['role'] ?? 'user') === 'admin';
-
-    // Nếu thiết bị chưa được Ghi nhớ 7 ngày -> BẮT BUỘC gửi mã OTP về Email và hiện Modal OTP trên login.html
-    if (!$isDeviceTrusted && !$isAdmin) {
-        $otp = (string) rand(100000, 999999);
-        if (!$user) {
-            $randomPassword = bin2hex(random_bytes(16));
-            $insert = $pdo->prepare(
-                'INSERT INTO users (full_name, email, password, role, level, status, verification_token, avatar_path)
-                 VALUES (?, ?, ?, "user", "A1", "pending", ?, ?)'
-            );
-            $insert->execute([
-                $fullName,
-                $email,
-                password_hash($randomPassword, PASSWORD_DEFAULT),
-                $otp,
-                $avatar !== '' ? $avatar : null
-            ]);
-        } else {
-            $updateOtp = $pdo->prepare('UPDATE users SET verification_token = ?, status = IF(status = "locked", "locked", "pending") WHERE id = ?');
-            $updateOtp->execute([$otp, (int) $user['id']]);
-        }
-
-        // Kiểm tra tài khoản có bị khóa không
-        if ($user && ($user['status'] ?? 'active') === 'locked') {
+        $stmtNew = $pdo->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
+        $stmtNew->execute([$newId]);
+        $user = $stmtNew->fetch();
+    } else {
+        if (($user['status'] ?? 'active') === 'locked') {
             throw new Exception('Tài khoản của bạn hiện đang bị khóa.');
         }
 
-        // Gửi email chứa mã OTP xác thực
-        $subject = 'EngWithMe - Mã OTP xác thực Đăng nhập Google';
-        $htmlBody = '
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff; text-align: center;">
-            <h2 style="color: #2e86de; margin: 0;">EngWithMe</h2>
-            <p style="font-size: 14px; color: #475569; font-weight: bold; text-transform: uppercase;">Mã OTP xác thực đăng nhập Google</p>
-            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
-            <p style="text-align: left; color: #334155;">Chào <strong>' . htmlspecialchars($user['full_name'] ?? $fullName) . '</strong>,</p>
-            <p style="text-align: left; color: #334155;">Mã xác thực OTP 6 số để đăng nhập tài khoản EngWithMe qua Google của bạn là:</p>
-            <div style="margin: 25px auto; background-color: #f8fafc; padding: 15px 30px; border-radius: 10px; display: inline-block; border: 1px solid #cbd5e1;">
-                <span style="font-size: 32px; font-weight: bold; color: #1e3a8a; letter-spacing: 6px; font-family: monospace;">' . $otp . '</span>
-            </div>
-            <p style="text-align: left; font-size: 13px; color: #64748b;">Mã này có hiệu lực trong 10 phút.</p>
-        </div>';
+        if (($user['status'] ?? 'active') === 'pending') {
+            $activate = $pdo->prepare('UPDATE users SET status = "active", verification_token = NULL WHERE id = ?');
+            $activate->execute([(int) $user['id']]);
+            $user['status'] = 'active';
+        }
 
-        send_mail($email, $subject, $htmlBody);
-        log_user_activity('google_login_otp_generated', ['email' => $email]);
-
-        // Chuyển hướng về login.html kèm cờ otp_sent=1 và email để tự động bật Modal OTP
-        header("Location: ../login.html?otp_sent=1&email=" . urlencode($email));
-        exit;
-    }
-
-    // Tự động kích hoạt nếu tài khoản đang ở trạng thái chờ (pending)
-    if ($user && ($user['status'] ?? 'active') === 'pending') {
-        $activate = $pdo->prepare('UPDATE users SET status = "active", verification_token = NULL WHERE id = ?');
-        $activate->execute([(int) $user['id']]);
-        $user['status'] = 'active';
+        if (empty($user['avatar_path']) && $avatar !== '') {
+            $updateAvatar = $pdo->prepare('UPDATE users SET avatar_path = ? WHERE id = ?');
+            $updateAvatar->execute([$avatar, (int) $user['id']]);
+            $user['avatar_path'] = $avatar;
+        }
     }
     
-    // Cập nhật ảnh đại diện từ Google nếu người dùng chưa có ảnh
-    if ($user && empty($user['avatar_path']) && $avatar !== '') {
-        $updateAvatar = $pdo->prepare('UPDATE users SET avatar_path = ? WHERE id = ?');
-        $updateAvatar->execute([$avatar, (int) $user['id']]);
-        $user['avatar_path'] = $avatar;
-    }
-    
-    // Kiểm tra tài khoản có bị khóa không
-    if (($user['status'] ?? 'active') !== 'active') {
-        throw new Exception('Tài khoản của bạn hiện đang bị khóa.');
-    }
-    
-    // 5. Lưu phiên làm việc (Session) đăng nhập
+    // 5. Lưu phiên làm việc (Session) & Token đăng nhập đa tên miền (SSO Multi-domain)
     $_SESSION = [];
     session_regenerate_id(true);
     $_SESSION['user_id'] = (int) $user['id'];
-    setcookie('ewm_logged_in', '1', time() + 86400 * 30, '/');
+
+    $token = generate_remember_token();
+
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') 
+        || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https');
+
+    setcookie('ewm_logged_in', '1', [
+        'expires' => time() + 86400 * 30,
+        'path' => '/',
+        'secure' => $isHttps,
+        'httponly' => false,
+        'samesite' => 'Lax'
+    ]);
+    setcookie('ewm_trusted_device', $user['id'] . ':' . $token, [
+        'expires' => time() + 86400 * 30,
+        'path' => '/',
+        'secure' => $isHttps,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
     
-    $updateLogin = $pdo->prepare('UPDATE users SET last_login_at = NOW(), login_attempts = 0, attempt_lock_until = NULL, verification_token = NULL WHERE id = ?');
-    $updateLogin->execute([(int) $user['id']]);
+    $updateLogin = $pdo->prepare('UPDATE users SET last_login_at = NOW(), login_attempts = 0, attempt_lock_until = NULL, verification_token = NULL, remember_token = ?, remember_until = DATE_ADD(NOW(), INTERVAL 30 DAY) WHERE id = ?');
+    $updateLogin->execute([$token, (int) $user['id']]);
 
     log_user_activity('google_login_success', ['email' => $email]);
     
-    // Chuyển hướng trực tiếp về Dashboard/Profile (initAuthNav của frontend sẽ tự gọi api/me.php đồng bộ localStorage)
-    $redirectUrl = ($user['role'] === 'admin') ? '../admin.html?login=google' : '../profile.html?login=google#dashboard';
+    // Chuyển hướng trực tiếp về trang yêu cầu (ví dụ pricing.html) hoặc Dashboard/Profile
+    $redirectUrl = ($user['role'] === 'admin') ? '../admin.html?login=google_success' : '../profile.html?login=google_success#dashboard';
+    if (!empty($_SESSION['auth_redirect'])) {
+        $sep = str_contains($_SESSION['auth_redirect'], '?') ? '&' : '?';
+        $redirectUrl = '../' . ltrim($_SESSION['auth_redirect'], '/') . $sep . 'login=google_success';
+        unset($_SESSION['auth_redirect']);
+    }
     header("Location: " . $redirectUrl);
     exit;
 
