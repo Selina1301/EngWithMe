@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng Xếp Hạng Rank - EngWithMe</title>
+  <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
+  <link rel="stylesheet" href="css/base.css?v=20260728notif">
+  <link rel="stylesheet" href="css/pages/rank.css?v=20260801crown">
+  <link rel="stylesheet" href="css/responsive/desktop.css">
+  <link rel="stylesheet" href="css/responsive/tablet.css">
+  <link rel="stylesheet" href="css/responsive/phone.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">EngWithMe</a>
+    <nav class="nav-links" aria-label="Menu chính">
+      <a href="index.html">Home</a>
+      <a href="vocabulary.html">Vocabulary</a>
+      <a href="listening.html">Listening</a>
+      <a href="reading.html">Reading</a>
+      <a href="grammar.html">Grammar</a>
+      <a href="quiz.html">Exam</a>
+      <a href="blog.html">Blog</a>
+      <a href="rank.html" class="active">Rank</a>
+      <a href="pricing.html">Premium</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="profile.html"><span class="ti-user"></span> Trang cá nhân</a>
+      <button class="btn btn-ghost" type="button" data-logout-button><span class="ti-power-off"></span> Đăng xuất</button>
+    </div>
+  </header>
+
+  <main class="page-main rank-page-main">
+    <!-- Rank Hero Section -->
+    <section class="rank-hero">
+      <h1 class="rank-title">🏆 Bảng Xếp Hạng Học Viên EngWithMe</h1>
+      <p class="rank-subtitle">Tuyên dương Top 10 học viên xuất sắc, chăm chỉ tích lũy XP và đóng góp tích cực nhất.</p>
+    </section>
+
+    <!-- Rank Category Switcher Tabs -->
+    <section class="section compact" style="margin-bottom: 24px;">
+      <div class="rank-tab-bar">
+        <button type="button" class="rank-tab active" data-rank-tab="xp">
+          <span>🏆 Top Cần Cù (XP)</span>
+        </button>
+        <button type="button" class="rank-tab" data-rank-tab="bloggers">
+          <span>✍️ Top Học Viên Tích Cực (Blog)</span>
+        </button>
+        <button type="button" class="rank-tab" data-rank-tab="toeic">
+          <span>🎯 Top Cao Thủ TOEIC</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Rank Vertical List Section (Top 10 Vertical Cards) -->
+    <section class="section compact" style="margin-bottom: 80px;">
+      <div class="rank-section-container">
+        <div class="rank-table-header" style="max-width: 860px; margin: 0 auto 20px;">
+          <h2 id="rank-section-title">📊 Top 10 Bảng Xếp Hạng</h2>
+          <span class="rank-sync-status" id="rank-sync-tag">⚡ Cập nhật tự động</span>
+        </div>
+
+        <div class="rank-vertical-list" id="rank-vertical-list">
+          <div style="text-align: center; color: #94a3b8; padding: 40px;">Đang tải danh sách Top 10...</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Sticky My Rank Banner at Bottom -->
+  <div class="my-rank-sticky-bar" id="my-rank-banner">
+    <div class="my-rank-content">
+      <div class="my-rank-user">
+        <img class="my-rank-avatar" id="my-rank-avatar" src="assets/icons/theme/logoEW.png" alt="My avatar">
+        <div>
+          <strong id="my-rank-name">Đang xác thực tài khoản...</strong>
+          <span id="my-rank-badge">Cấp độ --</span>
+        </div>
+      </div>
+      <div class="my-rank-stats">
+        <div class="my-rank-stat-item">
+          <span>Vị trí của bạn</span>
+          <strong id="my-rank-pos" style="color: #00ff87;">#--</strong>
+        </div>
+        <div class="my-rank-stat-item">
+          <span id="my-rank-stat-label">Tổng XP</span>
+          <strong id="my-rank-xp" style="color: #00f0ff;">0 XP</strong>
+        </div>
+      </div>
+      <button type="button" id="my-rank-action-btn" class="btn btn-primary" style="padding: 8px 18px; font-size: 0.9rem;">⚡ Học ngay tăng Rank</button>
+    </div>
+  </div>
+
+  <script src="js/config.js?v=2.0"></script>
+  <script src="js/api.js?v=2.0"></script>
+  <script src="js/components.js?v=2.0"></script>
+  <script src="js/core.js?v=20260728notif"></script>
+  <script src="js/level-system.js?v=1.8.0"></script>
+  <script src="js/rank.js?v=20260801v005"></script>
+  <script src="js/main.js?v=1.8.0"></script>
+</body>
+</html>

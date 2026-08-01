@@ -1,0 +1,11 @@
+/* Large desktop refinements */
+@media (min-width: 1200px) {
+  .hero {
+    padding-left: max(72px, calc((100% - var(--container)) / 2));
+    padding-right: max(72px, calc((100% - var(--container)) / 2));
+  }
+  .contact-section {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+}

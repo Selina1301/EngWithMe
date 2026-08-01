@@ -1,0 +1,186 @@
+/* Home page visual polish */
+:root {
+  --primary: #2ee878;
+  --primary-dark: #18bd62;
+  --secondary: #48cfff;
+  --accent: #c8ff4f;
+  --success: #70f59d;
+  --glow: 0 0 0 1px rgba(46, 232, 120, 0.26), 0 24px 58px rgba(72, 207, 255, 0.2);
+}
+
+.brand {
+  transition: transform 0.22s ease, text-shadow 0.22s ease, filter 0.22s ease;
+}
+
+
+
+.brand:hover {
+  filter: brightness(1.08);
+  text-shadow:
+    0 0 17px rgba(46, 232, 120, 0.72),
+    0 0 24px rgba(72, 207, 255, 0.45);
+}
+
+
+
+.hero p.hero-slogan {
+  border-left: 4px solid var(--primary);
+  border-radius: 0 12px 12px 0;
+  background: linear-gradient(90deg, rgba(46, 232, 120, 0.12), rgba(46, 232, 120, 0.01), transparent);
+  color: var(--muted);
+  font-size: 16.5px !important;
+  font-weight: 500;
+  line-height: 1.55 !important;
+  margin: 22px 0 0;
+  max-width: 780px !important;
+  padding: 12px 18px !important;
+  position: relative;
+  border-top: 1px solid rgba(46, 232, 120, 0.08);
+  border-right: 1px solid rgba(46, 232, 120, 0.02);
+  border-bottom: 1px solid rgba(46, 232, 120, 0.02);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Hero Section Typography Exact Tuning (40px H1) */
+.hero .eyebrow {
+  font-size: 16.5px !important;
+  letter-spacing: 1px;
+}
+
+.hero h1 {
+  font-size: 40px !important;
+  line-height: 1.18 !important;
+}
+
+.hero p:not(.hero-slogan):not(.eyebrow) {
+  font-size: 17.5px !important;
+  max-width: 760px !important;
+  line-height: 1.55 !important;
+}
+
+.hero-actions .btn {
+  font-size: 15.5px !important;
+  min-height: 40px !important;
+  padding: 8px 18px !important;
+}
+
+.today-task-panel {
+  display: grid;
+  gap: 12px;
+  max-width: 560px;
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid rgba(125, 211, 252, 0.24);
+  border-radius: var(--radius);
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.today-task-panel[hidden] {
+  display: none;
+}
+
+.today-task-panel h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.15rem;
+}
+
+.today-task-panel ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+.today-task-panel .btn {
+  width: fit-content;
+}
+
+.btn:hover,
+.feature-card:hover,
+.course-card:hover,
+.article-card:hover,
+.pricing-card:hover,
+.stat-card:hover,
+.faq-section .faq-list details:hover {
+  filter: brightness(1.08) saturate(1.12);
+}
+
+@media (min-width: 769px) {
+  .hero-home {
+    padding-top: 60px !important;
+    padding-bottom: 60px !important;
+    min-height: calc(100vh - 120px);
+  }
+}
+
+/* Make whole cards clickable */
+.course-card, .article-card {
+  position: relative;
+}
+
+.course-card a, .article-card a {
+  position: static;
+}
+
+.course-card a::after, .article-card a::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
+
+.course-card h3, .course-card p, .course-card .course-level,
+.article-card h3, .article-card p, .article-card span {
+  position: relative;
+  z-index: 1;
+}
+
+/* Scroll Indicator Arrow */
+.hero-scroll-indicator {
+  position: fixed;
+  left: 87px; /* Aligned with 'g' of EngWithMe (center of SVG is 11px, so 87px + 11px = 98px) */
+  top: 310px; /* 300px down from logo */
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-scroll-indicator.fade-out {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.scroll-arrow-svg {
+  animation: svgArrowAnim 2s infinite ease-in-out;
+  filter: drop-shadow(0 0 5px rgba(72, 207, 255, 0.15));
+}
+
+@keyframes svgArrowAnim {
+  0% {
+    transform: translateY(0);
+    opacity: 0.25;
+    filter: drop-shadow(0 0 2px rgba(72, 207, 255, 0));
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 0.95;
+    filter: drop-shadow(0 0 6px rgba(72, 207, 255, 0.45));
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0.25;
+    filter: drop-shadow(0 0 2px rgba(72, 207, 255, 0));
+  }
+}
+

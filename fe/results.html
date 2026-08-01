@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kết quả học tập - EngWithMe</title>
+  <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
+  <link rel="stylesheet" href="css/base.css?v=20260728notif">
+  <link rel="stylesheet" href="css/responsive/desktop.css">
+  <link rel="stylesheet" href="css/responsive/tablet.css">
+  <link rel="stylesheet" href="css/responsive/phone.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">EngWithMe</a>
+    <nav class="nav-links" aria-label="Menu học viên">
+        <a href="index.html">Home</a>
+        <a href="vocabulary.html">Vocabulary</a>
+        <a href="listening.html">Listening</a>
+        <a href="reading.html">Reading</a>
+        <a href="grammar.html">Grammar</a>
+        <a href="quiz.html">Exam</a>
+        <a href="blog.html">Blog</a>
+        <a href="pricing.html">Premium</a>
+      </nav>
+  </header>
+
+  <main class="page-main">
+    <section class="page-title">
+      <p class="eyebrow">Progress</p>
+      <h1>Kết quả học tập</h1>
+      <p>Trang tổng hợp điểm số, số câu đúng/sai, kỹ năng yếu và bài học nên ôn lại.</p>
+    </section>
+
+    <section class="section compact">
+      <div class="stat-grid">
+        <article class="stat-card"><span>Điểm quiz gần nhất</span><strong data-last-score>Chưa có</strong></article>
+        <article class="stat-card"><span>Số từ đã lưu</span><strong data-saved-words-result>0</strong></article>
+        <article class="stat-card"><span>Kỹ năng mạnh</span><strong>Vocabulary</strong></article>
+        <article class="stat-card"><span>Nên ôn lại</span><strong>Listening</strong></article>
+      </div>
+    </section>
+
+    <section class="section section-muted">
+      <div class="table-card">
+        <h2>Lịch sử kiểm tra mẫu</h2>
+        <table>
+          <thead>
+            <tr><th>Bài test</th><th>Điểm</th><th>Trình độ đề xuất</th><th>Thời gian</th></tr>
+          </thead>
+          <tbody data-results-tbody>
+            <tr><td>Placement Test</td><td data-last-score-table>Chưa có</td><td>A2</td><td>-</td></tr>
+            <tr><td>Vocabulary Quiz</td><td>8/10</td><td>A1</td><td>-</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+
+
+  <script src="js/config.js?v=2.0"></script>
+  <script src="js/api.js?v=2.0"></script>
+  <script src="js/components.js?v=2.0"></script>
+  <script src="js/core.js?v=20260728notif"></script>
+  <script src="js/results.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

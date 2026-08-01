@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog học tiếng Anh - EngWithMe</title>
+  <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
+  <link rel="stylesheet" href="css/base.css?v=20260728notif">
+  <link rel="stylesheet" href="css/pages/blog.css?v=20260801v3col">
+  <link rel="stylesheet" href="css/responsive/desktop.css">
+  <link rel="stylesheet" href="css/responsive/tablet.css">
+  <link rel="stylesheet" href="css/responsive/phone.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">EngWithMe</a>
+    <nav class="nav-links" aria-label="Menu chính">
+        <a href="index.html">Home</a>
+        <a href="vocabulary.html">Vocabulary</a>
+        <a href="listening.html">Listening</a>
+        <a href="reading.html">Reading</a>
+        <a href="grammar.html">Grammar</a>
+        <a href="quiz.html">Exam</a>
+        <a href="blog.html" class="active">Blog</a>
+        <a href="rank.html">Rank</a>
+        <a href="pricing.html">Premium</a>
+      </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="profile.html"><span class="ti-user"></span> Trang cá nhân</a>
+      <button class="btn btn-ghost" type="button" data-logout-button><span class="ti-power-off"></span> Đăng xuất</button>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <section class="page-title">
+      <p class="eyebrow">Blog & Community</p>
+      <h1>Mẹo học & Cảm nhận học viên</h1>
+      <p>Nơi chia sẻ mẹo học tiếng Anh thực tế và đóng góp ý kiến từ cộng đồng EngWithMe.</p>
+    </section>
+
+    <section class="section compact">
+      <div style="display: flex; flex-direction: column; gap: 32px; max-width: 1200px; margin: 0 auto 40px;">
+
+        <!-- Blogger Writing Card -->
+        <div class="auth-card auth-panel" id="review-card" style="width: 100%; max-width: 100%; box-sizing: border-box; margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px;">
+          <div class="auth-card-heading" style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+            <span class="auth-icon ti-pencil-alt" style="font-size: 1.5rem; color: #00ff87;"></span>
+            <div>
+              <p class="eyebrow" id="blogger-username" style="color: var(--muted); margin: 0;">Blogger: Đang xác thực...</p>
+              <h2 style="margin: 4px 0 0 0; font-size: 1.3rem; color: #ffffff;">Chia sẻ cảm nhận & Mẹo học của bạn</h2>
+            </div>
+          </div>
+
+          <div id="review-form-wrapper" style="margin-top: 15px;">
+            <div style="text-align: center; padding: 20px 10px; color: #94a3b8;">Đang tải thông tin...</div>
+          </div>
+        </div>
+
+        <!-- Category Filter Bar & Instant Search -->
+        <div class="blog-filter-bar">
+          <div class="blog-filter-chips">
+            <button type="button" class="blog-chip active" data-blog-category="all">✨ Tất cả bài viết</button>
+            <button type="button" class="blog-chip" data-blog-category="tips">💡 Mẹo Học</button>
+            <button type="button" class="blog-chip" data-blog-category="listening">🎧 Luyện Nghe</button>
+            <button type="button" class="blog-chip" data-blog-category="grammar">✍️ Ngữ Pháp</button>
+            <button type="button" class="blog-chip" data-blog-category="reviews">⭐ Cảm Nhận Học Viên</button>
+          </div>
+          <div class="blog-search-box">
+            <span class="ti-search search-icon" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></span>
+            <input type="text" placeholder="Tìm kiếm bài viết hoặc từ khóa..." data-blog-search>
+          </div>
+        </div>
+
+        <!-- Community Feed Container -->
+        <div>
+          <div class="section-heading" style="margin-bottom: 24px;">
+            <p class="eyebrow">Community Reviews</p>
+            <h2>Cảm nhận từ học viên EngWithMe</h2>
+          </div>
+          <div id="approved-blogs-feed" class="article-grid">
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--muted);">
+              Đang tải cảm nhận cộng đồng...
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Official Blog Section -->
+    <section class="section compact" style="border-top: 1px solid var(--line); padding-top: 40px;">
+      <div class="section-heading" style="margin-bottom: 30px;">
+        <p class="eyebrow">Official Blog</p>
+        <h2>Bài viết hữu ích từ EngWithMe</h2>
+      </div>
+      <div class="article-grid" id="official-articles-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- Article Reader Modal -->
+    <div class="article-modal-backdrop" id="article-reader-modal" aria-hidden="true">
+      <div class="article-modal-container">
+        <button type="button" class="article-modal-close" data-close-modal title="Đóng">
+          <span class="ti-close"></span>
+        </button>
+        <span class="category-badge" id="modal-category" style="color: #00ff87; font-weight: 800; text-transform: uppercase; font-size: 0.82rem;">STUDY TIPS</span>
+        <h2 id="modal-title" style="color: #ffffff; font-size: 1.8rem; margin: 12px 0 16px 0; font-family: var(--font-heading); font-weight: 900; line-height: 1.3;">Tiêu đề bài viết</h2>
+        
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <div style="display: flex; align-items: center; gap: 10px; color: #94a3b8; font-size: 0.88rem;">
+            <span class="ti-user"></span> <strong id="modal-author" style="color: #cbd5e1;">EngWithMe Team</strong>
+            <span>•</span>
+            <span id="modal-date">Hôm nay</span>
+          </div>
+        </div>
+
+        <div id="modal-content" style="color: #cbd5e1; font-size: 1.02rem; line-height: 1.8; margin-bottom: 24px;">
+          <!-- Article text -->
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 18px;">
+          <button type="button" class="blog-action-btn" id="modal-like-btn">
+            <span class="ti-heart"></span> <span id="modal-like-count">0</span> Yêu thích
+          </button>
+          <span style="color: #64748b; font-size: 0.85rem;">👁️ <span id="modal-view-count">128</span> lượt đọc</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <strong>EngWithMe</strong>
+      <p>Học tiếng Anh theo lộ trình cá nhân.</p>
+    </div>
+    <div class="footer-links">
+      <a href="lessons.html">Khóa học</a>
+      <a href="listening.html">Luyện nghe</a>
+      <a href="grammar.html">Ngữ pháp</a>
+      <a href="privacy.html">Chính sách bảo mật</a>
+    </div>
+    <p>&copy; <span data-current-year></span> EngWithMe.</p>
+  </footer>
+
+  <script src="js/config.js?v=2.0"></script>
+  <script src="js/api.js?v=2.0"></script>
+  <script src="js/components.js?v=2.0"></script>
+  <script src="js/core.js?v=20260729final"></script>
+  <script src="js/level-system.js?v=20260724titles"></script>
+  <script src="js/blog.js?v=20260801v001"></script>
+  <script src="js/main.js?v=1.2"></script>
+</body>
+</html>

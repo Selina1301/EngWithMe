@@ -1,23 +1,26 @@
+# EngWithMe Enterprise - Git Ignore Configuration
+
 # Dependencies
+be/node_modules/
 node_modules/
 
-# Environment configurations
+# Environment Configurations & Credentials
+be/.env
 .env
 
-# Session data
-api/sessions/sess_*
+# Storage & Temporary Files
+be/storage/logs/*.log
+!be/storage/logs/.gitkeep
+be/storage/sessions/sess_*
+!be/storage/sessions/.gitkeep
+be/storage/uploads/*
+!be/storage/uploads/.gitkeep
+be/uploads/avatars/*
+!be/uploads/avatars/.gitkeep
 
-# User uploads (legacy)
-uploads/avatars/*
-!uploads/avatars/.gitkeep
-
-# Professional storage directories
-storage/logs/*
-!storage/logs/.gitkeep
-storage/sessions/*
-!storage/sessions/.gitkeep
-storage/uploads/*
-!storage/uploads/.gitkeep
-
-# Security & Utility scripts
-tools/reset_admin.php
+# OS / IDE Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp

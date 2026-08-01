@@ -1,0 +1,14 @@
+name = "engwithme-edge-gateway"
+main = "index.js"
+compatibility_date = "2026-01-01"
+
+[vars]
+PHP_ORIGIN_URL = "https://api.engwithme.com/v1"
+
+[env.production]
+name = "engwithme-edge-gateway-prod"
+vars = { PHP_ORIGIN_URL = "https://api.engwithme.com/v1" }
+
+[env.staging]
+name = "engwithme-edge-gateway-staging"
+vars = { PHP_ORIGIN_URL = "https://staging-api.engwithme.com/v1" }

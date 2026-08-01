@@ -1,0 +1,53 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 78.75%; /* Scales 100% default zoom to render exactly like 90% browser zoom */
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(16, 185, 129, 0.12), transparent 40%),
+    radial-gradient(circle at 85% 15%, rgba(56, 189, 248, 0.08), transparent 45%),
+    radial-gradient(circle at 50% 60%, rgba(16, 185, 129, 0.04), transparent 50%),
+    linear-gradient(180deg, #06090e 0%, #0a111a 45%, #06090e 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--font-main);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+audio {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+body.modal-open {
+  overflow: hidden;
+}

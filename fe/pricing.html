@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gói Học & Bảng Giá - EngWithMe</title>
+  <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
+  <link rel="stylesheet" href="css/base.css?v=20260728notif">
+  <link rel="stylesheet" href="css/pages/pricing.css?v=20260731cleanoutline">
+  <link rel="stylesheet" href="css/responsive/desktop.css">
+  <link rel="stylesheet" href="css/responsive/tablet.css">
+  <link rel="stylesheet" href="css/responsive/phone.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">EngWithMe</a>
+    <nav class="nav-links" aria-label="Menu chính">
+        <a href="index.html">Home</a>
+        <a href="vocabulary.html">Vocabulary</a>
+        <a href="listening.html">Listening</a>
+        <a href="reading.html">Reading</a>
+        <a href="grammar.html">Grammar</a>
+        <a href="quiz.html">Exam</a>
+        <a href="blog.html">Blog</a>
+        <a href="rank.html">Rank</a>
+        <a href="pricing.html" class="active">Premium</a>
+    </nav>
+    <div class="nav-actions auth-buttons" id="auth-actions">
+      <a class="btn btn-ghost" href="login.html">Đăng nhập</a>
+      <a class="btn btn-primary" href="register.html">Đăng ký</a>
+    </div>
+  </header>
+
+  <main class="page-container container">
+    <section class="pricing-hero">
+      <h1 class="pricing-title">Chọn Gói Học Phù Hợp Để Bứt Phá Tiếng Anh</h1>
+      <p class="pricing-subtitle">Đăng ký một lần, làm chủ kiến thức và nhận sự hỗ trợ tối đa trên hành trình của bạn.</p>
+    </section>
+
+    <section class="pricing-grid">
+      <!-- Gói Học thử -->
+      <article class="pricing-card free-card">
+        <div class="pricing-header">
+          <h3>Học Thử</h3>
+          <p>Trải nghiệm các nội dung cơ bản</p>
+          <div class="pricing-price">
+            <strong>0đ</strong>
+            <span>Miễn phí</span>
+          </div>
+        </div>
+        <ul class="pricing-features">
+          <li>Học chế độ Dễ (Easy) & Vừa (Medium)</li>
+          <li>Trắc nghiệm & Flashcard cơ bản</li>
+          <li class="disabled">Khóa chế độ Khó (Hard) ở mọi nội dung</li>
+        </ul>
+        <button type="button" class="btn btn-ghost full-width" data-buy-plan="free">Trải nghiệm Miễn phí</button>
+      </article>
+
+      <!-- Gói Pro -->
+      <article class="pricing-card featured featured-pro">
+        <div class="badge">⚡ SIU TIẾT KIỆM</div>
+        <div class="pricing-header">
+          <h3>Gói Pro</h3>
+          <p>Mở khóa chế độ Khó (Hard)</p>
+          <div class="pricing-price">
+            <strong>7.777đ</strong><span>/Month</span>
+          </div>
+        </div>
+        <ul class="pricing-features">
+          <li>Mở khóa chế độ KHÓ (Hard Mode)</li>
+          <li>Từ vựng Khó, Luyện nghe Khó & Ngữ pháp Khó</li>
+          <li>Đề thi thử Exam Hard & Bảng xếp hạng</li>
+        </ul>
+        <button type="button" class="btn btn-primary full-width" data-buy-plan="pro">⚡ Nâng cấp Pro</button>
+      </article>
+
+      <!-- Gói Premium -->
+      <article class="pricing-card lifetime featured-premium">
+        <div class="badge gold">🔥 BẢO HÀNH CHỌN ĐỜI ĐỜI KIẾP KIẾP</div>
+        <div class="pricing-header">
+          <h3>Gói Premium</h3>
+          <p>Sử dụng Trọn Đời không phí ẩn</p>
+          <div class="pricing-price">
+            <strong>999.999đ</strong>
+          </div>
+        </div>
+        <ul class="pricing-features">
+          <li>Mở khóa toàn bộ tính năng TRỌN ĐỜI</li>
+          <li>Mở khóa 100% chế độ KHÓ (Hard Mode)</li>
+          <li>Huy hiệu VIP Elite mạ vàng nổi bật</li>
+          <li>Hỗ trợ ưu tiên 1:1 từ Chuyên gia</li>
+        </ul>
+        <button type="button" class="btn btn-gold full-width" data-buy-plan="premium">👑 Nâng cấp Premium Trọn Đời</button>
+      </article>
+    </section>
+
+    <!-- Modal PayOS Thanh Toán VietQR Tự Động -->
+    <div id="payos-modal" class="payos-modal-backdrop payos-modal-overlay">
+      <div class="payos-modal-box">
+        <!-- Nội dung sẽ được render động từ JS -->
+      </div>
+    </div>
+  </main>
+
+  <script src="js/config.js?v=2.0"></script>
+  <script src="js/api.js?v=2.0"></script>
+  <script src="js/components.js?v=2.0"></script>
+  <script src="js/core.js?v=20260731pay"></script>
+  <script src="js/level-system.js?v=20260724titles"></script>
+  <script src="js/pricing.js?v=20260801v007"></script>
+  <script src="js/main.js?v=1.2"></script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luyện đọc - EngWithMe</title>
+  <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
+  <link rel="stylesheet" href="css/base.css?v=20260728notif">
+  <link rel="stylesheet" href="css/pages/study.css">
+  <link rel="stylesheet" href="css/pages/reading.css">
+  <link rel="stylesheet" href="css/responsive/desktop.css">
+  <link rel="stylesheet" href="css/responsive/tablet.css">
+  <link rel="stylesheet" href="css/responsive/phone.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">EngWithMe</a>
+    <nav class="nav-links" aria-label="Menu chính">
+        <a href="index.html">Home</a>
+        <a href="vocabulary.html">Vocabulary</a>
+        <a href="listening.html">Listening</a>
+        <a href="reading.html">Reading</a>
+        <a href="grammar.html">Grammar</a>
+        <a href="quiz.html">Exam</a>
+        <a href="blog.html">Blog</a>
+        <a href="rank.html">Rank</a>
+        <a href="pricing.html">Premium</a>
+      </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="login.html">Đăng nhập</a>
+      <a class="btn btn-primary" href="register.html">Đăng ký</a>
+    </div>
+  </header>
+
+  <main class="study-page reading-study-page">
+    <section class="study-hero">
+      <p class="eyebrow">Reading lab</p>
+      <h1>Chinh Phục Đọc Hiểu Tự Nhiên Theo Ngữ Cảnh</h1>
+      <p>Khám phá các cuộc hội thoại chuẩn bản xứ được phân loại theo cấp độ Easy, Medium và Hard. Chủ động che/bật bản dịch, ghi nhớ từ vựng quan trọng và tích lũy phản xạ ngôn ngữ mỗi ngày.</p>
+      <div class="reading-quote">
+        "Đọc sách cho tâm hồn cũng giống như thể dục cho cơ thể." 
+        <span class="reading-quote-author">— Joseph Addison</span>
+      </div>
+    </section>
+
+    <section class="study-shell">
+      <div class="reading-toolbar-row">
+        <div class="study-mode-switch" role="tablist" aria-label="Chế độ đọc">
+          <button class="study-mode-tab is-active" type="button" data-reading-mode="study">
+            <i class="ti-book"></i>
+            <span>Học</span>
+          </button>
+          <button class="study-mode-tab" type="button" data-reading-mode="progress">
+            <i class="ti-bar-chart"></i>
+            <span>Tiến độ</span>
+          </button>
+        </div>
+
+        <div class="reading-toolbar-controls" data-reading-study-controls>
+          <label class="study-search">
+            <i class="ti-search"></i>
+            <input type="search" placeholder="Tìm chủ đề hoặc câu hội thoại" data-reading-search>
+          </label>
+          <button class="schedule-button" type="button">
+            <span class="schedule-button-icon" aria-hidden="true"><i class="ti-calendar"></i></span>
+            <span class="schedule-button-copy">
+              <strong>Lịch đọc</strong>
+              <small>Theo cấp độ</small>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <section class="study-progress-view reading-progress-view" data-reading-progress-view hidden>
+        <article class="stat-card reading-progress-hero">
+          <div>
+            <p class="eyebrow">Tiến độ đọc</p>
+            <strong data-reading-progress-score>0%</strong>
+            <p data-reading-progress-summary>Chưa có bài đọc nào được đánh dấu đã xem.</p>
+            <div class="progress-track"><span data-reading-progress-bar style="width: 0%"></span></div>
+          </div>
+          <div class="reading-progress-metrics">
+            <span><strong data-reading-viewed-count>0/0</strong>Bài đã xem</span>
+            <span><strong data-reading-current-level>Easy</strong>Cấp đang chọn</span>
+            <span><strong data-reading-remaining>0</strong>Bài còn lại</span>
+          </div>
+        </article>
+      </section>
+
+      <div class="reading-study-view" data-reading-study-view>
+
+        <div class="reading-layout">
+          <div class="reading-level-rail">
+            <div class="level-tabs compact-tabs reading-level-tabs" aria-label="Ưu tiên cấp độ đọc">
+              <button class="level-tab active" type="button" data-reading-level-tab="easy">Easy</button>
+              <button class="level-tab" type="button" data-reading-level-tab="medium">Medium</button>
+              <button class="level-tab" type="button" data-reading-level-tab="hard">Hard</button>
+            </div>
+          </div>
+          <aside class="reading-topic-list" aria-label="Danh sách chủ đề đọc"></aside>
+
+          <div class="reading-passages" data-reading-passages></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reading Calendar Modal -->
+    <div class="reading-modal-backdrop" id="readingCalendarModal" hidden aria-hidden="true">
+      <div class="reading-modal-card" role="dialog" aria-labelledby="readingModalTitle">
+        <div class="reading-modal-header">
+          <div class="reading-modal-title-group">
+            <span class="reading-modal-eyebrow"><i class="ti-calendar"></i> Lịch luyện đọc</span>
+            <h3 id="readingModalTitle">Lịch Học Theo Cấp Độ</h3>
+          </div>
+          <div class="reading-modal-actions">
+            <div class="reading-streak-badge" data-reading-streak-badge title="Chuỗi ngày học liên tục">
+              <span class="streak-fire">🔥</span>
+              <strong data-reading-streak-count>0</strong> ngày
+            </div>
+            <button class="reading-modal-close" type="button" data-close-reading-modal aria-label="Đóng lịch">&times;</button>
+          </div>
+        </div>
+
+        <div class="reading-modal-body">
+          <div class="calendar-nav-bar">
+            <button class="btn-cal-nav" type="button" data-cal-nav="prev"><i class="ti-angle-left"></i></button>
+            <strong class="calendar-month-label" data-cal-month-label>Tháng 7, 2026</strong>
+            <button class="btn-cal-nav" type="button" data-cal-nav="next"><i class="ti-angle-right"></i></button>
+          </div>
+
+          <div class="calendar-weekdays-row">
+            <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+          </div>
+
+          <div class="calendar-days-grid" data-cal-days-grid></div>
+
+          <div class="calendar-legend">
+            <span><i class="dot dot-easy"></i> T2,4,6: Easy</span>
+            <span><i class="dot dot-medium"></i> T3,5,7: Medium</span>
+            <span><i class="dot dot-hard"></i> CN: Hard</span>
+            <span><i class="dot dot-done"></i> <i class="ti-check"></i> Đã học</span>
+          </div>
+
+          <div class="today-assignment-card" data-today-assignment>
+            <div class="today-assignment-info">
+              <span class="today-tag">🎯 Gợi ý hôm nay</span>
+              <h4 data-today-title>Office Supplies</h4>
+              <p data-today-desc">Cấp độ: Medium • Lịch Thứ Tư</p>
+            </div>
+            <button class="btn btn-primary btn-sm" type="button" data-go-today-topic>
+              Đọc bài hôm nay <i class="ti-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/config.js?v=2.0"></script>
+  <script src="js/api.js?v=2.0"></script>
+  <script src="js/components.js?v=2.0"></script>
+  <script src="js/core.js?v=20260729nav"></script>
+  <script src="js/level-system.js"></script>
+  <script src="js/demo-actions.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/reading-data.js?v=1.0.0"></script>
+  <script src="js/reading.js?v=1.0.0"></script>
+</body>
+</html>

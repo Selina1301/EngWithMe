@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>window.location.replace("profile.html");</script>
+  <title>Thông tin cá nhân - EngWithMe</title>
+  <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
+  <link rel="stylesheet" href="css/base.css?v=20260728notif">
+  <link rel="stylesheet" href="css/pages/profile.css">
+  <link rel="stylesheet" href="css/responsive/desktop.css">
+  <link rel="stylesheet" href="css/responsive/tablet.css">
+  <link rel="stylesheet" href="css/responsive/phone.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">EngWithMe</a>
+    <nav class="nav-links" aria-label="Menu học viên">
+        <a href="index.html">Home</a>
+        <a href="vocabulary.html">Vocabulary</a>
+        <a href="listening.html">Listening</a>
+        <a href="reading.html">Reading</a>
+        <a href="grammar.html">Grammar</a>
+        <a href="quiz.html">Exam</a>
+        <a href="blog.html">Blog</a>
+        <a href="pricing.html">Premium</a>
+      </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="profile.html">Hồ sơ</a>
+      <button class="btn btn-ghost" type="button" data-logout-button>Đăng xuất</button>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <section class="section compact" style="padding-top: 24px;">
+        <!-- 0. Banner Cấp độ & XP -->
+        <div class="user-level-dashboard-card" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.85)); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 16px; padding: 20px 24px; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, #00f0ff, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 1.35rem; font-weight: 900; color: #ffffff; box-shadow: 0 6px 20px rgba(0, 240, 255, 0.3);" data-user-level>
+              LV 1
+            </div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+                <span data-user-title style="display: inline-block; padding: 4px 12px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,215,0,0.3); border-radius: 99px; font-size: 0.85rem; font-weight: 900; letter-spacing: 0.5px;">🥉 Học Viên Tập Sự</span>
+              </div>
+              <p style="margin: 0; color: #94a3b8; font-size: 0.85rem;">Cấp độ & Danh hiệu học tập cá nhân</p>
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 240px; max-width: 360px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700; color: #cbd5e1; margin-bottom: 6px;">
+              <span>✨ Kinh nghiệm (XP)</span>
+              <strong data-level-xp-text style="color: #00f0ff; font-weight: 800;">0/10 XP</strong>
+            </div>
+            <div style="height: 10px; background: rgba(255, 255, 255, 0.08); border-radius: 99px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);">
+              <div data-level-xp-fill style="height: 100%; width: 0%; background: linear-gradient(90deg, #00f0ff, #3b82f6); border-radius: 99px; transition: width 0.4s ease;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1. Top Banner: Tiến độ tổng -->
+        <div class="overall-progress-card">
+          <div class="overall-progress-header">
+            <div class="overall-title-group">
+              <div class="overall-trophy-box">
+                <span class="ti-cup"></span>
+              </div>
+              <span class="overall-title-text">Tiến độ tổng</span>
+            </div>
+            <div class="overall-score-group">
+              <span class="overall-count" data-overall-count>0/4</span>
+              <span class="overall-percent" data-overall-percent>0%</span>
+            </div>
+          </div>
+          <div class="overall-progress-track">
+            <div class="overall-progress-fill" data-overall-fill style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- 2. Skill Breakdown Rows (4 Kỹ Năng Chuẩn) -->
+        <div class="skill-progress-list">
+          <!-- Skill 1: Từ vựng (Vocabulary) -->
+          <div class="skill-progress-row skill-vocab">
+            <div class="skill-row-left">
+              <div class="skill-icon-ring ring-vocab">
+                <span class="ti-id-badge"></span>
+              </div>
+              <span class="skill-name">Từ vựng (Vocabulary)</span>
+            </div>
+            <div class="skill-row-right">
+              <div class="skill-metrics">
+                <span class="skill-count" data-vocab-count>0/468 từ</span>
+                <span class="skill-percent percent-vocab" data-vocab-percent>0%</span>
+              </div>
+              <div class="skill-progress-track">
+                <div class="skill-progress-fill fill-vocab" data-vocab-fill style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skill 2: Nghe (Listening) -->
+          <div class="skill-progress-row skill-listening">
+            <div class="skill-row-left">
+              <div class="skill-icon-ring ring-listening">
+                <span class="ti-headphone-alt"></span>
+              </div>
+              <span class="skill-name">Nghe (Listening)</span>
+            </div>
+            <div class="skill-row-right">
+              <div class="skill-metrics">
+                <span class="skill-count" data-listening-count>0/100 bài</span>
+                <span class="skill-percent percent-listening" data-listening-percent>0%</span>
+              </div>
+              <div class="skill-progress-track">
+                <div class="skill-progress-fill fill-listening" data-listening-fill style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skill 3: Đọc (Reading) -->
+          <div class="skill-progress-row skill-reading">
+            <div class="skill-row-left">
+              <div class="skill-icon-ring ring-reading">
+                <span class="ti-book"></span>
+              </div>
+              <span class="skill-name">Đọc (Reading)</span>
+            </div>
+            <div class="skill-row-right">
+              <div class="skill-metrics">
+                <span class="skill-count" data-reading-count>0/22 bài</span>
+                <span class="skill-percent percent-reading" data-reading-percent>0%</span>
+              </div>
+              <div class="skill-progress-track">
+                <div class="skill-progress-fill fill-reading" data-reading-fill style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skill 4: Ngữ pháp (Grammar) -->
+          <div class="skill-progress-row skill-grammar">
+            <div class="skill-row-left">
+              <div class="skill-icon-ring ring-exam" style="background: rgba(16, 185, 129, 0.15); border-color: #10b981;">
+                <span class="ti-write" style="color: #10b981;"></span>
+              </div>
+              <span class="skill-name">Ngữ pháp (Grammar)</span>
+            </div>
+            <div class="skill-row-right">
+              <div class="skill-metrics">
+                <span class="skill-count" data-grammar-count>0/180 câu</span>
+                <span class="skill-percent percent-grammar" data-grammar-percent style="color: #10b981;">0%</span>
+              </div>
+              <div class="skill-progress-track">
+                <div class="skill-progress-fill fill-grammar" data-grammar-fill style="width: 0%; background: linear-gradient(90deg, #10b981, #00f0ff);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Exam Results History Section -->
+        <div class="exam-history-card" style="margin-top: 24px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 16px; padding: 20px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <h3 style="margin: 0; font-size: 1.05rem; color: #f8fafc; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+              <span class="ti-notepad" style="color: #00f0ff;"></span> Đánh giá Lịch sử Luyện đề (TOEIC Exam)
+            </h3>
+          </div>
+          <div data-exam-history-container>
+            <div class="exam-empty-state" style="text-align: center; padding: 28px 16px; color: #94a3b8; font-size: 0.92rem; background: rgba(2, 6, 23, 0.4); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+              <span class="ti-info-alt" style="font-size: 1.5rem; color: #38bdf8; display: block; margin-bottom: 8px;"></span>
+              Sau khi bạn hoàn thành đề thi thì sẽ đươc lưu ở đây!
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <script src="js/config.js?v=2.0"></script>
+  <script src="js/api.js?v=2.0"></script>
+  <script src="js/components.js?v=2.0"></script>
+  <script src="js/core.js?v=20260729nav"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/level-system.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
+</html>
