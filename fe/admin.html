@@ -6,7 +6,7 @@
   <title>Admin Dashboard - EngWithMe</title>
   <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
   <link rel="stylesheet" href="css/base.css?v=20260728notif">
-  <link rel="stylesheet" href="css/pages/admin.css?v=20260801v200">
+  <link rel="stylesheet" href="css/pages/admin.css?v=20260803accountsonly">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
@@ -28,23 +28,23 @@
       <nav class="admin-sidebar-nav" aria-label="Danh mục Quản trị">
         <a class="admin-nav-item is-active" data-admin-tab="users">
           <span class="nav-icon ti-user"></span>
-          <span>Quản lý Tài khoản & Vai trò</span>
+          <span>Accounts</span>
         </a>
         <a class="admin-nav-item" data-admin-tab="stats">
           <span class="nav-icon ti-bar-chart"></span>
-          <span>Thống kê & Kiểm duyệt</span>
+          <span>censorship</span>
         </a>
         <a class="admin-nav-item" data-admin-tab="broadcast">
           <span class="nav-icon ti-announcement"></span>
-          <span>Thông báo Toàn hệ thống</span>
-        </a>
-        <a class="admin-nav-item" data-admin-tab="learning-content">
-          <span class="nav-icon ti-book"></span>
-          <span>Quản lý Nội dung CMS</span>
+          <span>Notifications</span>
         </a>
         <a class="admin-nav-item" data-admin-tab="payments">
           <span class="nav-icon ti-credit-card"></span>
-          <span>Quản lý Thanh toán (Payment)</span>
+          <span>Payments</span>
+        </a>
+        <a class="admin-nav-item" data-admin-tab="learning-content">
+          <span class="nav-icon ti-book"></span>
+          <span>Upload files</span>
         </a>
       </nav>
 
@@ -88,6 +88,65 @@
 
       <!-- TAB 1: Quản lý Tài khoản & Vai trò (#tab-users) -->
       <section class="admin-tab-section is-active" id="tab-users">
+
+        <!-- 4 Stat Blocks Grid - Only Visible on Accounts Tab -->
+        <div class="notification-stat-grid">
+          <!-- Card 1: Tổng Tài Khoản -->
+          <div class="notif-kpi-card blue-glow">
+            <div class="notif-kpi-header">
+              <div class="notif-kpi-icon total-users"><span class="ti-user"></span></div>
+              <div class="notif-kpi-title-box">
+                <span class="notif-kpi-label">Tổng Tài Khoản</span>
+                <div class="notif-kpi-val-group">
+                  <span class="notif-kpi-val" data-admin-stat="total">0</span>
+                  <span class="notif-kpi-sub-pill">👑 Admin: <strong data-admin-stat="admins">0</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Học Viên -->
+          <div class="notif-kpi-card green-glow">
+            <div class="notif-kpi-header">
+              <div class="notif-kpi-icon learners"><span class="ti-book"></span></div>
+              <div class="notif-kpi-title-box">
+                <span class="notif-kpi-label">Học Viên</span>
+                <div class="notif-kpi-val-group">
+                  <span class="notif-kpi-val" data-admin-stat="learners" style="color: #10b981;">0</span>
+                  <span class="notif-kpi-sub-pill text-emerald">Tài khoản</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Đang Hoạt Động -->
+          <div class="notif-kpi-card purple-glow">
+            <div class="notif-kpi-header">
+              <div class="notif-kpi-icon active"><span class="ti-pulse"></span></div>
+              <div class="notif-kpi-title-box">
+                <span class="notif-kpi-label">Đang Hoạt Động</span>
+                <div class="notif-kpi-val-group">
+                  <span class="notif-kpi-val" data-admin-stat="active" style="color: #c084fc;">0</span>
+                  <span class="notif-kpi-sub-pill text-rose">🔒 Khóa: <strong data-admin-stat="locked">0</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Đăng Ký Mới -->
+          <div class="notif-kpi-card gold-glow">
+            <div class="notif-kpi-header">
+              <div class="notif-kpi-icon new-today"><span class="ti-calendar"></span></div>
+              <div class="notif-kpi-title-box">
+                <span class="notif-kpi-label">Đăng Ký Mới</span>
+                <div class="notif-kpi-val-group">
+                  <span class="notif-kpi-val" data-admin-stat="newToday" style="color: #f59e0b;">0</span>
+                  <span class="notif-kpi-sub-pill text-amber">Hôm nay</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="admin-filters-bar" style="margin-bottom: 20px;">
           <div class="search-box">
             <span class="ti-search search-icon"></span>
@@ -139,62 +198,42 @@
 
       <!-- TAB 2: Thống kê & Kiểm duyệt (#tab-stats) -->
       <section class="admin-tab-section" id="tab-stats">
-        <div class="stat-grid admin-stat-grid" style="margin-bottom: 32px;">
-          <article class="stat-card">
-            <div class="stat-icon-box total-users"><span class="ti-user"></span></div>
-            <div class="stat-content"><span>Tổng tài khoản</span><strong data-admin-stat="total">0</strong></div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-icon-box learners"><span class="ti-book"></span></div>
-            <div class="stat-content"><span>Học viên</span><strong data-admin-stat="learners">0</strong></div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-icon-box admins"><span class="ti-shield"></span></div>
-            <div class="stat-content"><span>Admin & Manager</span><strong data-admin-stat="admins">0</strong></div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-icon-box active"><span class="ti-pulse"></span></div>
-            <div class="stat-content"><span>Đang hoạt động</span><strong data-admin-stat="active">0</strong></div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-icon-box locked"><span class="ti-lock"></span></div>
-            <div class="stat-content"><span>Bị khóa</span><strong data-admin-stat="locked">0</strong></div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-icon-box new-today"><span class="ti-calendar"></span></div>
-            <div class="stat-content"><span>Đăng ký mới</span><strong data-admin-stat="newToday">0</strong></div>
-          </article>
-        </div>
+        <!-- Split 2-Column Grid Layout for Censorship Tab (Left: Community Blog Moderation | Right: Student Feedbacks) -->
+        <div class="censorship-split-grid">
+          
+          <!-- Column Left (50%): Kiểm Duyệt Bài Viết Cộng Đồng -->
+          <div class="censorship-col-left" style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+              <h3 style="color: #f8fafc; font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px; margin: 0;">
+                <span class="ti-write" style="color: #38bdf8;"></span> 📝 Kiểm Duyệt Bài Viết
+              </h3>
+              <p class="feedback" id="blog-moderation-feedback" style="min-height: 18px; font-weight: 800; font-size: 13px; margin: 0;"></p>
+            </div>
 
-        <!-- Bảng Kiểm Duyệt Bài Viết Cộng Đồng -->
-        <div style="margin-top: 10px; margin-bottom: 16px;">
-          <h3 style="color: #f8fafc; font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-            <span class="ti-write" style="color: #38bdf8;"></span> 📝 Kiểm Duyệt Bài Viết Cộng Đồng
-          </h3>
-          <p class="feedback" id="blog-moderation-feedback" style="min-height: 20px; font-weight: 800; font-size: 14px; margin-top: 6px;"></p>
-        </div>
-
-        <div class="card" style="background: rgba(15, 23, 42, 0.85); border: 1.5px solid rgba(56, 189, 248, 0.3); border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-bottom: 24px;">
-          <div id="pending-blogs-list" style="display: grid; gap: 16px;">
-            <div style="text-align: center; color: #94a3b8; padding: 20px;">Đang tải danh sách bài viết chờ duyệt...</div>
+            <div class="card" style="background: rgba(15, 23, 42, 0.85); border: 1.5px solid rgba(56, 189, 248, 0.3); border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); height: auto;">
+              <div id="pending-blogs-list" style="display: grid; gap: 16px;">
+                <div style="text-align: center; color: #94a3b8; padding: 20px;">Đang tải danh sách bài viết chờ duyệt...</div>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Bảng Danh Sách Góp Ý & Liên Hệ Từ Học Viên -->
-        <div style="margin-top: 24px; margin-bottom: 16px;">
-          <h3 style="color: #f8fafc; font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-            <span class="ti-comment-alt" style="color: #a855f7;"></span> 📩 Góp Ý & Liên Hệ Từ Học Viên
-          </h3>
-        </div>
+          <!-- Column Right (50%): Góp Ý & Liên Hệ Từ Học Viên -->
+          <div class="censorship-col-right" style="display: flex; flex-direction: column; gap: 12px;">
+            <h3 style="color: #f8fafc; font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px; margin: 0;">
+              <span class="ti-comment-alt" style="color: #a855f7;"></span> 📩 Góp Ý & Liên Hệ Học Viên
+            </h3>
 
-        <div class="card" style="background: rgba(15, 23, 42, 0.85); border: 1.5px solid rgba(168, 85, 247, 0.3); border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-          <div id="student-feedbacks-list" style="display: grid; gap: 16px;">
-            <div style="text-align: center; color: #94a3b8; padding: 20px;">Đang tải danh sách góp ý của học viên...</div>
+            <div class="card" style="background: rgba(15, 23, 42, 0.85); border: 1.5px solid rgba(168, 85, 247, 0.3); border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); height: auto;">
+              <div id="student-feedbacks-list" style="display: grid; gap: 16px;">
+                <div style="text-align: center; color: #94a3b8; padding: 20px;">Đang tải danh sách góp ý của học viên...</div>
+              </div>
+            </div>
           </div>
+
         </div>
       </section>
 
-      <!-- TAB 3: Thông báo Toàn hệ thống (#tab-broadcast) -->
+      <!-- TAB 3: Thông báo Toàn hệ thống (#tab-broadcast / Notifications) -->
       <section class="admin-tab-section" id="tab-broadcast">
         <div class="card" style="background: rgba(15, 23, 42, 0.85); border: 1.5px solid rgba(168, 85, 247, 0.4); border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
           <p class="feedback" id="broadcast-feedback" style="min-height: 20px; font-weight: 800; font-size: 14px; margin-bottom: 12px;"></p>
@@ -506,12 +545,11 @@
                 <th>Số Tiền</th>
                 <th>Trạng Thái</th>
                 <th>Thời Gian</th>
-                <th>Thao Tác</th>
               </tr>
             </thead>
             <tbody id="admin-payments-tbody">
               <tr>
-                <td colspan="8" style="text-align: center; color: #94a3b8; padding: 40px;">Đang tải danh sách giao dịch thanh toán...</td>
+                <td colspan="7" style="text-align: center; color: #94a3b8; padding: 40px;">Đang tải danh sách giao dịch thanh toán...</td>
               </tr>
             </tbody>
           </table>
@@ -523,8 +561,8 @@
   <script src="js/config.js?v=20260801v010"></script>
   <script src="js/api.js?v=2.0"></script>
   <script src="js/components.js?v=2.0"></script>
-  <script src="js/core.js?v=20260729nav"></script>
-  <script src="js/admin.js?v=20260801v200"></script>
+  <script src="js/core.js?v=20260803lvlfix"></script>
+  <script src="js/admin.js?v=20260803lvlfix"></script>
   <script src="js/main.js?v=1.2"></script>
 </body>
 </html>

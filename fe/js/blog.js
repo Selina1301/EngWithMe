@@ -329,8 +329,8 @@ function renderCommunityBlogsList(container, blogs) {
 
     const starsHtml = Array(5).fill(0).map((_, i) => 
       i < blog.rating
-        ? `<span class="star-btn active" style="font-size: 1.05rem; cursor: default; padding: 0 1px;">★</span>`
-        : `<span class="star-btn" style="font-size: 1.05rem; cursor: default; padding: 0 1px; opacity: 0.3;">★</span>`
+        ? `<span class="star-btn active" style="font-size: 1.18rem; cursor: default; padding: 0 1px;">★</span>`
+        : `<span class="star-btn" style="font-size: 1.18rem; cursor: default; padding: 0 1px; opacity: 0.3;">★</span>`
     ).join('');
 
     const displayTitle = blog.title;
@@ -343,15 +343,15 @@ function renderCommunityBlogsList(container, blogs) {
             <span class="category-badge"><span class="ti-user"></span> ${escapeHtml(blog.author_name)}</span>
             <div style="display: flex;">${starsHtml}</div>
           </div>
-          <h3 style="margin: 0 0 10px; font-size: 1.25rem; color: #ffffff; font-weight: 800;">${escapeHtml(displayTitle)}</h3>
-          <p style="margin: 0; font-size: 0.92rem; color: #cbd5e1; line-height: 1.6;">${escapeHtml(displayContent)}</p>
+          <h3 style="margin: 0 0 10px; font-size: 1.38rem; color: #ffffff; font-weight: 800;">${escapeHtml(displayTitle)}</h3>
+          <p style="margin: 0; font-size: 1.05rem; color: #cbd5e1; line-height: 1.6;">${escapeHtml(displayContent)}</p>
         </div>
         <div class="article-card-footer" style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 16px;">
           <div style="display: flex; align-items: center; gap: 12px;">
             <button type="button" class="blog-action-btn ${isLiked ? 'is-liked' : ''}" data-comm-like="${blog.id}" title="Thả tim bài viết">
               <span class="ti-heart"></span> <span data-comm-like-count="${blog.id}">${likesCount}</span> Yêu thích
             </button>
-            <span style="font-size: 0.82rem; color: #94a3b8; display: inline-flex; align-items: center; gap: 4px;" title="Lượt xem bài viết">
+            <span style="font-size: 0.95rem; color: #94a3b8; display: inline-flex; align-items: center; gap: 4px;" title="Lượt xem bài viết">
               <span class="ti-eye"></span> <span data-comm-view-count="${blog.id}">${viewsCount}</span> lượt xem
             </span>
           </div>
@@ -526,14 +526,14 @@ function renderReviewForm(container, user) {
     <form id="submit-review-form" style="display: grid; gap: 14px;">
       <div style="display: grid; gap: 6px;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 0.9rem; font-weight: 600; color: #cbd5e1;">Tiêu đề bài viết</span>
-          <small id="title-char-warn" style="font-size: 0.78rem; color: #94a3b8; transition: all 0.25s ease;">Max 36 ký tự (0/36)</small>
+          <span style="font-size: 1.02rem; font-weight: 600; color: #cbd5e1;">Tiêu đề bài viết</span>
+          <small id="title-char-warn" style="font-size: 0.9rem; color: #94a3b8; transition: all 0.25s ease;">Max 36 ký tự (0/36)</small>
         </div>
-        <input type="text" name="title" maxlength="36" placeholder="Nhập tiêu đề ngắn gọn (ví dụ: Trải nghiệm học tuyệt vời)" required style="background: rgba(2, 6, 23, 0.4); border: 1px solid rgba(125, 211, 252, 0.24); border-radius: 10px; color: #f8fbff; padding: 10px 14px; font-size: 0.92rem; width: 100%; transition: all 0.25s ease; outline: none;">
+        <input type="text" name="title" maxlength="36" placeholder="Nhập tiêu đề ngắn gọn (ví dụ: Trải nghiệm học tuyệt vời)" required style="background: rgba(2, 6, 23, 0.4); border: 1px solid rgba(125, 211, 252, 0.24); border-radius: 10px; color: #f8fbff; padding: 10px 14px; font-size: 1.05rem; width: 100%; transition: all 0.25s ease; outline: none;">
       </div>
 
-      <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(2, 6, 23, 0.35); border: 1px solid rgba(125, 211, 252, 0.16); padding: 10px 14px; border-radius: 10px;">
-        <span style="font-size: 0.9rem; font-weight: 600; color: #cbd5e1;">Đánh giá trải nghiệm</span>
+      <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(2, 6, 23, 0.35); border: 1px solid rgba(125, 211, 252, 0.16); padding: 10px 14px; border-radius: 10px; width: 66.66%; margin-right: auto;">
+        <span style="font-size: 1.02rem; font-weight: 600; color: #cbd5e1;">Đánh giá trải nghiệm</span>
         <div style="display: flex; align-items: center; gap: 10px;">
           <div class="star-rating">
             <span class="star-btn active" data-value="1">★</span>
@@ -542,23 +542,23 @@ function renderReviewForm(container, user) {
             <span class="star-btn active" data-value="4">★</span>
             <span class="star-btn active" data-value="5">★</span>
           </div>
-          <span id="rating-text-badge" style="font-size: 0.8rem; font-weight: 700; color: #00ff87; background: rgba(0, 255, 135, 0.1); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(0, 255, 135, 0.2);">5/5 Rất tốt</span>
+          <span id="rating-text-badge" style="font-size: 0.92rem; font-weight: 700; color: #00ff87; background: rgba(0, 255, 135, 0.1); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(0, 255, 135, 0.2); min-width: 145px; width: 145px; display: inline-flex; justify-content: center; align-items: center; text-align: center; white-space: nowrap; flex-shrink: 0;">5/5 Rất tốt</span>
         </div>
         <input type="hidden" name="rating" id="review-rating-value" value="5">
       </div>
 
       <div style="display: grid; gap: 6px;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 0.9rem; font-weight: 600; color: #cbd5e1;">Nội dung cảm nhận</span>
-          <small id="content-char-warn" style="font-size: 0.78rem; color: #94a3b8; transition: all 0.25s ease;">Max 350 ký tự (0/350)</small>
+          <span style="font-size: 1.02rem; font-weight: 600; color: #cbd5e1;">Nội dung cảm nhận</span>
+          <small id="content-char-warn" style="font-size: 0.9rem; color: #94a3b8; transition: all 0.25s ease;">Max 350 ký tự (0/350)</small>
         </div>
-        <textarea name="content" rows="4" maxlength="350" placeholder="Nhập những suy nghĩ, cảm nhận hay bài viết chia sẻ kinh nghiệm học tập của bạn..." required style="background: rgba(2, 6, 23, 0.4); width: 100%; border: 1px solid rgba(125, 211, 252, 0.24); border-radius: 10px; color: #f8fbff; padding: 10px 14px; resize: vertical; font-family: inherit; font-size: 0.92rem; min-height: 90px; transition: all 0.25s ease; outline: none;"></textarea>
+        <textarea name="content" rows="4" maxlength="350" placeholder="Nhập những suy nghĩ, cảm nhận hay bài viết chia sẻ kinh nghiệm học tập của bạn..." required style="background: rgba(2, 6, 23, 0.4); width: 100%; border: 1px solid rgba(125, 211, 252, 0.24); border-radius: 10px; color: #f8fbff; padding: 10px 14px; resize: vertical; font-family: inherit; font-size: 1.05rem; min-height: 90px; transition: all 0.25s ease; outline: none;"></textarea>
       </div>
 
-      <button class="btn btn-primary" type="submit" style="margin-top: 4px; padding: 11px; font-weight: 700; font-size: 0.95rem; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-        <span class="ti-check"></span> Gửi bài viết (+50 XP)
+      <button class="btn btn-primary" type="submit" style="margin-top: 4px; padding: 11px; font-weight: 700; font-size: 1.08rem; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+        <span class="ti-check" style="font-size: 1.12rem;"></span> Gửi bài viết (+50 XP)
       </button>
-      <p class="feedback" id="review-feedback" style="display: none; font-weight: 800; font-size: 14px; margin: 8px 0 0 0; text-align: center;"></p>
+      <p class="feedback" id="review-feedback" style="display: none; font-weight: 800; font-size: 16px; margin: 8px 0 0 0; text-align: center;"></p>
     </form>
   `;
 
@@ -626,22 +626,29 @@ function renderReviewForm(container, user) {
     if (ratingTextBadge) ratingTextBadge.textContent = ratingLabels[rating] || `${rating}/5`;
     stars.forEach((s) => {
       const val = parseInt(s.getAttribute("data-value"), 10);
-      if (val <= rating) {
-        s.classList.add("active");
-      } else {
-        s.classList.remove("active");
+      const shouldBeActive = val <= rating;
+      if (s.classList.contains("active") !== shouldBeActive) {
+        s.classList.toggle("active", shouldBeActive);
       }
     });
   };
 
   stars.forEach((star) => {
-    star.addEventListener("click", () => {
-      currentRating = parseInt(star.getAttribute("data-value"), 10);
-      form.querySelector("#review-rating-value").value = currentRating;
-      updateStars(currentRating);
-    });
+    const val = parseInt(star.getAttribute("data-value"), 10);
+
     star.addEventListener("mouseenter", () => {
-      updateStars(parseInt(star.getAttribute("data-value"), 10));
+      if (Number.isInteger(val)) {
+        updateStars(val);
+      }
+    });
+
+    star.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (Number.isInteger(val)) {
+        currentRating = val;
+        form.querySelector("#review-rating-value").value = currentRating;
+        updateStars(currentRating);
+      }
     });
   });
 

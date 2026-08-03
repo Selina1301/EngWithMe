@@ -77,6 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             db()->prepare('DELETE FROM exam_results WHERE user_id = ?')->execute([$targetId]);
             db()->prepare('DELETE FROM notifications WHERE user_id = ?')->execute([$targetId]);
             db()->prepare('DELETE FROM blogs WHERE user_id = ?')->execute([$targetId]);
+            db()->prepare('DELETE FROM orders WHERE user_id = ?')->execute([$targetId]);
             db()->prepare('DELETE FROM users WHERE id = ?')->execute([$targetId]);
             destroy_user_sessions($targetId);
         } else {

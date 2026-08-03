@@ -1,14 +1,22 @@
 # EngWithMe Enterprise - Git Ignore Configuration
 
-# Dependencies
-be/node_modules/
+# Dependencies & Build Artifacts
 node_modules/
+be/node_modules/
+be/worker-hono/node_modules/
+be/worker-hono/.wrangler/
+be/worker-hono/.mf/
+.vercel/
+fe/.vercel/
 
-# Environment Configurations & Credentials
-be/.env
+# Environment Configurations & Secret Keys
 .env
+*.env
+be/.env
+be/config/database.local.php
 
-# Storage & Temporary Files
+# Storage, Logs & Temporary Files
+scratch/
 be/storage/logs/*.log
 !be/storage/logs/.gitkeep
 be/storage/sessions/sess_*
@@ -17,8 +25,11 @@ be/storage/uploads/*
 !be/storage/uploads/.gitkeep
 be/uploads/avatars/*
 !be/uploads/avatars/.gitkeep
+*.log
+*.sql
+*.sqlite
 
-# OS / IDE Files
+# OS & IDE Configuration Files
 .DS_Store
 Thumbs.db
 .vscode/

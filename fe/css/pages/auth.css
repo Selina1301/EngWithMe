@@ -1,15 +1,21 @@
+.auth-body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(6, 12, 22, 0.40), rgba(4, 7, 13, 0.88)),
+    url("../../assets/image/login.jpg") center center / cover no-repeat fixed,
+    url("https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1920&q=80") center/cover no-repeat fixed;
+}
+
 .auth-page {
   display: grid;
   place-items: center;
-  min-height: calc(100vh - 72px);
-  padding: 38px 24px;
-  background:
-    linear-gradient(rgba(5, 8, 13, 0.9), rgba(5, 8, 13, 0.92)),
-    url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=60&fm=webp") center/cover;
+  min-height: calc(100vh - 56px);
+  padding: 24px 20px;
+  background: transparent;
 }
 
 .auth-card {
-  width: min(100%, 440px);
+  width: min(100%, 355px);
 }
 
 .profile-card {
@@ -17,12 +23,12 @@
 }
 
 .auth-page.auth-split {
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
-  gap: 32px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 355px);
+  gap: 28px;
   align-items: center;
   justify-items: stretch;
-  padding: 20px max(24px, calc((100% - var(--container)) / 2));
-  min-height: calc(100vh - 64px);
+  padding: 12px max(20px, calc((100% - var(--container)) / 2));
+  min-height: calc(100vh - 56px);
 }
 
 .auth-copy {
@@ -51,20 +57,21 @@
 .auth-highlights {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 26px;
+  gap: 8px;
+  margin-top: 20px;
 }
 
 .auth-highlights span {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   border: 1px solid rgba(125, 211, 252, 0.22);
-  border-radius: var(--radius);
+  border-radius: 8px;
   background: rgba(2, 6, 23, 0.66);
   color: #e6f6ff;
-  font-weight: 800;
-  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
 }
 
 .auth-highlights i {
@@ -73,7 +80,7 @@
 
 .auth-panel {
   width: 100%;
-  padding: 28px;
+  padding: 16px 18px;
   border-color: rgba(125, 211, 252, 0.32);
   box-shadow: var(--glow), var(--shadow);
 }
@@ -81,13 +88,13 @@
 .auth-card-heading {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
 .auth-card-heading h2 {
   margin: 0;
   color: #ffffff;
-  font-size: 24px;
+  font-size: 17px;
   line-height: 1.2;
   font-weight: 700;
 }
@@ -96,14 +103,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
   border: 1px solid rgba(112, 245, 157, 0.34);
-  border-radius: var(--radius);
+  border-radius: 8px;
   background: rgba(46, 232, 120, 0.15);
   color: #d0ffd8;
-  font-size: 22px;
+  font-size: 16px;
 }
 
 .form-grid {
@@ -331,29 +338,29 @@
   color: #94a3b8;
 }
 
-/* Card Specific Form Overrides for 85% compact scale & premium aesthetics */
+/* Card Specific Form Overrides for 10% reduced compact scale & premium aesthetics */
 .auth-panel {
-  padding: 22px 24px !important;
-  border-radius: 20px !important;
+  padding: 16px 18px !important;
+  border-radius: 16px !important;
 }
 
 .auth-card label {
-  font-size: 12.5px !important;
+  font-size: 11.5px !important;
   font-weight: 600 !important;
   color: #94a3b8 !important;
-  gap: 5px !important;
+  gap: 4px !important;
   letter-spacing: 0.2px !important;
 }
 
 .auth-card input,
 .auth-card select {
   font-weight: 500 !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
   color: #ffffff !important;
   background: rgba(15, 23, 42, 0.55) !important;
   border: 1px solid rgba(125, 211, 252, 0.16) !important;
-  padding: 9px 12px !important;
-  border-radius: 10px !important;
+  padding: 7px 10px !important;
+  border-radius: 8px !important;
   transition: border-color 0.25s, box-shadow 0.25s !important;
 }
 
@@ -361,9 +368,9 @@
   appearance: none !important;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E") !important;
   background-repeat: no-repeat !important;
-  background-position: right 14px center !important;
-  background-size: 16px !important;
-  padding-right: 40px !important;
+  background-position: right 12px center !important;
+  background-size: 14px !important;
+  padding-right: 36px !important;
   cursor: pointer !important;
 }
 
@@ -380,23 +387,23 @@
 
 .auth-card .btn {
   font-weight: 700 !important;
-  font-size: 13.5px !important;
-  min-height: 38px !important;
-  border-radius: 10px !important;
+  font-size: 12.5px !important;
+  min-height: 34px !important;
+  border-radius: 8px !important;
   cursor: pointer !important;
 }
 
 .auth-card .btn-google {
-  min-height: 38px !important;
+  min-height: 34px !important;
   font-weight: 700 !important;
-  font-size: 13px !important;
-  border-radius: 10px !important;
-  padding: 8px 12px !important;
+  font-size: 12px !important;
+  border-radius: 8px !important;
+  padding: 6px 10px !important;
   margin-top: 4px !important;
 }
 
 .auth-card-heading .eyebrow {
-  font-size: 10.5px !important;
+  font-size: 10px !important;
   font-weight: 800 !important;
   letter-spacing: 0.5px !important;
   margin-bottom: 2px !important;

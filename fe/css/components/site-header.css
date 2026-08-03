@@ -1,16 +1,16 @@
 .site-header {
-  --brand-mark-size: 34px;
+  --brand-mark-size: 25px;
   position: sticky;
   top: 0;
   z-index: 100;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 24px;
-  padding: 12px 28px;
-  background: rgba(6, 9, 14, 0.85);
+  gap: 14px;
+  padding: 6px 20px;
+  background: rgba(6, 9, 14, 0.92);
   border-bottom: 1px solid rgba(16, 185, 129, 0.2);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
@@ -19,12 +19,12 @@
   justify-self: start;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 7px;
   color: #ffffff;
   font-family: var(--font-heading);
-  font-size: 23px;
+  font-size: 18.5px;
   font-weight: 900;
-  text-shadow: 0 0 16px rgba(16, 185, 129, 0.6), 0 0 24px rgba(0, 255, 135, 0.35);
+  text-shadow: 0 0 14px rgba(16, 185, 129, 0.6), 0 0 20px rgba(0, 255, 135, 0.35);
   transition: transform 0.22s ease, filter 0.22s ease;
   white-space: nowrap;
   letter-spacing: -0.02em;
@@ -36,7 +36,7 @@
   height: var(--brand-mark-size);
   flex: 0 0 var(--brand-mark-size);
   background: url("../../assets/icons/theme/four-leaf-mark.svg") center/contain no-repeat;
-  filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.9));
+  filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.9));
 }
 
 .brand:hover {
@@ -50,7 +50,7 @@
   align-items: center;
   justify-content: center;
   flex: 1;
-  gap: 8px;
+  gap: 3px;
   flex-wrap: wrap;
   isolation: isolate;
 }
@@ -65,15 +65,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
+  min-height: 32px;
   border: 1px solid transparent;
-  border-radius: 12px;
+  border-radius: 8px;
   color: #94a3b8;
   font-family: var(--font-heading);
-  font-size: 14px;
+  font-size: 12.5px;
   font-weight: 700;
   line-height: 1;
-  padding: 0 14px;
+  padding: 0 10px;
   transform-origin: center;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -82,15 +82,15 @@
   color: #ffffff;
   background: rgba(16, 185, 129, 0.08);
   border-color: rgba(16, 185, 129, 0.25);
-  text-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
 }
 
 .nav-links a.is-active {
   color: #ffffff;
-  text-shadow: 0 0 14px rgba(16, 185, 129, 0.5);
+  text-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
   border-color: rgba(16, 185, 129, 0.45);
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(56, 189, 248, 0.12));
-  box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.3), 0 0 20px rgba(16, 185, 129, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.3), 0 0 16px rgba(16, 185, 129, 0.2);
 }
 
 .nav-actions {
@@ -98,9 +98,61 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 8px;
   margin-left: auto;
   white-space: nowrap;
+}
+
+.nav-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 32px;
+  min-height: 32px;
+  padding: 0;
+  font-family: var(--font-heading);
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 8px;
+  letter-spacing: 0.01em;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.nav-actions .btn-ghost {
+  background: rgba(15, 23, 42, 0.75);
+  color: #cbd5e1;
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  backdrop-filter: blur(8px);
+}
+
+.nav-actions .btn-ghost:hover {
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.6);
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.25);
+  transform: translateY(-1px);
+}
+
+.nav-actions .btn-primary {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.nav-actions .btn-primary:hover {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  border-color: #6ee7b7;
+  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.5), 0 0 14px rgba(52, 211, 153, 0.35);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
 .user-menu {
@@ -150,10 +202,10 @@
 }
 
 .user-avatar {
-  width: 36px;
-  height: 36px;
-  flex: 0 0 36px;
-  font-size: 13px;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  font-size: 12px;
 }
 
 .user-avatar img,

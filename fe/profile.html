@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hồ sơ cá nhân & Cài đặt tài khoản - EngWithMe</title>
   <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
-  <link rel="stylesheet" href="css/base.css?v=20260728notif">
-  <link rel="stylesheet" href="css/pages/profile.css?v=20260724dash">
+  <link rel="stylesheet" href="css/base.css?v=20260803slim">
+  <link rel="stylesheet" href="css/pages/profile.css?v=20260803compacttop">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
@@ -73,6 +73,9 @@
             <button type="button" class="profile-tab-btn" data-tab-target="notifications">
               <span class="ti-bell"></span> Thông báo cá nhân
             </button>
+            <button type="button" class="profile-tab-btn" data-tab-target="payments">
+              <span class="ti-credit-card"></span> Thanh toán
+            </button>
             <button type="button" class="profile-tab-btn" data-tab-target="security">
               <span class="ti-lock"></span> Bảo mật & Đổi mật khẩu
             </button>
@@ -117,7 +120,7 @@
                 </label>
                 <label>Địa chỉ Email (Cố định)
                   <div class="input-with-badge">
-                    <input type="email" name="email" autocomplete="email" readonly disabled title="Email Gmail là định danh tài khoản quan trọng và không thể thay đổi">
+                    <input type="email" name="email" autocomplete="email" readonly title="Email Gmail là định danh tài khoản quan trọng và không thể thay đổi">
                     <span class="badge-verified"><span class="ti-lock"></span> Cố định</span>
                   </div>
                 </label>
@@ -372,6 +375,60 @@
             </div>
           </div>
 
+          <!-- TAB 5: Lịch sử giao dịch thanh toán (#tab-payments) -->
+          <div class="profile-tab-content" id="tab-payments">
+            <div class="auth-card profile-card" style="background: rgba(15, 23, 42, 0.85); border: 1.5px solid rgba(56, 189, 248, 0.35); border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+              <div class="auth-card-heading" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <span class="auth-icon ti-credit-card" style="color: #38bdf8; font-size: 24px;"></span>
+                  <div>
+                    <p class="eyebrow" style="color: #38bdf8; font-weight: 800; margin: 0;">Payment History</p>
+                    <h2 style="color: #f8fafc; font-size: 1.25rem; font-weight: 800; margin: 0;">Lịch sử giao dịch thanh toán</h2>
+                  </div>
+                </div>
+                <button type="button" id="btn-refresh-user-payments" class="btn" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 13px; font-weight: 700; padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                  <span class="ti-reload"></span> Làm mới
+                </button>
+              </div>
+
+              <!-- Transactions Summary KPI Mini Bar -->
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 20px;">
+                <div style="background: rgba(2, 6, 23, 0.6); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 12px; padding: 14px 16px;">
+                  <span style="font-size: 12px; color: #94a3b8; font-weight: 600;">Tổng tiền đã thanh toán</span>
+                  <strong id="user-payment-total-amount" style="display: block; font-size: 1.2rem; color: #ffd700; font-weight: 900; margin-top: 4px;">0đ</strong>
+                </div>
+                <div style="background: rgba(2, 6, 23, 0.6); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 12px; padding: 14px 16px;">
+                  <span style="font-size: 12px; color: #94a3b8; font-weight: 600;">Tổng số giao dịch</span>
+                  <strong id="user-payment-total-count" style="display: block; font-size: 1.2rem; color: #38bdf8; font-weight: 900; margin-top: 4px;">0 đơn</strong>
+                </div>
+                <div style="background: rgba(2, 6, 23, 0.6); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 14px 16px;">
+                  <span style="font-size: 12px; color: #94a3b8; font-weight: 600;">Gói hiện tại</span>
+                  <strong id="user-payment-current-plan" style="display: block; font-size: 1.1rem; color: #10b981; font-weight: 900; margin-top: 4px;">Miễn phí</strong>
+                </div>
+              </div>
+
+              <!-- Transactions History Table -->
+              <div style="overflow-x: auto; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;">
+                  <thead>
+                    <tr style="background: rgba(2, 6, 23, 0.8); color: #94a3b8; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                      <th style="padding: 12px 16px;">Mã Đơn Hàng</th>
+                      <th style="padding: 12px 16px;">Gói Đăng Ký</th>
+                      <th style="padding: 12px 16px;">Số Tiền</th>
+                      <th style="padding: 12px 16px;">Trạng Thái</th>
+                      <th style="padding: 12px 16px;">Ngày Giao Dịch</th>
+                    </tr>
+                  </thead>
+                  <tbody id="user-payments-tbody">
+                    <tr>
+                      <td colspan="5" style="text-align: center; color: #94a3b8; padding: 32px;">Đang tải lịch sử giao dịch PayOS / D1...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -380,10 +437,10 @@
   <script src="js/config.js?v=2.0"></script>
   <script src="js/api.js?v=2.0"></script>
   <script src="js/components.js?v=2.0"></script>
-  <script src="js/core.js?v=20260729auth"></script>
+  <script src="js/core.js?v=20260803lvlfix"></script>
   <script src="js/progress.js"></script>
-  <script src="js/level-system.js"></script>
-  <script src="js/profile.js?v=20260729auth"></script>
+  <script src="js/level-system.js?v=20260803lvlfix"></script>
+  <script src="js/profile.js?v=20260803lvlfix"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

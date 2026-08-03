@@ -7,11 +7,7 @@ type Bindings = {
   DB?: D1Database;
 };
 
-const authApp = new Hono<{ Bindings: Bindings }>();
-
-function getGoogleClientId(c?: any): string {
-  return c?.env?.GOOGLE_CLIENT_ID || "";
-}
+const DEFAULT_GOOGLE_CLIENT_ID = "992122170428-ookq5v3r930tqkgh24pccp2nsb18b1rj.apps.googleusercontent.com";
 const DEFAULT_REDIRECT_URI = "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/auth/google_callback.php";
 
 function parseGoogleJwt(jwtToken: string) {
@@ -122,7 +118,8 @@ async function sendOtpEmail(toEmail: string, otpCode: string, env: any) {
 
 async function processGoogleUser(c: any, googlePayload: any, code: string) {
   const redirectUri = c.env?.GOOGLE_REDIRECT_URI || DEFAULT_REDIRECT_URI;
-  const clientSecret = c.env?.GOOGLE_CLIENT_SECRET || "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";
+  const clientSecret = c.env?.GOOGLE_CLIENT_SECRET || "";
+  const clientId = c.env?.GOOGLE_CLIENT_ID || DEFAULT_GOOGLE_CLIENT_ID;
   let googleUser: any = googlePayload || null;
 
   if (!googleUser) {
@@ -139,7 +136,7 @@ async function processGoogleUser(c: any, googlePayload: any, code: string) {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
           code: code,
-          client_id: GOOGLE_CLIENT_ID,
+          client_id: clientId,
           client_secret: clientSecret,
           redirect_uri: redirectUri,
           grant_type: "authorization_code"
@@ -197,11 +194,11 @@ async function processGoogleUser(c: any, googlePayload: any, code: string) {
 }
 
 const handleGoogleLogin = (c: any) => {
-  const redirectUri = c.env?.GOOGLE_REDIRECT_URI || DEFAULT_REDIRECT_URI;
+  const redirectUri = c.env?.GOOGLE_REDIRECT_URI || "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/auth/google_callback.php";
   const state = Math.random().toString(36).substring(2, 15);
 
   const authUrl = "https://accounts.google.com/o/oauth2/v2/auth?" + new URLSearchParams({
-    client_id: GOOGLE_CLIENT_ID,
+    client_id: c.env?.GOOGLE_CLIENT_ID || DEFAULT_GOOGLE_CLIENT_ID,
     redirect_uri: redirectUri,
     response_type: "code",
     scope: "openid email profile",
@@ -225,7 +222,16 @@ const handleGoogleCallbackGet = async (c: any) => {
 
   const result = await processGoogleUser(c, null, code);
   const targetHash = result.hasPassword ? "#dashboard" : "#security";
-  return c.redirect(`https://engwithme.tungf.io.vn/profile.html?auth_token=${encodeURIComponent(result.sessionToken)}&google_auth=success${targetHash}`, 302);
+  const params = new URLSearchParams({
+    auth_token: result.sessionToken || "",
+    google_auth: "success",
+    email: result.realEmail || "",
+    name: result.realName || "",
+    avatar: result.realAvatar || "",
+    user_id: result.googleId || "",
+    has_password: result.hasPassword ? "1" : "0"
+  });
+  return c.redirect(`https://engwithme.tungf.io.vn/profile.html?${params.toString()}${targetHash}`, 302);
 };
 
 authApp.get("/google_callback.php", handleGoogleCallbackGet);

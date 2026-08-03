@@ -4,19 +4,52 @@
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr);
   gap: 24px;
-  align-items: start;
+  align-items: flex-start !important;
   width: 100%;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.profile-summary {
+  margin-top: 0 !important;
+  align-self: flex-start !important;
 }
 
 .profile-content-area {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
   width: 100%;
   min-width: 0;
+  align-self: flex-start !important;
 }
 
-.profile-card {
+.profile-tab-content {
+  display: none;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.profile-tab-content.active {
+  display: block !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.profile-tab-content > *,
+.profile-card,
+.dashboard-progress-container,
+.overall-progress-card,
+form.auth-card {
   max-width: none !important;
   width: 100% !important;
   box-sizing: border-box !important;
+  margin-top: 0 !important;
+  height: auto !important;
+  flex: none !important;
 }
 
 .profile-actions-bar {
@@ -262,11 +295,9 @@
 @keyframes profileTabFadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 

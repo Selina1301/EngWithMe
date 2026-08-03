@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng nhập - EngWithMe</title>
   <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
-  <link rel="stylesheet" href="css/base.css?v=20260728notif">
+  <link rel="stylesheet" href="css/base.css?v=20260803equal90">
+  <link rel="stylesheet" href="css/pages/auth.css?v=20260803hdlibrary">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
@@ -14,17 +15,18 @@
   <header class="site-header">
     <a class="brand" href="index.html">EngWithMe</a>
     <nav class="nav-links" aria-label="Menu chính">
-        <a href="index.html">Home</a>
-        <a href="vocabulary.html">Vocabulary</a>
-        <a href="listening.html">Listening</a>
-        <a href="reading.html">Reading</a>
-        <a href="grammar.html">Grammar</a>
-        <a href="quiz.html">Exam</a>
-        <a href="blog.html">Blog</a>
-        <a href="pricing.html">Premium</a>
-      </nav>
+      <a href="index.html">Home</a>
+      <a href="vocabulary.html">Vocabulary</a>
+      <a href="listening.html">Listening</a>
+      <a href="reading.html">Reading</a>
+      <a href="grammar.html">Grammar</a>
+      <a href="quiz.html">Exam</a>
+      <a href="blog.html">Blog</a>
+      <a href="pricing.html">Premium</a>
+    </nav>
     <div class="nav-actions">
-      <a class="btn btn-primary" href="register.html"><span class="ti-plus"></span> Đăng ký</a>
+      <a class="btn btn-ghost" href="login.html">Đăng nhập</a>
+      <a class="btn btn-primary" href="register.html">Đăng ký</a>
     </div>
   </header>
 
@@ -34,9 +36,9 @@
       <h1 id="loginTitle">Tiếp tục lộ trình học của bạn</h1>
       <p>Đăng nhập để mở dashboard, hồ sơ cá nhân và tiến độ học tập đã lưu.</p>
       <div class="auth-highlights" aria-label="Điểm nổi bật">
-        <span><i class="ti-check"></i> Theo dõi tiến độ</span>
-        <span><i class="ti-check"></i> Lưu mục tiêu học</span>
-        <span><i class="ti-check"></i> Quản trị người dùng</span>
+        <span><i class="ti-check"></i> Theo dõi tiến độ học tập</span>
+        <span><i class="ti-target"></i> Lộ trình mục tiêu rõ ràng</span>
+        <span><i class="ti-cloud-up"></i> Đồng bộ dữ liệu 24/7</span>
       </div>
     </section>
 
@@ -101,33 +103,30 @@
         <form id="otpVerifyForm">
           <input type="hidden" name="email" id="otpFormEmail">
           <div class="otp-input-group">
-            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
-            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
-            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
-            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
-            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
-            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" maxlength="1" class="otp-field" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" maxlength="1" class="otp-field" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" maxlength="1" class="otp-field" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" maxlength="1" class="otp-field" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" maxlength="1" class="otp-field" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" maxlength="1" class="otp-field" pattern="[0-9]" inputmode="numeric" required>
           </div>
-          
-          <button type="submit" class="btn btn-primary btn-otp-submit"><span class="ti-check"></span> Xác nhận & Đăng nhập</button>
-          
-          <p class="otp-error" id="otpErrorMsg"></p>
+          <p class="otp-feedback" id="otpFeedback"></p>
+          <button type="submit" class="btn btn-primary btn-otp-submit">Xác nhận mã OTP</button>
         </form>
         
         <div class="otp-footer">
-          <p>Không nhận được mã? <a href="#" id="resendOtpBtn" class="disabled">Gửi lại mã <span id="otpCountdown">(60s)</span></a></p>
-          <a href="#" id="cancelOtpBtn" class="otp-cancel-link">Hủy và quay lại</a>
+          <button type="button" class="btn-resend-otp" id="btnResendOtp" disabled>Gửi lại mã (<span id="otpCountdown">60</span>s)</button>
+          <button type="button" class="btn-cancel-otp" id="btnCancelOtp">Hủy bỏ</button>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script src="js/config.js?v=2.0"></script>
+  <script src="js/config.js?v=20260801v010"></script>
   <script src="js/api.js?v=2.0"></script>
   <script src="js/components.js?v=2.0"></script>
-  <script src="js/core.js?v=20260728notif"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/core.js?v=20260803btn"></script>
+  <script src="js/auth.js?v=1.2"></script>
+  <script src="js/main.js?v=1.2"></script>
 </body>
 </html>

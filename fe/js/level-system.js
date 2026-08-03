@@ -81,43 +81,37 @@
 
   function recalculateMinimumXPFromProgress() {
     try {
+      const uid = localStorage.getItem("engWithMeUserId") || localStorage.getItem("user_id");
       const accountKeyFn = typeof global.getAccountKey === "function" ? global.getAccountKey : (k) => {
-        const uid = localStorage.getItem("engWithMeUserId") || localStorage.getItem("user_id");
         return uid ? `${k}_user_${uid}` : `${k}_guest`;
       };
 
       // 1. Vocab mastered words (+3 XP each)
-      const savedVocab = JSON.parse(
-        localStorage.getItem(accountKeyFn("engWithMeSavedVocabularyWords")) ||
-        localStorage.getItem("engWithMeSavedVocabularyWords") || "[]"
-      );
+      const savedVocabRaw = uid
+        ? (localStorage.getItem(accountKeyFn("engWithMeSavedVocabularyWords")) || "[]")
+        : (localStorage.getItem("engWithMeSavedVocabularyWords") || "[]");
+      const savedVocab = JSON.parse(savedVocabRaw);
       const vocabCount = Array.isArray(savedVocab) ? savedVocab.length : 0;
 
       // 2. Reading completed passages (+10 XP each)
-      const readingTopics = JSON.parse(
-        localStorage.getItem(accountKeyFn("engWithMeViewedReadingTopics")) ||
-        localStorage.getItem("engWithMeViewedReadingTopics") ||
-        localStorage.getItem(accountKeyFn("engWithMeReadingViewedTopics")) ||
-        localStorage.getItem("engWithMeReadingViewedTopics") ||
-        localStorage.getItem(accountKeyFn("engWithMeReadingProgress")) ||
-        localStorage.getItem("engWithMeReadingProgress") || "[]"
-      );
+      const readingTopicsRaw = uid
+        ? (localStorage.getItem(accountKeyFn("engWithMeViewedReadingTopics")) || localStorage.getItem(accountKeyFn("engWithMeReadingProgress")) || "[]")
+        : (localStorage.getItem("engWithMeViewedReadingTopics") || localStorage.getItem("engWithMeReadingProgress") || "[]");
+      const readingTopics = JSON.parse(readingTopicsRaw);
       const readingCount = Array.isArray(readingTopics) ? readingTopics.length : 0;
 
       // 3. Listening completed missions (+5 XP each)
-      const listeningTopics = JSON.parse(
-        localStorage.getItem(accountKeyFn("engWithMeListeningProgress")) ||
-        localStorage.getItem("engWithMeListeningProgress") || "[]"
-      );
+      const listeningTopicsRaw = uid
+        ? (localStorage.getItem(accountKeyFn("engWithMeListeningProgress")) || "[]")
+        : (localStorage.getItem("engWithMeListeningProgress") || "[]");
+      const listeningTopics = JSON.parse(listeningTopicsRaw);
       const listeningCount = Array.isArray(listeningTopics) ? listeningTopics.length : 0;
 
       // 4. Grammar solved questions (+3 XP each)
-      const grammarState = JSON.parse(
-        localStorage.getItem(accountKeyFn("engWithMeGrammarPracticeState")) ||
-        localStorage.getItem("engWithMeGrammarPracticeState") ||
-        localStorage.getItem(accountKeyFn("engWithMeGrammarPractice")) ||
-        localStorage.getItem("engWithMeGrammarPractice") || "{}"
-      );
+      const grammarStateRaw = uid
+        ? (localStorage.getItem(accountKeyFn("engWithMeGrammarPracticeState")) || "{}")
+        : (localStorage.getItem("engWithMeGrammarPracticeState") || "{}");
+      const grammarState = JSON.parse(grammarStateRaw);
       let grammarCount = 0;
       if (grammarState && typeof grammarState === "object") {
         Object.values(grammarState).forEach(arr => {

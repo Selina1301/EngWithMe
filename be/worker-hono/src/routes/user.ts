@@ -38,6 +38,17 @@ const handleMe = async (c: any) => {
   const passVal = String(dbUser.password || dbUser.password_hash || "").trim();
   const hasPassword = Boolean(passVal.length > 0);
 
+  let latestOrder: any = null;
+  if (c.env?.DB && dbUser) {
+    try {
+      latestOrder = await c.env.DB.prepare(
+        "SELECT plan_id, plan_name FROM orders WHERE (user_id = ? OR user_email = ?) AND (status = 'PAID' OR status = 'SUCCESS') ORDER BY id DESC LIMIT 1"
+      ).bind(String(dbUser.id), String(dbUser.email)).first();
+    } catch (e) {}
+  }
+
+  const userPlan = latestOrder?.plan_id ? String(latestOrder.plan_id).toLowerCase() : (Number(dbUser.is_vip) === 1 ? "pro" : "free");
+
   return c.json({
     ok: true,
     user: {
@@ -52,6 +63,9 @@ const handleMe = async (c: any) => {
       status: String(dbUser.status || "active"),
       avatar: String(dbUser.avatar || ""),
       is_vip: String(dbUser.is_vip || 0),
+      plan_id: userPlan,
+      vip_type: userPlan,
+      plan_name: latestOrder?.plan_name || (userPlan === "premium" ? "Gói Premium VIP Trọn Đời" : (userPlan === "pro" ? "Gói Pro" : "Free")),
       vip_expires_at: dbUser.vip_expires_at || null,
       auth_provider: isGoogle ? "google" : "email",
       is_google: isGoogle ? 1 : 0,
@@ -212,5 +226,92 @@ const handleChangePassword = async (c: any) => {
 
 userApp.post("/change_password.php", handleChangePassword);
 userApp.post("/change-password", handleChangePassword);
+
+// GET /v1/user/user_payments.php -> Fetch logged-in user's payment history from D1 DB
+const handleGetUserPayments = async (c: any) => {
+  const authHeader = c.req.header("Authorization") || c.req.header("X-Auth-Token") || "";
+  const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || "";
+
+  if (!token) {
+    return c.json({
+      ok: false,
+      orders: [],
+      message: "🔒 Bạn cần đăng nhập tài khoản để xem lịch sử giao dịch thanh toán."
+    }, 200);
+  }
+
+  let dbUser: any = null;
+  if (c.env?.DB) {
+    try {
+      dbUser = await c.env.DB.prepare(
+        "SELECT * FROM users WHERE session_token = ? OR remember_token = ? OR id = ? OR email = ?"
+      ).bind(token, token, token, token).first();
+    } catch (e) {}
+  }
+
+  if (!dbUser) {
+    return c.json({
+      ok: false,
+      orders: [],
+      message: "🔒 Phiên đăng nhập đã hết hạn hoặc không tìm thấy thông tin tài khoản."
+    }, 200);
+  }
+
+  let orders: any[] = [];
+  let totalAmount = 0;
+  let paidCount = 0;
+
+  if (c.env?.DB) {
+    try {
+      const res = await c.env.DB.prepare(
+        "SELECT * FROM orders WHERE user_id = ? OR user_email = ? ORDER BY id DESC LIMIT 50"
+      ).bind(String(dbUser.id), String(dbUser.email || "")).all();
+
+      if (res && res.results) {
+        orders = res.results.map((ord: any) => {
+          const amt = Number(ord.amount || 0);
+          const status = String(ord.status || "PAID").toUpperCase();
+          const isPaid = status === "PAID" || status === "SUCCESS";
+          const plan = String(ord.plan_id || "pro").toLowerCase();
+
+          if (isPaid) {
+            totalAmount += amt;
+            paidCount += 1;
+          }
+
+          return {
+            id: ord.id,
+            order_code: ord.order_code,
+            plan_id: ord.plan_id,
+            plan_name: plan.includes("premium") ? "Gói Premium VIP Trọn Đời" : "Gói Pro (30 Ngày)",
+            amount: amt,
+            amount_formatted: `${amt.toLocaleString("vi-VN")}đ`,
+            status: status,
+            created_at: ord.created_at || new Date().toISOString()
+          };
+        });
+      }
+    } catch (e) {
+      console.error("D1 User Payments Error:", e);
+    }
+  }
+
+  const currentPlan = orders.find(o => o.status === "PAID")?.plan_name || (dbUser.is_vip ? "Gói Pro VIP" : "Free (Miễn phí)");
+
+  return c.json({
+    ok: true,
+    total_amount: totalAmount,
+    total_amount_formatted: `${totalAmount.toLocaleString("vi-VN")}đ`,
+    total_orders: orders.length,
+    paid_count: paidCount,
+    current_plan: currentPlan,
+    orders: orders
+  });
+};
+
+userApp.get("/user_payments.php", handleGetUserPayments);
+userApp.get("/v1/user/user_payments.php", handleGetUserPayments);
+userApp.get("/user_payments", handleGetUserPayments);
+userApp.get("/payments.php", handleGetUserPayments);
 
 export default userApp;

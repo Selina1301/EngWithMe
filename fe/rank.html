@@ -6,7 +6,7 @@
   <title>Bảng Xếp Hạng Rank - EngWithMe</title>
   <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
   <link rel="stylesheet" href="css/base.css?v=20260728notif">
-  <link rel="stylesheet" href="css/pages/rank.css?v=20260801crown">
+  <link rel="stylesheet" href="css/pages/rank.css?v=20260801nohover">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
@@ -23,7 +23,7 @@
       <a href="quiz.html">Exam</a>
       <a href="blog.html">Blog</a>
       <a href="rank.html" class="active">Rank</a>
-      <a href="pricing.html">Premium</a>
+      <a href="contact.html">Contact</a>
     </nav>
     <div class="nav-actions">
       <a class="btn btn-ghost" href="profile.html"><span class="ti-user"></span> Trang cá nhân</a>
@@ -31,57 +31,45 @@
     </div>
   </header>
 
-  <main class="page-main rank-page-main">
-    <!-- Rank Hero Section -->
+  <main class="rank-page-main">
     <section class="rank-hero">
-      <h1 class="rank-title">🏆 Bảng Xếp Hạng Học Viên EngWithMe</h1>
-      <p class="rank-subtitle">Tuyên dương Top 10 học viên xuất sắc, chăm chỉ tích lũy XP và đóng góp tích cực nhất.</p>
+      <h1 class="rank-title">🏆 Bảng Xếp Hạng Đỉnh Cao EngWithMe</h1>
+      <p class="rank-subtitle">Cập nhật thời gian thực dựa trên nỗ lực luyện tập, bài viết cộng đồng và điểm thi TOEIC.</p>
     </section>
 
-    <!-- Rank Category Switcher Tabs -->
-    <section class="section compact" style="margin-bottom: 24px;">
-      <div class="rank-tab-bar">
-        <button type="button" class="rank-tab active" data-rank-tab="xp">
-          <span>🏆 Top Cần Cù (XP)</span>
-        </button>
-        <button type="button" class="rank-tab" data-rank-tab="bloggers">
-          <span>✍️ Top Học Viên Tích Cực (Blog)</span>
-        </button>
-        <button type="button" class="rank-tab" data-rank-tab="toeic">
-          <span>🎯 Top Cao Thủ TOEIC</span>
-        </button>
+    <!-- Category Tabs -->
+    <div class="rank-tab-bar">
+      <button class="rank-tab active" data-rank-tab="xp">📊 Cần Cù (XP)</button>
+      <button class="rank-tab" data-rank-tab="bloggers">✍️ Tích Cực (Blog)</button>
+      <button class="rank-tab" data-rank-tab="toeic">🎯 Cao Thủ TOEIC</button>
+    </div>
+
+    <!-- Vertical List Layout Container -->
+    <div style="max-width: 820px; margin: 24px auto 0; padding: 0 16px;">
+      <div class="rank-table-header">
+        <h2 id="rank-section-title" style="margin:0; font-size: 1.15rem; font-weight: 800; color: #f8fafc;">📊 Top 10 Học Viên Cần Cù (XP)</h2>
+        <span id="rank-sync-tag" style="font-size: 0.8rem; color: #10b981; font-weight: 700; background: rgba(16,185,129,0.1); padding: 4px 10px; border-radius: 20px;">⚡ Đang đồng bộ...</span>
       </div>
-    </section>
-
-    <!-- Rank Vertical List Section (Top 10 Vertical Cards) -->
-    <section class="section compact" style="margin-bottom: 80px;">
-      <div class="rank-section-container">
-        <div class="rank-table-header" style="max-width: 860px; margin: 0 auto 20px;">
-          <h2 id="rank-section-title">📊 Top 10 Bảng Xếp Hạng</h2>
-          <span class="rank-sync-status" id="rank-sync-tag">⚡ Cập nhật tự động</span>
-        </div>
-
-        <div class="rank-vertical-list" id="rank-vertical-list">
-          <div style="text-align: center; color: #94a3b8; padding: 40px;">Đang tải danh sách Top 10...</div>
-        </div>
+      <div id="rank-vertical-list" class="rank-vertical-list">
+        <!-- Rendered dynamically by rank.js -->
       </div>
-    </section>
+    </div>
   </main>
 
-  <!-- Sticky My Rank Banner at Bottom -->
+  <!-- Sticky My Rank Bar -->
   <div class="my-rank-sticky-bar" id="my-rank-banner">
     <div class="my-rank-content">
       <div class="my-rank-user">
         <img class="my-rank-avatar" id="my-rank-avatar" src="assets/icons/theme/logoEW.png" alt="My avatar">
         <div>
-          <strong id="my-rank-name">Đang xác thực tài khoản...</strong>
-          <span id="my-rank-badge">Cấp độ --</span>
+          <strong id="my-rank-name">Đang tải...</strong>
+          <span id="my-rank-badge">Học viên</span>
         </div>
       </div>
       <div class="my-rank-stats">
         <div class="my-rank-stat-item">
-          <span>Vị trí của bạn</span>
-          <strong id="my-rank-pos" style="color: #00ff87;">#--</strong>
+          <span>Hạng của bạn</span>
+          <strong id="my-rank-pos" style="color: #ffd700;">#--</strong>
         </div>
         <div class="my-rank-stat-item">
           <span id="my-rank-stat-label">Tổng XP</span>
@@ -97,7 +85,7 @@
   <script src="js/components.js?v=2.0"></script>
   <script src="js/core.js?v=20260728notif"></script>
   <script src="js/level-system.js?v=1.8.0"></script>
-  <script src="js/rank.js?v=20260801v005"></script>
+  <script src="js/rank.js?v=20260801border"></script>
   <script src="js/main.js?v=1.8.0"></script>
 </body>
 </html>

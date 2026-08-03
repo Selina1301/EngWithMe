@@ -113,13 +113,14 @@ adminApp.post("/admin_users.php", async (c) => {
           }
         } catch (e) {}
 
-        // Xóa sạch 100% các bảng dữ liệu liên quan và toàn bộ phiên đăng nhập (session_token, remember_token)
+        // Xóa sạch 100% các bảng dữ liệu liên quan và toàn bộ phiên đăng nhập (session_token, remember_token, orders)
         try { await c.env.DB.prepare("DELETE FROM blog_likes WHERE user_id = ? OR user_id = ?").bind(tId, tEmail).run(); } catch (e) {}
         try { await c.env.DB.prepare("DELETE FROM blog_views WHERE viewer_id = ? OR viewer_id = ?").bind(tId, tEmail).run(); } catch (e) {}
         try { await c.env.DB.prepare("DELETE FROM user_progress WHERE user_id = ? OR user_id = ?").bind(tId, tEmail).run(); } catch (e) {}
         try { await c.env.DB.prepare("DELETE FROM exam_results WHERE user_id = ? OR user_id = ?").bind(tId, tEmail).run(); } catch (e) {}
         try { await c.env.DB.prepare("DELETE FROM notifications WHERE user_id = ? OR user_id = ?").bind(tId, tEmail).run(); } catch (e) {}
         try { await c.env.DB.prepare("DELETE FROM blogs WHERE user_id = ? OR user_id = ?").bind(tId, tEmail).run(); } catch (e) {}
+        try { await c.env.DB.prepare("DELETE FROM orders WHERE user_id = ? OR user_email = ? OR user_id = ? OR user_email = ?").bind(tId, tEmail, userId, userId).run(); } catch (e) {}
         try { await c.env.DB.prepare("DELETE FROM users WHERE id = ? OR email = ? OR id = ? OR email = ?").bind(tId, tEmail, userId, userId).run(); } catch (e) {}
       } else if (action === "lock") {
         await c.env.DB.prepare("UPDATE users SET status = 'locked' WHERE id = ? OR email = ?").bind(userId, userId).run();

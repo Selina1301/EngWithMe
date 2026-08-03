@@ -137,6 +137,22 @@ async function handleOpenPayment(plan, btn) {
     }
     delete btn.dataset.userConfirmed;
 
+    // 3. Kiểm tra xem đã có đơn hàng thanh toán đang hoạt động (chưa hết hạn 15p) cho gói này chưa
+    const activeOrderKey = `ewm_active_order_${plan}`;
+    const rawActiveOrder = localStorage.getItem(activeOrderKey);
+    let cachedOrder = null;
+    if (rawActiveOrder) {
+      try { cachedOrder = JSON.parse(rawActiveOrder); } catch(e){}
+    }
+
+    if (cachedOrder && cachedOrder.result && cachedOrder.expireAt && cachedOrder.expireAt > Date.now()) {
+      renderPayosModal(cachedOrder.result, cachedOrder.expireAt, plan);
+      if (typeof startPaymentStatusPoller === "function") {
+        startPaymentStatusPoller(cachedOrder.result.orderCode || cachedOrder.result.order_code);
+      }
+      return;
+    }
+
     btn.disabled = true;
     btn.innerHTML = `<span class="ti-reload spin"></span> Đang tạo VietQR PayOS...`;
 
@@ -175,7 +191,14 @@ async function handleOpenPayment(plan, btn) {
       return;
     }
 
-    renderPayosModal(result);
+    // Khởi tạo hạn 15 phút cố định từ thời điểm tạo đơn thành công
+    const newExpireAt = Date.now() + (15 * 60 * 1000);
+    localStorage.setItem(activeOrderKey, JSON.stringify({
+      result,
+      expireAt: newExpireAt
+    }));
+
+    renderPayosModal(result, newExpireAt, plan);
     if (typeof startPaymentStatusPoller === "function") {
       startPaymentStatusPoller(result.orderCode || result.order_code);
     }
@@ -243,17 +266,18 @@ function showCustomPricingModal({ title = "Thông Báo", message = "", icon = "�
 
 let qrTimerInterval = null;
 
-function startQrCountdown(seconds = 900) {
+function startQrCountdown(expireAtTimestamp, orderCode) {
   if (qrTimerInterval) clearInterval(qrTimerInterval);
-  let remaining = seconds;
 
-  qrTimerInterval = setInterval(() => {
-    remaining -= 1;
+  const updateTimer = () => {
+    const remaining = Math.max(0, Math.floor((expireAtTimestamp - Date.now()) / 1000));
     const timerElem = document.getElementById("qr-countdown-timer");
 
     if (remaining <= 0) {
-      clearInterval(qrTimerInterval);
-      qrTimerInterval = null;
+      if (qrTimerInterval) {
+        clearInterval(qrTimerInterval);
+        qrTimerInterval = null;
+      }
       if (currentPollingInterval) {
         clearInterval(currentPollingInterval);
         currentPollingInterval = null;
@@ -280,17 +304,33 @@ function startQrCountdown(seconds = 900) {
     if (timerElem) {
       timerElem.textContent = `${minsStr}:${secsStr}`;
     }
-  }, 1000);
+  };
+
+  updateTimer();
+  qrTimerInterval = setInterval(updateTimer, 1000);
 }
 
-function renderPayosModal(data) {
+function renderPayosModal(data, explicitExpireAt = null, planTypeParam = null) {
   const modal = document.getElementById("payos-modal");
   if (!modal) return;
 
   const modalBox = modal.querySelector(".payos-modal-box");
   const qrImgUrl = data.qr_code || data.vietqr_img;
+  const orderCode = data.orderCode || data.order_code || "EWM_ORDER";
 
-  const planType = (data.plan_name && data.plan_name.includes("Premium")) ? "premium" : "pro";
+  const planType = planTypeParam || ((data.plan_name && data.plan_name.includes("Premium")) ? "premium" : "pro");
+
+  // Use explicitExpireAt if provided or fallback to stored timestamp per order code
+  const storageKey = `ewm_payment_expire_${orderCode}`;
+  let expireAt = explicitExpireAt || Number(localStorage.getItem(storageKey));
+  if (!expireAt || isNaN(expireAt) || expireAt <= Date.now()) {
+    expireAt = Date.now() + (15 * 60 * 1000); // 15 minutes in milliseconds
+  }
+  localStorage.setItem(storageKey, String(expireAt));
+
+  const initialRemaining = Math.max(0, Math.floor((expireAt - Date.now()) / 1000));
+  const initMins = String(Math.floor(initialRemaining / 60)).padStart(2, "0");
+  const initSecs = String(initialRemaining % 60).padStart(2, "0");
 
   modalBox.innerHTML = `
     <button type="button" class="payos-close-btn" id="payos-modal-close" title="Đóng">✕</button>
@@ -302,7 +342,7 @@ function renderPayosModal(data) {
     <!-- 15-Minute Expiration Countdown Banner -->
     <div style="font-size: 0.88rem; color: #ffd700; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(234, 179, 8, 0.12); border: 1px solid rgba(234, 179, 8, 0.35); padding: 8px 14px; border-radius: 10px;">
       <span>⏱️ Mã QR & Đơn hàng hết hạn sau:</span>
-      <strong id="qr-countdown-timer" style="font-family: monospace; font-size: 1.05rem; color: #f87171;">15:00</strong>
+      <strong id="qr-countdown-timer" style="font-family: monospace; font-size: 1.05rem; color: #f87171;">${initMins}:${initSecs}</strong>
     </div>
 
     <div class="qr-frame">
@@ -347,17 +387,17 @@ function renderPayosModal(data) {
 
   modal.classList.add("active");
 
-  // Start 15-minute timer
-  startQrCountdown(900);
+  // Start persistent countdown with stored expiration timestamp
+  startQrCountdown(expireAt, orderCode);
 
   // Bind close & confirm btns
   document.getElementById("payos-modal-close")?.addEventListener("click", closePayosModal);
   document.getElementById("confirm-payment-btn")?.addEventListener("click", () => {
-    verifyPaymentAndUpgrade(data.orderCode || data.order_code, data, planType);
+    verifyPaymentAndUpgrade(orderCode, data, planType);
   });
 
   // Start Real-time Polling every 2 seconds
-  startPaymentPolling(data.orderCode || data.order_code, data, planType);
+  startPaymentPolling(orderCode, data, planType);
 }
 
 async function verifyPaymentAndUpgrade(orderCode, data, planType) {
@@ -370,23 +410,20 @@ async function verifyPaymentAndUpgrade(orderCode, data, planType) {
   try {
     const storedToken = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token") || "";
     const headers = storedToken ? { "Authorization": `Bearer ${storedToken}` } : {};
-    const url = storedToken
-      ? `api/check_payment_status.php?orderCode=${orderCode}&plan=${planType}&auth_token=${encodeURIComponent(storedToken)}`
-      : `api/check_payment_status.php?orderCode=${orderCode}&plan=${planType}`;
+    const relativePath = `check_payment_status.php?orderCode=${orderCode}&plan=${planType}`;
+    const url = typeof window.resolveApiUrl === "function" ? window.resolveApiUrl(relativePath) : `api/${relativePath}`;
 
     const res = await fetch(url, { headers, credentials: "same-origin", cache: "no-store" });
+    if (!res.ok) {
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = `✅ Tôi Đã Chuyển Khoản Thành Công`;
+      }
+      return;
+    }
     const result = await res.json();
 
     if (result.ok && (result.is_paid || result.status === "PAID")) {
-      if (currentPollingInterval) {
-        clearInterval(currentPollingInterval);
-        currentPollingInterval = null;
-      }
-
-      if (result.user && typeof persistAuthUser === "function") {
-        persistAuthUser(result.user);
-      }
-
       showPaymentSuccessState(data);
     } else {
       if (confirmBtn) {
@@ -401,7 +438,6 @@ async function verifyPaymentAndUpgrade(orderCode, data, planType) {
       });
     }
   } catch (e) {
-    console.error("Verify payment error:", e);
     if (confirmBtn) {
       confirmBtn.disabled = false;
       confirmBtn.innerHTML = `✅ Tôi Đã Chuyển Khoản Thành Công`;
@@ -416,24 +452,26 @@ function startPaymentPolling(orderCode, data, planType) {
     try {
       const storedToken = localStorage.getItem("engWithMeAuthToken") || "";
       const headers = storedToken ? { "Authorization": `Bearer ${storedToken}` } : {};
-      const url = storedToken
-        ? `api/check_payment_status.php?orderCode=${orderCode}&plan=${planType}&auth_token=${encodeURIComponent(storedToken)}`
-        : `api/check_payment_status.php?orderCode=${orderCode}&plan=${planType}`;
+      const relativePath = `check_payment_status.php?orderCode=${orderCode}&plan=${planType}`;
+      const url = typeof window.resolveApiUrl === "function" ? window.resolveApiUrl(relativePath) : `api/${relativePath}`;
 
       const res = await fetch(url, {
         headers,
         credentials: "same-origin",
         cache: "no-store"
       });
+
+      if (!res.ok) return;
       const result = await res.json();
 
       if (result.ok && (result.is_paid || result.status === "PAID")) {
         clearInterval(currentPollingInterval);
         currentPollingInterval = null;
 
-        // Đồng bộ lại dữ liệu học viên mới từ máy chủ me.php ngay lập tức
+        // Sync fresh profile data from server me.php
         try {
-          const meUrl = storedToken ? `api/me.php?auth_token=${encodeURIComponent(storedToken)}` : "api/me.php";
+          const mePath = storedToken ? `me.php?auth_token=${encodeURIComponent(storedToken)}` : "me.php";
+          const meUrl = typeof window.resolveApiUrl === "function" ? window.resolveApiUrl(mePath) : `api/${mePath}`;
           const meRes = await fetch(meUrl, { headers, credentials: "same-origin", cache: "no-store" });
           if (meRes.ok) {
             const meData = await meRes.json();
@@ -456,6 +494,10 @@ function showPaymentSuccessState(data) {
     clearInterval(currentPollingInterval);
     currentPollingInterval = null;
   }
+
+  // Clear cached active orders
+  localStorage.removeItem("ewm_active_order_pro");
+  localStorage.removeItem("ewm_active_order_premium");
 
   // Cập nhật ngay bộ nhớ tạm LocalStorage để isUserVip() nhận diện VIP tức thì
   try {

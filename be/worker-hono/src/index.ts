@@ -28,12 +28,20 @@ app.use(
   })
 );
 
-// Health check endpoint
+// Health check endpoints
 app.get("/", (c) => {
   return c.json({
     status: "online",
     engine: "Cloudflare-Worker-Hono-v4",
     message: "EngWithMe Native Edge API is running live at 300+ Edge locations globally!",
+  });
+});
+
+app.get("/v1/health", (c) => {
+  return c.json({
+    status: "online",
+    engine: "Cloudflare-Worker-Hono-v4",
+    message: "EngWithMe Native Edge API Health OK",
   });
 });
 
@@ -87,6 +95,8 @@ app.all("/v1/payments.php", (c) => adminApp.fetch(c.req.raw, c.env, c.executionC
 app.all("/v1/admin/payments.php", (c) => adminApp.fetch(c.req.raw, c.env, c.executionCtx));
 app.all("/v1/update_order_status.php", (c) => adminApp.fetch(c.req.raw, c.env, c.executionCtx));
 app.all("/v1/admin/update_order_status.php", (c) => adminApp.fetch(c.req.raw, c.env, c.executionCtx));
+app.all("/v1/clear_test_orders.php", (c) => adminApp.fetch(c.req.raw, c.env, c.executionCtx));
+app.all("/v1/admin/clear_test_orders.php", (c) => adminApp.fetch(c.req.raw, c.env, c.executionCtx));
 
 app.all("/v1/learning_content.php", (c) => learningApp.fetch(c.req.raw, c.env, c.executionCtx));
 app.all("/v1/sync_progress.php", (c) => learningApp.fetch(c.req.raw, c.env, c.executionCtx));

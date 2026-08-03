@@ -15,14 +15,14 @@ html, body {
 
 .pricing-hero {
   text-align: center;
-  padding-top: 36px !important; /* Optimized top offset for 100vh single screen */
+  padding-top: 50px !important; /* Optimized top offset for 100vh single screen */
   margin-bottom: 30px !important;
 }
 
 h1.pricing-title {
   font-size: 29.2px !important;
   margin-top: 0 !important;
-  margin-bottom: 35px !important; /* Distance from h1 to paragraph p below set to 35px */
+  margin-bottom: 40px !important; /* Distance from h1 to paragraph p below set to 35px */
   font-family: var(--font-heading);
   font-weight: 800;
   color: #6ee7b7;
@@ -37,7 +37,7 @@ h1.pricing-title {
 p.pricing-subtitle {
   font-size: 18.5px !important;
   margin-top: 0 !important;
-  margin-bottom: 0 !important;
+  margin-bottom: 50px !important;
   color: #a6b4c9;
 }
 
@@ -242,6 +242,20 @@ margin-bottom: 70px !important;
 .pricing-card .btn,
 .pricing-card .btn-pay {
   font-size: 14px !important; /* +1px font-size boost for 3 register buttons */
+}
+
+.btn-free-static,
+.btn-free-static:hover,
+.btn-free-static:focus,
+.btn-free-static:active {
+  cursor: default !important;
+  pointer-events: none !important;
+  transform: none !important;
+  box-shadow: none !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  opacity: 0.9 !important;
 }
 
 .pricing-features li strong {

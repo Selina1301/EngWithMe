@@ -44,11 +44,22 @@ async function initProfile() {
           const securityTabBtn = document.querySelector('[data-tab-target="security"]');
           if (securityTabBtn) securityTabBtn.click();
         }
-      } else if (cachedUser) {
-        fillProfileForm(profileForm, cachedUser);
+      } else {
+        const hasToken = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token");
+        if (!hasToken && !cachedUser) {
+          window.location.href = "login.html";
+        } else if (cachedUser) {
+          fillProfileForm(profileForm, cachedUser);
+        }
       }
-    } else if (cachedUser) {
-      fillProfileForm(profileForm, cachedUser);
+    } else {
+      const hasToken = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token");
+      if (response.status === 401 || !hasToken) {
+        if (typeof clearAuthUser === "function") clearAuthUser();
+        window.location.href = "login.html";
+        return;
+      }
+      if (cachedUser) fillProfileForm(profileForm, cachedUser);
     }
   } catch (error) {
     if (cachedUser) fillProfileForm(profileForm, cachedUser);
@@ -455,13 +466,13 @@ function fillProfileForm(form, user) {
   const safeName = displayName && displayName !== "Đang tải..." ? displayName : (displayEmail ? displayEmail.split("@")[0] : "Học viên");
 
   if (form && form.elements) {
-    if (form.elements.name) form.elements.name.value = displayName !== "Đang tải..." ? displayName : "";
-    if (form.elements.email) form.elements.email.value = displayEmail;
-    if (form.elements.level) form.elements.level.value = user.level || localStorage.getItem("engWithMeLevel") || "A1";
-    if (form.elements.goal) form.elements.goal.value = user.goal || user.learning_goal || localStorage.getItem("engWithMeGoal") || "";
-    if (form.elements.phone) form.elements.phone.value = user.phone || "";
-    if (form.elements.bio) form.elements.bio.value = user.bio || "";
-    if (form.elements.gender) form.elements.gender.value = user.gender || "male";
+    if (form.elements.name && displayName && displayName !== "Đang tải...") form.elements.name.value = displayName;
+    if (form.elements.email && displayEmail) form.elements.email.value = displayEmail;
+    if (form.elements.level && user.level) form.elements.level.value = user.level;
+    if (form.elements.goal && (user.goal || user.learning_goal)) form.elements.goal.value = user.goal || user.learning_goal;
+    if (form.elements.phone && user.phone) form.elements.phone.value = user.phone;
+    if (form.elements.bio && user.bio) form.elements.bio.value = user.bio;
+    if (form.elements.gender && user.gender) form.elements.gender.value = user.gender;
   }
 
   renderProfileAvatars({ ...user, name: safeName, avatar: user.avatar || localStorage.getItem("engWithMeUserAvatar") });
@@ -470,7 +481,7 @@ function fillProfileForm(form, user) {
   const genderText = genderLabels[user.gender] || "Nam 👨";
 
   setText("[data-profile-name]", safeName);
-  setText("[data-profile-email]", displayEmail);
+  if (displayEmail) setText("[data-profile-email]", displayEmail);
   setText("[data-profile-role]", user.role === "admin" ? "Quản trị viên" : "Học viên");
   setText("[data-profile-goal]", user.goal || user.learning_goal || "Chưa đặt mục tiêu");
   setText("[data-profile-gender]", genderText);
@@ -487,6 +498,29 @@ function fillProfileForm(form, user) {
 function renderProfileAvatars(user) {
   if (typeof renderAvatarTargets === "function") {
     renderAvatarTargets("[data-profile-avatar], [data-profile-form-avatar]", user);
+  }
+}
+
+function updatePasswordFormForGoogleUser(user) {
+  if (!user) return;
+  const currentPasswordGroup = document.getElementById("currentPasswordGroup");
+  const passwordTitle = document.querySelector("[data-password-title]");
+  const passwordSubmitBtn = document.querySelector('[data-password-form] button[type="submit"]');
+
+  const isGoogle = user.is_google === 1 || user.is_google === "1" || user.auth_provider === "google";
+  const hasPasswordLocal = localStorage.getItem("engWithMeUserHasPassword");
+  const hasPassword = (user.has_password === 1 || user.has_password === "1" || user.has_password === true || hasPasswordLocal === "1");
+
+  if (isGoogle && !hasPassword) {
+    // Mode 1: TẠO MẬT KHẨU RIÊNG (Không cần nhập mật khẩu hiện tại!)
+    if (currentPasswordGroup) currentPasswordGroup.style.display = "none";
+    if (passwordTitle) passwordTitle.textContent = "🔑 Tạo mật khẩu riêng cho tài khoản Google";
+    if (passwordSubmitBtn) passwordSubmitBtn.innerHTML = '<span class="ti-key"></span> Tạo mật khẩu bảo mật';
+  } else {
+    // Mode 2: ĐỔI MẬT KHẨU BẢO MẬT (Yêu cầu mật khẩu hiện tại)
+    if (currentPasswordGroup) currentPasswordGroup.style.display = "block";
+    if (passwordTitle) passwordTitle.textContent = "🔑 Đổi mật khẩu bảo mật";
+    if (passwordSubmitBtn) passwordSubmitBtn.innerHTML = '<span class="ti-key"></span> Cập nhật mật khẩu bảo mật';
   }
 }
 

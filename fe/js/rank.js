@@ -56,7 +56,7 @@
     } else if (currentCategory === "bloggers") {
       titleEl.textContent = "✍️ Top 10 Học Viên Tích Cực (Tym & Đọc)";
     } else if (currentCategory === "toeic") {
-      titleEl.textContent = "🎯 Top 10 Cao Thủ TOEIC (Tỷ lệ đúng cao nhất)";
+      titleEl.textContent = "🎯 Top 10 Cao Thủ TOEIC";
     }
   }
 
@@ -120,7 +120,18 @@
       const name = escapeHtml(item.name || "Học viên");
       const badge = escapeHtml(item.badge || "Tập Sự");
       const statText = getFormattedStat(item);
-      const vipTag = item.is_vip ? `<span class="vip-tag">👑 VIP</span>` : "";
+
+      const planId = String(item.plan_id || "").toLowerCase();
+      const isVip = Number(item.is_vip || 0) === 1;
+
+      let planTagHtml = "";
+      if (planId.includes("pro")) {
+        planTagHtml = `<span class="plan-tag tag-pro" title="Gói Pro (30 Ngày)">⚡ Pro</span>`;
+      } else if (planId.includes("premium") || (isVip && !planId.includes("pro"))) {
+        planTagHtml = `<span class="plan-tag tag-pre" title="Gói Premium VIP Trọn Đời">👑 Pre</span>`;
+      }
+
+      const userLevel = item.level || 1;
 
       let cardClass = "rank-item-card";
       let medalBadge = `#${rank}`;
@@ -146,7 +157,8 @@
             <div class="rank-user-info">
               <div class="rank-user-name-row">
                 <span class="rank-user-name">${name}</span>
-                ${vipTag}
+                <span class="rank-user-level">Lv.${userLevel}</span>
+                ${planTagHtml}
               </div>
               <div class="rank-badge-tag">${badge}</div>
             </div>

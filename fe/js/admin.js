@@ -293,9 +293,17 @@ function renderAdminUserRow(user, currentAdminId) {
   const safeEmail = escapeHtml(user.email || "");
   const safeGoal = escapeHtml(user.goal || "Chưa đặt");
   
-  // Format level cleanly (e.g. Lv.1 or A1, B1)
-  let rawLevel = String(user.level || "A1").trim();
-  let safeLevel = isNaN(rawLevel) ? rawLevel : `Lv.${rawLevel}`;
+  // Format level cleanly as LV.N (converting A1 -> LV.1, A2 -> LV.2, etc.)
+  function formatAdminUserLevel(lvl) {
+    if (!lvl) return "LV.1";
+    let s = String(lvl).trim().toUpperCase();
+    const cefrMap = { "A1": 1, "A2": 2, "B1": 3, "B2": 4, "C1": 5, "C2": 6 };
+    if (cefrMap[s]) return `LV.${cefrMap[s]}`;
+    let n = parseInt(s.replace(/[^0-9]/g, ""), 10);
+    if (!isNaN(n) && n > 0) return `LV.${n}`;
+    return "LV.1";
+  }
+  let safeLevel = formatAdminUserLevel(user.level);
   
   const createdAt = formatDateTime(user.createdAt);
 
@@ -1534,7 +1542,7 @@ function renderAdminPaymentsTable(orders) {
   if (!tbody) return;
 
   if (!orders || orders.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #94a3b8; padding: 40px;">Chưa có lịch sử giao dịch thanh toán nào.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #94a3b8; padding: 40px;">Chưa có lịch sử giao dịch thanh toán nào.</td></tr>`;
     return;
   }
 
@@ -1542,16 +1550,12 @@ function renderAdminPaymentsTable(orders) {
     const isPaid = ord.status === "PAID" || ord.status === "SUCCESS";
     const statusTag = isPaid
       ? `<span style="background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 700; font-size: 0.8rem;">✓ Thành công</span>`
-      : `<span style="background: rgba(234, 179, 8, 0.15); color: #eab308; padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(234, 179, 8, 0.3); font-weight: 700; font-size: 0.8rem;">⏳ Đang chờ</span>`;
+      : `<button type="button" style="background: rgba(234, 179, 8, 0.2); color: #eab308; padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(234, 179, 8, 0.5); font-weight: 700; font-size: 0.8rem; cursor: pointer;" onclick="updateAdminOrderStatus(${ord.id}, 'PAID', '${escapeHtml(ord.user_id)}')">⏳ Duyệt Đơn (PENDING)</button>`;
 
     const isPremium = String(ord.plan_name || ord.plan_id || "").toLowerCase().includes("premium");
     const planBadge = isPremium
       ? `<span style="color: #ffd700; font-weight: 800;">👑 ${escapeHtml(ord.plan_name || "Gói Premium VIP Trọn Đời")}</span>`
       : `<span style="color: #10b981; font-weight: 700;">⚡ ${escapeHtml(ord.plan_name || "Gói Pro (30 Ngày)")}</span>`;
-
-    const actions = isPaid
-      ? `<span style="color: #64748b; font-size: 0.82rem;">Đã hoàn tất</span>`
-      : `<button type="button" class="admin-action success" onclick="updateAdminOrderStatus(${ord.id}, 'PAID', '${escapeHtml(ord.user_id)}')">✓ Duyệt VIP</button>`;
 
     return `
       <tr>
@@ -1562,7 +1566,6 @@ function renderAdminPaymentsTable(orders) {
         <td style="font-weight: 800; color: #ffd700;">${escapeHtml(ord.amount_formatted || ord.amount + 'đ')}</td>
         <td>${statusTag}</td>
         <td style="font-size: 0.85rem; color: #94a3b8;">${formatDateTime(ord.created_at)}</td>
-        <td>${actions}</td>
       </tr>
     `;
   }).join("");

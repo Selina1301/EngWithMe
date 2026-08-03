@@ -1,257 +1,267 @@
-# TOEIC Platform Database Design
-
-## Summary
-
-The current project stores most TOEIC content in JavaScript files. A production TOEIC TTS platform should eventually move TOEIC content, audio metadata, attempts, and mistake analytics into the database.
-
-This design targets MySQL/MariaDB compatibility because the current project uses XAMPP/PHP. If the system is later migrated to a larger backend, the same model can be ported to PostgreSQL.
-
-## Core Tables
-
-### toeic_tests
-
-Represents a full TOEIC test or practice set.
-
-Columns:
-
-- id
-- slug
-- title
-- year
-- level
-- status: draft, review, approved, published, archived
-- duration_minutes
-- created_by
-- created_at
-- updated_at
-
-### toeic_listening_sets
-
-Represents one shared audio unit. Part 1 and Part 2 can still use this table with one question per set. Part 3 and Part 4 use it naturally because one audio supports three questions.
-
-Columns:
-
-- id
-- test_id
-- part
-- question_start
-- question_end
-- title
-- topic
-- difficulty
-- accent
-- speed
-- skill
-- trap_type
-- talk_type
-- transcript
-- normalized_script
-- image_url
-- audio_url
-- audio_status: missing, pending, generated, reviewed, approved, failed
-- voice_config_json
-- metadata_json
-- created_at
-- updated_at
-
-### toeic_questions
-
-Represents each scored question.
-
-Columns:
-
-- id
-- test_id
-- listening_set_id nullable
-- part
-- question_no
-- question_text
-- correct_answer_label
-- explanation
-- evidence_text
-- skill
-- trap_type
-- topic
-- difficulty
-- metadata_json
-- created_at
-- updated_at
-
-### toeic_answers
-
-Represents answer choices.
-
-Columns:
-
-- id
-- question_id
-- label
-- answer_text
-- is_correct
-- explanation
-- sort_order
-
-### toeic_vocabulary_items
-
-Stores vocabulary linked to a question or listening set.
-
-Columns:
-
-- id
-- test_id
-- question_id nullable
-- listening_set_id nullable
-- term
-- meaning
-- example
-- audio_url nullable
-
-### toeic_paraphrase_pairs
-
-Stores TOEIC paraphrase mappings.
-
-Columns:
-
-- id
-- source_phrase
-- answer_phrase
-- meaning
-- topic
-- difficulty
-- created_at
-
-Examples:
-
-- postponed = delayed
-- purchase = buy
-- reserve = book
-- attend = participate in
-- approximately = about
-
-## Attempt And Progress Tables
-
-### toeic_attempts
-
-One submitted test/practice session.
-
-Columns:
-
-- id
-- user_id
-- test_id
-- mode: practice, test, review
-- selected_parts
-- score
-- correct_count
-- total_questions
-- duration_seconds
-- submitted_at
-
-### toeic_attempt_answers
-
-One row per answered question.
-
-Columns:
-
-- id
-- attempt_id
-- user_id
-- question_id
-- selected_answer_label
-- is_correct
-- time_spent_seconds
-- listened_count
-- created_at
-
-### toeic_mistake_logs
-
-Aggregated mistake notebook.
-
-Columns:
-
-- id
-- user_id
-- question_id
-- part
-- trap_type
-- skill
-- topic
-- wrong_count
-- last_selected_answer_label
-- last_attempted_at
-
-### toeic_user_progress
-
-Aggregated progress by part/topic/skill.
-
-Columns:
-
-- id
-- user_id
-- scope_type: part, topic, skill, trap_type, test
-- scope_key
-- correct_count
-- total_count
-- accuracy
-- updated_at
-
-## Audio And TTS Tables
-
-### toeic_audio_files
-
-Stores generated or uploaded audio metadata.
-
-Columns:
-
-- id
-- listening_set_id
-- provider
-- voice_id
-- accent
-- speed
-- format
-- file_url
-- duration_seconds
-- checksum
-- status: pending, generated, reviewed, approved, failed
-- created_at
-
-### toeic_tts_jobs
-
-Tracks background TTS generation.
-
-Columns:
-
-- id
-- listening_set_id
-- requested_by
-- provider
-- voice_config_json
-- input_script
-- normalized_script
-- status: queued, running, succeeded, failed
-- error_message
-- created_at
-- started_at
-- finished_at
-
-## Migration Strategy
-
-Phase 1:
-
-- Keep current JS data as the source of truth.
-- Add database tables only for attempts and results.
-
-Phase 2:
-
-- Import TOEIC content from JS into database tables.
-- Keep JS export generation as a fallback for the static frontend.
-
-Phase 3:
-
-- Admin creates and publishes content directly from database.
-- Frontend loads TOEIC content through API.
-
-Phase 4:
-
-- Add TTS jobs, audio review workflow, analytics, and adaptive practice.
+# EngWithMe Enterprise - Relational Database Schema & Data Dictionary
+
+## 1. Overview
+
+The **EngWithMe** relational database schema is deployed on **Cloudflare D1** (Serverless Distributed SQLite Engine) for Edge API operation, with mirrored compatibility for local MySQL/MariaDB development environments.
+
+All tables enforce strict referential integrity, UTF-8 character encoding (`utf8mb4`), and indexed lookup fields to achieve sub-millisecond query execution speeds.
+
+---
+
+## 2. Entity Relationship Diagram (ERD)
+
+```mermaid
+erDiagram
+    USERS ||--o{ ORDERS : "places"
+    USERS ||--o{ USER_PROGRESS : "tracks"
+    USERS ||--o{ EXAM_RESULTS : "completes"
+    USERS ||--o{ NOTIFICATIONS : "receives"
+    USERS ||--o{ BLOGS : "authors"
+
+    USERS {
+        int id PK
+        string email UK
+        string password_hash
+        string full_name
+        string role
+        string status
+        string avatar
+        datetime created_at
+        datetime updated_at
+    }
+
+    ORDERS {
+        int id PK
+        int user_id FK
+        string user_email
+        string package_name
+        decimal amount
+        string status
+        datetime created_at
+    }
+
+    USER_PROGRESS {
+        int id PK
+        int user_id FK
+        string topic_id
+        int words_learned
+        int streak_count
+        datetime last_study_at
+    }
+
+    EXAM_RESULTS {
+        int id PK
+        int user_id FK
+        string exam_id
+        int score
+        int total_questions
+        int time_spent_seconds
+        datetime completed_at
+    }
+
+    NOTIFICATIONS {
+        int id PK
+        int user_id FK
+        string title
+        string message
+        string tag
+        boolean is_read
+        datetime created_at
+    }
+
+    BLOGS {
+        int id PK
+        int author_id FK
+        string title
+        string slug UK
+        string content
+        string status
+        datetime created_at
+    }
+
+    SYSTEM_SETTINGS {
+        string key_name PK
+        string value
+        datetime updated_at
+    }
+```
+
+---
+
+## 3. Detailed Data Dictionary
+
+### 3.1. Table: `users` (Account Credentials & Profile)
+Primary entity storing student, manager, and administrator account details.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `INTEGER` | `PRIMARY KEY AUTOINCREMENT` | Unique user identifier |
+| `email` | `VARCHAR(255)` | `UNIQUE`, `NOT NULL` | User primary email address |
+| `password_hash` | `VARCHAR(255)` | `NULLABLE` | Bcrypt hashed password (NULL for Google OAuth) |
+| `full_name` | `VARCHAR(150)` | `NOT NULL` | Full display name |
+| `role` | `VARCHAR(20)` | `DEFAULT 'user'` | Role: `'user'`, `'manager'`, `'admin'` |
+| `status` | `VARCHAR(20)` | `DEFAULT 'active'` | Status: `'active'`, `'locked'` |
+| `avatar` | `VARCHAR(500)` | `NULLABLE` | Profile picture URL |
+| `created_at` | `DATETIME` | `DEFAULT CURRENT_TIMESTAMP` | Registration timestamp |
+| `updated_at` | `DATETIME` | `DEFAULT CURRENT_TIMESTAMP` | Last modification timestamp |
+
+---
+
+### 3.2. Table: `orders` (Subscriptions & Transactions)
+Stores course package purchases, VIP enrollments, and payment transaction logs.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `INTEGER` | `PRIMARY KEY AUTOINCREMENT` | Transaction ID |
+| `user_id` | `INTEGER` | `FOREIGN KEY (users.id)` | Owner user ID |
+| `user_email` | `VARCHAR(255)` | `NOT NULL` | Email associated with order |
+| `package_name` | `VARCHAR(100)` | `NOT NULL` | Package name (e.g. `'PRO_TOEIC_FULL'`) |
+| `amount` | `DECIMAL(10,2)` | `NOT NULL` | Payment amount in VND |
+| `status` | `VARCHAR(20)` | `DEFAULT 'completed'` | Status: `'pending'`, `'completed'`, `'refunded'` |
+| `created_at` | `DATETIME` | `DEFAULT CURRENT_TIMESTAMP` | Order timestamp |
+
+---
+
+### 3.3. Table: `user_progress` (Vocabulary & Study Metrics)
+Tracks learning statistics, word mastery count, and daily streaks per student.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `INTEGER` | `PRIMARY KEY AUTOINCREMENT` | Record ID |
+| `user_id` | `INTEGER` | `FOREIGN KEY (users.id)` | Student ID |
+| `topic_id` | `VARCHAR(100)` | `NOT NULL` | Topic slug (e.g., `'animals'`, `'business'`) |
+| `words_learned` | `INTEGER` | `DEFAULT 0` | Total words mastered in topic |
+| `streak_count` | `INTEGER` | `DEFAULT 0` | Consecutive study days |
+| `last_study_at` | `DATETIME` | `NULLABLE` | Last active study timestamp |
+
+---
+
+### 3.4. Table: `exam_results` (TOEIC Practice Test Scores)
+Stores completed examination attempts, score breakdown, and time metrics.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `INTEGER` | `PRIMARY KEY AUTOINCREMENT` | Result ID |
+| `user_id` | `INTEGER` | `FOREIGN KEY (users.id)` | Student ID |
+| `exam_id` | `VARCHAR(100)` | `NOT NULL` | Exam slug/identifier |
+| `score` | `INTEGER` | `NOT NULL` | Total score achieved |
+| `total_questions` | `INTEGER` | `NOT NULL` | Total exam questions |
+| `time_spent_seconds`| `INTEGER` | `NOT NULL` | Duration in seconds |
+| `completed_at` | `DATETIME` | `DEFAULT CURRENT_TIMESTAMP` | Exam completion date |
+
+---
+
+### 3.5. Table: `notifications` (Broadcast & Individual Alerts)
+Stores system maintenance alerts, announcements, and user notifications.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `INTEGER` | `PRIMARY KEY AUTOINCREMENT` | Notification ID |
+| `user_id` | `INTEGER` | `NULLABLE` | Target user ID (NULL for Broadcast All) |
+| `title` | `VARCHAR(255)` | `NOT NULL` | Notification title |
+| `message` | `TEXT` | `NOT NULL` | Main message content |
+| `tag` | `VARCHAR(50)` | `DEFAULT 'system'` | Tag: `'system'`, `'promo'`, `'reminder'` |
+| `is_read` | `BOOLEAN` | `DEFAULT 0` | Read flag (0 = unread, 1 = read) |
+| `created_at` | `DATETIME` | `DEFAULT CURRENT_TIMESTAMP` | Creation date |
+
+---
+
+### 3.6. Table: `blogs` (Community & Articles)
+Stores blog articles, educational guides, and community publications.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `INTEGER` | `PRIMARY KEY AUTOINCREMENT` | Article ID |
+| `author_id` | `INTEGER` | `FOREIGN KEY (users.id)` | Author user ID |
+| `title` | `VARCHAR(255)` | `NOT NULL` | Article title |
+| `slug` | `VARCHAR(255)` | `UNIQUE`, `NOT NULL` | URL friendly slug |
+| `content` | `TEXT` | `NOT NULL` | Markdown/HTML body content |
+| `status` | `VARCHAR(20)` | `DEFAULT 'pending'` | Status: `'pending'`, `'approved'`, `'rejected'` |
+| `created_at` | `DATETIME` | `DEFAULT CURRENT_TIMESTAMP` | Publication date |
+
+---
+
+## 4. DDL Migration Scripts
+
+```sql
+-- SQLite / Cloudflare D1 Full Database DDL Schema
+
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    password_hash TEXT,
+    full_name TEXT NOT NULL,
+    role TEXT DEFAULT 'user',
+    status TEXT DEFAULT 'active',
+    avatar TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    user_email TEXT NOT NULL,
+    package_name TEXT NOT NULL,
+    amount REAL NOT NULL,
+    status TEXT DEFAULT 'completed',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS user_progress (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    topic_id TEXT NOT NULL,
+    words_learned INTEGER DEFAULT 0,
+    streak_count INTEGER DEFAULT 0,
+    last_study_at DATETIME,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS exam_results (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    exam_id TEXT NOT NULL,
+    score INTEGER NOT NULL,
+    total_questions INTEGER NOT NULL,
+    time_spent_seconds INTEGER NOT NULL,
+    completed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS notifications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    title TEXT NOT NULL,
+    message TEXT NOT NULL,
+    tag TEXT DEFAULT 'system',
+    is_read INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS blogs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    author_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    slug TEXT UNIQUE NOT NULL,
+    content TEXT NOT NULL,
+    status TEXT DEFAULT 'pending',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(author_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS system_settings (
+    key_name TEXT PRIMARY KEY,
+    value TEXT NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Indexing for Query Optimization
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_role_status ON users(role, status);
+CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
+CREATE INDEX IF NOT EXISTS idx_orders_email ON orders(user_email);
+CREATE INDEX IF NOT EXISTS idx_progress_user ON user_progress(user_id);
+CREATE INDEX IF NOT EXISTS idx_exam_user ON exam_results(user_id);

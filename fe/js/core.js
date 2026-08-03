@@ -317,15 +317,79 @@ function resolveApiUrl(url) {
 
 window.resolveApiUrl = resolveApiUrl;
 
-// Tự động nhận diện và lưu auth_token từ URL Google Redirect vào localStorage ngay lập tức
+// Tự động nhận diện, lưu auth_token từ Google Redirect và dọn dẹp URL thanh địa chỉ ngay lập tức
 (function syncUrlAuthToken() {
   try {
-    const params = new URLSearchParams(window.location.search);
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
     const token = params.get("auth_token") || params.get("token");
+    const googleAuth = params.get("google_auth");
+    const userId = params.get("user_id");
+    const email = params.get("email");
+    const name = params.get("name") || params.get("full_name");
+    const avatar = params.get("avatar");
+
     if (token) {
       localStorage.setItem("engWithMeAuthToken", token);
+      localStorage.setItem("ewm_token", token);
     }
-  } catch (e) {}
+    if (userId) {
+      localStorage.setItem("engWithMeUserId", userId);
+    }
+    if (email) {
+      localStorage.setItem("engWithMeUserEmail", email);
+    }
+    if (name) {
+      localStorage.setItem("engWithMeStudentName", name);
+    }
+    if (avatar) {
+      localStorage.setItem("engWithMeUserAvatar", avatar);
+    }
+    const hasPasswordParam = params.get("has_password");
+    if (hasPasswordParam !== null && hasPasswordParam !== undefined) {
+      localStorage.setItem("engWithMeUserHasPassword", hasPasswordParam === "1" ? "1" : "0");
+    }
+
+    if (token || email || name) {
+      if (typeof persistAuthUser === "function") {
+        persistAuthUser({
+          id: userId || localStorage.getItem("engWithMeUserId") || "user",
+          email: email || localStorage.getItem("engWithMeUserEmail") || "",
+          name: name || localStorage.getItem("engWithMeStudentName") || "",
+          avatar: avatar || localStorage.getItem("engWithMeUserAvatar") || "",
+          has_password: hasPasswordParam !== null ? (hasPasswordParam === "1" ? 1 : 0) : undefined,
+          session_token: token || localStorage.getItem("engWithMeAuthToken") || ""
+        });
+      }
+    }
+
+    // Dọn dẹp thanh địa chỉ browser chuyên nghiệp (xóa ?auth_token=...&google_auth=success)
+    if (token || googleAuth || userId || email || name || hasPasswordParam || params.has("auth_token") || params.has("google_auth") || params.has("user_id") || params.has("email")) {
+      params.delete("auth_token");
+      params.delete("token");
+      params.delete("google_auth");
+      params.delete("user_id");
+      params.delete("email");
+      params.delete("name");
+      params.delete("full_name");
+      params.delete("avatar");
+      params.delete("has_password");
+
+      const cleanSearch = params.toString();
+      const cleanUrl = url.pathname + (cleanSearch ? "?" + cleanSearch : "") + url.hash;
+      window.history.replaceState(null, "", cleanUrl);
+
+      if (googleAuth === "success") {
+        setTimeout(() => {
+          if (typeof showToast === "function") {
+            showToast("✨ Đăng nhập tài khoản Google thành công!", "success");
+          }
+        }, 300);
+      }
+    }
+  } catch (e) {
+    console.error("URL Auth Token Sync Error:", e);
+  }
 })();
 
 async function fetchAuth(url, options = {}) {
@@ -625,10 +689,6 @@ function ensureNavActions(header) {
 }
 
 function renderGuestNav() {
-  const currentPage = getCurrentPage();
-  const authPages = ["login.html", "register.html"];
-  if (authPages.includes(currentPage)) return;
-
   document.querySelectorAll(".nav-actions, .auth-buttons, #auth-actions").forEach((actions) => {
     actions.innerHTML = `
       <a class="btn btn-ghost" href="login.html">Đăng nhập</a>
@@ -639,7 +699,35 @@ function renderGuestNav() {
 
 function renderAuthenticatedNav(user) {
   const dashboardHref = user.role === "admin" ? "admin.html" : "profile.html#dashboard";
-  const roleLabel = user.role === "admin" ? "Admin" : (user.level || "User");
+  const isVip = typeof isUserVip === "function" ? isUserVip(user) : (user.is_vip || user.vip_type === "pro" || user.vip_type === "pre" || user.vip_type === "premium");
+  const levelNum = user.level || 1;
+
+  // Determine exact plan & role label & badge styling:
+  const planStr = String(
+    user.plan_id ||
+    user.plan ||
+    user.plan_name ||
+    user.vip_type ||
+    localStorage.getItem("engWithMeUserPlan") ||
+    ""
+  ).toLowerCase();
+
+  const isPremium = planStr.includes("premium") || planStr.includes("pre") || localStorage.getItem("engWithMeUserIsPremium") === "true";
+
+  let roleLabel = `Lv. ${levelNum}`;
+  let roleBadgeStyle = 'background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 10.5px; font-weight: 800; padding: 1px 7px; border-radius: 99px;';
+
+  if (user.role === "admin") {
+    roleLabel = "Admin";
+    roleBadgeStyle = 'background: rgba(250, 204, 21, 0.15); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.35); font-size: 10.5px; font-weight: 800; padding: 1px 7px; border-radius: 99px;';
+  } else if (isPremium) {
+    roleLabel = "👑 Premium";
+    roleBadgeStyle = 'background: rgba(255, 215, 0, 0.15); color: #ffd700; border: 1px solid rgba(255, 215, 0, 0.4); font-size: 10.5px; font-weight: 800; padding: 1px 7px; border-radius: 99px;';
+  } else if (isVip || planStr.includes("pro")) {
+    roleLabel = "⚡ Pro";
+    roleBadgeStyle = 'background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.35); font-size: 10.5px; font-weight: 800; padding: 1px 7px; border-radius: 99px;';
+  }
+
   const rawName = user.name || user.full_name || "Tài khoản";
   const cleanName = rawName.replace(/\s*\(Admin\)\s*/gi, "").trim() || "Tài khoản";
   const adminLink = user.role === "admin"
@@ -703,7 +791,7 @@ function renderAuthenticatedNav(user) {
               <div style="overflow: hidden;">
                 <div style="font-weight: 800; color: #f8fafc; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(cleanName)}</div>
                 <div style="font-size: 12px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(user.email || "")}</div>
-                <div style="margin-top: 2px;"><span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 10.5px; font-weight: 800; padding: 1px 7px; border-radius: 99px;">${escapeHtml(roleLabel)}</span></div>
+                <div style="margin-top: 2px;"><span style="${roleBadgeStyle}">${escapeHtml(roleLabel)}</span></div>
               </div>
             </div>
 
@@ -1072,7 +1160,7 @@ function getCachedAuthUser() {
   const name = localStorage.getItem("engWithMeStudentName");
   const email = localStorage.getItem("engWithMeUserEmail");
   const token = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token");
-  if (!id && !name && !email && !token) return null;
+  if (!email && !name && !id) return null;
 
   const hasPassLocal = localStorage.getItem("engWithMeUserHasPassword");
   const hasPasswordVal = hasPassLocal === "1" ? 1 : (hasPassLocal === "0" ? 0 : undefined);
@@ -1168,7 +1256,15 @@ function clearAuthUser() {
     "engWithMeUserVipExpires",
     "engWithMeAuthToken",
     "ewm_token",
-    "ewm_cache_me"
+    "ewm_cache_me",
+    "engWithMeUserXP",
+    "engWithMeSavedVocabularyWords",
+    "engWithMeViewedReadingTopics",
+    "engWithMeReadingViewedTopics",
+    "engWithMeReadingProgress",
+    "engWithMeListeningProgress",
+    "engWithMeGrammarPracticeState",
+    "engWithMeGrammarPractice"
   ].forEach((key) => localStorage.removeItem(key));
 
   if (typeof AppCache !== "undefined" && AppCache.clear) {
@@ -1407,9 +1503,34 @@ function initSmartPollingLoop() {
     }
   });
 
-  // Start background interval loop
+// Start background interval loop
   setInterval(performSilentRefresh, POLLING_INTERVAL_MS);
 }
+
+/* Global Event Delegation for Password Toggle Eye Button across all pages */
+document.addEventListener("click", function (e) {
+  const toggleBtn = e.target.closest(".toggle-password");
+  if (!toggleBtn) return;
+
+  const wrapper = toggleBtn.closest(".input-password-wrapper") || toggleBtn.parentElement;
+  if (!wrapper) return;
+
+  const input = wrapper.querySelector("input");
+  if (!input) return;
+
+  const isPassword = input.type === "password";
+  input.type = isPassword ? "text" : "password";
+
+  if (isPassword) {
+    toggleBtn.classList.remove("ti-eye");
+    toggleBtn.classList.add("ti-close");
+    toggleBtn.style.color = "#00f0ff";
+  } else {
+    toggleBtn.classList.remove("ti-close");
+    toggleBtn.classList.add("ti-eye");
+    toggleBtn.style.color = "";
+  }
+});
 
 // Automatically start smart polling when DOM is ready
 if (document.readyState === "loading") {
