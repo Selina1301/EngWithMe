@@ -401,7 +401,7 @@ async function fetchAuth(url, options = {}) {
     try { localStorage.setItem("engWithMeAuthToken", token); } catch (e) {}
   }
 
-  const fetchOpts = { credentials: "include", cache: "no-store", ...options };
+  const fetchOpts = { credentials: "same-origin", cache: "no-store", ...options };
   const headers = { ...(fetchOpts.headers || {}) };
 
   if (token && !headers["Authorization"]) {
@@ -429,7 +429,7 @@ window.fetchAuth = fetchAuth;
     if (typeof url === "string" && (url.startsWith("api/") || url.startsWith("/api/"))) {
       const resolvedUrl = resolveApiUrl(url);
       const token = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token") || "";
-      const fetchOpts = { credentials: "include", ...options };
+      const fetchOpts = { credentials: "same-origin", ...options };
       const headers = { ...(fetchOpts.headers || {}) };
 
       if (token && !headers["Authorization"]) {
@@ -443,7 +443,7 @@ window.fetchAuth = fetchAuth;
         finalUrl = `${finalUrl}${sep}auth_token=${encodeURIComponent(token)}`;
       }
 
-      return originalFetch.call(this, finalUrl, fetchOpts);
+      return originalFetch.call(window, finalUrl, fetchOpts);
     }
 
     return originalFetch.call(this, resource, options);
@@ -467,7 +467,7 @@ async function fetchWithSWR(url, cacheKey, onDataReady, options = {}) {
   const expired = now - lastSync > cacheDuration;
   if (!cachedData || expired || isInvalid) {
     try {
-      const fetchOpts = { credentials: "include", ...(options.fetchOptions || {}) };
+      const fetchOpts = { credentials: "same-origin", ...(options.fetchOptions || {}) };
       const headers = { ...(fetchOpts.headers || {}) };
       const token = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token");
       if (token && !headers["Authorization"]) {

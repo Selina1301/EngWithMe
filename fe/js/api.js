@@ -26,7 +26,6 @@
       }
 
       const defaultOptions = {
-        credentials: "include",
         headers: headers,
         ...options
       };

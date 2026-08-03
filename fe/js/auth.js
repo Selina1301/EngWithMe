@@ -114,8 +114,7 @@ async function submitForgotForm(form) {
 
     const response = await fetch(resolveApiUrl("auth/forgot_password.php"), {
       method: "POST",
-      body: new FormData(form),
-      credentials: "include"
+      body: new FormData(form)
     });
     const result = await response.json();
 
@@ -127,7 +126,8 @@ async function submitForgotForm(form) {
     showAuthFeedback(form, result.message, true);
 
   } catch (error) {
-    showAuthFeedback(form, "Không gọi được backend.", false);
+    console.error("[Auth Forgot Error]", error);
+    showAuthFeedback(form, "Không thể kết nối tới máy chủ API. Vui lòng kiểm tra kết nối mạng và thử lại!", false);
   } finally {
     if (submitButton) {
       submitButton.disabled = false;
@@ -156,8 +156,7 @@ async function submitAuthForm(form, endpoint) {
 
     const response = await fetch(endpoint, {
       method: "POST",
-      body: new FormData(form),
-      credentials: "include"
+      body: new FormData(form)
     });
     const result = await response.json();
 
@@ -216,7 +215,8 @@ async function submitAuthForm(form, endpoint) {
       }
     }, result.debug_verify_link ? 15000 : 2500);
   } catch (error) {
-    showAuthFeedback(form, "Không gọi được backend. Hãy mở web bằng Apache/XAMPP qua localhost.", false);
+    console.error("[Auth Submit Error]", error);
+    showAuthFeedback(form, "Không thể kết nối tới máy chủ API. Vui lòng kiểm tra kết nối mạng và thử lại!", false);
   } finally {
     if (submitButton) {
       submitButton.disabled = false;
@@ -355,8 +355,7 @@ function openOtpModal(email, originalForm, isLoginOtp = false, initialMsg = "") 
 
       const response = await fetch(resolveApiUrl("auth/resend_otp.php"), {
         method: "POST",
-        body: formData,
-        credentials: "include"
+        body: formData
       });
       const res = await response.json();
 
@@ -437,8 +436,7 @@ function openOtpModal(email, originalForm, isLoginOtp = false, initialMsg = "") 
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(payload),
-        credentials: "include"
+        body: JSON.stringify(payload)
       });
       const res = await response.json();
       
