@@ -499,6 +499,7 @@ function initAuthNav() {
   const urlParams = new URLSearchParams(window.location.search);
   const urlAuthToken = urlParams.get("auth_token") || urlParams.get("token");
   const urlUserId = urlParams.get("user_id");
+  const urlHasPassword = urlParams.get("has_password");
 
   if (urlAuthToken) {
     localStorage.setItem("engWithMeAuthToken", urlAuthToken);
@@ -506,6 +507,9 @@ function initAuthNav() {
     if (urlUserId) {
       localStorage.setItem("engWithMeUserId", urlUserId);
     }
+  }
+  if (urlHasPassword !== null && urlHasPassword !== undefined) {
+    localStorage.setItem("engWithMeUserHasPassword", String(urlHasPassword));
   }
 
   // Bind global event listeners for auth nav, logout, and notifications

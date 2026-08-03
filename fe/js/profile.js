@@ -8,11 +8,24 @@ async function initProfile() {
   const profileForm = document.querySelector("[data-profile-form]");
   const passwordForm = document.querySelector("[data-password-form]");
 
+  // Đọc trực tiếp tham số từ URL Google OAuth Callback
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlHasPass = urlParams.get("has_password");
+  const isGoogleAuth = urlParams.get("google_auth") === "success" || urlParams.get("is_google") === "1";
+
+  if (urlHasPass === "0") {
+    try { localStorage.setItem("engWithMeUserHasPassword", "0"); } catch (e) {}
+  } else if (urlHasPass === "1") {
+    try { localStorage.setItem("engWithMeUserHasPassword", "1"); } catch (e) {}
+  }
+
   // 0. Fill profile form & sidebar immediately from cached auth user
   const cachedUser = typeof getCachedAuthUser === "function" ? getCachedAuthUser() : null;
   if (cachedUser) {
     fillProfileForm(profileForm, cachedUser);
     updatePasswordFormForGoogleUser(cachedUser);
+  } else if (urlHasPass === "0") {
+    updatePasswordFormForGoogleUser({ has_password: 0, is_google: 1 });
   }
 
   // 1. Quản lý Chuyển Tab (Tab Navigation)
@@ -23,6 +36,13 @@ async function initProfile() {
     renderDashboardProgressUI();
   } catch (e) {
     console.warn("Dashboard progress error:", e);
+  }
+
+  // Tự động nhảy sang Tab Bảo Mật (Tạo Mật Khẩu) nếu vừa Đăng nhập Google chưa có mật khẩu
+  const storedHasPass = localStorage.getItem("engWithMeUserHasPassword");
+  if (urlHasPass === "0" || storedHasPass === "0" || window.location.hash === "#security") {
+    const securityTabBtn = document.querySelector('[data-tab-target="security"]');
+    if (securityTabBtn) securityTabBtn.click();
   }
 
   // 3. Tải thông tin người dùng mới nhất từ API me.php
@@ -39,8 +59,10 @@ async function initProfile() {
 
         // Tự động chuyển thẳng tới Tab Bảo Mật (Tạo Mật Khẩu) nếu đăng nhập Google chưa có mật khẩu
         const isGoogleAccount = result.user.is_google === 1 || result.user.auth_provider === "google";
-        const noPasswordYet = result.user.has_password === 0 || result.user.has_password === false;
-        if (isGoogleAccount && noPasswordYet && !window.location.hash) {
+        const noPasswordYet = result.user.has_password === 0 || result.user.has_password === false || result.user.has_password === "0";
+        if (isGoogleAccount && noPasswordYet) {
+          try { localStorage.setItem("engWithMeUserHasPassword", "0"); } catch (e) {}
+          updatePasswordFormForGoogleUser(result.user);
           const securityTabBtn = document.querySelector('[data-tab-target="security"]');
           if (securityTabBtn) securityTabBtn.click();
         }
