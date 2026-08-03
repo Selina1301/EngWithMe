@@ -7,6 +7,8 @@ type Bindings = {
   DB?: D1Database;
 };
 
+const authApp = new Hono<{ Bindings: Bindings }>();
+
 const DEFAULT_GOOGLE_CLIENT_ID = "992122170428-ookq5v3r930tqkgh24pccp2nsb18b1rj.apps.googleusercontent.com";
 const DEFAULT_REDIRECT_URI = "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/auth/google_callback.php";
 
