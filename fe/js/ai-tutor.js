@@ -1,5 +1,6 @@
 /**
- * EngWithMe AI Tutor Client Widget (Qwen2.5-3B Ollama Local)
+ * EngWithMe AI Tutor Client Widget (Cloudflare Workers AI Edge)
+ * Version: 2.0.1-vercel-force-build
  * High-performance, isolated, zero side-effects module.
  */
 (function () {
