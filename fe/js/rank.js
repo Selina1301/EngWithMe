@@ -145,6 +145,15 @@
       }
     });
 
+    // Re-sort list strictly descending by XP / Likes / TOEIC score after local sync
+    if (currentCategory === "xp") {
+      list.sort((a, b) => Number(b.xp || 0) - Number(a.xp || 0));
+    } else if (currentCategory === "bloggers") {
+      list.sort((a, b) => (Number(b.total_likes || 0) - Number(a.total_likes || 0)) || (Number(b.total_views || 0) - Number(a.total_views || 0)));
+    } else if (currentCategory === "toeic") {
+      list.sort((a, b) => (Number(b.toeic_score || 0) - Number(a.toeic_score || 0)) || (Number(b.toeic_accuracy || 0) - Number(a.toeic_accuracy || 0)));
+    }
+
     container.innerHTML = list.map((item, index) => {
       const rank = index + 1;
       const name = escapeHtml(item.name || item.full_name || "Học viên");
