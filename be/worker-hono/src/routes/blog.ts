@@ -115,6 +115,27 @@ blogApp.get("/list", async (c) => {
   return c.json({ ok: true, blogs });
 });
 
+function parseUserLevelNumber(lvlVal: any): number {
+  const str = String(lvlVal || "1").toUpperCase();
+  const digits = str.replace(/[^0-9]/g, "");
+  if (digits.length > 0) {
+    return Math.max(1, parseInt(digits, 10));
+  }
+  if (str.includes("A2")) return 2;
+  if (str.includes("B1")) return 3;
+  if (str.includes("B2")) return 4;
+  if (str.includes("C1")) return 5;
+  if (str.includes("C2")) return 6;
+  return 1;
+}
+
+function getMinimumXpForLevel(lvl: number): number {
+  if (lvl <= 1) return 0;
+  if (lvl < 10) return (lvl - 1) * 15;
+  if (lvl < 30) return 135 + (lvl - 10) * 25;
+  return 135 + 500 + (lvl - 30) * 40;
+}
+
 // GET /v1/blog/get_leaderboard.php -> Pure Real D1 Database Data (No Mock/Fake Data)
 blogApp.get("/get_leaderboard.php", async (c) => {
   let leaderboard: any[] = [];
@@ -129,15 +150,23 @@ blogApp.get("/get_leaderboard.php", async (c) => {
 
   if (c.env?.DB) {
     try {
-      // Query REAL active users from D1 Database
-      const { results } = await c.env.DB.prepare(
-        "SELECT id, full_name, level, avatar, is_vip, email FROM users WHERE status != 'locked' LIMIT 50"
-      ).all();
+      // Query REAL active users safely using SELECT * FROM users
+      let results: any[] = [];
+      try {
+        const res = await c.env.DB.prepare(
+          "SELECT * FROM users WHERE status != 'locked' LIMIT 50"
+        ).all();
+        results = res?.results || [];
+      } catch (eSql) {
+        const res = await c.env.DB.prepare("SELECT * FROM users LIMIT 50").all();
+        results = res?.results || [];
+      }
 
       if (results && results.length > 0) {
         for (let i = 0; i < results.length; i++) {
           const u: any = results[i];
-          const lvl = Math.max(1, parseInt(String(u.level || "1"), 10));
+          const lvl = parseUserLevelNumber(u.level);
+          const minLevelXp = getMinimumXpForLevel(lvl);
           const nameStr = u.full_name || u.name || (u.email ? u.email.split("@")[0] : `Học viên #${u.id}`);
           
           let blogCount = 0;
@@ -177,14 +206,20 @@ blogApp.get("/get_leaderboard.php", async (c) => {
           let userProgressXp = 0;
           try {
             const xpRow = await c.env.DB.prepare(
-              "SELECT SUM(COALESCE(score, 0)) as total_score FROM user_progress WHERE user_id = ?"
-            ).bind(String(u.id)).first();
+              "SELECT SUM(COALESCE(score, 0)) as total_score, SUM(COALESCE(progress_percent, 0)) as total_percent FROM user_progress WHERE user_id = ? OR user_id = ? OR user_id = ?"
+            ).bind(String(u.id), String(u.email || ""), String(u.session_token || "")).first();
             if (xpRow) {
-              userProgressXp = Number(xpRow.total_score || 0);
+              const scoreSum = Number(xpRow.total_score || 0);
+              const percentSum = Number(xpRow.total_percent || 0);
+              userProgressXp = Math.max(scoreSum, Math.round(percentSum * 1.5));
             }
           } catch (eXp) {}
 
-          const userXp = Math.max(userProgressXp, (lvl * 180) + (blogCount * 50) + (totalLikes * 10));
+          const dbUserXp = Number(u.total_xp || u.xp || 0);
+          const validDbXp = isNaN(dbUserXp) ? 0 : dbUserXp;
+          const validProgXp = isNaN(userProgressXp) ? 0 : userProgressXp;
+          const userXp = Math.max(minLevelXp, validDbXp, validProgXp);
+
           const toeicAccuracy = totalQuestionsSum > 0 
             ? Math.min(100, Math.round((totalCorrectSum / totalQuestionsSum) * 100)) 
             : (accumulativeToeicPts > 0 && examsCompleted > 0 

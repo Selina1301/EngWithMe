@@ -183,14 +183,14 @@ const LEVEL_TITLES_SERVER = [
 // GET & POST /v1/learning/user_level.php -> Unlimited Numeric Level (1-999) + Prestigious Titles per User
 learningApp.all("/user_level.php", async (c) => {
   const authHeader = c.req.header("Authorization") || "";
-  const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || "";
+  const token = authHeader.replace(/^Bearer\s+/i, "").trim() || c.req.query("auth_token") || c.req.query("session_token") || c.req.query("user_id") || "";
 
   let dbUser: any = null;
   if (c.env?.DB && token) {
     try {
       dbUser = await c.env.DB.prepare(
-        "SELECT * FROM users WHERE session_token = ? OR remember_token = ? OR id = ?"
-      ).bind(token, token, token).first();
+        "SELECT * FROM users WHERE session_token = ? OR remember_token = ? OR id = ? OR email = ?"
+      ).bind(token, token, token, token).first();
     } catch (e) {}
   }
 
@@ -198,17 +198,31 @@ learningApp.all("/user_level.php", async (c) => {
     return c.json({ ok: true, level: "1", level_number: 1, level_title: "🥉 Học Viên Tập Sự", score: 0, xp: 0 });
   }
 
-  let totalXp = 0;
+  let postedXp = 0;
+  if (c.req.method === "POST") {
+    try {
+      const jsonBody: any = await c.req.json();
+      postedXp = Number(jsonBody.total_xp || jsonBody.xp || 0);
+    } catch (e) {
+      try {
+        const formData: any = await c.req.parseBody();
+        postedXp = Number(formData.total_xp || formData.xp || 0);
+      } catch (e2) {}
+    }
+  }
+
+  let totalXp = Number(dbUser.total_xp || dbUser.xp || 0);
   if (c.env?.DB && dbUser.id) {
     try {
-      const progRes = await c.env.DB.prepare("SELECT COUNT(*) as count FROM user_progress WHERE user_id = ?").bind(dbUser.id).first();
-      const examRes = await c.env.DB.prepare("SELECT COUNT(*) as count, SUM(score) as total_score FROM exam_results WHERE user_id = ?").bind(dbUser.id).first();
+      const progRes = await c.env.DB.prepare("SELECT COUNT(*) as count FROM user_progress WHERE user_id = ? OR user_id = ?").bind(String(dbUser.id), String(dbUser.email || "")).first();
+      const examRes = await c.env.DB.prepare("SELECT COUNT(*) as count, SUM(score) as total_score FROM exam_results WHERE user_id = ? OR user_id = ?").bind(String(dbUser.id), String(dbUser.email || "")).first();
 
       const progCount = Number(progRes?.count || 0);
       const examCount = Number(examRes?.count || 0);
       const examScoreSum = Number(examRes?.total_score || 0);
 
-      totalXp = (progCount * 25) + (examCount * 50) + Math.floor(examScoreSum / 10);
+      const calculatedXp = (progCount * 25) + (examCount * 50) + Math.floor(examScoreSum / 10);
+      totalXp = Math.max(totalXp, calculatedXp, postedXp);
     } catch (e) {}
   }
 
@@ -232,9 +246,9 @@ learningApp.all("/user_level.php", async (c) => {
   }
 
   const levelStr = String(calculatedLevel);
-  if (c.env?.DB && dbUser.id && levelStr !== String(dbUser.level)) {
+  if (c.env?.DB && dbUser.id && (levelStr !== String(dbUser.level) || totalXp !== Number(dbUser.total_xp || 0))) {
     try {
-      await c.env.DB.prepare("UPDATE users SET level = ? WHERE id = ?").bind(levelStr, dbUser.id).run();
+      await c.env.DB.prepare("UPDATE users SET level = ?, total_xp = ? WHERE id = ?").bind(levelStr, totalXp, dbUser.id).run();
     } catch (e) {}
   }
 

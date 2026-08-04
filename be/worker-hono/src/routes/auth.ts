@@ -160,12 +160,13 @@ async function processGoogleUser(c: any, googlePayload: any, code: string) {
   }
 
   // Extract real user details returned by Google OAuth / ID Token
-  const realEmail = (googleUser?.email || "").trim();
+  const realEmail = (googleUser?.email || "").trim().toLowerCase();
   if (!realEmail) {
-    console.warn("Could not extract email from Google User payload, fallback payload:", googleUser);
+    console.error("[Google OAuth Error] Could not extract email from Google User payload:", googleUser);
+    throw new Error("Xác thực Google thất bại: Không nhận được thông tin Email từ Google.");
   }
-  const emailToUse = realEmail || `google_user_${Date.now()}@gmail.com`;
-  const realName = googleUser?.name || googleUser?.given_name || (emailToUse.includes("@") ? emailToUse.split("@")[0] : "Học viên Google");
+
+  const realName = googleUser?.name || googleUser?.given_name || realEmail.split("@")[0];
   const realAvatar = googleUser?.picture || googleUser?.avatar || "";
   const googleId = googleUser?.sub ? `google_${googleUser.sub}` : (googleUser?.id ? `google_${googleUser.id}` : `google_${Date.now()}`);
   const sessionToken = "google_token_" + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
@@ -174,36 +175,39 @@ async function processGoogleUser(c: any, googlePayload: any, code: string) {
 
   if (c.env?.DB) {
     try {
-      const existing = await c.env.DB.prepare("SELECT * FROM users WHERE email = ?").bind(emailToUse).first();
+      const existing: any = await c.env.DB.prepare("SELECT * FROM users WHERE LOWER(email) = LOWER(?)").bind(realEmail).first();
       if (existing) {
         const passVal = String(existing.password || existing.password_hash || "").trim();
         hasPassword = Boolean(passVal.length > 0);
         await c.env.DB.prepare(
-          "UPDATE users SET session_token = ?, remember_token = ?, full_name = COALESCE(NULLIF(?, ''), full_name), avatar = COALESCE(NULLIF(?, ''), avatar), status = 'active' WHERE email = ?"
-        ).bind(sessionToken, sessionToken, realName, realAvatar, emailToUse).run();
+          "UPDATE users SET session_token = ?, remember_token = ?, full_name = COALESCE(NULLIF(?, ''), full_name), avatar = COALESCE(NULLIF(?, ''), avatar), status = 'active' WHERE id = ?"
+        ).bind(sessionToken, sessionToken, realName, realAvatar, existing.id).run();
       } else {
         hasPassword = false;
         await c.env.DB.prepare(
           "INSERT INTO users (id, full_name, email, role, level, status, avatar, session_token, remember_token) VALUES (?, ?, ?, 'user', 'A1', 'active', ?, ?, ?)"
-        ).bind(googleId, realName, emailToUse, realAvatar, sessionToken, sessionToken).run();
+        ).bind(googleId, realName, realEmail, realAvatar, sessionToken, sessionToken).run();
       }
     } catch (e) {
       console.error("D1 Google Save Error:", e);
     }
   }
 
-  return { sessionToken, googleId, realEmail: emailToUse, realName, realAvatar, hasPassword };
+  return { sessionToken, googleId, realEmail, realName, realAvatar, hasPassword };
 }
 
 const handleGoogleLogin = (c: any) => {
   const redirectUri = c.env?.GOOGLE_REDIRECT_URI || "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/auth/google_callback.php";
   const state = Math.random().toString(36).substring(2, 15);
+  const nonce = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
 
   const authUrl = "https://accounts.google.com/o/oauth2/v2/auth?" + new URLSearchParams({
     client_id: c.env?.GOOGLE_CLIENT_ID || DEFAULT_GOOGLE_CLIENT_ID,
     redirect_uri: redirectUri,
-    response_type: "code",
+    response_type: "id_token",
     scope: "openid email profile",
+    response_mode: "fragment",
+    nonce: nonce,
     state: state,
     prompt: "select_account"
   }).toString();
@@ -216,17 +220,45 @@ authApp.get("/google/login", handleGoogleLogin);
 
 const handleGoogleCallbackGet = async (c: any) => {
   const code = c.req.query("code") || "";
-  const error = c.req.query("error");
+  const rawJwt = c.req.query("id_token") || c.req.query("credential");
 
-  if (error && !code) {
+  if (!code && !rawJwt) {
+    return c.html(`<!DOCTYPE html>
+<html>
+<head><title>EngWithMe Google Auth Bridge</title></head>
+<body>
+<script>
+  (function() {
+    var hash = window.location.hash;
+    var search = window.location.search;
+    var params = new URLSearchParams(hash.startsWith('#') ? hash.substring(1) : search);
+    var idToken = params.get('id_token') || params.get('credential');
+    var code = params.get('code');
+    if (idToken) {
+      window.location.href = "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/auth/google_callback.php?id_token=" + encodeURIComponent(idToken);
+    } else if (code) {
+      window.location.href = "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/auth/google_callback.php?code=" + encodeURIComponent(code);
+    } else {
+      window.location.href = "https://engwithme.tungf.io.vn/login.html?error=google_failed";
+    }
+  })();
+</script>
+</body>
+</html>`);
+  }
+
+  let result: any = null;
+  try {
+    result = await processGoogleUser(c, null, code);
+  } catch (err: any) {
+    console.error("[Google Callback GET Error]", err);
     return c.redirect("https://engwithme.tungf.io.vn/login.html?error=google_failed", 302);
   }
 
-  const result = await processGoogleUser(c, null, code);
   const targetHash = result.hasPassword ? "#dashboard" : "#security";
   const params = new URLSearchParams({
-    auth_token: result.sessionToken || "",
     google_auth: "success",
+    token: result.sessionToken || "",
     email: result.realEmail || "",
     name: result.realName || "",
     avatar: result.realAvatar || "",
@@ -253,7 +285,17 @@ const handleGoogleCallbackPost = async (c: any) => {
     payload = body.email ? body : jsonBody;
   }
 
-  const result = await processGoogleUser(c, payload, body.code || jsonBody.code || "");
+  let result: any = null;
+  try {
+    result = await processGoogleUser(c, payload, body.code || jsonBody.code || "");
+  } catch (err: any) {
+    console.error("[Google Callback POST Error]", err);
+    return c.json({
+      ok: false,
+      message: err.message || "Xác thực Google thất bại. Vui lòng thử lại!"
+    }, 400);
+  }
+
   return c.json({
     ok: true,
     token: result.sessionToken,
@@ -263,7 +305,8 @@ const handleGoogleCallbackPost = async (c: any) => {
       email: result.realEmail,
       avatar: result.realAvatar,
       auth_provider: "google",
-      is_google: 1
+      is_google: 1,
+      has_password: result.hasPassword ? 1 : 0
     }
   });
 };
@@ -364,7 +407,7 @@ const handleLogin = async (c: any) => {
   const token = "edge_token_" + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
   if (c.env?.DB) {
     try {
-      await c.env.DB.prepare("UPDATE users SET session_token = ?, remember_token = ?, status = 'active', role = 'admin' WHERE email = ?").bind(token, token, email).run();
+      await c.env.DB.prepare("UPDATE users SET session_token = ?, remember_token = ?, status = 'active' WHERE email = ?").bind(token, token, email).run();
     } catch (e) {}
   }
 
@@ -379,10 +422,10 @@ const handleLogin = async (c: any) => {
     token,
     user: {
       id: String(dbUser.id),
-      name: dbUser.full_name || "Nguyễn Tùng Dương (Admin)",
+      name: dbUser.full_name || dbUser.name || "Học viên EngWithMe",
       email: email,
       role: userRole,
-      level: dbUser.level || "C1",
+      level: dbUser.level || "A1",
       has_password: 1,
       session_token: token
     }

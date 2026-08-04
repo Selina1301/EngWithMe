@@ -781,6 +781,20 @@
         els.openingScenario.textContent = getGoalScenario(state.goal);
       }
 
+      // Update VIP unlock UI for category chips and badges
+      const currentUser = typeof getCachedAuthUser === "function" ? getCachedAuthUser() : null;
+      const isVip = typeof isUserVip === "function" ? isUserVip() : (currentUser && (currentUser.is_vip == 1 || currentUser.is_vip === true));
+      const hardGoals = ["work-career", "news-society", "tech-internet"];
+
+      document.querySelectorAll(".goal-level-group.hard .level-badge.hard, .goal-chip[data-goal]").forEach((el) => {
+        const goal = el.dataset.goal;
+        if (isVip && (el.classList.contains("hard") || hardGoals.includes(goal))) {
+          el.innerHTML = el.innerHTML.replace(/\s*🔒\s*/g, "").trim();
+          el.style.borderColor = "";
+          el.style.color = "";
+        }
+      });
+
       renderMissionGrid();
       renderMistakeBank();
     }
@@ -808,23 +822,30 @@
         return;
       }
 
+      const currentUser = typeof getCachedAuthUser === "function" ? getCachedAuthUser() : null;
+      const isVip = typeof isUserVip === "function" ? isUserVip() : (currentUser && (currentUser.is_vip == 1 || currentUser.is_vip === true));
+      const hardGoals = ["work-career", "news-society", "tech-internet"];
+
       els.missionGrid.innerHTML = visibleMissions.map((mission) => {
         const score = state.scores[mission.id] || 0;
         const completed = score >= 70;
         const recommended = mission.goal === state.goal;
         const progressLabel = score > 0 ? `${score}% completed` : "Ready";
+        const isHard = hardGoals.includes(mission.goal) || (mission.level && mission.level.toLowerCase().includes("hard"));
+        const isLocked = isHard && !isVip;
 
         return `
-          <button class="mission-card ${recommended ? "active" : ""}" type="button" data-mission="${escapeAttr(mission.id)}" data-tone="${escapeAttr(mission.tone)}">
-            <span class="mission-icon ${escapeAttr(mission.icon)}" aria-hidden="true"></span>
+          <button class="mission-card ${recommended ? "active" : ""} ${isLocked ? "is-vip-locked" : ""}" type="button" data-mission="${escapeAttr(mission.id)}" data-tone="${escapeAttr(mission.tone)}" style="${isLocked ? "border-color: rgba(239, 68, 68, 0.4);" : ""}">
+            <span class="mission-icon ${isLocked ? "ti-lock" : escapeAttr(mission.icon)}" aria-hidden="true" style="${isLocked ? "color: #f87171;" : ""}"></span>
             <span class="mission-info">
-              <h3>${escapeHtml(getTopicSessionLabel(mission))}: ${escapeHtml(mission.title)}</h3>
+              <h3>${escapeHtml(getTopicSessionLabel(mission))}: ${escapeHtml(mission.title)} ${isLocked ? '<i class="ti-lock" style="color: #f87171; font-size: 0.9rem; margin-left: 4px;"></i>' : ""}</h3>
               <p>${escapeHtml(mission.opening)}</p>
               <span class="mission-tags">
                 <span>${escapeHtml(mission.level)}</span>
                 <span>${escapeHtml(mission.accent)}</span>
                 <span>${escapeHtml(goalText[mission.goal])}</span>
                 ${recommended ? "<span>Recommended</span>" : ""}
+                ${isLocked ? '<span style="color: #f87171; font-weight: 700;">🔒 Khóa Pro/Pre</span>' : ""}
               </span>
               <span class="mission-progress">
                 <span>${escapeHtml(progressLabel)}</span>

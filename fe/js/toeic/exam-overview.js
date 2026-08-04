@@ -53,6 +53,11 @@ function initToeicExamOverview() {
       if (levelChip && !levelChip.nextElementSibling?.classList?.contains("pro-badge-chip")) {
         levelChip.insertAdjacentHTML("afterend", ` <span class="pro-badge-chip">🔒 PRO / PREMIUM</span>`);
       }
+    } else {
+      card.classList.remove("is-pro-locked");
+      card.style.border = "";
+      card.style.background = "";
+      card.querySelectorAll(".pro-badge-chip, .lock-corner-badge, .card-lock-btn").forEach((el) => el.remove());
     }
 
     const availableParts = getExamPartsForSet(setId);
@@ -62,6 +67,7 @@ function initToeicExamOverview() {
       <span class="${completedParts.includes(part) ? "is-done" : ""}">Part ${part}</span>
     `).join("");
 
+    card.querySelector(".exam-card-status")?.remove();
     card.insertAdjacentHTML("beforeend", `
       <div class="exam-card-status" aria-label="Trạng thái làm bài">
         <strong>${completedText} ${isLocked ? `<span style="color:#f59e0b;font-size:0.82rem;margin-left:8px;">🔒 Khóa VIP</span>` : ""}</strong>

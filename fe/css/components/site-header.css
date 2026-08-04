@@ -202,10 +202,17 @@
 }
 
 .user-avatar {
-  width: 34px;
-  height: 34px;
-  flex: 0 0 34px;
-  font-size: 12px;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  font-size: 15px;
+}
+
+.user-avatar-lg {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  font-size: 18px;
 }
 
 .user-avatar img,

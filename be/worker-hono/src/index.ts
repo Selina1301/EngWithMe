@@ -8,6 +8,7 @@ import notificationApp from "./routes/notification";
 import quizApp from "./routes/quiz";
 import adminApp from "./routes/admin";
 import paymentApp from "./routes/payment";
+import aiApp from "./routes/ai";
 
 type Bindings = {
   PHP_FALLBACK_URL?: string;
@@ -54,6 +55,7 @@ app.route("/v1/notification", notificationApp);
 app.route("/v1/quiz", quizApp);
 app.route("/v1/admin", adminApp);
 app.route("/v1/payment", paymentApp);
+app.route("/v1/ai", aiApp);
 
 // Helper to forward top-level legacy route aliases (/v1/login.php) to sub-apps (/v1/auth/login.php)
 const forwardTo = (subApp: any, prefix: string) => async (c: any) => {
@@ -123,6 +125,7 @@ app.all("/v1/notifications", forwardTo(notificationApp, "notification"));
 
 app.all("/v1/create_payment.php", (c) => paymentApp.fetch(c.req.raw, c.env, c.executionCtx));
 app.all("/v1/check_payment_status.php", (c) => paymentApp.fetch(c.req.raw, c.env, c.executionCtx));
+app.all("/v1/payos_webhook.php", (c) => paymentApp.fetch(c.req.raw, c.env, c.executionCtx));
 
 // Proxy fallback for stateful PHP endpoints
 app.all("/v1/*", async (c) => {

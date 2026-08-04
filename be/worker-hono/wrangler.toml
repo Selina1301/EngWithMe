@@ -11,3 +11,7 @@ binding = "DB"
 database_name = "engwithme-db"
 database_id = "5b9ae72f-9e0e-4f03-9b29-4a5296e3fb79"
 
+[ai]
+binding = "AI"
+
+

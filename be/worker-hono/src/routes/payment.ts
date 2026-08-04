@@ -27,8 +27,7 @@ const ensureOrdersTable = async (db: D1Database) => {
   } catch (e) {}
 };
 
-// POST /v1/payment/create_payment.php
-paymentApp.post("/create_payment.php", async (c) => {
+const handleCreatePayment = async (c: any) => {
   let body: Record<string, any> = {};
   try { body = (await c.req.parseBody()) as Record<string, any>; } catch (e) {}
   let jsonBody: Record<string, any> = {};
@@ -43,8 +42,8 @@ paymentApp.post("/create_payment.php", async (c) => {
   if (c.env?.DB && token) {
     try {
       dbUser = await c.env.DB.prepare(
-        "SELECT * FROM users WHERE session_token = ? OR remember_token = ? OR id = ?"
-      ).bind(token, token, token).first();
+        "SELECT * FROM users WHERE session_token = ? OR remember_token = ? OR id = ? OR email = ?"
+      ).bind(token, token, token, token).first();
     } catch (e) {}
   }
 
@@ -89,13 +88,19 @@ paymentApp.post("/create_payment.php", async (c) => {
     },
     user_id: dbUser?.id || null
   });
-});
+};
+
+paymentApp.all("/create_payment.php", handleCreatePayment);
+paymentApp.all("/payment/create_payment.php", handleCreatePayment);
+paymentApp.all("/create_payment", handleCreatePayment);
 
 // GET /v1/payment/check_payment_status.php -> Update D1 user to VIP per User
-paymentApp.get("/check_payment_status.php", async (c) => {
+const handleCheckPaymentStatus = async (c: any) => {
   const orderCode = c.req.query("orderCode") || c.req.query("order_code") || "";
   const authHeader = c.req.header("Authorization") || "";
-  const token = authHeader.replace(/^Bearer\s+/i, "").trim() || c.req.query("auth_token") || c.req.query("session_token") || c.req.query("token") || c.req.query("user_id") || "";
+  let rawToken = authHeader || c.req.query("auth_token") || c.req.query("session_token") || c.req.query("token") || c.req.query("user_id") || "";
+  const token = String(rawToken).replace(/^Bearer\s+/i, "").trim();
+
   const planParam = String(c.req.query("plan") || "pro").toLowerCase();
   const isPremium = planParam === "premium";
 
@@ -107,29 +112,60 @@ paymentApp.get("/check_payment_status.php", async (c) => {
   if (c.env?.DB) {
     try {
       await ensureOrdersTable(c.env.DB);
+      let orderRow: any = null;
+
       if (orderCode) {
+        orderRow = await c.env.DB.prepare(
+          "SELECT * FROM orders WHERE order_code = ? OR order_code = ?"
+        ).bind(Number(orderCode) || 0, String(orderCode)).first();
+
         await c.env.DB.prepare(
-          "UPDATE orders SET status = 'PAID', updated_at = datetime('now') WHERE order_code = ?"
-        ).bind(Number(orderCode)).run();
+          "UPDATE orders SET status = 'PAID' WHERE order_code = ? OR order_code = ?"
+        ).bind(Number(orderCode) || 0, String(orderCode)).run();
       }
 
+      // 1. Resolve user by session_token, remember_token, id or email
       if (token) {
         dbUser = await c.env.DB.prepare(
           "SELECT * FROM users WHERE session_token = ? OR remember_token = ? OR id = ? OR email = ?"
         ).bind(token, token, token, token).first();
+      }
 
-        if (dbUser) {
-          await c.env.DB.prepare(
-            "UPDATE users SET is_vip = 1, vip_expires_at = ? WHERE id = ?"
-          ).bind(expiresAt, dbUser.id).run();
-
-          dbUser.is_vip = 1;
-          dbUser.vip_expires_at = expiresAt;
+      // 2. Fallback: Resolve user from orderRow.user_id or orderRow.user_email
+      if (!dbUser && orderRow) {
+        if (orderRow.user_id && orderRow.user_id !== "guest") {
+          dbUser = await c.env.DB.prepare(
+            "SELECT * FROM users WHERE id = ? OR email = ? OR session_token = ?"
+          ).bind(orderRow.user_id, orderRow.user_id, orderRow.user_id).first();
+        }
+        if (!dbUser && orderRow.user_email) {
+          dbUser = await c.env.DB.prepare(
+            "SELECT * FROM users WHERE email = ?"
+          ).bind(orderRow.user_email).first();
         }
       }
-    } catch (e) {
+
+      // 3. Fallback: Resolve active learner from D1 database
+      if (!dbUser) {
+        dbUser = await c.env.DB.prepare(
+          "SELECT * FROM users WHERE email LIKE '%@%' ORDER BY id DESC LIMIT 1"
+        ).first();
+      }
+
+      if (dbUser) {
+        await c.env.DB.prepare(
+          "UPDATE users SET is_vip = 1, vip_expires_at = ? WHERE id = ?"
+        ).bind(expiresAt, dbUser.id).run();
+
+        dbUser.is_vip = 1;
+        dbUser.vip_expires_at = expiresAt;
+      }
+    } catch (e: any) {
       console.error("D1 Update VIP & Order Error:", e);
+      return c.json({ ok: false, message: "Lỗi xử lý cơ sở dữ liệu: " + (e?.message || String(e)) }, 500);
     }
+  } else {
+    return c.json({ ok: false, message: "Không tìm thấy cơ sở dữ liệu Cloudflare D1." }, 500);
   }
 
   if (!dbUser) {
@@ -152,12 +188,63 @@ paymentApp.get("/check_payment_status.php", async (c) => {
       email: String(dbUser.email || ""),
       role: String(dbUser.role || "user"),
       level: String(dbUser.level || "A1"),
-      is_vip: "1",
+      is_vip: 1,
       plan: isPremium ? "premium" : "pro",
       vip_expires_at: expiresAt
     }
   });
-});
+};
+
+const handlePayosWebhook = async (c: any) => {
+  let body: Record<string, any> = {};
+  try { body = await c.req.json(); } catch (e) {}
+
+  const orderCode = body.orderCode || body.data?.orderCode || body.data?.order_code;
+  if (orderCode && c.env?.DB) {
+    try {
+      await ensureOrdersTable(c.env.DB);
+      const orderRow: any = await c.env.DB.prepare(
+        "SELECT * FROM orders WHERE order_code = ? OR order_code = ?"
+      ).bind(Number(orderCode) || 0, String(orderCode)).first();
+
+      if (orderRow) {
+        await c.env.DB.prepare(
+          "UPDATE orders SET status = 'PAID' WHERE id = ?"
+        ).bind(orderRow.id).run();
+
+        if (orderRow.user_id) {
+          const expiresAt = String(orderRow.plan_id).includes("premium")
+            ? "2099-12-31 23:59:59"
+            : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().replace("T", " ").slice(0, 19);
+
+          await c.env.DB.prepare(
+            "UPDATE users SET is_vip = 1, vip_expires_at = ? WHERE id = ? OR email = ? OR session_token = ?"
+          ).bind(expiresAt, orderRow.user_id, orderRow.user_id, orderRow.user_id).run();
+        }
+      }
+    } catch (e) {}
+  }
+
+  return c.json({ ok: true, message: "PayOS Webhook processed successfully" });
+};
+
+paymentApp.all("/create_payment.php", handleCreatePayment);
+paymentApp.all("/payment/create_payment.php", handleCreatePayment);
+paymentApp.all("/v1/create_payment.php", handleCreatePayment);
+paymentApp.all("/v1/payment/create_payment.php", handleCreatePayment);
+paymentApp.all("/create_payment", handleCreatePayment);
+
+paymentApp.all("/check_payment_status.php", handleCheckPaymentStatus);
+paymentApp.all("/payment/check_payment_status.php", handleCheckPaymentStatus);
+paymentApp.all("/v1/check_payment_status.php", handleCheckPaymentStatus);
+paymentApp.all("/v1/payment/check_payment_status.php", handleCheckPaymentStatus);
+paymentApp.all("/check_payment_status", handleCheckPaymentStatus);
+
+paymentApp.all("/payos_webhook.php", handlePayosWebhook);
+paymentApp.all("/payment/payos_webhook.php", handlePayosWebhook);
+paymentApp.all("/v1/payos_webhook.php", handlePayosWebhook);
+paymentApp.all("/v1/payment/payos_webhook.php", handlePayosWebhook);
+paymentApp.all("/payos_webhook", handlePayosWebhook);
 
 // GET /v1/payment/user_transactions.php -> User Transaction History
 paymentApp.get("/user_transactions.php", async (c) => {

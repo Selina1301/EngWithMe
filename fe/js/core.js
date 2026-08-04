@@ -3,6 +3,24 @@ function setCurrentYear() {
     element.textContent = new Date().getFullYear();
   });
 }
+
+function formatDateTime(value) {
+  if (!value) return "";
+  let str = String(value).trim();
+  if (str.includes(" ") && !str.includes("T")) str = str.replace(" ", "T") + "Z";
+  else if (!str.endsWith("Z") && !str.includes("+")) str += "Z";
+
+  const date = new Date(str);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleString("vi-VN", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
 function setActiveNav() {
   const currentPage = window.location.pathname.split("/").pop() || "index.html";
   const mainNavItems = [
@@ -789,13 +807,12 @@ function renderAuthenticatedNav(user) {
           <button class="user-menu-trigger" type="button" data-user-menu-toggle aria-haspopup="true" aria-expanded="false" title="${escapeHtml(cleanName)}">
             ${getAvatarMarkup({ ...user, name: cleanName }, "user-avatar")}
           </button>
-          <div class="user-menu-panel" role="menu" style="width: 250px; padding: 12px 8px; background: rgba(13, 17, 23, 0.98); border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 14px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
-            <div style="padding: 6px 12px 10px 12px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 8px;">
-              ${getAvatarMarkup({ ...user, name: cleanName }, "user-avatar")}
+          <div class="user-menu-panel" role="menu" style="width: 240px; padding: 12px 8px; background: rgba(13, 17, 23, 0.98); border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 14px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
+            <div style="padding: 8px 12px 12px 12px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 8px;">
+              ${getAvatarMarkup({ ...user, name: cleanName }, "user-avatar user-avatar-lg")}
               <div style="overflow: hidden;">
-                <div style="font-weight: 800; color: #f8fafc; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(cleanName)}</div>
-                <div style="font-size: 12px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(user.email || "")}</div>
-                <div style="margin-top: 2px;"><span style="${roleBadgeStyle}">${escapeHtml(roleLabel)}</span></div>
+                <div style="font-weight: 800; color: #f8fafc; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3;">${escapeHtml(cleanName)}</div>
+                <div style="margin-top: 4px;"><span style="${roleBadgeStyle}">${escapeHtml(roleLabel)}</span></div>
               </div>
             </div>
 
@@ -859,8 +876,12 @@ async function fetchAndRenderNotifications() {
     if (!data || !data.ok) return;
 
     cachedNotificationData = data;
+    window.cachedNotificationData = data;
     updateNotificationBadge(data.unread_count || 0);
     renderNotificationPanelList(data);
+    if (typeof window.syncProfileNotificationsUI === "function") {
+      window.syncProfileNotificationsUI(data);
+    }
   } catch (err) {
     console.error("Failed to fetch notifications:", err);
   }
@@ -902,6 +923,50 @@ function renderSingleNotificationItemHtml(item) {
   `;
 }
 
+function renderProfileCardNotificationsHtml(items) {
+  if (!items || items.length === 0) {
+    return `
+      <div style="text-align: center; color: #94a3b8; padding: 32px; font-weight: 600; background: rgba(2, 6, 23, 0.4); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+        <div style="font-size: 28px; margin-bottom: 8px;">🔔</div>
+        <p style="margin: 0; color: #e2e8f0;">Lịch sử thông báo trống.</p>
+        <small style="color: #64748b;">Tất cả thông báo cá nhân mới sẽ được hiển thị tại đây.</small>
+      </div>
+    `;
+  }
+
+  return items.map((item) => {
+    const isUnread = Number(item.is_read) === 0;
+    const icon = item.icon || "📢";
+    const statusTag = item.status_tag || "Thông báo";
+
+    let statusBadge = `<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px;">${escapeHtml(statusTag)}</span>`;
+    if (isUnread) {
+      statusBadge += ` <span style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px;">● Mới chưa đọc</span>`;
+    }
+
+    return `
+      <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 12px; padding: 16px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
+            ${icon}
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <strong style="color: #f8fafc; font-size: 15px;">${escapeHtml(item.title)}</strong>
+              ${statusBadge}
+            </div>
+            <p style="color: #cbd5e1; font-size: 13.5px; margin: 2px 0 0 0; line-height: 1.5;">${escapeHtml(item.message)}</p>
+            <small style="color: #64748b; font-size: 11.5px; margin-top: 4px;">${item.created_at ? formatDateTime(item.created_at) : (item.time_ago || "Vừa xong")}</small>
+          </div>
+        </div>
+        <button type="button" class="btn-purge-single-notif" data-notif-id="${item.id}" title="Xóa vĩnh viễn khỏi lịch sử" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; flex-shrink: 0;">
+          ❌ Xóa vĩnh viễn
+        </button>
+      </div>
+    `;
+  }).join("");
+}
+
 function renderNotificationPanelList(data) {
   const lists = document.querySelectorAll("[data-notification-list]");
   if (!lists.length) return;
@@ -909,12 +974,16 @@ function renderNotificationPanelList(data) {
   const items = data.items || [];
   if (!items.length) {
     lists.forEach((el) => {
-      el.innerHTML = `
-        <div class="notification-empty">
-          <div class="empty-icon">🔔</div>
-          <p>Bạn không có thông báo nào!</p>
-        </div>
-      `;
+      if (el.id === "profile-notifications-list") {
+        el.innerHTML = renderProfileCardNotificationsHtml([]);
+      } else {
+        el.innerHTML = `
+          <div class="notification-empty">
+            <div class="empty-icon">🔔</div>
+            <p>Bạn không có thông báo nào!</p>
+          </div>
+        `;
+      }
     });
     return;
   }
@@ -943,7 +1012,11 @@ function renderNotificationPanelList(data) {
   }
 
   lists.forEach((el) => {
-    el.innerHTML = html;
+    if (el.id === "profile-notifications-list") {
+      el.innerHTML = renderProfileCardNotificationsHtml(items);
+    } else {
+      el.innerHTML = html;
+    }
   });
 
   // Attach Hover Pop-up Card Listeners for Full Messages
@@ -1247,29 +1320,16 @@ function persistAuthUser(user) {
 }
 
 function clearAuthUser() {
-  [
-    "engWithMeStudentName",
-    "engWithMeGoal",
-    "engWithMeLevel",
-    "engWithMeUserEmail",
-    "engWithMeUserRole",
-    "engWithMeUserStatus",
-    "engWithMeUserId",
-    "engWithMeUserAvatar",
-    "engWithMeUserIsVip",
-    "engWithMeUserVipExpires",
-    "engWithMeAuthToken",
-    "ewm_token",
-    "ewm_cache_me",
-    "engWithMeUserXP",
-    "engWithMeSavedVocabularyWords",
-    "engWithMeViewedReadingTopics",
-    "engWithMeReadingViewedTopics",
-    "engWithMeReadingProgress",
-    "engWithMeListeningProgress",
-    "engWithMeGrammarPracticeState",
-    "engWithMeGrammarPractice"
-  ].forEach((key) => localStorage.removeItem(key));
+  try {
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && (k.startsWith("engWithMe") || k.startsWith("ewm_") || k.includes("_user_"))) {
+        keysToRemove.push(k);
+      }
+    }
+    keysToRemove.forEach((key) => localStorage.removeItem(key));
+  } catch (e) {}
 
   if (typeof AppCache !== "undefined" && AppCache.clear) {
     AppCache.clear();

@@ -227,6 +227,16 @@ async function submitAuthForm(form, endpoint) {
 
 function saveAuthenticatedUser(user) {
   if (!user) return;
+
+  // Clear stale previous account keys if logging in as a different or newly registered user
+  try {
+    const previousUserId = localStorage.getItem("engWithMeUserId");
+    const currentUserId = String(user.id || "");
+    if (previousUserId && previousUserId !== currentUserId && typeof clearAuthUser === "function") {
+      clearAuthUser();
+    }
+  } catch (e) {}
+
   if (typeof AppCache !== "undefined" && AppCache.clear) {
     AppCache.clear();
   }

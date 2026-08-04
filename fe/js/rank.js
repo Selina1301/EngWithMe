@@ -66,17 +66,28 @@
       syncTag.textContent = "🔄 Đang đồng bộ dữ liệu mới...";
     }
 
+    // Sync local user XP to server if available
     try {
-      const apiBase = getApiBaseUrl();
-      const endpoint = `${apiBase}blog/get_leaderboard.php`;
-      const res = await fetch(endpoint);
+      if (typeof LevelSystem !== "undefined" && typeof LevelSystem.getUserTotalXP === "function") {
+        LevelSystem.getUserTotalXP();
+      }
+    } catch (eXpSync) {}
+
+    try {
+      const relativePath = "blog/get_leaderboard.php";
+      const endpoint = typeof window.resolveApiUrl === "function"
+        ? window.resolveApiUrl(relativePath)
+        : `${getApiBaseUrl()}${relativePath}`;
+
+      const res = await fetch(endpoint, { cache: "no-store" });
+      if (!res.ok) throw new Error(`Leaderboard API returned status ${res.status}`);
       const data = await res.json();
 
       if (data && data.ok) {
         cachedData = data.categories || {
           xp: data.leaderboard || [],
-          bloggers: data.leaderboard || [],
-          toeic: data.leaderboard || []
+          bloggers: data.topBloggers || data.leaderboard || [],
+          toeic: data.topToeic || data.leaderboard || []
         };
 
         renderRankings();
@@ -89,7 +100,7 @@
         return;
       }
     } catch (err) {
-      console.error("Fetch Rank error:", err);
+      console.warn("Fetch Rank error:", err);
     }
 
     // Fallback: Empty array if network fails so no fake data is ever rendered
@@ -109,21 +120,40 @@
     const container = document.getElementById("rank-vertical-list");
     if (!container) return;
 
-    if (!list || list.length === 0) {
-      container.innerHTML = `<div style="text-align:center;color:#94a3b8;padding:40px;">Chưa có dữ liệu xếp hạng Top 10.</div>`;
+    if (list.length === 0) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 50px 20px; color: #94a3b8;">
+          <p style="font-size: 1rem; color: #cbd5e1;">Chưa có dữ liệu xếp hạng Top 10.</p>
+        </div>
+      `;
+      updateUserPositionInList([]);
       return;
     }
 
+    const myId = String(localStorage.getItem("engWithMeUserId") || "");
+    const myEmail = String(localStorage.getItem("engWithMeUserEmail") || "").toLowerCase();
+    const myXp = typeof LevelSystem !== "undefined" && typeof LevelSystem.getUserTotalXP === "function" ? LevelSystem.getUserTotalXP() : 0;
+    const myLevelInfo = typeof LevelSystem !== "undefined" && typeof LevelSystem.getUserLevelInfo === "function" ? LevelSystem.getUserLevelInfo() : null;
+
+    list.forEach(item => {
+      const itemId = String(item.id || "");
+      const itemEmail = String(item.email || "").toLowerCase();
+      const isMe = (myId && itemId === myId) || (myEmail && itemEmail === myEmail);
+      if (isMe) {
+        if (myXp > 0) item.xp = Math.max(Number(item.xp || 0), myXp);
+        if (myLevelInfo && myLevelInfo.level) item.level = myLevelInfo.level;
+      }
+    });
+
     container.innerHTML = list.map((item, index) => {
       const rank = index + 1;
+      const name = escapeHtml(item.name || item.full_name || "Học viên");
       const avatar = item.avatar || "assets/icons/theme/logoEW.png";
-      const name = escapeHtml(item.name || "Học viên");
-      const badge = escapeHtml(item.badge || "Tập Sự");
+      const badge = escapeHtml(item.badge || "🥉 Học Viên Tập Sự");
       const statText = getFormattedStat(item);
 
-      const planId = String(item.plan_id || "").toLowerCase();
-      const isVip = Number(item.is_vip || 0) === 1;
-
+      const isVip = Number(item.is_vip) === 1;
+      const planId = String(item.plan || item.plan_id || "").toLowerCase();
       let planTagHtml = "";
       if (planId.includes("pro")) {
         planTagHtml = `<span class="plan-tag tag-pro" title="Gói Pro (30 Ngày)">⚡ Pro</span>`;
@@ -175,7 +205,9 @@
 
   function getFormattedStat(item) {
     if (currentCategory === "xp") {
-      return item.xp_formatted || `${(item.xp || 0).toLocaleString()} XP`;
+      const rawXp = Number(item.xp);
+      const safeXp = isNaN(rawXp) ? 0 : rawXp;
+      return `${safeXp.toLocaleString()} XP`;
     } else if (currentCategory === "bloggers") {
       return `❤️ ${item.total_likes || 0} tym (${item.blog_count || 0} bài)`;
     } else if (currentCategory === "toeic") {

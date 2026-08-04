@@ -235,13 +235,18 @@
 
   function syncXpToServer(totalXp) {
     const userId = localStorage.getItem("engWithMeUserId") || localStorage.getItem("user_id");
-    if (!userId) return;
+    const storedToken = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token") || localStorage.getItem("auth_token") || localStorage.getItem("session_token") || "";
+    if (!userId && !storedToken) return;
 
     try {
+      const url = typeof window.resolveApiUrl === "function" ? window.resolveApiUrl("learning/user_level.php") : "api/user_level.php";
+      const headers = storedToken ? { "Authorization": `Bearer ${storedToken}` } : {};
       const body = new FormData();
       body.append("total_xp", String(totalXp));
-      fetch("api/user_level.php", {
+      if (storedToken) body.append("auth_token", storedToken);
+      fetch(url, {
         method: "POST",
+        headers,
         body,
         credentials: "same-origin"
       }).catch(e => console.error("Failed to sync XP to server:", e));

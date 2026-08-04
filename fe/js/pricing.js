@@ -408,9 +408,9 @@ async function verifyPaymentAndUpgrade(orderCode, data, planType) {
   }
 
   try {
-    const storedToken = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token") || "";
+    const storedToken = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token") || localStorage.getItem("auth_token") || localStorage.getItem("session_token") || localStorage.getItem("engWithMeUserId") || "";
     const headers = storedToken ? { "Authorization": `Bearer ${storedToken}` } : {};
-    const relativePath = `check_payment_status.php?orderCode=${orderCode}&plan=${planType}`;
+    const relativePath = `payment/check_payment_status.php?orderCode=${orderCode}&plan=${planType}&auth_token=${encodeURIComponent(storedToken)}`;
     const url = typeof window.resolveApiUrl === "function" ? window.resolveApiUrl(relativePath) : `api/${relativePath}`;
 
     const res = await fetch(url, { headers, credentials: "same-origin", cache: "no-store" });
@@ -424,6 +424,9 @@ async function verifyPaymentAndUpgrade(orderCode, data, planType) {
     const result = await res.json();
 
     if (result.ok && (result.is_paid || result.status === "PAID")) {
+      if (result.user && typeof persistAuthUser === "function") {
+        persistAuthUser(result.user);
+      }
       showPaymentSuccessState(data);
     } else {
       if (confirmBtn) {
@@ -450,9 +453,9 @@ function startPaymentPolling(orderCode, data, planType) {
 
   currentPollingInterval = setInterval(async () => {
     try {
-      const storedToken = localStorage.getItem("engWithMeAuthToken") || "";
+      const storedToken = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token") || localStorage.getItem("auth_token") || localStorage.getItem("session_token") || localStorage.getItem("engWithMeUserId") || "";
       const headers = storedToken ? { "Authorization": `Bearer ${storedToken}` } : {};
-      const relativePath = `check_payment_status.php?orderCode=${orderCode}&plan=${planType}`;
+      const relativePath = `payment/check_payment_status.php?orderCode=${orderCode}&plan=${planType}&auth_token=${encodeURIComponent(storedToken)}`;
       const url = typeof window.resolveApiUrl === "function" ? window.resolveApiUrl(relativePath) : `api/${relativePath}`;
 
       const res = await fetch(url, {
@@ -467,6 +470,10 @@ function startPaymentPolling(orderCode, data, planType) {
       if (result.ok && (result.is_paid || result.status === "PAID")) {
         clearInterval(currentPollingInterval);
         currentPollingInterval = null;
+
+        if (result.user && typeof persistAuthUser === "function") {
+          persistAuthUser(result.user);
+        }
 
         // Sync fresh profile data from server me.php
         try {

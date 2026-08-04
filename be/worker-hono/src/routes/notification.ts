@@ -192,42 +192,36 @@ const handleNotifications = async (c: any) => {
       console.warn("Roadmap suggestion pass:", roadmapErr);
     }
 
+    // Ensure D1 Tables exist safely
+    try {
+      await c.env.DB.prepare(
+        "CREATE TABLE IF NOT EXISTS notifications (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT, title TEXT, message TEXT, status_tag TEXT, is_read INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)"
+      ).run();
+      await c.env.DB.prepare(
+        "CREATE TABLE IF NOT EXISTS notification_reads (user_id TEXT, notification_id INTEGER, is_deleted INTEGER DEFAULT 0, PRIMARY KEY(user_id, notification_id))"
+      ).run();
+    } catch (eTbl) {}
+
     // 2. Query all notifications for user or broadcast ('all') with per-user read/deleted join
     try {
-      const isAdmin = userRole === "admin";
       const limit = mode === "history" ? 100 : 25;
-      let sql = "";
-      let params: any[] = [];
+      const sql = `SELECT n.*, nr.is_deleted, nr.user_id as read_user_id 
+             FROM notifications n 
+             LEFT JOIN notification_reads nr ON n.id = nr.notification_id AND (nr.user_id = ? OR nr.user_id = ?) 
+             WHERE (n.user_id = ? OR n.user_id = ? OR n.user_id = ? OR n.user_id = 'all' OR n.user_id IS NULL OR n.user_id = '') 
+               AND (n.status_tag IS NULL OR n.status_tag NOT IN ('Góp ý học viên', 'Báo cáo vi phạm', 'Hệ thống Admin')) 
+             ORDER BY n.id DESC LIMIT ${limit}`;
+      const params = [userId, userEmail || userId, userId, userEmail || userId, token];
 
-      if (isAdmin) {
-        sql = `SELECT n.*, nr.is_deleted, nr.user_id as read_user_id 
-               FROM notifications n 
-               LEFT JOIN notification_reads nr ON n.id = nr.notification_id AND nr.user_id = ? 
-               WHERE (n.user_id = ? OR n.user_id = ? OR n.user_id = ? OR n.user_id = 'all')
-                 AND n.status_tag NOT IN ('Góp ý học viên', 'Báo cáo vi phạm', 'Hệ thống Admin') 
-               ORDER BY n.id DESC LIMIT ${limit}`;
-        params = [userId, userId, userEmail || userId, token];
-      } else {
-        if (userCreatedAt) {
-          sql = `SELECT n.*, nr.is_deleted, nr.user_id as read_user_id 
-                 FROM notifications n 
-                 LEFT JOIN notification_reads nr ON n.id = nr.notification_id AND nr.user_id = ? 
-                 WHERE (n.user_id = ? OR n.user_id = ? OR n.user_id = ? OR (n.user_id = 'all' AND (n.created_at >= ? OR n.created_at IS NULL))) 
-                   AND n.status_tag NOT IN ('Góp ý học viên', 'Báo cáo vi phạm', 'Hệ thống Admin') 
-                 ORDER BY n.id DESC LIMIT ${limit}`;
-          params = [userId, userId, userEmail || userId, token, userCreatedAt];
-        } else {
-          sql = `SELECT n.*, nr.is_deleted, nr.user_id as read_user_id 
-                 FROM notifications n 
-                 LEFT JOIN notification_reads nr ON n.id = nr.notification_id AND nr.user_id = ? 
-                 WHERE (n.user_id = ? OR n.user_id = ? OR n.user_id = ? OR n.user_id = 'all') 
-                   AND n.status_tag NOT IN ('Góp ý học viên', 'Báo cáo vi phạm', 'Hệ thống Admin') 
-                 ORDER BY n.id DESC LIMIT ${limit}`;
-          params = [userId, userId, userEmail || userId, token];
-        }
+      let res: any = null;
+      try {
+        res = await c.env.DB.prepare(sql).bind(...params).all();
+      } catch (eJoin) {
+        console.error("D1 Notification Join Error, trying fallback:", eJoin);
+        res = await c.env.DB.prepare(
+          `SELECT * FROM notifications WHERE (user_id = ? OR user_id = ? OR user_id = 'all') ORDER BY id DESC LIMIT ${limit}`
+        ).bind(userId, userEmail || userId).all();
       }
-
-      const res = await c.env.DB.prepare(sql).bind(...params).all();
 
       if (res && res.results) {
         const seenIds = new Set<number>();

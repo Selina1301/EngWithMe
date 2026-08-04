@@ -178,19 +178,29 @@ async function initAdminDashboard() {
   });
 
   try {
+    const cachedUser = typeof getCachedAuthUser === "function" ? getCachedAuthUser() : null;
+    const userRole = String(cachedUser?.role || "").toLowerCase();
+    const userEmail = String(cachedUser?.email || "").toLowerCase();
+    const isAllowedAdmin = userRole === "admin" || userRole === "manager" || userEmail === "admin1301@gmail.com";
+
+    if (!cachedUser || !isAllowedAdmin) {
+      alert("⚠️ Rất tiếc, tài khoản của bạn không có quyền truy cập Trang Quản Trị (Admin). Hệ thống sẽ chuyển hướng về Trang Chủ!");
+      window.location.href = "index.html";
+      return;
+    }
+
     const fetcher = typeof fetchAuth === "function" ? fetchAuth : fetch;
     const response = await fetcher("api/admin_users.php");
-    if (response.status === 401) {
-      const cachedUser = typeof getCachedAuthUser === "function" ? getCachedAuthUser() : null;
-      if (!cachedUser || (cachedUser.role !== "admin" && cachedUser.role !== "manager")) {
-        window.location.href = "login.html";
-        return;
-      }
+    if (!response.ok || response.status === 401) {
+      alert("⚠️ Rất tiếc, tài khoản của bạn không có quyền truy cập Trang Quản Trị (Admin).");
+      window.location.href = "index.html";
+      return;
     }
 
     const result = await response.json();
-    if (!response.ok || !result.ok) {
-      showAdminFeedback(root, result.message || "Không có quyền truy cập trang quản trị.", false);
+    if (!result || !result.ok) {
+      alert("⚠️ " + ((result && result.message) ? result.message : "Không thể tải dữ liệu quản trị."));
+      window.location.href = "index.html";
       return;
     }
 

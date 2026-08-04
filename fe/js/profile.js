@@ -361,6 +361,7 @@ function initProfileTabs() {
   }
 
   window.addEventListener("hashchange", applyHashTab);
+  applyHashTab();
 
   // Delegate click sự kiện cho tất cả các link chứa hash (ví dụ menu Header click Dashboard -> #dashboard)
   document.addEventListener("click", (e) => {
@@ -751,84 +752,88 @@ function renderExamHistoryUI() {
   `;
 }
 
+function renderProfileNotificationListHtml(container, items) {
+  if (!items || items.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; color: #94a3b8; padding: 32px; font-weight: 600; background: rgba(2, 6, 23, 0.4); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+        <div style="font-size: 28px; margin-bottom: 8px;">🔔</div>
+        <p style="margin: 0; color: #e2e8f0;">Lịch sử thông báo trống.</p>
+        <small style="color: #64748b;">Tất cả thông báo cá nhân mới sẽ được hiển thị tại đây.</small>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = items.map((item) => {
+    const isUnread = Number(item.is_read) === 0;
+    const isHiddenFromBell = Boolean(item.is_dismissed_from_bell);
+    const icon = item.icon || "📢";
+
+    let statusBadge = `<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px;">Lịch sử</span>`;
+    if (isUnread) {
+      statusBadge += ` <span style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px;">● Mới chưa đọc</span>`;
+    }
+    if (isHiddenFromBell) {
+      statusBadge += ` <span style="background: rgba(148, 163, 184, 0.15); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.3); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px;">Đã ẩn khỏi chuông</span>`;
+    }
+
+    return `
+      <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 12px; padding: 16px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
+            ${icon}
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <strong style="color: #f8fafc; font-size: 15px;">${escapeHtml(item.title)}</strong>
+              ${statusBadge}
+            </div>
+            <p style="color: #cbd5e1; font-size: 13.5px; margin: 2px 0 0 0; line-height: 1.5;">${escapeHtml(item.message)}</p>
+            <small style="color: #64748b; font-size: 11.5px; margin-top: 4px;">${item.created_at ? formatDateTime(item.created_at) : (item.time_ago || "Vừa xong")}</small>
+          </div>
+        </div>
+        <button type="button" class="btn-purge-single-notif" data-notif-id="${item.id}" title="Xóa vĩnh viễn khỏi lịch sử" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; flex-shrink: 0;">
+          ❌ Xóa vĩnh viễn
+        </button>
+      </div>
+    `;
+  }).join("");
+
+  container.querySelectorAll(".btn-purge-single-notif").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const notifId = btn.dataset.notifId;
+      if (!notifId) return;
+      if (!confirm("Bạn có chắc chắn muốn xóa vĩnh viễn thông báo này khỏi lịch sử không?")) return;
+
+      try {
+        btn.disabled = true;
+        const fetcher = typeof fetchAuth === "function" ? fetchAuth : fetch;
+        await fetcher("api/notifications.php?action=purge", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: parseInt(notifId, 10) })
+        });
+        fetchAndRenderProfileNotificationHistory();
+      } catch (e) {
+        console.error("Purge error:", e);
+      }
+    });
+  });
+}
+
+window.syncProfileNotificationsUI = function(data) {
+  const container = document.getElementById("profile-notifications-list");
+  if (!container) return;
+  const items = (data && Array.isArray(data.items)) ? data.items : [];
+  renderProfileNotificationListHtml(container, items);
+};
+
 async function fetchAndRenderProfileNotificationHistory() {
   const container = document.getElementById("profile-notifications-list");
   if (!container) return;
 
-  try {
-    const fetcher = typeof fetchAuth === "function" ? fetchAuth : fetch;
-    const res = await fetcher("api/notifications.php?mode=history");
-    if (!res.ok) return;
-    const data = await res.json();
-    const items = data.items || [];
-
-    if (items.length === 0) {
-      container.innerHTML = `
-        <div style="text-align: center; color: #94a3b8; padding: 32px; font-weight: 600; background: rgba(2, 6, 23, 0.4); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
-          <div style="font-size: 28px; margin-bottom: 8px;">🔔</div>
-          <p style="margin: 0; color: #e2e8f0;">Lịch sử thông báo trống.</p>
-          <small style="color: #64748b;">Tất cả thông báo cá nhân sẽ được lưu trữ an toàn tại đây.</small>
-        </div>
-      `;
-      return;
-    }
-
-    container.innerHTML = items.map((item) => {
-      const isUnread = Number(item.is_read) === 0;
-      const isHiddenFromBell = Boolean(item.is_dismissed_from_bell);
-      const icon = item.icon || "📢";
-
-      let statusBadge = `<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px;">Lịch sử</span>`;
-      if (isUnread) {
-        statusBadge += ` <span style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px;">● Mới chưa đọc</span>`;
-      }
-      if (isHiddenFromBell) {
-        statusBadge += ` <span style="background: rgba(148, 163, 184, 0.15); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.3); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px;">Đã ẩn khỏi chuông</span>`;
-      }
-
-      return `
-        <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 12px; padding: 16px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
-          <div style="display: flex; gap: 14px; align-items: flex-start;">
-            <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
-              ${icon}
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                <strong style="color: #f8fafc; font-size: 15px;">${escapeHtml(item.title)}</strong>
-                ${statusBadge}
-              </div>
-              <p style="color: #cbd5e1; font-size: 13.5px; margin: 2px 0 0 0; line-height: 1.5;">${escapeHtml(item.message)}</p>
-              <small style="color: #64748b; font-size: 11.5px; margin-top: 4px;">${item.created_at ? formatDateTime(item.created_at) : "Vừa xong"}</small>
-            </div>
-          </div>
-          <button type="button" class="btn-purge-single-notif" data-notif-id="${item.id}" title="Xóa vĩnh viễn khỏi lịch sử" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; flex-shrink: 0;">
-            ❌ Xóa vĩnh viễn
-          </button>
-        </div>
-      `;
-    }).join("");
-
-    container.querySelectorAll(".btn-purge-single-notif").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const notifId = btn.dataset.notifId;
-        if (!notifId) return;
-        if (!confirm("Bạn có chắc chắn muốn xóa vĩnh viễn thông báo này khỏi lịch sử không?")) return;
-
-        try {
-          btn.disabled = true;
-          await fetcher("api/notifications.php?action=purge", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: parseInt(notifId, 10) })
-          });
-          fetchAndRenderProfileNotificationHistory();
-        } catch (e) {
-          console.error("Purge error:", e);
-        }
-      });
-    });
-  } catch (err) {
-    container.innerHTML = `<div style="text-align: center; color: var(--danger); padding: 16px;">Lỗi tải lịch sử thông báo.</div>`;
+  if (typeof fetchNotifications === "function") {
+    await fetchNotifications();
   }
 }
 

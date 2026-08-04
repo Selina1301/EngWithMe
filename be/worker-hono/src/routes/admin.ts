@@ -6,8 +6,39 @@ type Bindings = {
 
 const adminApp = new Hono<{ Bindings: Bindings }>();
 
+async function verifyAdminPermission(c: any): Promise<{ isAdmin: boolean; dbUser: any }> {
+  const authHeader = c.req.header("Authorization") || "";
+  const token = authHeader.replace(/^Bearer\s+/i, "").trim() || c.req.query("auth_token") || c.req.query("session_token") || c.req.query("token") || c.req.query("user_id") || "";
+
+  if (!c.env?.DB || !token) {
+    return { isAdmin: false, dbUser: null };
+  }
+
+  try {
+    const dbUser: any = await c.env.DB.prepare(
+      "SELECT id, email, role FROM users WHERE session_token = ? OR remember_token = ? OR id = ? OR email = ?"
+    ).bind(token, token, token, token).first();
+
+    if (dbUser) {
+      const role = String(dbUser.role || "user").toLowerCase();
+      const email = String(dbUser.email || "").toLowerCase();
+      const isAdmin = role === "admin" || role === "manager" || email === "admin1301@gmail.com";
+      return { isAdmin, dbUser };
+    }
+  } catch (e) {
+    console.error("Admin Permission Check Error:", e);
+  }
+
+  return { isAdmin: false, dbUser: null };
+}
+
 // GET /v1/admin/admin_users.php -> D1 SQL Admin Users List
 adminApp.get("/admin_users.php", async (c) => {
+  const { isAdmin } = await verifyAdminPermission(c);
+  if (!isAdmin) {
+    return c.json({ ok: false, message: "⚠️ Rất tiếc, bạn không có quyền truy cập trang quản trị Admin." }, 401);
+  }
+
   let rawUsers: any[] = [];
   if (c.env?.DB) {
     try {
@@ -74,6 +105,11 @@ adminApp.get("/admin_users.php", async (c) => {
 
 // POST /v1/admin/admin_users.php -> D1 SQL Update User Status/Role/Deletion
 adminApp.post("/admin_users.php", async (c) => {
+  const { isAdmin } = await verifyAdminPermission(c);
+  if (!isAdmin) {
+    return c.json({ ok: false, message: "⚠️ Rất tiếc, bạn không có quyền thực hiện thao tác quản trị Admin." }, 401);
+  }
+
   let body: Record<string, any> = {};
   try {
     body = await c.req.parseBody();
