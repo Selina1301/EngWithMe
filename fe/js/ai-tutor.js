@@ -132,8 +132,9 @@
       showTypingIndicator();
 
       try {
-        const baseUrl = window.ENGWITHME_CONFIG?.API_BASE_URL || window.API_BASE_URL || '';
-        const endpoint = `${baseUrl}/v1/ai/chat`.replace(/([^:]\/)\/+/g, "$1");
+        const endpoint = typeof window.resolveApiUrl === 'function'
+          ? window.resolveApiUrl('ai/chat')
+          : 'https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/ai/chat';
 
         const res = await fetch(endpoint, {
           method: 'POST',
