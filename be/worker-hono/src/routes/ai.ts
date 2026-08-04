@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 
 type Bindings = {
+  GROQ_API_KEY?: string;
   AI?: any;
   OLLAMA_URL?: string;
 };
@@ -13,7 +14,7 @@ YOUR ONLY GOAL is to help users learn English, practice TOEIC, correct grammar m
 
 STRICT INSTRUCTIONS:
 1. Explain grammar and vocabulary concepts clearly in Vietnamese, while providing natural English example sentences.
-2. If the user asks a question UNRELATED to learning English (e.g. non-English topics, programming exploits, explicit content), respond politely in Vietnamese: "Tôi là Trợ lý AI Tiếng Anh của EngWithMe. Tôi chỉ có thể hỗ trợ bạn giải đáp thắc mắc về học tiếng Anh, từ vựng, ngữ pháp và luyện thi TOEIC nhé!"
+2. If the user asks a question UNRELATED to learning English, respond politely in Vietnamese: "Tôi là Trợ lý AI Tiếng Anh của EngWithMe. Tôi chỉ có thể hỗ trợ bạn giải đáp thắc mắc về học tiếng Anh, từ vựng, ngữ pháp và luyện thi TOEIC nhé!"
 3. Keep responses concise, well-structured, and easy to read.`;
 
 aiApp.post("/chat", async (c) => {
@@ -34,46 +35,98 @@ aiApp.post("/chat", async (c) => {
       ...userMessages.slice(-10) // Tối đa 10 câu thoại gần nhất
     ];
 
-    // ƯU TIÊN 1: Chạy trực tiếp trên Cloudflare Workers AI Edge Network
-    if (c.env?.AI) {
+    const groqKey = c.env?.GROQ_API_KEY || "";
+
+    // ƯU TIÊN 1: Gọi sang Groq Cloud AI API (Siêu tốc 0.3s, Siêu thông minh 100% Free Quota)
+    if (groqKey) {
       try {
-        const aiResponse = await c.env.AI.run("@cf/qwen/qwen1.5-7b-chat", {
-          messages: formattedMessages
+        const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${groqKey}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: "llama-3.1-8b-instant",
+            messages: formattedMessages,
+            temperature: 0.6,
+            max_tokens: 1024
+          })
         });
 
-        const reply = aiResponse?.response || aiResponse?.description || "Xin lỗi, tôi chưa hiểu rõ câu hỏi. Bạn có thể diễn đạt lại được không?";
-        return c.json({
-          ok: true,
-          reply: reply,
-          provider: "Cloudflare Workers AI",
-          model: "@cf/qwen/qwen1.5-7b-chat"
-        }, 200);
-      } catch (cfAiError: any) {
-        console.warn("Cloudflare Workers AI fallback to Ollama:", cfAiError?.message);
+        if (groqRes.ok) {
+          const groqData: any = await groqRes.json();
+          const reply = groqData?.choices?.[0]?.message?.content;
+          if (reply) {
+            return c.json({
+              ok: true,
+              reply: reply,
+              provider: "Groq Cloud LPU AI",
+              model: "llama-3.1-8b-instant"
+            }, 200);
+          }
+        }
+      } catch (groqErr: any) {
+        console.warn("Groq API error fallback:", groqErr?.message);
       }
     }
 
-    // ƯU TIÊN 2: Fallback sang Ollama Local instance (dành cho thử nghiệm local dev)
-    const targetOllamaUrl = c.env?.OLLAMA_URL || "http://127.0.0.1:11434/api/chat";
-    const ollamaRes = await fetch(targetOllamaUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "huihui_ai/qwen2.5-abliterate:3b",
-        messages: formattedMessages,
-        stream: false
-      })
-    });
+    // ƯU TIÊN 2: Chạy trực tiếp trên Cloudflare Workers AI Edge Network
+    if (c.env?.AI) {
+      const models = [
+        "@cf/qwen/qwen1.5-7b-chat",
+        "@cf/meta/llama-3-8b-instruct",
+        "@cf/qwen/qwen1.5-0.5b-chat"
+      ];
 
-    if (ollamaRes.ok) {
-      const data: any = await ollamaRes.json();
-      const assistantReply = data?.message?.content || "Xin lỗi, tôi chưa hiểu rõ câu hỏi. Bạn có thể diễn đạt lại được không?";
-      return c.json({
-        ok: true,
-        reply: assistantReply,
-        provider: "Ollama Local Server",
-        model: "huihui_ai/qwen2.5-abliterate:3b"
-      }, 200);
+      for (const modelName of models) {
+        try {
+          const aiResponse = await c.env.AI.run(modelName, {
+            messages: formattedMessages
+          });
+
+          const reply = aiResponse?.response || aiResponse?.description || (typeof aiResponse === "string" ? aiResponse : null);
+          if (reply) {
+            return c.json({
+              ok: true,
+              reply: reply,
+              provider: "Cloudflare Workers AI Cloud",
+              model: modelName
+            }, 200);
+          }
+        } catch (modelErr: any) {
+          console.warn(`Cloudflare Workers AI model ${modelName} failed:`, modelErr?.message || modelErr);
+        }
+      }
+    }
+
+    // ƯU TIÊN 3: Fallback sang Ollama Local
+    const targetTunnelUrl = c.env?.OLLAMA_URL || "http://127.0.0.1:11434/api/chat";
+    try {
+      const ollamaRes = await fetch(targetTunnelUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "huihui_ai/qwen2.5-abliterate:3b",
+          messages: formattedMessages,
+          stream: false
+        })
+      });
+
+      if (ollamaRes.ok) {
+        const data: any = await ollamaRes.json();
+        const reply = data?.message?.content || data?.reply;
+        if (reply) {
+          return c.json({
+            ok: true,
+            reply: reply,
+            provider: "GPU Local via Ollama",
+            model: "huihui_ai/qwen2.5-abliterate:3b"
+          }, 200);
+        }
+      }
+    } catch (tunnelErr) {
+      // Tunnel offline
     }
 
     return c.json({

@@ -4,7 +4,7 @@ compatibility_date = "2026-01-01"
 
 [vars]
 ENVIRONMENT = "production"
-PHP_FALLBACK_URL = "https://api.engwithme.com/v1"
+PHP_FALLBACK_URL = "https://engwithme-dev.tungf.io.vn/projects/EngWithMe/be/api/v1"
 
 [[d1_databases]]
 binding = "DB"
