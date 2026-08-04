@@ -338,8 +338,12 @@
   document.addEventListener("DOMContentLoaded", () => {
     updateLevelUI();
     const userId = localStorage.getItem("engWithMeUserId") || localStorage.getItem("user_id");
+    const storedToken = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token") || localStorage.getItem("auth_token") || localStorage.getItem("session_token") || "";
     if (userId) {
-      fetch(`api/user_level.php`, { credentials: "same-origin" })
+      const url = typeof window.resolveApiUrl === "function" ? window.resolveApiUrl("learning/user_level.php") : "api/user_level.php";
+      const headers = storedToken ? { "Authorization": `Bearer ${storedToken}` } : {};
+      
+      fetch(url, { headers, credentials: "same-origin" })
         .then(r => r.ok ? r.json() : null)
         .then(data => {
           if (data && data.ok && typeof data.total_xp === "number") {

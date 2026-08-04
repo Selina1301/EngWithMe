@@ -150,16 +150,45 @@ blogApp.get("/get_leaderboard.php", async (c) => {
 
   if (c.env?.DB) {
     try {
-      // Query REAL active users safely using SELECT * FROM users
       let results: any[] = [];
+      let progressMap = new Map();
+      let blogsMap = new Map();
+      let examsMap = new Map();
+      let levelsMap = new Map();
+
       try {
-        const res = await c.env.DB.prepare(
-          "SELECT * FROM users WHERE status != 'locked' LIMIT 50"
-        ).all();
-        results = res?.results || [];
+        // 1. Get ALL valid users
+        const usersRes = await c.env.DB.prepare("SELECT * FROM users WHERE status != 'locked'").all();
+        results = usersRes?.results || [];
+
+        // 2. Aggregate user_progress
+        const progRes = await c.env.DB.prepare("SELECT user_id, SUM(COALESCE(score, 0)) as total_score, SUM(COALESCE(progress_percent, 0)) as total_percent FROM user_progress GROUP BY user_id").all();
+        (progRes?.results || []).forEach((row: any) => {
+          if (row.user_id) progressMap.set(String(row.user_id), row);
+        });
+
+        // 3. Aggregate blogs
+        const blogsRes = await c.env.DB.prepare("SELECT user_id, COUNT(*) as cnt, SUM(COALESCE(likes_count, 0)) as likes, SUM(COALESCE(views_count, 0)) as views FROM blogs WHERE status = 'approved' GROUP BY user_id").all();
+        (blogsRes?.results || []).forEach((row: any) => {
+          if (row.user_id) blogsMap.set(String(row.user_id), row);
+        });
+
+        // 4. Aggregate exam_results
+        const examsRes = await c.env.DB.prepare("SELECT user_id, test_name, MAX(score) as max_score, MAX(correct_count) as max_correct, MAX(total_questions) as max_total FROM exam_results GROUP BY user_id, test_name").all();
+        (examsRes?.results || []).forEach((row: any) => {
+          if (!row.user_id) return;
+          const uid = String(row.user_id);
+          if (!examsMap.has(uid)) examsMap.set(uid, []);
+          examsMap.get(uid).push(row);
+        });
+
+        // 5. Get user_levels
+        const levelsRes = await c.env.DB.prepare("SELECT user_id, total_xp FROM user_levels").all();
+        (levelsRes?.results || []).forEach((row: any) => {
+          if (row.user_id) levelsMap.set(String(row.user_id), row);
+        });
       } catch (eSql) {
-        const res = await c.env.DB.prepare("SELECT * FROM users LIMIT 50").all();
-        results = res?.results || [];
+        console.error("Leaderboard DB Aggregation Error:", eSql);
       }
 
       if (results && results.length > 0) {
@@ -169,56 +198,62 @@ blogApp.get("/get_leaderboard.php", async (c) => {
           const minLevelXp = getMinimumXpForLevel(lvl);
           const nameStr = u.full_name || u.name || (u.email ? u.email.split("@")[0] : `Học viên #${u.id}`);
           
-          let blogCount = 0;
-          let totalLikes = 0;
-          let totalViews = 0;
-          try {
-            const blogStats = await c.env.DB.prepare(
-              "SELECT COUNT(*) as cnt, SUM(COALESCE(likes_count, 0)) as likes, SUM(COALESCE(views_count, 0)) as views FROM blogs WHERE user_id = ? AND status = 'approved'"
-            ).bind(String(u.id)).first();
-            if (blogStats) {
-              blogCount = Number(blogStats.cnt || 0);
-              totalLikes = Number(blogStats.likes || 0);
-              totalViews = Number(blogStats.views || 0);
-            }
-          } catch (e2) {}
+          const uid = String(u.id);
+          const uemail = String(u.email || "");
+          const usession = String(u.session_token || "");
 
+          const getFromMap = (map: Map<string, any>, key1: string, key2: string, key3: string) => {
+            return map.get(key1) || map.get(key2) || map.get(key3) || null;
+          };
+
+          // Blog Stats
+          const blogStats = getFromMap(blogsMap, uid, uemail, usession) || {};
+          const blogCount = Number(blogStats.cnt || 0);
+          const totalLikes = Number(blogStats.likes || 0);
+          const totalViews = Number(blogStats.views || 0);
+
+          // Exam Stats
+          let examsCompleted = 0;
           let accumulativeToeicPts = 0;
           let totalCorrectSum = 0;
           let totalQuestionsSum = 0;
-          let examsCompleted = 0;
+          
+          const userExams = [
+            ...(examsMap.get(uid) || []),
+            ...(examsMap.get(uemail) || []),
+            ...(examsMap.get(usession) || [])
+          ];
 
-          try {
-            const { results: examSets } = await c.env.DB.prepare(
-              "SELECT test_name, MAX(score) as max_score, MAX(correct_count) as max_correct, MAX(total_questions) as max_total FROM exam_results WHERE user_id = ? OR user_id = ? OR user_id = ? GROUP BY test_name"
-            ).bind(String(u.id), String(u.email || ""), String(u.session_token || "")).all();
+          // Deduplicate tests in case they match multiple keys
+          const uniqueTests = new Map();
+          for (const ex of userExams) {
+            uniqueTests.set(ex.test_name, ex);
+          }
 
-            if (examSets && examSets.length > 0) {
-              examsCompleted = examSets.length;
-              for (const row of examSets as any[]) {
-                accumulativeToeicPts += Number(row.max_score || 0);
-                totalCorrectSum += Number(row.max_correct || 0);
-                totalQuestionsSum += Number(row.max_total || 0);
-              }
+          if (uniqueTests.size > 0) {
+            examsCompleted = uniqueTests.size;
+            for (const row of uniqueTests.values()) {
+              accumulativeToeicPts += Number(row.max_score || 0);
+              totalCorrectSum += Number(row.max_correct || 0);
+              totalQuestionsSum += Number(row.max_total || 0);
             }
-          } catch (e3) {}
+          }
 
-          let userProgressXp = 0;
-          try {
-            const xpRow = await c.env.DB.prepare(
-              "SELECT SUM(COALESCE(score, 0)) as total_score, SUM(COALESCE(progress_percent, 0)) as total_percent FROM user_progress WHERE user_id = ? OR user_id = ? OR user_id = ?"
-            ).bind(String(u.id), String(u.email || ""), String(u.session_token || "")).first();
-            if (xpRow) {
-              const scoreSum = Number(xpRow.total_score || 0);
-              const percentSum = Number(xpRow.total_percent || 0);
-              userProgressXp = Math.max(scoreSum, Math.round(percentSum * 1.5));
-            }
-          } catch (eXp) {}
+          // Progress XP
+          const xpRow = getFromMap(progressMap, uid, uemail, usession) || {};
+          const scoreSum = Number(xpRow.total_score || 0);
+          const percentSum = Number(xpRow.total_percent || 0);
+          const userProgressXp = Math.max(scoreSum, Math.round(percentSum * 1.5));
+
+          // Level XP
+          const lvlRow = getFromMap(levelsMap, uid, uemail, usession) || {};
+          const userLevelXp = Number(lvlRow.total_xp || 0);
 
           const dbUserXp = Number(u.total_xp || u.xp || 0);
           const validDbXp = isNaN(dbUserXp) ? 0 : dbUserXp;
           const validProgXp = isNaN(userProgressXp) ? 0 : userProgressXp;
-          const userXp = Math.max(minLevelXp, validDbXp, validProgXp);
+          const validLevelXp = isNaN(userLevelXp) ? 0 : userLevelXp;
+          const userXp = Math.max(minLevelXp, validDbXp, validProgXp, validLevelXp);
 
           const toeicAccuracy = totalQuestionsSum > 0 
             ? Math.min(100, Math.round((totalCorrectSum / totalQuestionsSum) * 100)) 
@@ -227,7 +262,7 @@ blogApp.get("/get_leaderboard.php", async (c) => {
                 : 0);
 
           leaderboard.push({
-            id: String(u.id),
+            id: uid,
             name: nameStr,
             level: lvl,
             badge: getBadgeByLevel(lvl),
