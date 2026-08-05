@@ -1,3 +1,8 @@
+# EngWithMe
+
+EngWithMe là nền tảng học tiếng Anh toàn diện với giao diện hiện đại (Glassmorphic) và tốc độ cao. Dưới đây là cấu trúc thư mục của dự án:
+
+```text
 EngWithMe/
 |
 ├── fe/                                    # KIẾN TRÚC FRONTEND (Giao Diện Glassmorphic Tốc Độ Cao)
@@ -37,7 +42,6 @@ EngWithMe/
 │   │   └── about.html, lessons.html       # Thông Tin Giới Thiệu & Danh Sách Bài Học Tĩnh
 │   └── .vercel/                           # Cấu Hình Triển Khai Hạ Tầng Vercel CDN
 |
-|
 ├── be/                                    # HỆ THỐNG BACKEND (Serverless Edge & Dịch Vụ Phụ Trợ)
 │   ├── worker-hono/                       # Động Cơ API Edge Cốt Lõi (Cloudflare Workers + Hono.js)
 │   │   ├── src/
@@ -59,7 +63,8 @@ EngWithMe/
 │   │   └── generate_toeic_2017_audio.js   # Pipeline Chuyển Văn Bản Thành Giọng Nói Edge-TTS Luyện Nghe TOEIC
 │   ├── database/                          # File Migration SQL Cũ & Bản Sao Lưu CSDL
 │   ├── uploads/                           # Thư Mục Tải Lên Tệp Tĩnh & Avatar Nổi
-│   └── package.json                       # Thư Viện Backend & Lệnh Chạy Scripts│
+│   └── package.json                       # Thư Viện Backend & Lệnh Chạy Scripts
+│
 ├── docs/                                  # TÀI LIỆU KỸ THUẬT & THIẾT KẾ HỆ THỐNG
 │   ├── system-architecture.md             # Bản Thiết Kế Kiến Trúc & Thông Số Kỹ Thuật Edge
 │   ├── database-design.md                 # Sơ Đồ CSDL D1 SQLite & Thông Số Bảng Dữ Liệu
@@ -70,3 +75,4 @@ EngWithMe/
 ├── start_tunnel.bat                       # File Lệnh Batch Chạy Tunnel Tự Động Hóa Môi Trường Dev
 ├── README.md                              # Báo Cáo Tổng Quan Dự Án & Hướng Dẫn Cài Đặt
 └── .gitignore                             # Quy Tắc Loại Trừ File Không Đưa Lên Git
+```
