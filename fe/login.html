@@ -7,6 +7,7 @@
   <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
   <link rel="stylesheet" href="css/base.css?v=20260803equal90">
   <link rel="stylesheet" href="css/pages/auth.css?v=20260803hdlibrary">
+  <link rel="stylesheet" href="css/pages/auth-utilities.css?v=20260805">
   <link rel="stylesheet" href="css/responsive/desktop.css">
   <link rel="stylesheet" href="css/responsive/tablet.css">
   <link rel="stylesheet" href="css/responsive/phone.css">
@@ -89,7 +90,7 @@
     </form>
   </main>
 
-  <!-- OTP Verification Modal for Login (Glassmorphism design) -->
+  <!-- OTP Verification Modal (Glassmorphism design) -->
   <div class="otp-modal" id="otpModal" style="display: none;">
     <div class="otp-backdrop"></div>
     <div class="otp-container">
@@ -98,25 +99,25 @@
           <span class="ti-email otp-icon"></span>
         </div>
         <h3>Xác thực đăng nhập</h3>
-        <p class="otp-instructions">Vì lý do bảo mật, chúng tôi đã gửi mã xác thực 6 số đến địa chỉ <strong id="otpEmailTarget">your-email@gmail.com</strong>. Vui lòng nhập mã để hoàn tất đăng nhập.</p>
+        <p class="otp-instructions">Chúng tôi đã gửi mã xác thực 6 số đến địa chỉ <strong id="otpEmailTarget">your-email@gmail.com</strong>. Vui lòng nhập mã để hoàn tất đăng nhập.</p>
         
         <form id="otpVerifyForm">
           <input type="hidden" name="email" id="otpFormEmail">
-          <div class="otp-input-group">
-            <input type="text" maxlength="1" class="otp-field" pattern="[0-9]" inputmode="numeric" required>
-            <input type="text" maxlength="1" class="otp-field" pattern="[0-9]" inputmode="numeric" required>
-            <input type="text" maxlength="1" class="otp-field" pattern="[0-9]" inputmode="numeric" required>
-            <input type="text" maxlength="1" class="otp-field" pattern="[0-9]" inputmode="numeric" required>
-            <input type="text" maxlength="1" class="otp-field" pattern="[0-9]" inputmode="numeric" required>
-            <input type="text" maxlength="1" class="otp-field" pattern="[0-9]" inputmode="numeric" required>
+          <div class="otp-input-group" id="otpInputsContainer">
+            <input type="text" maxlength="1" class="otp-digit" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" maxlength="1" class="otp-digit" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" maxlength="1" class="otp-digit" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" maxlength="1" class="otp-digit" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" maxlength="1" class="otp-digit" pattern="[0-9]" inputmode="numeric" required>
+            <input type="text" maxlength="1" class="otp-digit" pattern="[0-9]" inputmode="numeric" required>
           </div>
-          <p class="otp-feedback" id="otpFeedback"></p>
-          <button type="submit" class="btn btn-primary btn-otp-submit">Xác nhận mã OTP</button>
+          <p class="otp-error" id="otpErrorMsg"></p>
+          <button type="submit" class="btn btn-primary btn-otp-submit" id="otpVerifyBtn">Xác nhận mã OTP</button>
         </form>
         
         <div class="otp-footer">
-          <button type="button" class="btn-resend-otp" id="btnResendOtp" disabled>Gửi lại mã (<span id="otpCountdown">60</span>s)</button>
-          <button type="button" class="btn-cancel-otp" id="btnCancelOtp">Hủy bỏ</button>
+          <button type="button" class="btn-resend-otp" id="resendOtpBtn" disabled>Gửi lại mã (<span id="otpCountdown">60</span>s)</button>
+          <button type="button" class="btn-cancel-otp" id="btnCancelOtp" onclick="document.getElementById('otpModal').style.display='none'">Hủy bỏ</button>
         </div>
       </div>
     </div>
