@@ -295,36 +295,51 @@
 }
 
 .otp-footer {
-  font-size: 14px;
-  color: #94a3b8;
-  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  gap: 12px;
 }
 
-.otp-footer a {
-  color: #38bdf8;
-  text-decoration: none;
+.btn-resend-otp, .btn-cancel-otp {
+  flex: 1;
+  padding: 10px 16px;
+  font-size: 13.5px;
   font-weight: 600;
-  transition: color 0.2s;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: center;
 }
 
-.otp-footer a:hover {
-  color: #7dd3fc;
+.btn-resend-otp {
+  background: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.2);
 }
 
-.otp-footer a.disabled {
+.btn-resend-otp:hover:not(:disabled) {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.btn-resend-otp:disabled {
+  background: rgba(148, 163, 184, 0.05);
   color: #64748b;
-  pointer-events: none;
+  border-color: rgba(148, 163, 184, 0.1);
+  cursor: not-allowed;
 }
 
-.otp-cancel-link {
-  display: block;
-  font-size: 13px;
-  margin-top: 15px;
-  color: #64748b !important;
+.btn-cancel-otp {
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.3);
 }
 
-.otp-cancel-link:hover {
-  color: #94a3b8 !important;
+.btn-cancel-otp:hover {
+  background: rgba(148, 163, 184, 0.1);
+  color: #f8fafc;
 }
 
 /* Debug OTP Styling */
