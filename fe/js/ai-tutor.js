@@ -62,7 +62,7 @@
         <span class="badge-pulse"></span>
         <span>🤖 Trợ Lý AI</span>
       </button>
-      <div class="ai-chat-window" id="ai-chat-box">
+      <div class="ai-chat-window" id="ai-chat-box" style="opacity: 0; visibility: hidden; pointer-events: none;">
         <div class="ai-header">
           <div class="ai-header-info">
             <div class="ai-avatar">🎓</div>
@@ -103,6 +103,12 @@
 
     // Toggle Chat Window
     toggleBtn?.addEventListener('click', () => {
+      if (chatBox) {
+        // Xóa inline style để nhường chỗ cho CSS transition mượt mà
+        chatBox.style.opacity = '';
+        chatBox.style.visibility = '';
+        chatBox.style.pointerEvents = '';
+      }
       chatBox?.classList.toggle('active');
       if (chatBox?.classList.contains('active')) {
         inputField?.focus();
