@@ -135,7 +135,7 @@
       try {
         const endpoint = typeof window.resolveApiUrl === 'function'
           ? window.resolveApiUrl('ai/chat')
-          : 'https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/ai/chat';
+          : 'https://api.tungf.io.vn/v1/ai/chat';
 
         const res = await fetch(endpoint, {
           method: 'POST',

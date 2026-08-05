@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { getCookie } from "hono/cookie";
 
 type Bindings = {
   DB?: D1Database;
@@ -8,8 +9,7 @@ const quizApp = new Hono<{ Bindings: Bindings }>();
 
 // GET & POST /v1/quiz/test_results.php -> D1 SQL Save & Fetch Exam Results per User
 quizApp.all("/test_results.php", async (c) => {
-  const authHeader = c.req.header("Authorization") || "";
-  const token = authHeader.replace(/^Bearer\s+/i, "").trim() || c.req.query("auth_token") || c.req.query("session_token") || c.req.query("token") || "";
+  const authHeader = c.req.header("Authorization") || "";const token = authHeader.replace(/^Bearer\s+/i, "").trim() || c.req.query("auth_token") || c.req.query("session_token") || c.req.query("token") || getCookie(c, "auth_token") || "";
 
   let dbUser: any = null;
   if (c.env?.DB && token) {
@@ -82,8 +82,7 @@ quizApp.all("/test_results.php", async (c) => {
 
 // GET & POST /v1/quiz/sync_quiz.php
 quizApp.all("/sync_quiz.php", async (c) => {
-  const authHeader = c.req.header("Authorization") || "";
-  const token = authHeader.replace(/^Bearer\s+/i, "").trim() || c.req.query("auth_token") || c.req.query("session_token") || c.req.query("token") || "";
+  const authHeader = c.req.header("Authorization") || "";const token = authHeader.replace(/^Bearer\s+/i, "").trim() || c.req.query("auth_token") || c.req.query("session_token") || c.req.query("token") || getCookie(c, "auth_token") || "";
 
   let dbUser: any = null;
   if (c.env?.DB && token) {

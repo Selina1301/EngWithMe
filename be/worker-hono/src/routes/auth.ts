@@ -1,4 +1,7 @@
 import { Hono } from "hono";
+import { setCookie, deleteCookie } from "hono/cookie";
+
+const cookieOpts = { domain: ".tungf.io.vn", path: "/", secure: true, httpOnly: true, sameSite: "Lax", maxAge: 60*60*24*30 } as any;
 
 type Bindings = {
   GOOGLE_REDIRECT_URI?: string;
@@ -10,7 +13,7 @@ type Bindings = {
 const authApp = new Hono<{ Bindings: Bindings }>();
 
 const DEFAULT_GOOGLE_CLIENT_ID = "992122170428-ookq5v3r930tqkgh24pccp2nsb18b1rj.apps.googleusercontent.com";
-const DEFAULT_REDIRECT_URI = "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/auth/google_callback.php";
+const DEFAULT_REDIRECT_URI = "https://api.tungf.io.vn/v1/auth/google_callback.php";
 
 function parseGoogleJwt(jwtToken: string) {
   try {
@@ -197,7 +200,7 @@ async function processGoogleUser(c: any, googlePayload: any, code: string) {
 }
 
 const handleGoogleLogin = (c: any) => {
-  const redirectUri = c.env?.GOOGLE_REDIRECT_URI || "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/auth/google_callback.php";
+  const redirectUri = c.env?.GOOGLE_REDIRECT_URI || "https://api.tungf.io.vn/v1/auth/google_callback.php";
   const state = Math.random().toString(36).substring(2, 15);
   const nonce = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
 
@@ -235,9 +238,9 @@ const handleGoogleCallbackGet = async (c: any) => {
     var idToken = params.get('id_token') || params.get('credential');
     var code = params.get('code');
     if (idToken) {
-      window.location.href = "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/auth/google_callback.php?id_token=" + encodeURIComponent(idToken);
+      window.location.href = "https://api.tungf.io.vn/v1/auth/google_callback.php?id_token=" + encodeURIComponent(idToken);
     } else if (code) {
-      window.location.href = "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/auth/google_callback.php?code=" + encodeURIComponent(code);
+      window.location.href = "https://api.tungf.io.vn/v1/auth/google_callback.php?code=" + encodeURIComponent(code);
     } else {
       window.location.href = "https://engwithme.tungf.io.vn/login.html?error=google_failed";
     }
@@ -296,6 +299,7 @@ const handleGoogleCallbackPost = async (c: any) => {
     }, 400);
   }
 
+  setCookie(c, "auth_token", result.sessionToken, cookieOpts);
   return c.json({
     ok: true,
     token: result.sessionToken,
@@ -414,6 +418,7 @@ const handleLogin = async (c: any) => {
   const userRole = isAdminBypass ? "admin" : (dbUser.role || "user");
   const redirectPage = (userRole === "admin" || userRole === "manager") ? "admin.html" : "index.html";
 
+  setCookie(c, "auth_token", token, cookieOpts);
   return c.json({
     ok: true,
     requires_otp: false,
@@ -467,6 +472,7 @@ const handleRegister = async (c: any) => {
         }
       } catch (e) {}
     }
+    setCookie(c, "auth_token", token, cookieOpts);
     return c.json({
       ok: true,
       requires_otp: false,
@@ -521,8 +527,9 @@ const handleRegister = async (c: any) => {
 authApp.post("/register.php", handleRegister);
 authApp.post("/register", handleRegister);
 
-authApp.post("/logout.php", (c) => c.json({ ok: true, message: "Đã đăng xuất thành công." }));
-authApp.post("/logout", (c) => c.json({ ok: true, message: "Đã đăng xuất thành công." }));
+const handleLogout = (c: any) => { deleteCookie(c, "auth_token", cookieOpts); return c.json({ ok: true, message: "Đã đăng xuất thành công." }); };
+authApp.post("/logout.php", handleLogout);
+authApp.post("/logout", handleLogout);
 
 const handleResendOtp = async (c: any) => {
   const body = (await c.req.parseBody().catch(() => ({}))) as Record<string, any>;
@@ -586,6 +593,7 @@ const handleVerifyOtp = async (c: any) => {
   const userId = dbUser?.id || "user_" + Date.now();
   const hasPassword = Boolean(dbUser?.password && String(dbUser.password).trim() !== "");
 
+  setCookie(c, "auth_token", token, cookieOpts);
   return c.json({
     ok: true,
     message: "Xác thực mã OTP thành công! Đang chuyển hướng...",

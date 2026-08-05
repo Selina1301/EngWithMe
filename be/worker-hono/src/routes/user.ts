@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { getCookie } from "hono/cookie";
 
 type Bindings = {
   DB?: D1Database;
@@ -7,8 +8,7 @@ type Bindings = {
 const userApp = new Hono<{ Bindings: Bindings }>();
 
 const handleMe = async (c: any) => {
-  const authHeader = c.req.header("Authorization") || "";
-  const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || "";
+  const authHeader = c.req.header("Authorization") || "";const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || getCookie(c, "auth_token") || "";
 
   if (!token) {
     return c.json({ ok: false, user: null, guest: true, message: "Chưa đăng nhập." }, 200);
@@ -80,8 +80,7 @@ userApp.get("/me", handleMe);
 
 const handleProfile = async (c: any) => {
   const body = (await c.req.parseBody().catch(() => ({}))) as Record<string, any>;
-  const authHeader = c.req.header("Authorization") || "";
-  const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || "";
+  const authHeader = c.req.header("Authorization") || "";const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || getCookie(c, "auth_token") || "";
 
   const name = String(body.full_name || body.name || "").trim();
   const goal = String(body.learning_goal || body.goal || "").trim();
@@ -152,8 +151,7 @@ const handleChangePassword = async (c: any) => {
     try { body = (await c.req.parseBody().catch(() => ({}))) as Record<string, any>; } catch (e) {}
   }
 
-  const authHeader = c.req.header("Authorization") || "";
-  const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || body.auth_token || jsonBody.auth_token || "";
+  const authHeader = c.req.header("Authorization") || "";const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || body.auth_token || jsonBody.auth_token || getCookie(c, "auth_token") || "";
 
   const currentPassword = String(body.current_password || jsonBody.current_password || "").trim();
   const newPassword = String(body.new_password || jsonBody.new_password || "").trim();
@@ -229,8 +227,7 @@ userApp.post("/change-password", handleChangePassword);
 
 // GET /v1/user/user_payments.php -> Fetch logged-in user's payment history from D1 DB
 const handleGetUserPayments = async (c: any) => {
-  const authHeader = c.req.header("Authorization") || c.req.header("X-Auth-Token") || "";
-  const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || "";
+  const authHeader = c.req.header("Authorization") || c.req.header("X-Auth-Token") || "";const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || getCookie(c, "auth_token") || "";
 
   if (!token) {
     return c.json({

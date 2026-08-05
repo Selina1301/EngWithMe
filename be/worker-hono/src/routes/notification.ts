@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { getCookie } from "hono/cookie";
 
 type Bindings = {
   DB?: D1Database;
@@ -8,8 +9,7 @@ const notificationApp = new Hono<{ Bindings: Bindings }>();
 
 // Handler for notifications per User
 const handleNotifications = async (c: any) => {
-  const authHeader = c.req.header("Authorization") || "";
-  const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || "";
+  const authHeader = c.req.header("Authorization") || "";const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || getCookie(c, "auth_token") || "";
 
   // Identify Canonical User ID, Email and Role from D1
   let userId = token || "guest";

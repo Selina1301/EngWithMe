@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { getCookie } from "hono/cookie";
 
 type Bindings = {
   DB?: D1Database;
@@ -33,8 +34,7 @@ const handleCreatePayment = async (c: any) => {
   let jsonBody: Record<string, any> = {};
   try { jsonBody = (await c.req.json()) as Record<string, any>; } catch (e) {}
 
-  const authHeader = c.req.header("Authorization") || "";
-  const token = authHeader.replace(/^Bearer\s+/i, "").trim() || c.req.query("auth_token") || c.req.query("token") || "";
+  const authHeader = c.req.header("Authorization") || "";const token = authHeader.replace(/^Bearer\s+/i, "").trim() || c.req.query("auth_token") || c.req.query("token") || getCookie(c, "auth_token") || "";
   const plan = String(jsonBody.plan || body.plan || c.req.query("plan") || "pro").toLowerCase();
   const orderCode = Math.floor(100000 + Math.random() * 900000);
 
@@ -97,8 +97,7 @@ paymentApp.all("/create_payment", handleCreatePayment);
 // GET /v1/payment/check_payment_status.php -> Update D1 user to VIP per User
 const handleCheckPaymentStatus = async (c: any) => {
   const orderCode = c.req.query("orderCode") || c.req.query("order_code") || "";
-  const authHeader = c.req.header("Authorization") || "";
-  let rawToken = authHeader || c.req.query("auth_token") || c.req.query("session_token") || c.req.query("token") || c.req.query("user_id") || "";
+  const authHeader = c.req.header("Authorization") || "";let rawToken = authHeader || c.req.query("auth_token") || c.req.query("session_token") || c.req.query("token") || c.req.query("user_id") || getCookie(c, "auth_token") || "";
   const token = String(rawToken).replace(/^Bearer\s+/i, "").trim();
 
   const planParam = String(c.req.query("plan") || "pro").toLowerCase();
@@ -248,8 +247,7 @@ paymentApp.all("/payos_webhook", handlePayosWebhook);
 
 // GET /v1/payment/user_transactions.php -> User Transaction History
 paymentApp.get("/user_transactions.php", async (c) => {
-  const authHeader = c.req.header("Authorization") || "";
-  const token = authHeader.replace(/^Bearer\s+/i, "").trim() || c.req.query("auth_token") || "";
+  const authHeader = c.req.header("Authorization") || "";const token = authHeader.replace(/^Bearer\s+/i, "").trim() || c.req.query("auth_token") || getCookie(c, "auth_token") || "";
 
   const bankShort = "MB";
   const accountNumber = "0971629106";

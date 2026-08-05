@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { getCookie } from "hono/cookie";
 
 type Bindings = {
   DB?: D1Database;
@@ -58,8 +59,7 @@ learningApp.get("/learning_content.php", (c) => {
 
 // GET & POST /v1/learning/sync_progress.php -> D1 user_progress per User
 learningApp.all("/sync_progress.php", async (c) => {
-  const authHeader = c.req.header("Authorization") || "";
-  const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || "";
+  const authHeader = c.req.header("Authorization") || "";const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || getCookie(c, "auth_token") || "";
 
   let dbUser: any = null;
   if (c.env?.DB && token) {
@@ -103,8 +103,7 @@ learningApp.all("/sync_progress.php", async (c) => {
 
 // GET & POST /v1/learning/sync_vocab.php per User
 learningApp.all("/sync_vocab.php", async (c) => {
-  const authHeader = c.req.header("Authorization") || "";
-  const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || "";
+  const authHeader = c.req.header("Authorization") || "";const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || getCookie(c, "auth_token") || "";
 
   let dbUser: any = null;
   if (c.env?.DB && token) {
@@ -129,8 +128,7 @@ learningApp.all("/sync_vocab.php", async (c) => {
 
 // GET & POST /v1/learning/sync_grammar.php per User
 learningApp.all("/sync_grammar.php", async (c) => {
-  const authHeader = c.req.header("Authorization") || "";
-  const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || "";
+  const authHeader = c.req.header("Authorization") || "";const token = authHeader.replace("Bearer ", "").trim() || c.req.query("auth_token") || getCookie(c, "auth_token") || "";
 
   let dbUser: any = null;
   if (c.env?.DB && token) {
@@ -182,8 +180,7 @@ const LEVEL_TITLES_SERVER = [
 
 // GET & POST /v1/learning/user_level.php -> Unlimited Numeric Level (1-999) + Prestigious Titles per User
 learningApp.all("/user_level.php", async (c) => {
-  const authHeader = c.req.header("Authorization") || "";
-  const token = authHeader.replace(/^Bearer\s+/i, "").trim() || c.req.query("auth_token") || c.req.query("session_token") || c.req.query("user_id") || "";
+  const authHeader = c.req.header("Authorization") || "";const token = authHeader.replace(/^Bearer\s+/i, "").trim() || c.req.query("auth_token") || c.req.query("session_token") || c.req.query("user_id") || getCookie(c, "auth_token") || "";
 
   let dbUser: any = null;
   if (c.env?.DB && token) {
@@ -261,7 +258,8 @@ learningApp.all("/user_level.php", async (c) => {
     current_level_xp: remainingXp,
     xp_for_next_level: costForNext,
     score: totalXp,
-    xp: totalXp
+    xp: totalXp,
+    total_xp: totalXp
   });
 });
 

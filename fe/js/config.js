@@ -5,7 +5,7 @@
   const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
   
   // Production Cloudflare Edge Worker API URL
-  const cloudflareEdgeApi = "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/";
+  const cloudflareEdgeApi = "https://api.tungf.io.vn/v1/";
 
   // Auto-detect API Base URL
   const defaultApiBase = window.EWM_CUSTOM_API_BASE || (
@@ -25,7 +25,7 @@
   window.resolveApiUrl = function(path) {
     const base = (window.EWM_CONFIG && window.EWM_CONFIG.API_BASE_URL)
       ? window.EWM_CONFIG.API_BASE_URL
-      : "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/";
+      : "https://api.tungf.io.vn/v1/";
 
     let cleanPath = String(path || "").trim();
     cleanPath = cleanPath.replace(/^api\//, "").replace(/^\/v1\//, "").replace(/^\//, "");
@@ -46,6 +46,7 @@
 
     return fetch(url, {
       ...options,
+      credentials: "include",
       headers
     });
   };

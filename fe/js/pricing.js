@@ -163,7 +163,7 @@ async function handleOpenPayment(plan, btn) {
     } else {
       const apiBase = (window.EWM_CONFIG && window.EWM_CONFIG.API_BASE_URL)
         ? window.EWM_CONFIG.API_BASE_URL
-        : "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/";
+        : "https://api.tungf.io.vn/v1/";
       const url = apiBase.endsWith("/")
         ? `${apiBase}payment/create_payment.php`
         : `${apiBase}/payment/create_payment.php`;
@@ -608,7 +608,7 @@ window.openPaymentHistoryModal = async function () {
     } else {
       const apiBase = (window.EWM_CONFIG && window.EWM_CONFIG.API_BASE_URL)
         ? window.EWM_CONFIG.API_BASE_URL
-        : "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/";
+        : "https://api.tungf.io.vn/v1/";
       const url = `${apiBase.replace(/\/$/, '')}/payment/user_transactions.php?auth_token=${encodeURIComponent(storedToken)}`;
       const res = await fetch(url, { headers: { "Authorization": `Bearer ${storedToken}` } });
       result = await res.json();
@@ -682,7 +682,7 @@ window.verifyOrderManual = async function (orderCode, btn) {
     const storedToken = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token") || "";
     const apiBase = (window.EWM_CONFIG && window.EWM_CONFIG.API_BASE_URL)
       ? window.EWM_CONFIG.API_BASE_URL
-      : "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/";
+      : "https://api.tungf.io.vn/v1/";
     const url = `${apiBase.replace(/\/$/, '')}/payment/check_payment_status.php?orderCode=${orderCode}&auth_token=${encodeURIComponent(storedToken)}`;
 
     const res = await fetch(url, { headers: { "Authorization": `Bearer ${storedToken}` } });

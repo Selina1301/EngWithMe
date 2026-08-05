@@ -27,7 +27,7 @@
       if (!url.endsWith("/")) url += "/";
       return url;
     }
-    return "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/";
+    return "https://api.tungf.io.vn/v1/";
   }
 
   function initRankTabs() {

@@ -294,7 +294,7 @@ window.AppCache = AppCache;
 function resolveApiUrl(url) {
   if (!url) return url;
   if (url.startsWith("http://") || url.startsWith("https://")) return url;
-  const base = (window.EWM_CONFIG && window.EWM_CONFIG.API_BASE_URL) ? window.EWM_CONFIG.API_BASE_URL : "https://engwithme-hono-edge.tungduong-dev.workers.dev/v1/";
+  const base = (window.EWM_CONFIG && window.EWM_CONFIG.API_BASE_URL) ? window.EWM_CONFIG.API_BASE_URL : "https://api.tungf.io.vn/v1/";
   
   let cleanPath = url.replace(/^\/?api\//, "");
   if (cleanPath === "me.php") cleanPath = "user/me.php";
@@ -1321,13 +1321,7 @@ function persistAuthUser(user) {
 
 function clearAuthUser() {
   try {
-    const keysToRemove = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (k && (k.startsWith("engWithMe") || k.startsWith("ewm_") || k.includes("_user_"))) {
-        keysToRemove.push(k);
-      }
-    }
+    const keysToRemove = ["engWithMeToken", "engWithMeUserId", "user_id", "engWithMeUserIsVip", "engWithMeUserVipExpires"];
     keysToRemove.forEach((key) => localStorage.removeItem(key));
   } catch (e) {}
 

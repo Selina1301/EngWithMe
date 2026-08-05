@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { getCookie } from "hono/cookie";
 
 type Bindings = {
   DB?: D1Database;
@@ -10,7 +11,7 @@ const blogApp = new Hono<{ Bindings: Bindings }>();
 async function getAuthenticatedUser(c: any): Promise<any | null> {
   if (!c.env?.DB) return null;
   const authHeader = c.req.header("Authorization") || "";
-  let token = authHeader.replace(/^Bearer\s+/i, "").trim();
+  let token = authHeader.replace(/^Bearer\s+/i, "").trim() || getCookie(c, "auth_token") || "";
 
   if (!token) {
     token = c.req.header("X-Session-Token") || "";

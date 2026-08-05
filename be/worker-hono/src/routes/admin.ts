@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { getCookie } from "hono/cookie";
 
 type Bindings = {
   DB?: D1Database;
@@ -7,8 +8,7 @@ type Bindings = {
 const adminApp = new Hono<{ Bindings: Bindings }>();
 
 async function verifyAdminPermission(c: any): Promise<{ isAdmin: boolean; dbUser: any }> {
-  const authHeader = c.req.header("Authorization") || "";
-  const token = authHeader.replace(/^Bearer\s+/i, "").trim() || c.req.query("auth_token") || c.req.query("session_token") || c.req.query("token") || c.req.query("user_id") || "";
+  const authHeader = c.req.header("Authorization") || "";const token = authHeader.replace(/^Bearer\s+/i, "").trim() || c.req.query("auth_token") || c.req.query("session_token") || c.req.query("token") || c.req.query("user_id") || getCookie(c, "auth_token") || "";
 
   if (!c.env?.DB || !token) {
     return { isAdmin: false, dbUser: null };
