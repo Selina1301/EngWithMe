@@ -1219,11 +1219,18 @@ async function logoutAuthenticatedUser() {
   clearAuthUser();
 
   try {
-    await fetch("api/logout.php", {
-      method: "POST",
-      credentials: "same-origin",
-      cache: "no-store"
-    });
+    if (typeof window.fetchAuth === "function") {
+      await window.fetchAuth("auth/logout.php", {
+        method: "POST",
+        cache: "no-store"
+      });
+    } else {
+      await fetch(window.resolveApiUrl("auth/logout.php"), {
+        method: "POST",
+        credentials: "include",
+        cache: "no-store"
+      });
+    }
   } catch (error) {
     console.warn("Logout API failed:", error);
   }
@@ -1321,7 +1328,14 @@ function persistAuthUser(user) {
 
 function clearAuthUser() {
   try {
-    const keysToRemove = ["engWithMeToken", "engWithMeUserId", "user_id", "engWithMeUserIsVip", "engWithMeUserVipExpires"];
+    const keysToRemove = [
+      "engWithMeToken", "engWithMeAuthToken", "ewm_token", 
+      "engWithMeUserId", "user_id", "engWithMeUserEmail", 
+      "engWithMeStudentName", "engWithMeLevel", "engWithMeUserRole",
+      "engWithMeGoal", "engWithMeUserStatus", "engWithMeUserAvatar", 
+      "engWithMeUserIsVip", "engWithMeUserVipExpires", "engWithMeUserHasPassword",
+      "ewm_cache_me", "ewm_cache_notifications"
+    ];
     keysToRemove.forEach((key) => localStorage.removeItem(key));
   } catch (e) {}
 
@@ -1330,7 +1344,8 @@ function clearAuthUser() {
   }
 
   document.cookie = "ewm_logged_in=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  document.cookie = "ewm_logged_in=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+  document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.tungf.io.vn;";
 }
 
 function redirectAuthPages(user, isCached = false) {

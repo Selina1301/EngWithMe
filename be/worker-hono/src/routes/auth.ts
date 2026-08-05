@@ -631,4 +631,10 @@ authApp.post("/forgot_password.php", async (c) => {
 
 authApp.post("/reset_password.php", (c) => c.json({ ok: true, message: "Đặt lại mật khẩu mới thành công!" }));
 
+authApp.post("/logout.php", (c) => {
+  deleteCookie(c, "auth_token", { path: "/", domain: ".tungf.io.vn" });
+  deleteCookie(c, "auth_token", { path: "/" });
+  return c.json({ ok: true, message: "Đăng xuất thành công" });
+});
+
 export default authApp;
