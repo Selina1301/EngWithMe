@@ -208,10 +208,10 @@ const handleNotifications = async (c: any) => {
       const sql = `SELECT n.*, nr.is_deleted, nr.user_id as read_user_id 
              FROM notifications n 
              LEFT JOIN notification_reads nr ON n.id = nr.notification_id AND (nr.user_id = ? OR nr.user_id = ?) 
-             WHERE (n.user_id = ? OR n.user_id = ? OR n.user_id = ? OR n.user_id = 'all' OR n.user_id IS NULL OR n.user_id = '') 
+             WHERE (n.user_id = ? OR n.user_id = ? OR n.user_id = ? OR (n.user_id = 'all' AND n.created_at >= ?) OR n.user_id IS NULL OR n.user_id = '') 
                AND (n.status_tag IS NULL OR n.status_tag NOT IN ('Góp ý học viên', 'Báo cáo vi phạm', 'Hệ thống Admin')) 
              ORDER BY n.id DESC LIMIT ${limit}`;
-      const params = [userId, userEmail || userId, userId, userEmail || userId, token];
+      const params = [userId, userEmail || userId, userId, userEmail || userId, token, userCreatedAt || '2000-01-01'];
 
       let res: any = null;
       try {
@@ -219,8 +219,8 @@ const handleNotifications = async (c: any) => {
       } catch (eJoin) {
         console.error("D1 Notification Join Error, trying fallback:", eJoin);
         res = await c.env.DB.prepare(
-          `SELECT * FROM notifications WHERE (user_id = ? OR user_id = ? OR user_id = 'all') ORDER BY id DESC LIMIT ${limit}`
-        ).bind(userId, userEmail || userId).all();
+          `SELECT * FROM notifications WHERE (user_id = ? OR user_id = ? OR (user_id = 'all' AND created_at >= ?)) ORDER BY id DESC LIMIT ${limit}`
+        ).bind(userId, userEmail || userId, userCreatedAt || '2000-01-01').all();
       }
 
       if (res && res.results) {

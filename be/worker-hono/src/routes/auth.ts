@@ -190,6 +190,13 @@ async function processGoogleUser(c: any, googlePayload: any, code: string) {
         await c.env.DB.prepare(
           "INSERT INTO users (id, full_name, email, role, level, status, avatar, session_token, remember_token) VALUES (?, ?, ?, 'user', 'A1', 'active', ?, ?, ?)"
         ).bind(googleId, realName, realEmail, realAvatar, sessionToken, sessionToken).run();
+        
+        // Welcome Notification
+        try {
+          await c.env.DB.prepare(
+            "INSERT INTO notifications (user_id, title, message, status_tag, is_read) VALUES (?, ?, ?, ?, 0)"
+          ).bind(googleId, "Good day", "EngWithMe - chúc bạn thuận buồm xuôi gió ra khơi gặp nhiều điều may mắn^^", "Hệ thống").run();
+        } catch (en) {}
       }
     } catch (e) {
       console.error("D1 Google Save Error:", e);
@@ -590,10 +597,26 @@ const handleVerifyOtp = async (c: any) => {
     try {
       if (dbUser) {
         await c.env.DB.prepare("UPDATE users SET session_token = ?, status = 'active' WHERE email = ?").bind(token, email).run();
+        
+        // Welcome notification if transitioning from pending
+        if (dbUser.status === 'pending_otp') {
+          try {
+            await c.env.DB.prepare(
+              "INSERT INTO notifications (user_id, title, message, status_tag, is_read) VALUES (?, ?, ?, ?, 0)"
+            ).bind(dbUser.id, "Good day", "EngWithMe - chúc bạn thuận buồm xuôi gió ra khơi gặp nhiều điều may mắn^^", "Hệ thống").run();
+          } catch (en) {}
+        }
       } else {
         await c.env.DB.prepare(
           "INSERT INTO users (id, full_name, email, role, level, status, session_token) VALUES (?, ?, ?, 'user', 'A1', 'active', ?)"
         ).bind(userId, name, email, token).run();
+        
+        // Welcome notification for new fallback user
+        try {
+          await c.env.DB.prepare(
+            "INSERT INTO notifications (user_id, title, message, status_tag, is_read) VALUES (?, ?, ?, ?, 0)"
+          ).bind(userId, "Good day", "EngWithMe - chúc bạn thuận buồm xuôi gió ra khơi gặp nhiều điều may mắn^^", "Hệ thống").run();
+        } catch (en) {}
       }
     } catch (e) {}
   }
