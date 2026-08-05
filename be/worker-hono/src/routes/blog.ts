@@ -163,31 +163,32 @@ blogApp.get("/get_leaderboard.php", async (c) => {
         results = usersRes?.results || [];
 
         // 2. Aggregate user_progress
-        const progRes = await c.env.DB.prepare("SELECT user_id, SUM(COALESCE(score, 0)) as total_score, SUM(COALESCE(progress_percent, 0)) as total_percent FROM user_progress GROUP BY user_id").all();
-        (progRes?.results || []).forEach((row: any) => {
-          if (row.user_id) progressMap.set(String(row.user_id), row);
-        });
+        try {
+          const progRes = await c.env.DB.prepare("SELECT user_id, SUM(COALESCE(score, 0)) as total_score FROM user_progress GROUP BY user_id").all();
+          (progRes?.results || []).forEach((row: any) => {
+            if (row.user_id) progressMap.set(String(row.user_id), row);
+          });
+        } catch (e1) { console.error("progress error", e1); }
 
         // 3. Aggregate blogs
-        const blogsRes = await c.env.DB.prepare("SELECT user_id, COUNT(*) as cnt, SUM(COALESCE(likes_count, 0)) as likes, SUM(COALESCE(views_count, 0)) as views FROM blogs WHERE status = 'approved' GROUP BY user_id").all();
-        (blogsRes?.results || []).forEach((row: any) => {
-          if (row.user_id) blogsMap.set(String(row.user_id), row);
-        });
+        try {
+          const blogsRes = await c.env.DB.prepare("SELECT user_id, COUNT(*) as cnt, SUM(COALESCE(likes_count, 0)) as likes, SUM(COALESCE(views_count, 0)) as views FROM blogs WHERE status = 'approved' GROUP BY user_id").all();
+          (blogsRes?.results || []).forEach((row: any) => {
+            if (row.user_id) blogsMap.set(String(row.user_id), row);
+          });
+        } catch (e2) { console.error("blogs error", e2); }
 
         // 4. Aggregate exam_results
-        const examsRes = await c.env.DB.prepare("SELECT user_id, test_name, MAX(score) as max_score, MAX(correct_count) as max_correct, MAX(total_questions) as max_total FROM exam_results GROUP BY user_id, test_name").all();
-        (examsRes?.results || []).forEach((row: any) => {
-          if (!row.user_id) return;
-          const uid = String(row.user_id);
-          if (!examsMap.has(uid)) examsMap.set(uid, []);
-          examsMap.get(uid).push(row);
-        });
+        try {
+          const examsRes = await c.env.DB.prepare("SELECT user_id, test_name, MAX(score) as max_score, MAX(correct_count) as max_correct, MAX(total_questions) as max_total FROM exam_results GROUP BY user_id, test_name").all();
+          (examsRes?.results || []).forEach((row: any) => {
+            if (!row.user_id) return;
+            const uid = String(row.user_id);
+            if (!examsMap.has(uid)) examsMap.set(uid, []);
+            examsMap.get(uid).push(row);
+          });
+        } catch (e3) { console.error("exams error", e3); }
 
-        // 5. Get user_levels
-        const levelsRes = await c.env.DB.prepare("SELECT user_id, total_xp FROM user_levels").all();
-        (levelsRes?.results || []).forEach((row: any) => {
-          if (row.user_id) levelsMap.set(String(row.user_id), row);
-        });
       } catch (eSql) {
         console.error("Leaderboard DB Aggregation Error:", eSql);
       }

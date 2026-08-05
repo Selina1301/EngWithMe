@@ -11,7 +11,7 @@
 }
 .toggle-password {
   position: absolute !important;
-  right: 12px !important;
+  right: 8px !important;
   background: linear-gradient(135deg, #1e40af, #3b82f6) !important; /* Xanh lam đậm gradient */
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
@@ -23,6 +23,8 @@
   justify-content: center !important;
   z-index: 10 !important;
   opacity: 0.85 !important;
+  width: 32px !important;
+  height: 32px !important;
 }
 .toggle-password:hover {
   opacity: 1 !important;

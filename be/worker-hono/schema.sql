@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
   vip_expires_at TEXT,
   remember_token TEXT,
   session_token TEXT,
+  total_xp INTEGER DEFAULT 0,
   created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 

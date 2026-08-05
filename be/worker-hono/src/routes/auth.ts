@@ -446,7 +446,7 @@ const handleRegister = async (c: any) => {
   try { jsonBody = await c.req.json(); } catch (e) {}
 
   const name = String(body.name || body.full_name || jsonBody.name || jsonBody.full_name || "").trim();
-  const email = String(body.email || jsonBody.email || "").trim();
+  const email = String(body.email || jsonBody.email || "").trim().toLowerCase();
   const password = String(body.password || jsonBody.password || "").trim();
 
   if (!email || !password) {
@@ -536,7 +536,7 @@ const handleResendOtp = async (c: any) => {
   let jsonBody: any = {};
   try { jsonBody = await c.req.json(); } catch (e) {}
 
-  const email = String(body.email || jsonBody.email || "").trim();
+  const email = String(body.email || jsonBody.email || "").trim().toLowerCase();
   const otpCode = String(Math.floor(100000 + Math.random() * 900000));
 
   if (c.env?.DB && email) {
@@ -563,7 +563,7 @@ const handleVerifyOtp = async (c: any) => {
   let jsonBody: any = {};
   try { jsonBody = await c.req.json(); } catch (e) {}
 
-  const email = String(body.email || jsonBody.email || "").trim();
+  const email = String(body.email || jsonBody.email || "").trim().toLowerCase();
   const rawOtp = String(body.otp || jsonBody.otp || "").trim();
   const cleanOtp = rawOtp.replace(/\s+/g, "");
 
@@ -582,16 +582,21 @@ const handleVerifyOtp = async (c: any) => {
   }
 
   const token = "edge_token_" + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-
-  if (c.env?.DB && email) {
-    try {
-      await c.env.DB.prepare("UPDATE users SET session_token = ?, status = 'active' WHERE email = ?").bind(token, email).run();
-    } catch (e) {}
-  }
-
   const name = dbUser?.full_name || email.split("@")[0] || "Học viên";
   const userId = dbUser?.id || "user_" + Date.now();
   const hasPassword = Boolean(dbUser?.password && String(dbUser.password).trim() !== "");
+
+  if (c.env?.DB && email) {
+    try {
+      if (dbUser) {
+        await c.env.DB.prepare("UPDATE users SET session_token = ?, status = 'active' WHERE email = ?").bind(token, email).run();
+      } else {
+        await c.env.DB.prepare(
+          "INSERT INTO users (id, full_name, email, role, level, status, session_token) VALUES (?, ?, ?, 'user', 'A1', 'active', ?)"
+        ).bind(userId, name, email, token).run();
+      }
+    } catch (e) {}
+  }
 
   setCookie(c, "auth_token", token, cookieOpts);
   return c.json({
@@ -618,7 +623,7 @@ authApp.post("/forgot_password.php", async (c) => {
   let jsonBody: any = {};
   try { jsonBody = await c.req.json(); } catch (e) {}
 
-  const email = String(body.email || jsonBody.email || "").trim();
+  const email = String(body.email || jsonBody.email || "").trim().toLowerCase();
   const otpCode = String(Math.floor(100000 + Math.random() * 900000));
   await sendOtpEmail(email, otpCode, c.env);
 
