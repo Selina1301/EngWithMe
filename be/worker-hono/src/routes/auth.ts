@@ -603,7 +603,7 @@ const handleVerifyOtp = async (c: any) => {
           try {
             await c.env.DB.prepare(
               "INSERT INTO notifications (user_id, title, message, status_tag, is_read) VALUES (?, ?, ?, ?, 0)"
-            ).bind(dbUser.id, "Good day", "EngWithMe - chúc bạn thuận buồm xuôi gió ra khơi gặp nhiều điều may mắn^^", "Hệ thống").run();
+            ).bind(dbUser.id, "Good day", "EngWithMe - chúc bạn thuận buồm xuôi gió ra khơi gặp nhiều điều may mắn^^", "Chào mừng").run();
           } catch (en) {}
         }
       } else {
@@ -615,7 +615,7 @@ const handleVerifyOtp = async (c: any) => {
         try {
           await c.env.DB.prepare(
             "INSERT INTO notifications (user_id, title, message, status_tag, is_read) VALUES (?, ?, ?, ?, 0)"
-          ).bind(userId, "Good day", "EngWithMe - chúc bạn thuận buồm xuôi gió ra khơi gặp nhiều điều may mắn^^", "Hệ thống").run();
+          ).bind(userId, "Good day", "EngWithMe - chúc bạn thuận buồm xuôi gió ra khơi gặp nhiều điều may mắn^^", "Chào mừng").run();
         } catch (en) {}
       }
     } catch (e) {}

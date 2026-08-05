@@ -332,6 +332,7 @@
   vertical-align: middle;
   color: #eef7ff;
   overflow-wrap: anywhere;
+  word-break: break-all;
 }
 
 .admin-users-card tbody tr {

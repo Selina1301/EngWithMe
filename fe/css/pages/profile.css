@@ -102,6 +102,8 @@ form.auth-card {
   font-weight: 800;
   line-height: 1.2;
   text-align: center;
+  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 
 .profile-email-line {

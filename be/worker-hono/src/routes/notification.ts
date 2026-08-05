@@ -208,10 +208,10 @@ const handleNotifications = async (c: any) => {
       const sql = `SELECT n.*, nr.is_deleted, nr.user_id as read_user_id 
              FROM notifications n 
              LEFT JOIN notification_reads nr ON n.id = nr.notification_id AND (nr.user_id = ? OR nr.user_id = ?) 
-             WHERE (n.user_id = ? OR n.user_id = ? OR n.user_id = ? OR (n.user_id = 'all' AND n.created_at >= ?) OR n.user_id IS NULL OR n.user_id = '') 
+             WHERE (n.user_id = ? OR n.user_id = ? OR n.user_id = ? OR (n.user_id = 'all' AND datetime(n.created_at) >= datetime(?)) OR n.user_id IS NULL OR n.user_id = '') 
                AND (n.status_tag IS NULL OR n.status_tag NOT IN ('Góp ý học viên', 'Báo cáo vi phạm', 'Hệ thống Admin')) 
              ORDER BY n.id DESC LIMIT ${limit}`;
-      const params = [userId, userEmail || userId, userId, userEmail || userId, token, userCreatedAt || '2000-01-01'];
+      const params = [userId, userEmail || userId, userId, userEmail || userId, token, userCreatedAt || '2000-01-01 00:00:00'];
 
       let res: any = null;
       try {
