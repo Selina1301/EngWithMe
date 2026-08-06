@@ -125,13 +125,22 @@ const handleCreatePayment = async (c: any) => {
     
     const payosData = await payosRes.json() as any;
     if (payosData && payosData.code === "00" && payosData.data) {
-      vietqrImage = payosData.data.qrCode || "";
+      let qrCodeRaw = payosData.data.qrCode || "";
+      if (qrCodeRaw.startsWith("000201")) {
+         vietqrImage = `https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${encodeURIComponent(qrCodeRaw)}`;
+      } else {
+         vietqrImage = qrCodeRaw;
+      }
       checkoutUrl = payosData.data.checkoutUrl || "";
     } else {
       console.error("PayOS Error:", payosData);
     }
   } catch (err) {
     console.error("PayOS Fetch Error:", err);
+  }
+
+  if (!vietqrImage) {
+    vietqrImage = `https://img.vietqr.io/image/MB-0971629106-compact2.png?amount=${amount}&addInfo=${encodeURIComponent(description)}&accountName=${encodeURIComponent("NGUYEN TUNG DUONG")}`;
   }
 
   if (c.env?.DB) {
@@ -160,8 +169,8 @@ const handleCreatePayment = async (c: any) => {
     vietqr_img: vietqrImage,
     bank_info: {
       bank_name: "MBBank (Ngân Hàng Quân Đội)",
-      account_number: accountNumber,
-      account_name: accountName
+      account_number: "0971629106",
+      account_name: "NGUYEN TUNG DUONG"
     },
     user_id: dbUser?.id || null
   });

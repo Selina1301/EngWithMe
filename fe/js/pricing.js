@@ -160,11 +160,14 @@ async function handleOpenPayment(plan, btn) {
     }
 
     if (cachedOrder && cachedOrder.result && cachedOrder.expireAt && cachedOrder.expireAt > Date.now()) {
-      renderPayosModal(cachedOrder.result, cachedOrder.expireAt, plan);
-      if (typeof startPaymentStatusPoller === "function") {
-        startPaymentStatusPoller(cachedOrder.result.orderCode || cachedOrder.result.order_code);
+      // Validate that the cached order has a proper image URL (not a raw VietQR string)
+      if (cachedOrder.result.vietqr_img && String(cachedOrder.result.vietqr_img).startsWith("http")) {
+        renderPayosModal(cachedOrder.result, cachedOrder.expireAt, plan);
+        if (typeof startPaymentStatusPoller === "function") {
+          startPaymentStatusPoller(cachedOrder.result.orderCode || cachedOrder.result.order_code);
+        }
+        return;
       }
-      return;
     }
 
     btn.disabled = true;
