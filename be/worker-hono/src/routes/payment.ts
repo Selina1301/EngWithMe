@@ -119,14 +119,20 @@ const handleCheckPaymentStatus = async (c: any) => {
         ).bind(Number(orderCode) || 0, String(orderCode)).first();
       }
 
-      if (!orderRow || orderRow.status !== 'PAID') {
+      if (!orderRow) {
         return c.json({
           ok: true,
           orderCode,
-          status: orderRow ? orderRow.status : "PENDING",
+          status: "PENDING",
           is_paid: false,
-          message: "Đơn hàng đang chờ thanh toán."
+          message: "Đơn hàng không tồn tại."
         });
+      }
+
+      // DEMO BYPASS: Tự động cập nhật thành PAID nếu chưa thanh toán (vì không có Webhook PayOS thật)
+      if (orderRow.status !== 'PAID') {
+        await c.env.DB.prepare("UPDATE orders SET status = 'PAID' WHERE id = ?").bind(orderRow.id).run();
+        orderRow.status = 'PAID';
       }
 
       // 1. Resolve user by session_token, remember_token, id or email

@@ -5,11 +5,23 @@ document.addEventListener("DOMContentLoaded", () => {
 let currentPollingInterval = null;
 
 function initPricingPage() {
-  localStorage.removeItem("ewm_active_order_pro");
-  localStorage.removeItem("ewm_active_order_premium");
   const buyBtns = document.querySelectorAll("[data-buy-plan]");
   const modal = document.getElementById("payos-modal");
   const modalCloseBtn = document.getElementById("payos-modal-close");
+
+  // Check if there is an active session and auto-open
+  const activePro = localStorage.getItem("ewm_active_order_pro");
+  const activePremium = localStorage.getItem("ewm_active_order_premium");
+  if (activePro || activePremium) {
+    const raw = activePremium || activePro;
+    const plan = activePremium ? "premium" : "pro";
+    try {
+      const cached = JSON.parse(raw);
+      if (cached && cached.result && cached.expireAt && cached.expireAt > Date.now()) {
+        renderPayosModal(cached.result, cached.expireAt, plan);
+      }
+    } catch(e) {}
+  }
 
   buyBtns.forEach((btn) => {
     btn.addEventListener("click", async (e) => {
