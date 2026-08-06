@@ -272,6 +272,13 @@ function applyAdminFilters(root) {
       }
     }
 
+    // 2. Role filter
+    if (filterRole !== "all") {
+      if (user.role !== filterRole) {
+        return false;
+      }
+    }
+
     // 3. Status filter
     if (filterStatus !== "all") {
       if (user.status !== filterStatus) {
