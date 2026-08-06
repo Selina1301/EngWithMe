@@ -102,8 +102,10 @@ form.auth-card {
   font-weight: 800;
   line-height: 1.2;
   text-align: center;
-  word-break: break-all;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .profile-email-line {
@@ -111,7 +113,10 @@ form.auth-card {
   color: #94a3b8;
   font-size: 0.88rem;
   text-align: center;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 /* Single Corner Pencil Edit Button */

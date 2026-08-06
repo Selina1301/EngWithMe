@@ -487,15 +487,23 @@ async function fetchWithSWR(url, cacheKey, onDataReady, options = {}) {
     try {
       const fetchOpts = { credentials: "same-origin", ...(options.fetchOptions || {}) };
       const headers = { ...(fetchOpts.headers || {}) };
-      const token = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token");
-      if (token && !headers["Authorization"]) {
-        headers["Authorization"] = `Bearer ${token}`;
+      const tokenAtRequest = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token");
+      if (tokenAtRequest && !headers["Authorization"]) {
+        headers["Authorization"] = `Bearer ${tokenAtRequest}`;
       }
       fetchOpts.headers = headers;
 
       const response = await fetch(targetUrl, fetchOpts);
       if (response.ok) {
         const result = await response.json();
+        
+        // Prevent race condition: If the token changed during the fetch (e.g. user just logged in or registered), abort!
+        const tokenNow = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token");
+        if (tokenAtRequest !== tokenNow) {
+          console.warn(`SWR aborted for ${targetUrl}: Auth token changed during request`);
+          return;
+        }
+
         if (result.ok) {
           const hasChanged = JSON.stringify(cachedData) !== JSON.stringify(result);
           AppCache.set(cacheKey, result);
@@ -824,7 +832,7 @@ function renderAuthenticatedNav(user) {
             <a href="profile.html#dashboard" role="menuitem" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; color: #e2e8f0; font-size: 13.5px; font-weight: 600; border-radius: 8px; text-decoration: none;">
               <span class="ti-user" style="color: #38bdf8; font-size: 15px;"></span> Profile
             </a>
-            <a href="javascript:void(0)" onclick="if(typeof openPaymentHistoryModal==='function'){openPaymentHistoryModal();}else{window.location.href='pricing.html';}" role="menuitem" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; color: #e2e8f0; font-size: 13.5px; font-weight: 600; border-radius: 8px; text-decoration: none;">
+            <a href="profile.html#payments" role="menuitem" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; color: #e2e8f0; font-size: 13.5px; font-weight: 600; border-radius: 8px; text-decoration: none;">
               <span class="ti-credit-card" style="color: #10b981; font-size: 15px;"></span> Payment
             </a>
             <a href="profile.html#notifications" role="menuitem" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; color: #e2e8f0; font-size: 13.5px; font-weight: 600; border-radius: 8px; text-decoration: none;">
@@ -1328,14 +1336,15 @@ function persistAuthUser(user) {
 
 function clearAuthUser() {
   try {
-    const keysToRemove = [
-      "engWithMeToken", "engWithMeAuthToken", "ewm_token", 
-      "engWithMeUserId", "user_id", "engWithMeUserEmail", 
-      "engWithMeStudentName", "engWithMeLevel", "engWithMeUserRole",
-      "engWithMeGoal", "engWithMeUserStatus", "engWithMeUserAvatar", 
-      "engWithMeUserIsVip", "engWithMeUserVipExpires", "engWithMeUserHasPassword",
-      "ewm_cache_me", "ewm_cache_notifications"
-    ];
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && (key.startsWith("engWithMe") || key.startsWith("ewm_") || key.startsWith("progress_") || key.startsWith("vocab_"))) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.push("user_id"); // Legacy key
+    
     keysToRemove.forEach((key) => localStorage.removeItem(key));
   } catch (e) {}
 

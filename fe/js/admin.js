@@ -339,6 +339,7 @@ function renderAdminUserRow(user, currentAdminId) {
             <option value="manager" ${userRole === "manager" ? "selected" : ""}>⭐ Manager</option>
             <option value="admin" ${userRole === "admin" ? "selected" : ""}>👑 Admin</option>
           </select>
+          ${String(user.is_vip) === "1" || user.is_vip === true ? actionButton("remove_vip", user.id, "Gỡ VIP", isSelf, "warning") : ""}
           ${user.status === "active"
             ? actionButton("lock", user.id, "Khóa", isSelf, "warning")
             : actionButton("unlock", user.id, "Mở khóa", false, "success")}
@@ -355,7 +356,8 @@ function actionButton(action, userId, label, disabled = false, tone = "") {
     unlock: "ti-unlock",
     make_admin: "ti-shield",
     make_user: "ti-user",
-    delete: "ti-trash"
+    delete: "ti-trash",
+    remove_vip: "ti-close"
   };
   const icon = icons[action] || "ti-settings";
   return `<button class="admin-action ${tone}" type="button" data-admin-action="${action}" data-user-id="${userId}" ${disabled ? "disabled" : ""}><span class="${icon}"></span>${label}</button>`;

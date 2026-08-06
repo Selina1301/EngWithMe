@@ -75,17 +75,7 @@ function initAuthForms() {
     }
   }
 
-  // Toggle Password Visibility
-  document.querySelectorAll(".toggle-password").forEach((toggleBtn) => {
-    toggleBtn.addEventListener("click", () => {
-      const input = toggleBtn.previousElementSibling;
-      if (!input || input.tagName !== "INPUT") return;
-      
-      const isPassword = input.type === "password";
-      input.type = isPassword ? "text" : "password";
-      toggleBtn.classList.toggle("slashed", !isPassword); // Add slash when visible (text)
-    });
-  });
+  // Toggle Password Visibility is now handled globally in core.js
 
   const forgotForm = document.querySelector("[data-forgot-form]");
   const resetForm = document.querySelector("[data-reset-form]");
@@ -233,7 +223,13 @@ function saveAuthenticatedUser(user) {
     const previousUserId = localStorage.getItem("engWithMeUserId");
     const currentUserId = String(user.id || "");
     if (previousUserId && previousUserId !== currentUserId && typeof clearAuthUser === "function") {
+      const savedToken = localStorage.getItem("engWithMeAuthToken");
+      const savedEmail = localStorage.getItem("engWithMeRememberedEmail");
+      
       clearAuthUser();
+      
+      if (savedToken) localStorage.setItem("engWithMeAuthToken", savedToken);
+      if (savedEmail) localStorage.setItem("engWithMeRememberedEmail", savedEmail);
     }
   } catch (e) {}
 
@@ -406,12 +402,14 @@ function openOtpModal(email, originalForm, isLoginOtp = false, initialMsg = "") 
   };
   
   // Cancel button
-  document.getElementById("cancelOtpBtn").onclick = (e) => {
-    e.preventDefault();
-    clearInterval(window.otpInterval);
-    otpModal.style.display = "none";
-  };
-  
+  const cancelBtn = document.getElementById("btnCancelOtp") || document.getElementById("cancelOtpBtn");
+  if (cancelBtn) {
+    cancelBtn.onclick = (e) => {
+      e.preventDefault();
+      clearInterval(window.otpInterval);
+      otpModal.style.display = "none";
+    };
+  }
   // Submit OTP Verification Form
   const otpVerifyForm = document.getElementById("otpVerifyForm");
   otpVerifyForm.onsubmit = async (e) => {
@@ -462,6 +460,9 @@ function openOtpModal(email, originalForm, isLoginOtp = false, initialMsg = "") 
         } else if (isLoginOtp) {
           localStorage.removeItem("engWithMeRememberedEmail");
         }
+      }
+      if (res.token) {
+        localStorage.setItem("engWithMeAuthToken", res.token);
       }
       saveAuthenticatedUser(res.user);
       document.getElementById("otpErrorMsg").textContent = res.message;

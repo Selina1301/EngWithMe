@@ -158,6 +158,8 @@ adminApp.post("/admin_users.php", async (c) => {
         try { await c.env.DB.prepare("DELETE FROM blogs WHERE user_id = ? OR user_id = ?").bind(tId, tEmail).run(); } catch (e) {}
         try { await c.env.DB.prepare("DELETE FROM orders WHERE user_id = ? OR user_email = ? OR user_id = ? OR user_email = ?").bind(tId, tEmail, userId, userId).run(); } catch (e) {}
         try { await c.env.DB.prepare("DELETE FROM users WHERE id = ? OR email = ? OR id = ? OR email = ?").bind(tId, tEmail, userId, userId).run(); } catch (e) {}
+      } else if (action === "remove_vip") {
+        await c.env.DB.prepare("UPDATE users SET is_vip = 0, vip_expires_at = NULL WHERE id = ? OR email = ?").bind(userId, userId).run();
       } else if (action === "lock") {
         await c.env.DB.prepare("UPDATE users SET status = 'locked' WHERE id = ? OR email = ?").bind(userId, userId).run();
       } else if (action === "unlock") {
@@ -630,7 +632,7 @@ adminApp.post("/update_order_status.php", async (c) => {
 });
 
 // POST /v1/admin/clear_test_orders.php -> Clear test/demo orders from DB
-adminApp.post("/clear_test_orders.php", async (c) => {
+const handleClearTestOrders = async (c: any) => {
   if (!c.env?.DB) {
     return c.json({ ok: false, message: "Không tìm thấy cơ sở dữ liệu D1." }, 500);
   }
@@ -640,6 +642,11 @@ adminApp.post("/clear_test_orders.php", async (c) => {
   } catch (e) {
     return c.json({ ok: false, message: "Lỗi làm sạch dữ liệu đơn hàng." }, 500);
   }
-});
+};
+
+adminApp.post("/clear_test_orders.php", handleClearTestOrders);
+adminApp.post("/v1/admin/clear_test_orders.php", handleClearTestOrders);
+adminApp.post("/v1/clear_test_orders.php", handleClearTestOrders);
+adminApp.post("/clear_test_orders", handleClearTestOrders);
 
 export default adminApp;

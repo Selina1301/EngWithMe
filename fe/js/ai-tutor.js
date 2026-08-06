@@ -59,8 +59,12 @@
     container.id = 'engwithme-ai-tutor';
     container.innerHTML = `
       <button class="ai-toggle-btn" id="ai-toggle-trigger" type="button">
-        <span class="badge-pulse"></span>
-        <span>🤖 Trợ Lý AI</span>
+        <div class="ai-btn-glow"></div>
+        <div class="ai-btn-content">
+          <span class="ai-btn-icon">✨</span>
+          <span class="ai-btn-text">Trợ Lý AI</span>
+          <span class="badge-pulse"></span>
+        </div>
       </button>
       <div class="ai-chat-window" id="ai-chat-box" style="opacity: 0; visibility: hidden; pointer-events: none;">
         <div class="ai-header">

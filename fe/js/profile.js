@@ -467,17 +467,7 @@ function initPasswordStrength() {
     }
   });
 
-  // Toggle Password Eye Icons
-  document.querySelectorAll(".input-password-wrapper .toggle-password").forEach((toggleBtn) => {
-    toggleBtn.addEventListener("click", () => {
-      const input = toggleBtn.previousElementSibling;
-      if (!input || input.tagName !== "INPUT") return;
-      const isPassword = input.type === "password";
-      input.type = isPassword ? "text" : "password";
-      toggleBtn.classList.toggle("ti-eye", !isPassword);
-      toggleBtn.classList.toggle("ti-close", isPassword);
-    });
-  });
+  // Toggle Password Eye Icons is handled globally by core.js
 }
 
 function fillProfileForm(form, user) {

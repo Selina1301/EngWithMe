@@ -8,48 +8,123 @@
 }
 
 .ai-toggle-btn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+  position: relative;
+  padding: 14px 24px;
+  background: rgba(18, 24, 38, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: #ffffff;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 50px;
   font-weight: 600;
-  font-size: 0.95rem;
-  box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.4), 0 8px 10px -6px rgba(99, 102, 241, 0.3);
+  font-size: 1rem;
+  box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(168, 85, 247, 0.3);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  display: block;
+}
+
+.ai-btn-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899, #6366f1);
+  background-size: 300% 100%;
+  animation: bg-shift 4s linear infinite;
+  opacity: 0.15;
+  z-index: 1;
+  transition: opacity 0.4s ease;
+}
+
+.ai-toggle-btn:hover .ai-btn-glow {
+  opacity: 0.6;
+}
+
+@keyframes bg-shift {
+  0% { background-position: 0% 0; }
+  100% { background-position: 300% 0; }
+}
+
+.ai-btn-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ai-btn-icon {
+  font-size: 1.2rem;
+  animation: float-icon 3s ease-in-out infinite;
+}
+
+@keyframes float-icon {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.ai-btn-text {
+  background: linear-gradient(to right, #e2e8f0, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 10px rgba(255,255,255,0.1);
+  letter-spacing: 0.3px;
 }
 
 .ai-toggle-btn:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 15px 30px -5px rgba(168, 85, 247, 0.6), 0 10px 15px -5px rgba(99, 102, 241, 0.4);
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(168, 85, 247, 0.6);
+  box-shadow: 0 15px 30px -5px rgba(168, 85, 247, 0.4), 0 0 15px rgba(168, 85, 247, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
 .ai-toggle-btn .badge-pulse {
-  width: 8px;
-  height: 8px;
-  background-color: #22c55e;
+  width: 10px;
+  height: 10px;
+  background-color: #10b981;
   border-radius: 50%;
-  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
   animation: pulse-green 2s infinite;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  margin-left: 2px;
 }
 
 @keyframes pulse-green {
   0% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
   }
   70% {
     transform: scale(1);
-    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
   }
   100% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
   }
+}
+
+/* Orb shine effect */
+.ai-toggle-btn::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.4s, transform 0.6s ease-out;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ai-toggle-btn:hover::after {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .ai-chat-window {

@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
 let currentPollingInterval = null;
 
 function initPricingPage() {
+  localStorage.removeItem("ewm_active_order_pro");
+  localStorage.removeItem("ewm_active_order_premium");
   const buyBtns = document.querySelectorAll("[data-buy-plan]");
   const modal = document.getElementById("payos-modal");
   const modalCloseBtn = document.getElementById("payos-modal-close");
@@ -553,125 +555,6 @@ function closePayosModal() {
   const modal = document.getElementById("payos-modal");
   if (modal) modal.classList.remove("active");
 }
-
-/* Global Payment History Modal & Manual Re-verification */
-window.openPaymentHistoryModal = async function () {
-  let modal = document.getElementById("custom-payment-history-modal");
-  if (!modal) {
-    modal = document.createElement("div");
-    modal.id = "custom-payment-history-modal";
-    modal.style.cssText = "position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(2, 6, 23, 0.88); backdrop-filter: blur(14px); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;";
-    document.body.appendChild(modal);
-  }
-
-  const storedToken = localStorage.getItem("engWithMeAuthToken") || localStorage.getItem("ewm_token") || "";
-  if (!storedToken) {
-    if (typeof showCustomPricingModal === "function") {
-      showCustomPricingModal({
-        title: "Yêu Cầu Đăng Nhập",
-        message: "Vui lòng đăng nhập để xem lịch sử giao dịch thanh toán!",
-        icon: "🔑",
-        buttonText: "🔑 Đăng Nhập Ngay",
-        onConfirm: () => { window.location.href = "login.html?redirect=pricing.html"; }
-      });
-    } else {
-      alert("Vui lòng đăng nhập để xem lịch sử giao dịch!");
-      window.location.href = "login.html";
-    }
-    return;
-  }
-
-  modal.innerHTML = `
-    <div style="background: #0f172a; border: 1.5px solid rgba(56, 189, 248, 0.4); border-radius: 20px; max-width: 680px; width: 100%; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.8); position: relative;">
-      <div style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between; background: rgba(15, 23, 42, 0.95);">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 1.4rem;">💳</span>
-          <h3 style="color: #ffffff; font-size: 1.25rem; font-weight: 800; margin: 0;">Lịch Sử Giao Dịch Ngân Hàng</h3>
-        </div>
-        <button type="button" class="close-btn" style="background: rgba(255,255,255,0.08); border: none; color: #94a3b8; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 1rem;">✕</button>
-      </div>
-
-      <div class="history-content-body" style="padding: 20px 24px; overflow-y: auto; flex: 1;">
-        <div style="text-align: center; color: #94a3b8; padding: 30px;"><span class="ti-reload spin"></span> Đang tải lịch sử giao dịch...</div>
-      </div>
-    </div>
-  `;
-
-  modal.style.display = "flex";
-  modal.querySelector(".close-btn").onclick = () => { modal.style.display = "none"; };
-  modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
-
-  try {
-    let result = null;
-    if (window.apiClient && window.apiClient.request) {
-      result = await window.apiClient.request("payment/user_transactions.php");
-    } else {
-      const apiBase = (window.EWM_CONFIG && window.EWM_CONFIG.API_BASE_URL)
-        ? window.EWM_CONFIG.API_BASE_URL
-        : "https://api.tungf.io.vn/v1/";
-      const url = `${apiBase.replace(/\/$/, '')}/payment/user_transactions.php?auth_token=${encodeURIComponent(storedToken)}`;
-      const res = await fetch(url, { headers: { "Authorization": `Bearer ${storedToken}` } });
-      result = await res.json();
-    }
-
-    const contentBody = modal.querySelector(".history-content-body");
-    if (!result || !result.ok || !Array.isArray(result.orders) || result.orders.length === 0) {
-      contentBody.innerHTML = `
-        <div style="text-align: center; color: #94a3b8; padding: 40px 20px;">
-          <div style="font-size: 2.5rem; margin-bottom: 12px;">🧾</div>
-          <p style="font-size: 1rem; color: #cbd5e1;">Bạn chưa có giao dịch đăng ký gói học nào.</p>
-        </div>
-      `;
-      return;
-    }
-
-    contentBody.innerHTML = result.orders.map(ord => {
-      const statusUpper = String(ord.status || "PENDING").toUpperCase();
-      let statusBadge = `<span style="background: rgba(234, 179, 8, 0.15); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.3); font-size: 12px; padding: 3px 10px; border-radius: 99px; font-weight: 700;">⏳ Đang Chờ</span>`;
-      if (statusUpper === "PAID" || statusUpper === "SUCCESS") {
-        statusBadge = `<span style="background: rgba(16, 185, 129, 0.15); color: #00ff87; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 12px; padding: 3px 10px; border-radius: 99px; font-weight: 700;">✅ Đã Thanh Toán</span>`;
-      } else if (statusUpper === "CANCELLED" || statusUpper === "EXPIRED") {
-        statusBadge = `<span style="background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); font-size: 12px; padding: 3px 10px; border-radius: 99px; font-weight: 700;">❌ Đã Hủy</span>`;
-      }
-
-      const isPending = statusUpper === "PENDING";
-      const bank = ord.bank_info || { bank_name: "MBBank", account_number: "0971629106", account_name: "NGUYEN TUNG DUONG" };
-
-      return `
-        <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px; margin-bottom: 14px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-            <div>
-              <strong style="color: #38bdf8; font-family: monospace; font-size: 14px;">#${ord.order_code}</strong>
-              <div style="color: #ffffff; font-weight: 700; font-size: 15px; margin-top: 2px;">${ord.plan_name}</div>
-            </div>
-            <div style="text-align: right;">
-              <div style="color: #ffd700; font-weight: 800; font-size: 16px;">${ord.amount_formatted}</div>
-              <div style="margin-top: 4px;">${statusBadge}</div>
-            </div>
-          </div>
-          
-          <div style="font-size: 12.5px; color: #94a3b8; line-height: 1.5; background: rgba(15, 23, 42, 0.6); padding: 10px 12px; border-radius: 8px; margin-bottom: ${isPending ? '10px' : '0'};">
-            <div>• Ngân hàng: <strong style="color: #e2e8f0;">${bank.bank_name}</strong></div>
-            <div>• STK: <strong style="color: #38bdf8; font-family: monospace;">${bank.account_number}</strong> (${bank.account_name})</div>
-            <div>• Cú pháp CK: <strong style="color: #ff7b00; font-family: monospace;">${ord.description}</strong></div>
-            <div>• Thời gian: <span style="color: #cbd5e1;">${ord.created_at || "Vừa xong"}</span></div>
-          </div>
-
-          ${isPending ? `
-            <div style="display: flex; gap: 8px; justify-content: flex-end;">
-              <button type="button" onclick="verifyOrderManual(${ord.order_code}, this)" style="background: linear-gradient(135deg, #10b981, #059669); color: #ffffff; border: none; padding: 7px 14px; border-radius: 8px; font-weight: 700; font-size: 12.5px; cursor: pointer;">
-                🔍 Kiểm Tra Lại
-              </button>
-            </div>
-          ` : ''}
-        </div>
-      `;
-    }).join("");
-
-  } catch (err) {
-    console.error("[Transaction History Error]", err);
-  }
-};
 
 window.verifyOrderManual = async function (orderCode, btn) {
   const origText = btn.innerHTML;

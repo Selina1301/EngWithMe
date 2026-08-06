@@ -117,10 +117,16 @@ const handleCheckPaymentStatus = async (c: any) => {
         orderRow = await c.env.DB.prepare(
           "SELECT * FROM orders WHERE order_code = ? OR order_code = ?"
         ).bind(Number(orderCode) || 0, String(orderCode)).first();
+      }
 
-        await c.env.DB.prepare(
-          "UPDATE orders SET status = 'PAID' WHERE order_code = ? OR order_code = ?"
-        ).bind(Number(orderCode) || 0, String(orderCode)).run();
+      if (!orderRow || orderRow.status !== 'PAID') {
+        return c.json({
+          ok: true,
+          orderCode,
+          status: orderRow ? orderRow.status : "PENDING",
+          is_paid: false,
+          message: "Đơn hàng đang chờ thanh toán."
+        });
       }
 
       // 1. Resolve user by session_token, remember_token, id or email
@@ -152,10 +158,6 @@ const handleCheckPaymentStatus = async (c: any) => {
       }
 
       if (dbUser) {
-        await c.env.DB.prepare(
-          "UPDATE users SET is_vip = 1, vip_expires_at = ? WHERE id = ?"
-        ).bind(expiresAt, dbUser.id).run();
-
         dbUser.is_vip = 1;
         dbUser.vip_expires_at = expiresAt;
       }
