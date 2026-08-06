@@ -60,7 +60,10 @@ app.route("/v1/ai", aiApp);
 // Helper to forward top-level legacy route aliases (/v1/login.php) to sub-apps (/v1/auth/login.php)
 const forwardTo = (subApp: any, prefix: string) => async (c: any) => {
   const url = new URL(c.req.url);
-  url.pathname = url.pathname.replace("/v1/", `/v1/${prefix}/`);
+  const match = url.pathname.match(/\/([^/]+)$/);
+  if (match) {
+    url.pathname = "/" + match[1];
+  }
   const isPost = c.req.method !== "GET" && c.req.method !== "HEAD";
   const reqInit: any = {
     method: c.req.method,
