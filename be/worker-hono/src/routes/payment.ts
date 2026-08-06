@@ -7,6 +7,54 @@ type Bindings = {
 
 const paymentApp = new Hono<{ Bindings: Bindings }>();
 
+const PAYOS_CLIENT_ID = "f3ac6ab0-612e-4bb0-b53a-d883cbd4eff0";
+const PAYOS_API_KEY = "fab8a588-3f9c-4159-ad25-bbccf9721701";
+const PAYOS_CHECKSUM_KEY = "dc77a3c14beb5d1683fd1eeca0b8c0c840d7aff558fd1a050f7f12def57c4866";
+
+async function createPayosSignature(data: any, checksumKey: string): Promise<string> {
+  const sigFields = ["amount", "cancelUrl", "description", "orderCode", "returnUrl"];
+  const sigData: string[] = [];
+  sigFields.forEach((field) => {
+    if (data[field] !== undefined && data[field] !== null) {
+      sigData.push(`${field}=${data[field]}`);
+    }
+  });
+  const queryStr = sigData.join("&");
+  
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(checksumKey);
+  const cryptoKey = await crypto.subtle.importKey(
+    "raw",
+    keyData,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  
+  const signatureBuffer = await crypto.subtle.sign("HMAC", cryptoKey, encoder.encode(queryStr));
+  return Array.from(new Uint8Array(signatureBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function verifyPayosWebhookSignature(data: any, signature: string, checksumKey: string): Promise<boolean> {
+  const sortedKeys = Object.keys(data).sort();
+  const dataToSign: string[] = [];
+  for (const key of sortedKeys) {
+    if (data[key] !== null && data[key] !== undefined && typeof data[key] !== "object") {
+      dataToSign.push(`${key}=${data[key]}`);
+    } else if (data[key] !== null && data[key] !== undefined) {
+      dataToSign.push(`${key}=${JSON.stringify(data[key])}`);
+    }
+  }
+  const queryStr = dataToSign.join("&");
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(checksumKey);
+  const cryptoKey = await crypto.subtle.importKey("raw", keyData, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const signatureBuffer = await crypto.subtle.sign("HMAC", cryptoKey, encoder.encode(queryStr));
+  const calcSig = Array.from(new Uint8Array(signatureBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+  return calcSig === signature;
+}
+
+
 // Helper to ensure D1 orders table exists
 const ensureOrdersTable = async (db: D1Database) => {
   try {
@@ -50,12 +98,41 @@ const handleCreatePayment = async (c: any) => {
   const isPremium = plan === "premium";
   const amount = isPremium ? 999999 : 7777;
   const planName = isPremium ? "Gói Premium VIP Trọn Đời - 999.999đ" : "Gói Pro - 7.777đ";
-  const description = `EngWithMe ${plan.toUpperCase()} ${orderCode}`.slice(0, 25);
+  const description = `EngWithMe ${orderCode}`.slice(0, 25);
   
-  const bankShort = "MB";
-  const accountNumber = "0971629106";
-  const accountName = "NGUYEN TUNG DUONG";
-  const vietqrImage = `https://img.vietqr.io/image/${bankShort}-${accountNumber}-compact2.png?amount=${amount}&addInfo=${encodeURIComponent(description)}&accountName=${encodeURIComponent(accountName)}`;
+  const payload = {
+    orderCode,
+    amount,
+    description,
+    cancelUrl: "https://engwithme.tungf.io.vn/pricing.html",
+    returnUrl: "https://engwithme.tungf.io.vn/pricing.html"
+  };
+
+  let vietqrImage = "";
+  let checkoutUrl = "";
+
+  try {
+    const signature = await createPayosSignature(payload, PAYOS_CHECKSUM_KEY);
+    const payosRes = await fetch("https://api-merchant.payos.vn/v2/payment-requests", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-client-id": PAYOS_CLIENT_ID,
+        "x-api-key": PAYOS_API_KEY
+      },
+      body: JSON.stringify({ ...payload, signature })
+    });
+    
+    const payosData = await payosRes.json() as any;
+    if (payosData && payosData.code === "00" && payosData.data) {
+      vietqrImage = payosData.data.qrCode || "";
+      checkoutUrl = payosData.data.checkoutUrl || "";
+    } else {
+      console.error("PayOS Error:", payosData);
+    }
+  } catch (err) {
+    console.error("PayOS Fetch Error:", err);
+  }
 
   if (c.env?.DB) {
     try {
@@ -119,21 +196,17 @@ const handleCheckPaymentStatus = async (c: any) => {
         ).bind(Number(orderCode) || 0, String(orderCode)).first();
       }
 
-      if (!orderRow) {
+      if (!orderRow || orderRow.status !== 'PAID') {
         return c.json({
           ok: true,
           orderCode,
-          status: "PENDING",
+          status: orderRow ? orderRow.status : "PENDING",
           is_paid: false,
-          message: "Đơn hàng không tồn tại."
+          message: "Đơn hàng đang chờ thanh toán."
         });
       }
 
-      // DEMO BYPASS: Tự động cập nhật thành PAID nếu chưa thanh toán (vì không có Webhook PayOS thật)
-      if (orderRow.status !== 'PAID') {
-        await c.env.DB.prepare("UPDATE orders SET status = 'PAID' WHERE id = ?").bind(orderRow.id).run();
-        orderRow.status = 'PAID';
-      }
+      
 
       // 1. Resolve user by session_token, remember_token, id or email
       if (token) {
