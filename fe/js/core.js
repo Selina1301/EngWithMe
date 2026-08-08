@@ -178,9 +178,9 @@ function getEnhancedFooterMarkup() {
       ])}
 
       ${getFooterColumnMarkup("Hỗ trợ", [
-        ["index.html#contact", "ti-help-alt", "Trung tâm hỗ trợ"],
+        ["index.html#contact-admin", "ti-help-alt", "Trung tâm hỗ trợ"],
         ["pricing.html", "ti-credit-card", "Gói Premium"],
-        ["index.html#contact", "ti-email", "Liên hệ"]
+        ["index.html#contact-admin", "ti-email", "Liên hệ"]
       ])}
     </section>
 
@@ -211,7 +211,7 @@ function getEnhancedFooterMarkup() {
       <nav aria-label="Liên kết pháp lý">
         <a href="javascript:void(0)" onclick="document.getElementById('termsModal').style.display='flex'">Điều khoản</a>
         <a href="javascript:void(0)" onclick="document.getElementById('termsModal').style.display='flex'">Bảo mật</a>
-        <a href="index.html#contact">Liên hệ</a>
+        <a href="index.html#contact-admin">Liên hệ</a>
       </nav>
       <p class="footer-made">© <span data-current-year></span> EngWithMe. Made in Vietnam.</p>
     </section>
