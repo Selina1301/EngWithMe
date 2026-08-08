@@ -151,6 +151,10 @@
   border-radius: 12px;
 }
 
+.contact-form .feedback:empty {
+  display: none;
+}
+
 @media (max-width: 980px) {
   .contact-layout {
     grid-template-columns: 1fr;
