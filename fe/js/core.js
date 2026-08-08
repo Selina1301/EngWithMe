@@ -220,7 +220,7 @@ function getEnhancedFooterMarkup() {
     <div id="termsModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
       <div class="modal-content" style="background: #0b1220; border: 1px solid rgba(46, 232, 120, 0.3); border-radius: 16px; padding: 32px; max-width: 600px; width: 90%; color: #fff; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
         <h2 style="text-align: center; margin-top: 0; color: #70f59d; font-size: 24px;">EngWithMe - Điều khoản</h2>
-        <div style="text-align: left; max-height: 50vh; overflow-y: auto; padding-right: 10px; margin: 24px 0;">
+        <div style="text-align: left; max-height: 80vh; overflow-y: auto; padding-right: 10px; margin: 24px 0;">
           <h3 style="color: #38bdf8; font-size: 16px; margin-top: 0; margin-bottom: 8px;">Quy tắc ứng xử chung</h3>
           <ul style="line-height: 1.8; margin: 0 0 16px 0; padding-left: 20px; color: #e2e8f0; font-size: 15px;">
             <li><strong>Tôn trọng:</strong> Cư xử lịch sự, không xúc phạm hay gây gổ với người khác.</li>
