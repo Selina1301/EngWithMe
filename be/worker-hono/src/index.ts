@@ -89,6 +89,7 @@ app.all("/v1/reset_password.php", forwardTo(authApp, "auth"));
 app.all("/v1/me.php", forwardTo(userApp, "user"));
 app.all("/v1/profile.php", forwardTo(userApp, "user"));
 app.all("/v1/change_password.php", forwardTo(userApp, "user"));
+app.all("/v1/user_payments.php", forwardTo(userApp, "user"));
 
 app.all("/v1/admin_users.php", forwardTo(adminApp, "admin"));
 app.all("/v1/admin_reports.php", forwardTo(adminApp, "admin"));

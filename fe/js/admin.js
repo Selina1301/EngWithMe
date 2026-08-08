@@ -1217,18 +1217,81 @@ async function fetchAndRenderStudentFeedbacks() {
     }
 
     container.innerHTML = feedbacks.map((fb) => `
-      <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+      <div id="feedback-card-${fb.id}" style="background: ${fb.is_read ? 'rgba(30, 41, 59, 0.3)' : 'rgba(30, 41, 59, 0.7)'}; border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px; opacity: ${fb.is_read ? '0.6' : '1'}; transition: all 0.3s ease;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 8px;">
           <strong style="color: #a855f7; font-size: 15px;">${escapeHtml(fb.title)}</strong>
           <span style="font-size: 12px; color: #94a3b8;">${formatDateTime(fb.created_at)}</span>
         </div>
-        <p style="color: #e2e8f0; font-size: 14px; margin: 0; line-height: 1.5;">${escapeHtml(fb.message)}</p>
+        <p style="color: #e2e8f0; font-size: 14px; margin: 0; line-height: 1.5; flex-grow: 1;">${escapeHtml(fb.message)}</p>
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
+            ${fb.is_read ? '' : `<button onclick="markFeedbackRead(${fb.id})" style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #10b981; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; transition: all 0.2s ease;">✓ Đã đọc</button>`}
+            <button onclick="deleteFeedback(${fb.id})" style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #ef4444; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; transition: all 0.2s ease;">🗑 Xóa</button>
+        </div>
       </div>
     `).join("");
   } catch (err) {
     container.innerHTML = `<div style="text-align: center; color: var(--danger); padding: 16px;">Lỗi tải danh sách góp ý của học viên.</div>`;
   }
 }
+
+window.markFeedbackRead = async function(id) {
+  try {
+    const fetcher = typeof fetchAuth === "function" ? fetchAuth : fetch;
+    const res = await fetcher("api/student_feedbacks.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "read", id })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      fetchAndRenderStudentFeedbacks();
+    } else {
+      alert(data.message || "Lỗi khi đánh dấu đã đọc.");
+    }
+  } catch (err) {
+    alert("Lỗi kết nối máy chủ.");
+  }
+};
+
+window.deleteFeedback = async function(id) {
+  if (!confirm("Bạn có chắc chắn muốn xóa góp ý này?")) return;
+  try {
+    const fetcher = typeof fetchAuth === "function" ? fetchAuth : fetch;
+    const res = await fetcher("api/student_feedbacks.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "delete", id })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      fetchAndRenderStudentFeedbacks();
+    } else {
+      alert(data.message || "Lỗi khi xóa góp ý.");
+    }
+  } catch (err) {
+    alert("Lỗi kết nối máy chủ.");
+  }
+};
+
+window.deleteAllFeedbacks = async function() {
+  if (!confirm("Bạn có chắc chắn muốn xóa TẤT CẢ góp ý? Hành động này không thể hoàn tác.")) return;
+  try {
+    const fetcher = typeof fetchAuth === "function" ? fetchAuth : fetch;
+    const res = await fetcher("api/student_feedbacks.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "delete_all" })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      fetchAndRenderStudentFeedbacks();
+    } else {
+      alert(data.message || "Lỗi khi xóa tất cả góp ý.");
+    }
+  } catch (err) {
+    alert("Lỗi kết nối máy chủ.");
+  }
+};
 
 /* ==========================================================================
    💳 ADMIN PAYMENTS & REVENUE ANALYTICS DASHBOARD

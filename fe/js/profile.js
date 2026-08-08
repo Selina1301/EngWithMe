@@ -98,59 +98,16 @@ async function initProfile() {
 
   // 6. Xử lý Submit Form Cập nhật Thông tin cá nhân (Save & Back)
   if (profileForm) {
-    let lastSubmitAction = "save_and_back";
-    
-    profileForm.querySelectorAll('[data-submit-action]').forEach((btn) => {
-      btn.addEventListener("click", () => {
-        lastSubmitAction = btn.dataset.submitAction || "save_and_back";
-      });
+    profileForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      await handleProfileUpdate(profileForm);
     });
+  }
 
-    profileForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const submitBtns = profileForm.querySelectorAll('button[type="submit"]');
-
-      try {
-        submitBtns.forEach((btn) => {
-          btn.disabled = true;
-        });
-
-        const response = await fetch("api/profile.php", {
-          method: "POST",
-          body: new FormData(profileForm),
-          credentials: "same-origin"
-        });
-        const result = await response.json();
-
-        if (!response.ok || !result.ok) {
-          showProfileFeedback(profileForm, result.message || "Không thể lưu hồ sơ.", false);
-          return;
-        }
-
-        if (typeof persistAuthUser === "function") {
-          persistAuthUser(result.user);
-        }
-        fillProfileForm(profileForm, result.user);
-        if (typeof renderAuthenticatedNav === "function") {
-          renderAuthenticatedNav(result.user);
-        }
-        showProfileFeedback(profileForm, result.message || "Đã lưu hồ sơ cá nhân thành công!", true);
-
-        // Nếu bấm "Save & Back" -> Tự động chuyển về trang Tổng quan Profile
-        if (lastSubmitAction === "save_and_back") {
-          setTimeout(() => {
-            const dashboardTabBtn = document.querySelector('[data-tab-target="dashboard"]');
-            dashboardTabBtn?.click();
-          }, 600);
-        }
-      } catch (error) {
-        showProfileFeedback(profileForm, "Không thể kết nối đến máy chủ.", false);
-      } finally {
-        submitBtns.forEach((btn) => {
-          btn.disabled = false;
-        });
-      }
-    });
+  // 7. Cập nhật Lịch sử Thanh toán
+  const refreshPaymentBtn = document.getElementById("btn-refresh-user-payments");
+  if (refreshPaymentBtn && typeof fetchAndRenderUserPayments === "function") {
+    refreshPaymentBtn.addEventListener("click", fetchAndRenderUserPayments);
   }
 
   // 7. Xử lý Submit Form Đổi/Tạo mật khẩu & Chống Copy-Paste bảo mật
@@ -333,11 +290,14 @@ function initProfileTabs() {
       content.classList.toggle("active", content.id === `tab-${tabId}`);
     });
 
-    if (tabId === "dashboard" && typeof renderDashboardProgressUI === "function") {
+    if (tabId === "dashboard") {
       renderDashboardProgressUI();
     }
     if (tabId === "notifications" && typeof fetchAndRenderProfileNotificationHistory === "function") {
       fetchAndRenderProfileNotificationHistory();
+    }
+    if (tabId === "payments" && typeof fetchAndRenderUserPayments === "function") {
+      fetchAndRenderUserPayments();
     }
   }
 
@@ -514,29 +474,6 @@ function renderProfileAvatars(user) {
   }
 }
 
-function updatePasswordFormForGoogleUser(user) {
-  if (!user) return;
-  const currentPasswordGroup = document.getElementById("currentPasswordGroup");
-  const passwordTitle = document.querySelector("[data-password-title]");
-  const passwordSubmitBtn = document.querySelector('[data-password-form] button[type="submit"]');
-
-  const isGoogle = user.is_google === 1 || user.is_google === "1" || user.auth_provider === "google";
-  const hasPasswordLocal = localStorage.getItem("engWithMeUserHasPassword");
-  const hasPassword = (user.has_password === 1 || user.has_password === "1" || user.has_password === true || hasPasswordLocal === "1");
-
-  if (isGoogle && !hasPassword) {
-    // Mode 1: TẠO MẬT KHẨU RIÊNG (Không cần nhập mật khẩu hiện tại!)
-    if (currentPasswordGroup) currentPasswordGroup.style.display = "none";
-    if (passwordTitle) passwordTitle.textContent = "🔑 Tạo mật khẩu riêng cho tài khoản Google";
-    if (passwordSubmitBtn) passwordSubmitBtn.innerHTML = '<span class="ti-key"></span> Tạo mật khẩu bảo mật';
-  } else {
-    // Mode 2: ĐỔI MẬT KHẨU BẢO MẬT (Yêu cầu mật khẩu hiện tại)
-    if (currentPasswordGroup) currentPasswordGroup.style.display = "block";
-    if (passwordTitle) passwordTitle.textContent = "🔑 Đổi mật khẩu bảo mật";
-    if (passwordSubmitBtn) passwordSubmitBtn.innerHTML = '<span class="ti-key"></span> Cập nhật mật khẩu bảo mật';
-  }
-}
-
 function showProfileFeedback(container, message, isSuccess = true) {
   const feedback = container.querySelector("[data-auth-feedback], [data-password-feedback]");
   if (feedback) {
@@ -566,86 +503,70 @@ function showProfileFeedback(container, message, isSuccess = true) {
   }
 }
 
-function renderDashboardProgressUI() {
-  const accountKeyFn = typeof getAccountKey === "function" ? getAccountKey : (k) => k;
+async function renderDashboardProgressUI() {
+  const fetcher = typeof fetchAuth === "function" ? fetchAuth : fetch;
+  const baseUrl = (typeof API_BASE_URL !== "undefined") ? API_BASE_URL : "";
 
   // 1. Vocabulary (Total: 468 words across 39 topics)
-  let masteredVocab = [];
+  let vocabCount = 0;
   try {
-    const raw = localStorage.getItem(accountKeyFn("engWithMeSavedVocabularyWords")) || 
-                localStorage.getItem("engWithMeSavedVocabularyWords") || "[]";
-    masteredVocab = JSON.parse(raw);
-    if (!Array.isArray(masteredVocab)) masteredVocab = [];
-  } catch (e) {
-    masteredVocab = [];
-  }
-  const vocabCount = masteredVocab.length;
+    const vRes = await fetcher(`${baseUrl}api/sync_vocab.php`);
+    if (vRes.ok) {
+      const vData = await vRes.json();
+      if (vData && Array.isArray(vData.words)) vocabCount = vData.words.length;
+    }
+  } catch(e) {}
   const vocabTotal = 468;
   const vocabPercent = Math.min(100, Math.round((vocabCount / vocabTotal) * 100));
 
-  // 2. Listening (Total: 100 sessions = 78 Topic + 22 TOEIC)
+  // 2. Tiến độ chung: listening, grammar
   let listeningCount = 0;
+  let grammarCount = 0;
   try {
-    const rawState = localStorage.getItem(accountKeyFn("engWithMeListeningLabState")) || 
-                     localStorage.getItem("engWithMeListeningLabState");
-    if (rawState) {
-      const parsed = JSON.parse(rawState);
-      if (parsed && parsed.completed) {
-        if (Array.isArray(parsed.completed)) {
-          listeningCount = parsed.completed.length;
-        } else if (typeof parsed.completed === "object") {
-          listeningCount = Object.keys(parsed.completed).filter((k) => parsed.completed[k]).length;
-        }
+    const pRes = await fetcher(`${baseUrl}api/sync_progress.php`);
+    if (pRes.ok) {
+      const pData = await pRes.json();
+      if (pData && Array.isArray(pData.progress)) {
+        pData.progress.forEach(p => {
+          if (p.topic_id && p.topic_id.startsWith("listening_")) {
+            listeningCount++;
+          }
+          if (p.topic_id && p.topic_id.startsWith("grammar_")) {
+            grammarCount++;
+          }
+        });
       }
     }
-    const rawList = localStorage.getItem(accountKeyFn("engWithMeListeningProgress")) || 
-                    localStorage.getItem("engWithMeListeningProgress");
-    if (rawList) {
-      const list = JSON.parse(rawList);
-      if (Array.isArray(list)) {
-        listeningCount = Math.max(listeningCount, list.length);
-      }
-    }
-    const rawExam = localStorage.getItem(accountKeyFn("engWithMeExamProgress")) || 
-                    localStorage.getItem("engWithMeExamProgress");
-    if (rawExam) {
-      const examList = JSON.parse(rawExam);
-      if (Array.isArray(examList)) {
-        const toeicCount = new Set(examList.filter((id) => String(id).includes("exam"))).size;
+  } catch(e) {}
+  
+  // Plus: Add Exam Count to Listening
+  try {
+    const examRes = await fetcher(`${baseUrl}api/test_results.php`);
+    if (examRes.ok) {
+      const examData = await examRes.json();
+      if (examData && Array.isArray(examData.results)) {
+        const toeicCount = new Set(examData.results.map(r => r.test_name)).size;
         listeningCount += toeicCount;
       }
     }
-  } catch (e) {}
+  } catch(e) {}
+  
   const listeningTotal = 100; // 78 Topic + 22 TOEIC
   const listeningPercent = Math.min(100, Math.round((listeningCount / listeningTotal) * 100));
 
-  // 3. Reading (Total: 22 passages)
+  // 3. Reading (Total: 22 passages) - Tạm dùng LocalStorage nếu chưa có table reading riêng
   let readingCount = 0;
   try {
+    const accountKeyFn = typeof getAccountKey === "function" ? getAccountKey : (k) => k;
     const rawRead = localStorage.getItem(accountKeyFn("engWithMeReadingViewedTopics")) || 
-                    localStorage.getItem("engWithMeReadingViewedTopics") || 
-                    localStorage.getItem(accountKeyFn("engWithMeReadingProgress")) || 
                     localStorage.getItem("engWithMeReadingProgress") || "[]";
     const readArr = JSON.parse(rawRead);
-    if (Array.isArray(readArr)) {
-      readingCount = readArr.length;
-    }
+    if (Array.isArray(readArr)) readingCount = readArr.length;
   } catch (e) {}
   const readingTotal = 22;
   const readingPercent = Math.min(100, Math.round((readingCount / readingTotal) * 100));
 
-  // 4. Grammar (Total: 180 questions across 18 core topics)
-  let grammarCount = 0;
-  try {
-    const rawGrammar = localStorage.getItem(accountKeyFn("engWithMeGrammarPracticeState")) || 
-                       localStorage.getItem("engWithMeGrammarPracticeState") || "{}";
-    const grammarState = JSON.parse(rawGrammar);
-    if (grammarState && typeof grammarState === "object") {
-      Object.values(grammarState).forEach((arr) => {
-        if (Array.isArray(arr)) grammarCount += arr.length;
-      });
-    }
-  } catch (e) {}
+  // 4. Grammar
   const grammarTotal = 180;
   const grammarPercent = Math.min(100, Math.round((grammarCount / grammarTotal) * 100));
 
@@ -658,31 +579,31 @@ function renderDashboardProgressUI() {
 
   const overallPercent = Math.round((vocabPercent + listeningPercent + readingPercent + grammarPercent) / 4);
 
-  // Hiển thị Banner Tiến độ tổng (0/4)
+  // Hiển thị Banner Tiến độ
   setText("[data-overall-count]", `${completedModules}/4`);
   setText("[data-overall-percent]", `${overallPercent}%`);
   const overallFill = document.querySelector("[data-overall-fill]");
   if (overallFill) overallFill.style.width = `${overallPercent}%`;
 
-  // Skill 1: Từ vựng (468 từ)
+  // Skill 1: Từ vựng
   setText("[data-vocab-count]", `${vocabCount}/${vocabTotal} từ`);
   setText("[data-vocab-percent]", `${vocabPercent}%`);
   const vocabFill = document.querySelector("[data-vocab-fill]");
   if (vocabFill) vocabFill.style.width = `${vocabPercent}%`;
 
-  // Skill 2: Nghe (78 bài)
+  // Skill 2: Nghe
   setText("[data-listening-count]", `${listeningCount}/${listeningTotal} bài`);
   setText("[data-listening-percent]", `${listeningPercent}%`);
   const listeningFill = document.querySelector("[data-listening-fill]");
   if (listeningFill) listeningFill.style.width = `${listeningPercent}%`;
 
-  // Skill 3: Đọc (22 bài)
+  // Skill 3: Đọc
   setText("[data-reading-count]", `${readingCount}/${readingTotal} bài`);
   setText("[data-reading-percent]", `${readingPercent}%`);
   const readingFill = document.querySelector("[data-reading-fill]");
   if (readingFill) readingFill.style.width = `${readingPercent}%`;
 
-  // Skill 4: Ngữ pháp (180 câu)
+  // Skill 4: Ngữ pháp
   setText("[data-grammar-count]", `${grammarCount}/${grammarTotal} câu`);
   setText("[data-grammar-percent]", `${grammarPercent}%`);
   const grammarFill = document.querySelector("[data-grammar-fill]");
@@ -696,24 +617,31 @@ function renderDashboardProgressUI() {
   }
 }
 
-function renderExamHistoryUI() {
+async function renderExamHistoryUI() {
   const container = document.querySelector("[data-exam-history-container]");
   if (!container) return;
 
-  const accountKeyFn = typeof getAccountKey === "function" ? getAccountKey : (k) => k;
+  const fetcher = typeof fetchAuth === "function" ? fetchAuth : fetch;
+  const baseUrl = (typeof API_BASE_URL !== "undefined") ? API_BASE_URL : "";
+
   let historyList = [];
   try {
-    historyList = JSON.parse(localStorage.getItem(accountKeyFn("engWithMeExamHistoryList")) || "[]");
-    if (!Array.isArray(historyList)) historyList = [];
+    const res = await fetcher(`${baseUrl}api/test_results.php`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && Array.isArray(data.results)) {
+        historyList = data.results;
+      }
+    }
   } catch (e) {
-    historyList = [];
+    console.warn("Failed to fetch exam results from API:", e);
   }
 
   if (historyList.length === 0) {
     container.innerHTML = `
       <div class="exam-empty-state" style="text-align: center; padding: 28px 16px; color: #94a3b8; font-size: 0.92rem; background: rgba(2, 6, 23, 0.4); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
         <span class="ti-info-alt" style="font-size: 1.5rem; color: #38bdf8; display: block; margin-bottom: 8px;"></span>
-        Sau khi bạn hoàn thành đề thi thì sẽ đươc lưu ở đây!
+        Sau khi bạn hoàn thành đề thi thì sẽ được lưu ở đây!
       </div>
     `;
     return;
@@ -721,25 +649,106 @@ function renderExamHistoryUI() {
 
   container.innerHTML = `
     <div style="display: flex; flex-direction: column; gap: 10px;">
-      ${historyList.map((item) => `
+      ${historyList.map((item) => {
+        const correctCount = Number(item.correct_count) || 0;
+        const totalQuestions = Number(item.total_questions) || 200;
+        const pct = Math.round((correctCount / totalQuestions) * 100) || 0;
+        const level = pct >= 80 ? "C1" : pct >= 60 ? "B2" : pct >= 40 ? "B1" : "A2";
+        const date = item.completed_at ? new Date(item.completed_at).toLocaleDateString("vi-VN") : "Mới làm";
+
+        return `
         <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: rgba(2, 6, 23, 0.5); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; transition: border-color 0.2s;">
           <div style="display: flex; align-items: center; gap: 12px;">
             <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(0, 240, 255, 0.1); border: 1px solid rgba(0, 240, 255, 0.3); display: flex; align-items: center; justify-content: center; color: #00f0ff; font-size: 1.1rem;">
               <span class="ti-calendar"></span>
             </div>
             <div>
-              <div style="font-weight: 800; color: #f8fafc; font-size: 0.95rem;">Đề TOEIC (${(item.test_set || "y2025").toUpperCase()} - Part ${item.test_parts || "5"})</div>
-              <div style="font-size: 0.78rem; color: #94a3b8; margin-top: 2px;">🕒 ngày ${item.timestamp || "Mới làm"}</div>
+              <div style="font-weight: 800; color: #f8fafc; font-size: 0.95rem;">Đề TOEIC (${(item.test_name || "TOEIC").toUpperCase()})</div>
+              <div style="font-size: 0.78rem; color: #94a3b8; margin-top: 2px;">Đã làm ngày ${date}</div>
             </div>
           </div>
           <div style="text-align: right;">
-            <div style="font-weight: 900; color: #00f0ff; font-size: 1.05rem;">🎯 ${item.correct_count}/${item.total_questions} câu (${item.score_percent || Math.round((item.correct_count / item.total_questions) * 100)}%)</div>
-            <span style="font-size: 0.78rem; font-weight: 800; color: #ffd700; background: rgba(255, 215, 0, 0.1); padding: 2px 8px; border-radius: 99px; border: 1px solid rgba(255, 215, 0, 0.3);">Cấp độ: ${item.level || "A1"}</span>
+            <div style="font-weight: 900; color: #00f0ff; font-size: 1.05rem;">Đúng ${correctCount}/${totalQuestions} câu (${pct}%)</div>
+            <span style="font-size: 0.78rem; font-weight: 800; color: #ffd700; background: rgba(255, 215, 0, 0.1); padding: 2px 8px; border-radius: 99px; border: 1px solid rgba(255, 215, 0, 0.3);">Cấp độ: ${level}</span>
           </div>
         </div>
-      `).join("")}
+      `}).join("")}
     </div>
   `;
+}
+
+async function fetchAndRenderUserPayments() {
+  const container = document.getElementById("user-payments-tbody");
+  const btn = document.getElementById("btn-refresh-user-payments");
+  const totalAmountEl = document.getElementById("user-payment-total-amount");
+  const totalCountEl = document.getElementById("user-payment-total-count");
+  const currentPlanEl = document.getElementById("user-payment-current-plan");
+
+  if (!container) return;
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="ti-reload fa-spin"></span> Đang tải...';
+  }
+
+  const fetcher = typeof fetchAuth === "function" ? fetchAuth : fetch;
+  const baseUrl = (typeof API_BASE_URL !== "undefined") ? API_BASE_URL : "";
+
+  try {
+    const res = await fetcher(`${baseUrl}api/user_payments.php`);
+    const data = await res.json();
+
+    if (data.ok && data.orders) {
+      if (totalAmountEl) totalAmountEl.textContent = data.total_amount_formatted || "0đ";
+      if (totalCountEl) totalCountEl.textContent = `${data.paid_count || 0} đơn`;
+      if (currentPlanEl) currentPlanEl.textContent = String(data.current_plan || "Miễn phí").replace("Gói ", "");
+
+      if (data.orders.length === 0) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 40px; color: #94a3b8; font-size: 0.95rem;">
+              <span class="ti-wallet" style="font-size: 24px; color: #38bdf8; display: block; margin-bottom: 12px;"></span>
+              Bạn chưa có giao dịch thanh toán nào
+            </td>
+          </tr>
+        `;
+      } else {
+        container.innerHTML = data.orders.map(order => `
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;">
+            <td style="padding: 12px 16px; font-weight: 700; color: #38bdf8;">#${order.order_code}</td>
+            <td style="padding: 12px 16px; color: #f8fafc; font-weight: 600;">${order.plan_name}</td>
+            <td style="padding: 12px 16px; color: #ffd700; font-weight: 800;">${order.amount_formatted}</td>
+            <td style="padding: 12px 16px;">
+              <span style="font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px; ${
+                order.status === 'PAID' || order.status === 'SUCCESS' ? 'background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3);' :
+                order.status === 'PENDING' ? 'background: rgba(250, 204, 21, 0.1); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3);' :
+                'background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);'
+              }">
+                <span class="${order.status === 'PAID' || order.status === 'SUCCESS' ? 'ti-check-box' : order.status === 'PENDING' ? 'ti-time' : 'ti-close'}"></span>
+                ${order.status === 'PAID' || order.status === 'SUCCESS' ? 'Thành công' : order.status === 'PENDING' ? 'Chờ thanh toán' : 'Đã hủy'}
+              </span>
+            </td>
+            <td style="padding: 12px 16px; color: #94a3b8; font-size: 13px;">${new Date(order.created_at).toLocaleDateString("vi-VN")}</td>
+          </tr>
+        `).join("");
+      }
+    } else {
+      throw new Error(data.message || "Failed to fetch payments");
+    }
+  } catch (error) {
+    container.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 24px; color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+          <span class="ti-alert"></span> Lỗi tải dữ liệu: ${error.message}
+        </td>
+      </tr>
+    `;
+  }
+
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = '<span class="ti-reload"></span> Làm mới';
+  }
 }
 
 function renderProfileNotificationListHtml(container, items) {

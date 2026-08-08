@@ -162,12 +162,16 @@
       const statText = getFormattedStat(item);
 
       const isVip = Number(item.is_vip) === 1;
+      const expiresAt = String(item.vip_expires_at || "");
       const planId = String(item.plan || item.plan_id || "").toLowerCase();
       let planTagHtml = "";
-      if (planId.includes("pro")) {
-        planTagHtml = `<span class="plan-tag tag-pro" title="Gói Pro (30 Ngày)">⚡ Pro</span>`;
-      } else if (planId.includes("premium") || (isVip && !planId.includes("pro"))) {
-        planTagHtml = `<span class="plan-tag tag-pre" title="Gói Premium VIP Trọn Đời">👑 Pre</span>`;
+      
+      if (isVip) {
+        if (planId.includes("premium") || expiresAt.includes("2099")) {
+          planTagHtml = `<span class="plan-tag tag-pre" title="Gói Premium VIP Trọn Đời">👑 Pre</span>`;
+        } else {
+          planTagHtml = `<span class="plan-tag tag-pro" title="Gói Pro (30 Ngày)">⚡ Pro</span>`;
+        }
       }
 
       const userLevel = item.level || 1;

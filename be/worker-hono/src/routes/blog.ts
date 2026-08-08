@@ -270,6 +270,7 @@ blogApp.get("/get_leaderboard.php", async (c) => {
             badge: getBadgeByLevel(lvl),
             avatar: u.avatar || defaultAvatars[i % defaultAvatars.length],
             is_vip: Number(u.is_vip || 0),
+            vip_expires_at: u.vip_expires_at || null,
             count: `${blogCount} bài viết`,
             blog_count: blogCount,
             total_likes: totalLikes,
@@ -492,7 +493,7 @@ blogApp.get("/admin_pending.php", async (c) => {
 
 blogApp.post("/admin_approve.php", async (c) => {
   let body: Record<string, any> = {};
-  try { body = await c.req.parseBody(); } catch (e) { try { body = await c.req.json(); } catch (e2) {} }
+  try { const ct = c.req.header("content-type") || ""; body = ct.includes("json") ? await c.req.json() : await c.req.parseBody(); } catch (e) {}
   const blogId = body.blog_id || body.id;
   if (!blogId || !c.env?.DB) return c.json({ ok: false, message: "Thiếu ID bài viết." }, 400);
 
@@ -506,7 +507,7 @@ blogApp.post("/admin_approve.php", async (c) => {
 
 blogApp.post("/admin_reject.php", async (c) => {
   let body: Record<string, any> = {};
-  try { body = await c.req.parseBody(); } catch (e) { try { body = await c.req.json(); } catch (e2) {} }
+  try { const ct = c.req.header("content-type") || ""; body = ct.includes("json") ? await c.req.json() : await c.req.parseBody(); } catch (e) {}
   const blogId = body.blog_id || body.id;
   if (!blogId || !c.env?.DB) return c.json({ ok: false, message: "Thiếu ID bài viết." }, 400);
 

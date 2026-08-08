@@ -430,6 +430,38 @@ adminApp.get("/student_feedbacks.php", async (c) => {
   return c.json({ ok: true, feedbacks });
 });
 
+// POST /v1/admin/student_feedbacks.php -> Handle read, delete, delete_all actions
+adminApp.post("/student_feedbacks.php", async (c) => {
+  const { isAdmin } = await verifyAdminPermission(c);
+  if (!isAdmin) {
+    return c.json({ ok: false, message: "⚠️ Không có quyền truy cập." }, 401);
+  }
+
+  let body: Record<string, any> = {};
+  try { const ct = c.req.header("content-type") || ""; body = ct.includes("json") ? await c.req.json() : await c.req.parseBody(); } catch (e) {}
+  const action = body.action || c.req.query("action");
+  const id = body.id || c.req.query("id");
+
+  if (!c.env?.DB) return c.json({ ok: false, message: "Lỗi cơ sở dữ liệu." }, 500);
+
+  try {
+    if (action === "read" && id) {
+      await c.env.DB.prepare("UPDATE notifications SET is_read = 1 WHERE id = ?").bind(id).run();
+      return c.json({ ok: true, message: "Đã đánh dấu là đã đọc" });
+    } else if (action === "delete" && id) {
+      await c.env.DB.prepare("DELETE FROM notifications WHERE id = ?").bind(id).run();
+      return c.json({ ok: true, message: "Đã xóa góp ý thành công" });
+    } else if (action === "delete_all") {
+      await c.env.DB.prepare("DELETE FROM notifications WHERE status_tag = 'Góp ý học viên' OR user_id = 'admin'").run();
+      return c.json({ ok: true, message: "Đã xóa tất cả góp ý thành công" });
+    }
+    return c.json({ ok: false, message: "Hành động không hợp lệ." }, 400);
+  } catch (e) {
+    console.error("D1 Manage Student Feedbacks Error:", e);
+    return c.json({ ok: false, message: "Lỗi xử lý yêu cầu." }, 500);
+  }
+});
+
 // GET /v1/admin/pending_blogs.php -> Get pending community posts for admin review
 adminApp.get("/pending_blogs.php", async (c) => {
   let blogs: any[] = [];
@@ -449,7 +481,7 @@ adminApp.get("/pending_blogs.php", async (c) => {
 // POST /v1/admin/approve_blog.php -> Approve pending post
 adminApp.post("/approve_blog.php", async (c) => {
   let body: Record<string, any> = {};
-  try { body = await c.req.parseBody(); } catch (e) { try { body = await c.req.json(); } catch (e2) {} }
+  try { const ct = c.req.header("content-type") || ""; body = ct.includes("json") ? await c.req.json() : await c.req.parseBody(); } catch (e) {}
   const blogId = body.blog_id || body.id;
   if (!blogId || !c.env?.DB) return c.json({ ok: false, message: "Thiếu ID bài viết." }, 400);
 
@@ -480,7 +512,7 @@ adminApp.post("/approve_blog.php", async (c) => {
 // POST /v1/admin/reject_blog.php -> Reject / delete post
 adminApp.post("/reject_blog.php", async (c) => {
   let body: Record<string, any> = {};
-  try { body = await c.req.parseBody(); } catch (e) { try { body = await c.req.json(); } catch (e2) {} }
+  try { const ct = c.req.header("content-type") || ""; body = ct.includes("json") ? await c.req.json() : await c.req.parseBody(); } catch (e) {}
   const blogId = body.blog_id || body.id;
   if (!blogId || !c.env?.DB) return c.json({ ok: false, message: "Thiếu ID bài viết." }, 400);
 
@@ -594,7 +626,7 @@ adminApp.get("/payments", handleGetPayments);
 // POST /v1/admin/update_order_status.php -> Approve/cancel order & update user VIP status
 adminApp.post("/update_order_status.php", async (c) => {
   let body: Record<string, any> = {};
-  try { body = await c.req.parseBody(); } catch (e) { try { body = await c.req.json(); } catch (e2) {} }
+  try { const ct = c.req.header("content-type") || ""; body = ct.includes("json") ? await c.req.json() : await c.req.parseBody(); } catch (e) {}
 
   const orderId = body.order_id || body.id;
   const status = String(body.status || "PAID").toUpperCase();

@@ -57,7 +57,7 @@
               <small data-admin-email style="color: #94a3b8; font-size: 0.75rem;"></small>
             </div>
           </div>
-          <div class="notification-dropdown" data-notification-dropdown>
+          <div class="notification-dropdown" data-notification-dropdown style="display: none;">
             <button type="button" class="notification-bell-btn" data-notification-toggle title="Xem thông báo hệ thống">
               <span class="ti-bell"></span>
               <span class="notification-badge is-hidden" data-notification-badge>0</span>
@@ -219,9 +219,14 @@
 
           <!-- Column Right (50%): Góp Ý & Liên Hệ Từ Học Viên -->
           <div class="censorship-col-right" style="display: flex; flex-direction: column; gap: 12px;">
-            <h3 style="color: #f8fafc; font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px; margin: 0;">
-              <span class="ti-comment-alt" style="color: #a855f7;"></span> 📩 Góp Ý & Liên Hệ Học Viên
-            </h3>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 style="color: #f8fafc; font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px; margin: 0;">
+                <span class="ti-comment-alt" style="color: #a855f7;"></span> 📩 Góp Ý & Liên Hệ Học Viên
+              </h3>
+              <button type="button" onclick="deleteAllFeedbacks()" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(185, 28, 28, 0.2)); border: 1.5px solid rgba(239, 68, 68, 0.5); color: #f87171; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+                🗑 Xóa Tất Cả
+              </button>
+            </div>
 
             <div class="card" style="background: rgba(15, 23, 42, 0.85); border: 1.5px solid rgba(168, 85, 247, 0.3); border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); height: auto;">
               <div id="student-feedbacks-list" style="display: grid; gap: 16px;">

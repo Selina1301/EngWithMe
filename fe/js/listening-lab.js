@@ -2201,7 +2201,8 @@
 
       try {
         const body = new FormData();
-        body.append("progress_id", `listening_${currentMission.id}`);
+        body.append("topic_id", `listening_${currentMission.id}`);
+        body.append("progress_percent", "100");
         await fetch("api/sync_progress.php", {
           method: "POST",
           body,

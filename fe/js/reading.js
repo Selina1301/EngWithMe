@@ -1,8 +1,6 @@
 (function () {
   const levelStorageKey = "engWithMeReadingMode";
   const modeStorageKey = "engWithMeReadingViewMode";
-  const viewedStorageKey = "engWithMeViewedReadingTopics";
-
   const getAccountKey = (baseKey) => {
     if (typeof window.getAccountKey === "function") {
       return window.getAccountKey(baseKey);
@@ -15,6 +13,7 @@
     }
   };
 
+  const viewedStorageKey = getAccountKey("engWithMeViewedReadingTopics");
   const rewardedReadingKey = getAccountKey("engWithMeRewardedReadingTopics");
   let readingLessons = window.READING_LESSONS_FALLBACK || [];
   let activeReadingLevel = localStorage.getItem(levelStorageKey) || "easy";
@@ -191,7 +190,7 @@
   function saveViewedTopics() {
     const list = [...viewedTopics];
     localStorage.setItem(viewedStorageKey, JSON.stringify(list));
-    localStorage.setItem("engWithMeReadingProgress", JSON.stringify(list));
+    localStorage.setItem(getAccountKey("engWithMeReadingProgress"), JSON.stringify(list));
   }
 
   function updateReadingProgress() {
@@ -288,6 +287,19 @@
               if (typeof addXP === "function") {
                 addXP(10, "Hoàn thành bài đọc");
               }
+            }
+            
+            // Sync progress to backend
+            const userId = localStorage.getItem("engWithMeUserId") || localStorage.getItem("user_id");
+            if (userId) {
+              const formData = new FormData();
+              formData.append("topic_id", `reading_${topicId}`);
+              formData.append("progress_percent", "100");
+              fetch("api/sync_progress.php", {
+                method: "POST",
+                body: formData,
+                credentials: "same-origin"
+              }).catch(e => console.warn("Lỗi đồng bộ Reading:", e));
             }
           }
           saveViewedTopics();

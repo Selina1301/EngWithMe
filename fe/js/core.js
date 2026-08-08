@@ -300,6 +300,7 @@ function resolveApiUrl(url) {
   if (cleanPath === "me.php") cleanPath = "user/me.php";
   if (cleanPath === "profile.php") cleanPath = "user/profile.php";
   if (cleanPath === "change_password.php") cleanPath = "user/change_password.php";
+  if (cleanPath === "user_payments.php") cleanPath = "user/user_payments.php";
   if (cleanPath.startsWith("notifications.php")) cleanPath = cleanPath.replace("notifications.php", "notification/notifications.php");
   if (cleanPath === "login.php") cleanPath = "auth/login.php";
   if (cleanPath === "logout.php") cleanPath = "auth/logout.php";
@@ -571,10 +572,11 @@ function initAuthNav() {
       redirectAuthPages(result.user, isCached);
       triggerRouteBasedFetch();
     } else if (result && (result.status === 401 || result.ok === false || !result.user)) {
+      const hadToken = !!localStorage.getItem("engWithMeAuthToken");
       clearAuthUser();
       renderGuestNav();
       const protectedPages = ["profile.html", "dashboard.html", "admin.html"];
-      if (protectedPages.includes(getCurrentPage())) {
+      if (protectedPages.includes(getCurrentPage()) || (hadToken && !isCached)) {
         window.location.replace("login.html");
       }
     }
@@ -656,10 +658,23 @@ async function triggerRouteBasedFetch(force = false) {
     if (force) AppCache.invalidate(progressCacheKey);
 
     fetchWithSWR("api/sync_progress.php", progressCacheKey, (progData) => {
-      localStorage.setItem(
-        `engWithMeProgress_user_${userId}`,
-        JSON.stringify(progData.progress || [])
-      );
+      const progressList = progData.progress || [];
+      localStorage.setItem(`engWithMeProgress_user_${userId}`, JSON.stringify(progressList));
+      
+      const readingTopics = [];
+      const listeningTopics = [];
+      
+      progressList.forEach(p => {
+        if (p.topic_id.startsWith("reading_")) {
+          readingTopics.push(p.topic_id.replace("reading_", ""));
+        } else if (p.topic_id.startsWith("listening_")) {
+          listeningTopics.push(p.topic_id.replace("listening_", ""));
+        }
+      });
+      
+      localStorage.setItem(`engWithMeViewedReadingTopics_user_${userId}`, JSON.stringify(readingTopics));
+      localStorage.setItem(`engWithMeRewardedReadingTopics_user_${userId}`, JSON.stringify(readingTopics));
+      localStorage.setItem(`engWithMeListeningProgress_user_${userId}`, JSON.stringify(listeningTopics));
       refreshPageAfterUserDataSync();
     }, { ttl: 2 * 60 * 1000 });
   }
@@ -742,7 +757,8 @@ function renderAuthenticatedNav(user) {
     ""
   ).toLowerCase();
 
-  const isPremium = planStr.includes("premium") || planStr.includes("pre") || localStorage.getItem("engWithMeUserIsPremium") === "true";
+  const expiresAt = String(user.vip_expires_at || "");
+  const isPremium = planStr.includes("premium") || planStr.includes("pre") || expiresAt.includes("2099") || localStorage.getItem("engWithMeUserIsPremium") === "true";
 
   let roleLabel = `Lv. ${levelNum}`;
   let roleBadgeStyle = 'background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 10.5px; font-weight: 800; padding: 1px 7px; border-radius: 99px;';
