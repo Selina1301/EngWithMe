@@ -220,13 +220,20 @@ function getEnhancedFooterMarkup() {
     <div id="termsModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
       <div class="modal-content" style="background: #0b1220; border: 1px solid rgba(46, 232, 120, 0.3); border-radius: 16px; padding: 32px; max-width: 600px; width: 90%; color: #fff; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
         <h2 style="text-align: center; margin-top: 0; color: #70f59d; font-size: 24px;">EngWithMe - Điều khoản</h2>
-        <ul style="line-height: 1.8; margin: 24px 0; padding-left: 20px; color: #e2e8f0; font-size: 15px;">
-          <li>Tôn trọng các thành viên trong cộng đồng, không sử dụng ngôn từ đả kích, thù ghét.</li>
-          <li>Nghiêm cấm chia sẻ nội dung vi phạm bản quyền hoặc không liên quan đến học thuật.</li>
-          <li>Không spam, quảng cáo các dịch vụ không liên quan trên nền tảng.</li>
-          <li>Bảo mật thông tin cá nhân, không chia sẻ tài khoản với người khác.</li>
-          <li>Tuân thủ các hướng dẫn và quyết định từ ban quản trị EngWithMe.</li>
-        </ul>
+        <div style="text-align: left; max-height: 50vh; overflow-y: auto; padding-right: 10px; margin: 24px 0;">
+          <h3 style="color: #38bdf8; font-size: 16px; margin-top: 0; margin-bottom: 8px;">Quy tắc ứng xử chung</h3>
+          <ul style="line-height: 1.8; margin: 0 0 16px 0; padding-left: 20px; color: #e2e8f0; font-size: 15px;">
+            <li><strong>Tôn trọng:</strong> Cư xử lịch sự, không xúc phạm hay gây gổ với người khác.</li>
+            <li><strong>Đúng chủ đề:</strong> Đăng bài và thảo luận đúng nội dung chính mà cộng đồng hướng tới.</li>
+            <li><strong>Không toxic:</strong> Tránh dùng lời lẽ thô tục, châm chọc hay kích động bạo lực.</li>
+          </ul>
+          <h3 style="color: #38bdf8; font-size: 16px; margin-top: 0; margin-bottom: 8px;">Quy tắc đăng bài và nội dung</h3>
+          <ul style="line-height: 1.8; margin: 0 0 16px 0; padding-left: 20px; color: #e2e8f0; font-size: 15px;">
+            <li><strong>Cấm spam:</strong> Không đăng lặp lại nhiều lần một nội dung hoặc gửi tin nhắn rác.</li>
+            <li><strong>Hạn chế quảng cáo:</strong> Không tự ý bán hàng hay PR dịch vụ khi chưa có sự cho phép của quản trị viên.</li>
+            <li><strong>Bảo mật thông tin:</strong> Không chia sẻ thông tin riêng tư của người khác lên mạng.</li>
+          </ul>
+        </div>
         <div style="text-align: center;">
           <button onclick="document.getElementById('termsModal').style.display='none'" style="background: #2ee878; color: #022212; border: none; padding: 12px 32px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 16px; transition: 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Đã hiểu & Đồng ý</button>
         </div>
