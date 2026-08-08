@@ -178,9 +178,9 @@ function getEnhancedFooterMarkup() {
       ])}
 
       ${getFooterColumnMarkup("Hỗ trợ", [
-        ["about.html#support", "ti-help-alt", "Trung tâm hỗ trợ"],
+        ["#", "ti-help-alt", "Trung tâm hỗ trợ"],
         ["pricing.html", "ti-credit-card", "Gói Premium"],
-        ["about.html#contact", "ti-email", "Liên hệ"]
+        ["index.html#contact", "ti-email", "Liên hệ"]
       ])}
     </section>
 
@@ -209,12 +209,29 @@ function getEnhancedFooterMarkup() {
 
     <section class="footer-bottom" aria-label="Thông tin pháp lý">
       <nav aria-label="Liên kết pháp lý">
-        <a href="about.html#terms">Điều khoản</a>
-        <a href="about.html#privacy">Bảo mật</a>
-        <a href="about.html#contact">Liên hệ</a>
+        <a href="javascript:void(0)" onclick="document.getElementById('termsModal').style.display='flex'">Điều khoản</a>
+        <a href="javascript:void(0)" onclick="document.getElementById('termsModal').style.display='flex'">Bảo mật</a>
+        <a href="index.html#contact">Liên hệ</a>
       </nav>
       <p class="footer-made">© <span data-current-year></span> EngWithMe. Made in Vietnam.</p>
     </section>
+
+    <!-- Terms Modal -->
+    <div id="termsModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+      <div class="modal-content" style="background: #0b1220; border: 1px solid rgba(46, 232, 120, 0.3); border-radius: 16px; padding: 32px; max-width: 600px; width: 90%; color: #fff; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+        <h2 style="text-align: center; margin-top: 0; color: #70f59d; font-size: 24px;">EngWithMe - Điều khoản</h2>
+        <ul style="line-height: 1.8; margin: 24px 0; padding-left: 20px; color: #e2e8f0; font-size: 15px;">
+          <li>Tôn trọng các thành viên trong cộng đồng, không sử dụng ngôn từ đả kích, thù ghét.</li>
+          <li>Nghiêm cấm chia sẻ nội dung vi phạm bản quyền hoặc không liên quan đến học thuật.</li>
+          <li>Không spam, quảng cáo các dịch vụ không liên quan trên nền tảng.</li>
+          <li>Bảo mật thông tin cá nhân, không chia sẻ tài khoản với người khác.</li>
+          <li>Tuân thủ các hướng dẫn và quyết định từ ban quản trị EngWithMe.</li>
+        </ul>
+        <div style="text-align: center;">
+          <button onclick="document.getElementById('termsModal').style.display='none'" style="background: #2ee878; color: #022212; border: none; padding: 12px 32px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 16px; transition: 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Đã hiểu & Đồng ý</button>
+        </div>
+      </div>
+    </div>
   `;
 }
 
