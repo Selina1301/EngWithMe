@@ -178,7 +178,7 @@ function getEnhancedFooterMarkup() {
       ])}
 
       ${getFooterColumnMarkup("Hỗ trợ", [
-        ["#", "ti-help-alt", "Trung tâm hỗ trợ"],
+        ["index.html#contact", "ti-help-alt", "Trung tâm hỗ trợ"],
         ["pricing.html", "ti-credit-card", "Gói Premium"],
         ["index.html#contact", "ti-email", "Liên hệ"]
       ])}
