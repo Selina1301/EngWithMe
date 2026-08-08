@@ -212,6 +212,12 @@
   font-size: 14px;
   font-weight: 750;
   line-height: 1.35;
+  transition: all 0.2s ease;
+}
+
+.footer-column nav a:hover {
+  color: #2ee878;
+  transform: translateX(4px);
 }
 
 .footer-column nav a > span {
