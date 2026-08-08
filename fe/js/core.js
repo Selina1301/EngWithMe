@@ -150,6 +150,29 @@ function initEnhancedFooter() {
 
 function getEnhancedFooterMarkup() {
   return `
+    <section class="footer-trust" aria-label="Thông tin đáng tin cậy">
+      <div class="footer-trust-item">
+        <span class="ti-lock"></span>
+        <strong>SSL mã hóa</strong>
+      </div>
+      <div class="footer-trust-item">
+        <span class="ti-shield"></span>
+        <strong>PDPA-ready</strong>
+      </div>
+      <div class="footer-trust-item">
+        <span class="ti-heart"></span>
+        <strong>Hoàn tiền 7 ngày</strong>
+      </div>
+      <div class="footer-trust-item">
+        <span class="ti-headphone-alt"></span>
+        <strong>Hỗ trợ 24/7</strong>
+      </div>
+      <div class="footer-trust-item">
+        <span class="ti-user"></span>
+        <strong>1301+ học viên</strong>
+      </div>
+    </section>
+
     <section class="footer-main" aria-label="Liên kết chính">
       <div class="footer-brand-panel">
         <a class="footer-logo" href="index.html">
@@ -165,22 +188,22 @@ function getEnhancedFooterMarkup() {
       </div>
 
       ${getFooterColumnMarkup("Học tập", [
-        ["vocabulary.html", "ti-bookmark-alt", "Từ vựng"],
-        ["listening.html", "ti-headphone-alt", "Listening"],
-        ["reading.html", "ti-book", "Reading"],
-        ["grammar.html", "ti-pencil-alt", "Grammar"]
+        ["vocabulary.html", "", "Từ vựng"],
+        ["listening.html", "", "Listening"],
+        ["reading.html", "", "Reading"],
+        ["grammar.html", "", "Grammar"]
       ])}
 
       ${getFooterColumnMarkup("Cộng đồng", [
-        ["blog.html", "ti-comments", "Blog học viên"],
-        ["speaking.html", "ti-microphone", "Luyện nói"],
-        ["profile.html", "ti-user", "Trang cá nhân"]
+        ["blog.html", "", "Blog học viên"],
+        ["speaking.html", "", "Luyện nói"],
+        ["profile.html", "", "Trang cá nhân"]
       ])}
 
       ${getFooterColumnMarkup("Hỗ trợ", [
-        ["about.html#support", "ti-help-alt", "Trung tâm hỗ trợ"],
-        ["pricing.html", "ti-credit-card", "Gói Premium"],
-        ["about.html#contact", "ti-email", "Liên hệ"]
+        ["about.html#support", "", "Trung tâm hỗ trợ"],
+        ["pricing.html", "", "Gói Premium"],
+        ["about.html#contact", "", "Liên hệ"]
       ])}
     </section>
 
@@ -208,12 +231,12 @@ function getEnhancedFooterMarkup() {
     </section>
 
     <section class="footer-bottom" aria-label="Thông tin pháp lý">
+      <p class="footer-made">© <span data-current-year></span> EngWithMe. Made in Vietnam.</p>
       <nav aria-label="Liên kết pháp lý">
         <a href="about.html#terms">Điều khoản</a>
         <a href="about.html#privacy">Bảo mật</a>
         <a href="about.html#contact">Liên hệ</a>
       </nav>
-      <p class="footer-made">© <span data-current-year></span> EngWithMe. Made in Vietnam.</p>
     </section>
   `;
 }
@@ -225,7 +248,7 @@ function getFooterColumnMarkup(title, links) {
       <nav aria-label="${title}">
         ${links.map(([href, icon, label, badge]) => `
           <a href="${href}">
-            <span class="${icon}"></span>${label}
+            ${label}
             ${badge ? `<em>${badge}</em>` : ""}
           </a>
         `).join("")}
