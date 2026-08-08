@@ -95,7 +95,11 @@ function getDashboardLearningRoadmap() {
       href: `vocabulary-study.html?level=${target.levelKey}&topic=${target.id}&mode=study&planDay=${index + 1}`,
       title: `Ngày ${index + 1}: ${target.name}`,
       description: `Học chủ đề ${target.name} (${target.levelLabel}). Hoàn thành khi bạn mở đúng chủ đề này trong khu Vocabulary.`,
-      target
+      tasks: [
+        `Bấm nút "Vào học từ vựng" bên dưới`,
+        `Mở học đúng chủ đề "${target.name || "Từ vựng"}"`,
+        `Hệ thống tự động lưu tiến trình và qua bài!`
+      ]
     })),
     ...readingTargets.map((target, index) => ({
       day: index + 8,
@@ -105,7 +109,11 @@ function getDashboardLearningRoadmap() {
       href: `reading.html#${target.id}`,
       title: `Ngày ${index + 8}: ${target.title}`,
       description: "Hoàn thành khi bạn vào bài đọc này và bật dấu Đã đọc trong khu Reading.",
-      target
+      tasks: [
+        `Bấm nút "Vào học đọc hiểu" bên dưới`,
+        `Mở và đọc bài "${target.title}"`,
+        `Hệ thống tự động lưu tiến trình và qua bài!`
+      ]
     })),
     ...grammarTargets.map((target, index) => ({
       day: index + 11,
@@ -115,7 +123,11 @@ function getDashboardLearningRoadmap() {
       href: `grammar.html#${target.id}`,
       title: `Ngày ${index + 11}: ${target.title}`,
       description: "Hoàn thành khi bạn làm đúng toàn bộ bài tập của chủ đề ngữ pháp này.",
-      target
+      tasks: [
+        `Bấm nút "Vào học ngữ pháp" bên dưới`,
+        `Làm đủ ${target.exerciseCount || 10} câu chủ đề "${target.title}"`,
+        `Hệ thống tự động lưu tiến trình và qua bài!`
+      ]
     }))
   ];
 }

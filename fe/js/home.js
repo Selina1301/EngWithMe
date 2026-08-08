@@ -52,7 +52,11 @@ function initHomeSuggestion() {
         skill: "Vocabulary",
         label: "Từ vựng",
         href: `vocabulary-study.html?level=${target.levelKey}&topic=${target.id}&mode=study&planDay=${index + 1}`,
-        tasks: [`Học chủ đề ${target.name || "Từ vựng"}`, "Ôn flashcard trong 8 phút", "Lưu lại 3 từ khó để xem lại"]
+        tasks: [
+          `Bấm nút "Vào học từ vựng" bên dưới`,
+          `Mở học đúng chủ đề "${target.name || "Từ vựng"}"`,
+          `Hệ thống tự động lưu tiến trình và qua bài!`
+        ]
       };
     }),
     ...Array.from({ length: 3 }, (_, index) => {
@@ -62,7 +66,11 @@ function initHomeSuggestion() {
         skill: "Reading",
         label: "Đọc hiểu",
         href: `reading.html#${target.id}`,
-        tasks: [`Đọc bài "${target.title}"`, "Trả lời câu hỏi kiểm tra ý chính", "Ghi lại 3 cụm từ hoặc cấu trúc hay"]
+        tasks: [
+          `Bấm nút "Vào học đọc hiểu" bên dưới`,
+          `Mở và đọc bài "${target.title}"`,
+          `Hệ thống tự động lưu tiến trình và qua bài!`
+        ]
       };
     }),
     ...Array.from({ length: 7 }, (_, index) => {
@@ -72,7 +80,11 @@ function initHomeSuggestion() {
         skill: "Grammar",
         label: "Ngữ pháp",
         href: `grammar.html#${target.id}`,
-        tasks: [`Ôn chủ đề "${target.title}"`, "Làm 10 câu luyện tập", "Xem lại lỗi sai và ghi chú quy tắc"]
+        tasks: [
+          `Bấm nút "Vào học ngữ pháp" bên dưới`,
+          `Làm đủ ${target.exerciseCount || 10} câu chủ đề "${target.title}"`,
+          `Hệ thống tự động lưu tiến trình và qua bài!`
+        ]
       };
     })
   ];
