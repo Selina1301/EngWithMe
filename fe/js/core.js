@@ -159,8 +159,8 @@ function getEnhancedFooterMarkup() {
         <p>Học tiếng Anh theo lộ trình cá nhân, luyện từ vựng, nghe, đọc và ngữ pháp.</p>
         <div class="footer-socials" aria-label="Mạng xã hội">
           <a href="https://www.facebook.com/share/g/1Bm2e1thmb/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><span class="ti-facebook"></span></a>
-          <a href="blog.html" aria-label="YouTube"><span class="ti-youtube"></span></a>
-          <a href="blog.html" aria-label="Instagram"><span class="ti-instagram"></span></a>
+          <a href="javascript:void(0)" onclick="alert('Phần này đang bảo trì, EngWithMe sẽ update sớm nhất có thể, xin lỗi vì sự bất tiện này!')" aria-label="YouTube"><span class="ti-youtube"></span></a>
+          <a href="javascript:void(0)" onclick="alert('Phần này đang bảo trì, EngWithMe sẽ update sớm nhất có thể, xin lỗi vì sự bất tiện này!')" aria-label="Instagram"><span class="ti-instagram"></span></a>
         </div>
       </div>
 
