@@ -39,9 +39,9 @@ io.on('connection', (socket) => {
       rooms[roomId] = {
         players: [],
         gameStarted: false,
-        gameMode: null,
-        level: null,
-        topic: null
+        gameMode: 'match',
+        level: 'easy',
+        topic: 'family'
       };
     }
 
@@ -113,11 +113,9 @@ io.on('connection', (socket) => {
 
         // Check if both players are ready
         if (room.players.length === 2 && room.players.every(p => p.ready)) {
-          // If host hasn't selected a topic yet
-          if (!room.topic) {
-            socket.emit('error_msg', { message: 'Chủ phòng chưa chọn bài học.' });
-            return;
-          }
+          if (!room.topic) room.topic = 'family';
+          if (!room.level) room.level = 'easy';
+          if (!room.gameMode) room.gameMode = 'match';
           
           room.gameStarted = true;
           io.to(roomId).emit('game_start', {

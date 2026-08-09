@@ -13,7 +13,7 @@ function initVocabularyStudy() {
   }
 
   let currentTopicId = params.get("topic") || vocabularyData[activeLevel].topics[0]?.id;
-  let currentWorkspaceMode = ["view", "study", "play"].includes(params.get("mode")) ? params.get("mode") : "view";
+  let currentWorkspaceMode = ["view", "study", "play", "pvp"].includes(params.get("mode")) ? params.get("mode") : "view";
   let currentStudyMode = "flashcard";
   const studyModeOrder = ["flashcard", "quiz", "type", "speak"];
   const enabledStudyModes = new Set(studyModeOrder);
@@ -21,7 +21,7 @@ function initVocabularyStudy() {
   let isWordRevealed = false;
   let isClassifyingWord = false;
   let studyAdvanceTimer = null;
-  let currentGameMode = ["match", "cannon", "bomb", "tug", "meteor"].includes(params.get("game")) ? params.get("game") : null;
+  let currentGameMode = ["match", "cannon", "bomb", "tug", "meteor"].includes(params.get("game")) ? params.get("game") : (params.get("mode") === "pvp" ? "match" : null);
   let selectedMatchTile = null;
   let matchedPairs = new Set();
   let gameScore = 0;
@@ -1030,7 +1030,7 @@ function initVocabularyStudy() {
 
   function renderWorkspacePanel(topic) {
     if (currentWorkspaceMode === "study") return renderStudyPanel(topic);
-    if (currentWorkspaceMode === "play") return renderPlayPanel(topic);
+    if (currentWorkspaceMode === "play" || currentWorkspaceMode === "pvp") return renderPlayPanel(topic);
     return renderViewPanel(topic);
   }
 

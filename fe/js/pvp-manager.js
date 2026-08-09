@@ -13,7 +13,12 @@ class PvPManager {
     const urlParams = new URLSearchParams(window.location.search);
     const roomParam = urlParams.get("room");
     if (roomParam) {
-      this.joinRoom(roomParam);
+      if (window.location.pathname.includes("vocabulary-study.html") || urlParams.get("mode") === "pvp") {
+        this.roomId = roomParam;
+        this.connect();
+      } else {
+        this.joinRoom(roomParam);
+      }
     }
   }
 
@@ -185,39 +190,51 @@ class PvPManager {
     const topicSelect = document.getElementById('pvp-topic-select');
     if (!topicSelect || !vocabularyData || !vocabularyData[level]) return;
     
-    let html = '<option value="">-- Chọn Chủ Đề --</option>';
+    let html = '';
     vocabularyData[level].topics.forEach(t => {
       html += `<option value="${t.id}">${t.name}</option>`;
     });
     topicSelect.innerHTML = html;
+    if (vocabularyData[level].topics.length > 0) {
+      topicSelect.value = vocabularyData[level].topics[0].id;
+    }
+    this.sendHostConfig();
+  }
+
+  sendHostConfig() {
+    if (!this.isHost) return;
+    const modeSelect = document.getElementById('pvp-mode-select');
+    const levelSelect = document.getElementById('pvp-level-select');
+    const topicSelect = document.getElementById('pvp-topic-select');
+    
+    if (levelSelect && topicSelect && topicSelect.value && this.socket) {
+      const selectedLevel = levelSelect.value;
+      const selectedMode = modeSelect ? modeSelect.value : 'match';
+      this.socket.emit('configure_room', {
+        roomId: this.roomId,
+        gameMode: selectedMode,
+        level: selectedLevel,
+        topic: topicSelect.value
+      });
+    }
   }
 
   onHostConfigChange() {
     if (!this.isHost) return;
     
-    const modeSelect = document.getElementById('pvp-mode-select');
     const levelSelect = document.getElementById('pvp-level-select');
-    const topicSelect = document.getElementById('pvp-topic-select');
     
-    if (levelSelect && topicSelect) {
+    if (levelSelect) {
       const selectedLevel = levelSelect.value;
-      const selectedMode = modeSelect ? modeSelect.value : 'match';
       
       // If level changed, repopulate topics
       if (this.currentConfigLevel !== selectedLevel) {
          this.currentConfigLevel = selectedLevel;
          this.populateTopicsForHost(selectedLevel);
-      }
-      
-      if (this.socket && topicSelect.value) {
-        this.socket.emit('configure_room', {
-          roomId: this.roomId,
-          gameMode: selectedMode,
-          level: selectedLevel,
-          topic: topicSelect.value
-        });
+         return;
       }
     }
+    this.sendHostConfig();
   }
 
   updateLobbyUI(data) {
