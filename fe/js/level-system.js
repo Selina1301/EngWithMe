@@ -263,6 +263,15 @@
   }
 
   function addXP(amount, sourceName) {
+    const userName = localStorage.getItem("engWithMeUserName") ||
+           localStorage.getItem("engWithMeStudentName") ||
+           localStorage.getItem("userName");
+    
+    // Check if the user is a guest ("Khách" / "Học viên" or undefined)
+    if (!userName || userName === "Khách" || userName === "Học viên") {
+      return; // Do not add XP or show toast for guests
+    }
+
     const safeAmount = Math.max(1, Math.floor(Number(amount) || 1));
     const currentTotal = getUserTotalXP();
     const oldInfo = calculateLevelFromXP(currentTotal);

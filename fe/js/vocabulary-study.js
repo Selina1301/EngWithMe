@@ -309,8 +309,13 @@ function initVocabularyStudy() {
   async function submitTopicHighScore(topicId, correctCount, timeSeconds, score) {
     const userName = getLoggedInUserName();
     let isNewRecord = false;
+    const isGuest = userName === "Học viên" || userName === "Khách";
 
     try {
+      if (isGuest) {
+        throw new Error("Guest User");
+      }
+      
       const body = new FormData();
       body.append("topic_id", topicId);
       body.append("correct_count", String(correctCount));
@@ -335,8 +340,10 @@ function initVocabularyStudy() {
       const old = currentTopicLeaderboard;
       if (!old || correctCount > old.correct_count || (correctCount === old.correct_count && timeSeconds < old.time_seconds)) {
         isNewRecord = true;
-        currentTopicLeaderboard = { user_name: userName, correct_count: correctCount, time_seconds: timeSeconds, score, _topicId: topicId };
-        localStorage.setItem(`engWithMeTopicLeaderboard_${topicId}`, JSON.stringify(currentTopicLeaderboard));
+        if (!isGuest) {
+          currentTopicLeaderboard = { user_name: userName, correct_count: correctCount, time_seconds: timeSeconds, score, _topicId: topicId };
+          localStorage.setItem(`engWithMeTopicLeaderboard_${topicId}`, JSON.stringify(currentTopicLeaderboard));
+        }
       }
     }
 
@@ -1961,6 +1968,7 @@ function initVocabularyStudy() {
                 <div style="color: #ffffff; font-size: 0.76rem; font-weight: 600; margin-top: 2px;">
                   Kỷ lục mới: <strong>${12 - cannonMissedWords.length}/12 câu đúng</strong> trong <strong>${minutes}:${seconds}</strong>!
                 </div>
+                ${(getLoggedInUserName() === "Học viên" || getLoggedInUserName() === "Khách") ? `<div style="color: #fca5a5; font-size: 0.7rem; font-weight: 700; margin-top: 4px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 4px;">Hãy Đăng nhập để lưu điểm lên BXH!</div>` : ''}
               </div>
             ` : (currentTopicLeaderboard ? `
               <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 10px; padding: 6px 10px; margin-bottom: 10px; width: 100%; text-align: center;">
