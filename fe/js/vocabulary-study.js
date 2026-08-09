@@ -2715,7 +2715,7 @@ function initVocabularyStudy() {
     const gameWords = topic.words.slice(0, 8);
     const isFinished = matchedPairs.size === gameWords.length;
 
-    if (isFinished) {
+    if (isFinished && !isPvPMode) {
       if (gameTimerInterval) {
         clearInterval(gameTimerInterval);
         gameTimerInterval = null;
