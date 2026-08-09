@@ -21,7 +21,7 @@ function initVocabularyStudy() {
   let isWordRevealed = false;
   let isClassifyingWord = false;
   let studyAdvanceTimer = null;
-  let currentGameMode = null;
+  let currentGameMode = ["match", "cannon"].includes(params.get("game")) ? params.get("game") : null;
   let selectedMatchTile = null;
   let matchedPairs = new Set();
   let gameScore = 0;
@@ -809,7 +809,7 @@ function initVocabularyStudy() {
     }
 
     const getTabsGridStyle = () => {
-      return currentWorkspaceMode === "study" ? "grid-template-columns: repeat(3, minmax(83px, 1fr)) 44px;" : "";
+      return currentWorkspaceMode === "study" ? "grid-template-columns: repeat(2, minmax(83px, 1fr)) 44px;" : "grid-template-columns: repeat(2, minmax(83px, 1fr));";
     };
 
     let confirmPopupHtml = "";
@@ -902,7 +902,6 @@ function initVocabularyStudy() {
               <div class="workspace-tabs" style="${getTabsGridStyle()}" aria-label="Chức năng học chủ đề">
                 ${workspaceTabTemplate("view", "ti-eye", "Read")}
                 ${workspaceTabTemplate("study", "ti-book", "Study")}
-                ${workspaceTabTemplate("play", "ti-game", "Play")}
                 ${currentWorkspaceMode === "study" ? `
                   <button class="workspace-tab settings-tab-btn ${isModesSettingsOpen ? 'settings-active' : ''}" type="button" data-toggle-modes-settings title="Tùy chỉnh chế độ học">
                     <svg class="settings-sliders-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">

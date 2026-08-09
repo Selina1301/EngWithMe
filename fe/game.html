@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Arena - EngWithMe</title>
+  <meta name="description" content="Thách đấu tiếng Anh thời gian thực hoặc luyện tập qua các mini-game thú vị.">
+  <link rel="icon" href="assets/icons/theme/logoEW.png" type="image/png">
+  
+  <link rel="stylesheet" href="css/base.css?v=20260805hotfix4">
+  <link rel="stylesheet" href="css/pages/game.css?v=20260805hotfix4" />
+  <link rel="stylesheet" href="css/responsive/desktop.css">
+  <link rel="stylesheet" href="css/responsive/tablet.css">
+  <link rel="stylesheet" href="css/responsive/phone.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="game-page-body">
+  <!-- SITE HEADER -->
+  <header class="site-header">
+    <a class="brand" href="index.html">EngWithMe</a>
+    <nav class="nav-links" aria-label="Menu chính">
+      <a href="index.html">Home</a>
+      <a href="vocabulary.html">Vocabulary</a>
+      <a href="listening.html">Listening</a>
+      <a href="reading.html">Reading</a>
+      <a href="grammar.html">Grammar</a>
+      <a href="quiz.html">Exam</a>
+      <a href="rank.html">Rank</a>
+        <a href="game.html">Arena</a>
+      <a href="blog.html">Blog</a>
+      <a href="game.html" class="is-active">Arena</a>
+      <a href="pricing.html">Premium</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="login.html">Đăng nhập</a>
+      <a class="btn btn-primary" href="register.html">Đăng ký</a>
+    </div>
+  </header>
+
+  <!-- MAIN GAME ARENA -->
+  <main class="game-hub">
+    
+    <div class="game-hub-header">
+      <p class="eyebrow">Play to Learn</p>
+      <h1>EngWithMe Arena</h1>
+      <p>Luyện tập cá nhân qua các trò chơi thú vị hoặc thách đấu bạn bè để leo rank.</p>
+      
+      <div class="game-mode-toggle">
+        <button class="game-tab-btn active" data-tab="offline">
+          <i data-lucide="gamepad-2"></i> Offline Solo
+        </button>
+        <button class="game-tab-btn" data-tab="online">
+          <i data-lucide="swords"></i> Thách Đấu PvP
+        </button>
+      </div>
+    </div>
+
+    <!-- OFFLINE SECTION -->
+    <section class="game-section active" id="tab-offline">
+      <div class="game-grid">
+        <!-- Word Match -->
+        <div class="game-card" onclick="openTopicModal('match')">
+          <div class="game-icon-bg match-bg">
+            <i data-lucide="layout-grid"></i>
+          </div>
+          <div class="game-info">
+            <h3>Word Match</h3>
+            <p>Ghép từ tiếng Anh với nghĩa tiếng Việt tương ứng.</p>
+            <button class="btn btn-primary btn-sm">Chơi Ngay</button>
+          </div>
+        </div>
+        
+        <!-- Word Cannon -->
+        <div class="game-card" onclick="openTopicModal('cannon')">
+          <div class="game-icon-bg cannon-bg">
+            <i data-lucide="target"></i>
+          </div>
+          <div class="game-info">
+            <h3>Word Cannon</h3>
+            <p>Bắn pháo từ vựng chính xác để ghi điểm.</p>
+            <button class="btn btn-primary btn-sm">Chơi Ngay</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ONLINE PVP SECTION -->
+    <section class="game-section" id="tab-online">
+      <div class="pvp-lobby">
+        <div class="pvp-lobby-hero">
+          <h2>Đấu Trường Tốc Độ</h2>
+          <p>Tạo phòng, gửi link cho bạn bè và xem ai phản xạ từ vựng nhanh hơn!</p>
+          <div class="pvp-actions">
+            <button class="btn btn-primary btn-lg" onclick="createPvPRoom()">
+              <i data-lucide="plus-circle"></i> Tạo Phòng Mới
+            </button>
+          </div>
+        </div>
+
+        <div id="pvp-room-container" class="pvp-room-container" style="display: none;">
+          <div class="pvp-room-box">
+            <h3>Phòng chờ của bạn</h3>
+            <p>Gửi đường link này cho đối thủ của bạn:</p>
+            <div class="pvp-link-box">
+              <input type="text" id="pvpRoomLink" readonly value="https://engwithme.tungf.io.vn/game.html?room=EW-XXXX" />
+              <button class="btn btn-primary" onclick="copyPvPLink()">
+                <i data-lucide="copy"></i> Copy
+              </button>
+            </div>
+            <div class="pvp-status">
+              <i data-lucide="loader-2" class="spin"></i> Đang chờ đối thủ tham gia...
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOPIC SELECTOR MODAL (Offline Games) -->
+    <div id="topicModal" class="modal-overlay" style="display: none;">
+      <div class="modal-content game-topic-modal">
+        <div class="modal-header">
+          <h2>Chọn bài học để bắt đầu</h2>
+          <button class="modal-close" onclick="closeTopicModal()">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        
+        <div class="level-selector">
+          <button class="level-btn active" data-level="easy">Easy (A1-A2)</button>
+          <button class="level-btn" data-level="medium">Medium (B1-B2)</button>
+          <button class="level-btn" data-level="hard">Hard (C1-C2)</button>
+        </div>
+
+        <div class="topic-grid" id="topicGridContainer">
+          <!-- Topics will be injected here via JS -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer"></footer>
+
+  <!-- Scripts -->
+  <script src="js/config.js?v=20260805hotfix4"></script>
+  <script src="js/api.js?v=20260805hotfix4.0"></script>
+  <script src="js/components.js?v=20260805hotfix4.0"></script>
+  <script src="js/core.js?v=20260805hotfix4"></script>
+  
+  <!-- Vocabulary Data needed for offline games -->
+  <script src="js/vocabulary/easy.js?v=20260805hotfix4"></script>
+  <script src="js/vocabulary/medium.js?v=20260805hotfix4"></script>
+  <script src="js/vocabulary/hard.js?v=20260805hotfix4"></script>
+  <script src="js/vocabulary-data.js?v=20260805hotfix4"></script>
+  
+  <script src="js/game.js?v=20260805hotfix4"></script>
+  <script src="js/main.js?v=20260805hotfix4"></script>
+</body>
+</html>

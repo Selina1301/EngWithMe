@@ -1,0 +1,350 @@
+/* game.css - EngWithMe Arena Styles */
+
+.game-page-body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-hub {
+  padding: 80px 20px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex: 1;
+  width: 100%;
+}
+
+.game-hub-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.game-hub-header .eyebrow {
+  color: var(--color-primary);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.game-hub-header h1 {
+  font-size: 48px;
+  color: var(--color-accent);
+  margin-bottom: 16px;
+  font-weight: 800;
+}
+
+.game-hub-header p {
+  color: var(--color-text-muted);
+  font-size: 18px;
+  max-width: 600px;
+  margin: 0 auto 32px;
+}
+
+/* Toggle Tabs */
+.game-mode-toggle {
+  display: inline-flex;
+  background: var(--color-bg-light);
+  border-radius: 50px;
+  padding: 6px;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.game-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.game-tab-btn i {
+  width: 20px;
+  height: 20px;
+}
+
+.game-tab-btn:hover {
+  color: var(--color-text);
+}
+
+.game-tab-btn.active {
+  background: var(--color-primary);
+  color: var(--color-bg);
+  box-shadow: 0 4px 15px rgba(46, 232, 120, 0.4);
+}
+
+/* Sections */
+.game-section {
+  display: none;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.game-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Offline Grid */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  margin-top: 20px;
+}
+
+.game-card {
+  background: var(--color-bg-light);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 32px;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--color-primary);
+  box-shadow: 0 10px 30px rgba(46, 232, 120, 0.1);
+}
+
+.game-icon-bg {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.game-icon-bg i {
+  width: 40px;
+  height: 40px;
+  color: white;
+}
+
+.match-bg {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+}
+
+.cannon-bg {
+  background: linear-gradient(135deg, #f43f5e, #e11d48);
+  box-shadow: 0 10px 20px rgba(244, 63, 94, 0.3);
+}
+
+.game-info h3 {
+  font-size: 24px;
+  margin-bottom: 12px;
+  color: var(--color-text);
+}
+
+.game-info p {
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+/* Online PvP Section */
+.pvp-lobby {
+  background: var(--color-bg-light);
+  border: 1px solid var(--color-primary);
+  border-radius: 20px;
+  padding: 60px 40px;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.pvp-lobby::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(46,232,120,0.1) 0%, rgba(0,0,0,0) 60%);
+  pointer-events: none;
+}
+
+.pvp-lobby-hero h2 {
+  font-size: 36px;
+  color: var(--color-accent);
+  margin-bottom: 16px;
+}
+
+.pvp-lobby-hero p {
+  font-size: 18px;
+  color: var(--color-text-muted);
+  margin-bottom: 32px;
+}
+
+.pvp-room-container {
+  margin-top: 40px;
+  animation: fadeIn 0.4s ease;
+}
+
+.pvp-room-box {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 32px;
+}
+
+.pvp-room-box h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.pvp-link-box {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.pvp-link-box input {
+  flex: 1;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 16px;
+}
+
+.pvp-link-box input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.pvp-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.spin {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+/* Topic Modal */
+.game-topic-modal {
+  background: var(--color-bg-light);
+  max-width: 800px;
+  width: 90%;
+  padding: 32px;
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: var(--color-danger);
+}
+
+.level-selector {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 16px;
+}
+
+.level-btn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.level-btn.active {
+  background: var(--color-primary);
+  color: var(--color-bg);
+  border-color: var(--color-primary);
+}
+
+.topic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.topic-item {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.topic-item:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 15px rgba(46, 232, 120, 0.1);
+}
+
+.topic-item h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.topic-item p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
