@@ -115,6 +115,7 @@ window.renderBombGame = function(topic) {
     bombGameState.gameOverSent = false;
     bombGameState.wordHoldTime = 0;
     bombGameState.lastTickTimestamp = Date.now();
+    bombGameState.initialized = true;
     pickNewBombWord();
 
     if (bombGameState.timerInterval) clearInterval(bombGameState.timerInterval);

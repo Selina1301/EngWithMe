@@ -251,7 +251,7 @@ io.on('connection', (socket) => {
     const { roomId, action, payload } = data;
     const room = rooms[roomId];
     
-    if (room && room.gameStarted) {
+    if (room) {
       // Forward the action to everyone else in the room
       socket.to(roomId).emit('game_action', {
         senderId: socket.id,
