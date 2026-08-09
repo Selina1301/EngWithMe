@@ -954,6 +954,67 @@ function initVocabularyStudy() {
       `;
     }
 
+    if (currentWorkspaceMode === "pvp") {
+      const pvpPlayers = (typeof pvpManager !== 'undefined' && pvpManager.players) ? pvpManager.players : [];
+      let mePlayer = pvpPlayers.find(p => p.id === pvpManager?.socket?.id) || { name: 'Bạn', score: 0, color: '#3b82f6' };
+      let oppPlayer = pvpPlayers.find(p => p.id !== pvpManager?.socket?.id) || { name: 'Đối thủ', score: 0, color: '#ef4444' };
+      
+      const meAvatar = mePlayer.avatar ? `<img src="${mePlayer.avatar}" style="width:26px; height:26px; border-radius:50%; object-fit:cover;">` : `👤`;
+      const oppAvatar = oppPlayer.avatar ? `<img src="${oppPlayer.avatar}" style="width:26px; height:26px; border-radius:50%; object-fit:cover;">` : `👤`;
+
+      root.innerHTML = `
+        <div class="vocab-workspace mode-pvp" style="max-width: 960px; margin: 0 auto; padding: 10px;">
+          <!-- PVP DEDICATED TOP ACTION BAR -->
+          <div class="pvp-action-bar" style="display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 18px; padding: 12px 22px; margin-bottom: 24px; box-shadow: 0 12px 30px rgba(0,0,0,0.5);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <a href="game.html?tab=online" class="btn btn-outline btn-sm" style="display: flex; align-items: center; gap: 6px; border-radius: 10px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.15); text-decoration: none; font-weight: 700; padding: 8px 16px; font-size: 0.9rem;">
+                ← Về Menu Game
+              </a>
+              <a href="game.html?tab=online&action=create" class="btn btn-primary btn-sm" style="display: flex; align-items: center; gap: 6px; border-radius: 10px; font-weight: 700; padding: 8px 16px; font-size: 0.9rem; background: linear-gradient(135deg, #10b981, #059669); color: white; text-decoration: none;">
+                ➕ Tạo Phòng Mới
+              </a>
+            </div>
+
+            <!-- LIVE SCOREBOARD -->
+            <div style="display: flex; align-items: center; gap: 18px; background: rgba(0,0,0,0.45); padding: 8px 20px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);">
+              <div style="display: flex; align-items: center; gap: 8px; color: ${mePlayer.color || '#3b82f6'}; font-weight: 800; font-size: 0.95rem;">
+                ${meAvatar}
+                <span>${mePlayer.name} (Bạn)</span>
+                <span style="background: rgba(59, 130, 246, 0.25); border: 1px solid rgba(59, 130, 246, 0.4); padding: 2px 10px; border-radius: 12px; font-size: 1.15rem; color: #60a5fa;">${mePlayer.score || 0}</span>
+              </div>
+              <span style="color: #f59e0b; font-weight: 900; font-style: italic; font-size: 1.2rem;">VS</span>
+              <div style="display: flex; align-items: center; gap: 8px; color: ${oppPlayer.color || '#ef4444'}; font-weight: 800; font-size: 0.95rem;">
+                <span style="background: rgba(239, 68, 68, 0.25); border: 1px solid rgba(239, 68, 68, 0.4); padding: 2px 10px; border-radius: 12px; font-size: 1.15rem; color: #f87171;">${oppPlayer.score || 0}</span>
+                <span>${oppPlayer.name}</span>
+                ${oppAvatar}
+              </div>
+            </div>
+
+            <!-- TIMER & TOPIC INFO -->
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="modal-level-pill ${activeLevel}" style="font-weight: 700;">${vocabularyData[activeLevel].label}</span>
+              <div style="display: flex; align-items: center; gap: 6px; color: #38bdf8; font-weight: 800; font-size: 1.1rem; font-family: monospace; background: rgba(56, 189, 248, 0.1); padding: 6px 14px; border-radius: 10px; border: 1px solid rgba(56, 189, 248, 0.2);">
+                ⏱️ <span data-game-timer>00:00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- GAME PANEL -->
+          <div class="workspace-panel">
+            ${renderWorkspacePanel(topic)}
+          </div>
+          ${reportPopupHtml}
+        </div>
+      `;
+
+      syncUrl();
+      attachEvents(topic);
+      if (currentGameMode && gameTimerInterval) {
+        updateTimerDisplay();
+      }
+      return;
+    }
+
     root.innerHTML = `
       <div class="vocab-workspace mode-${currentWorkspaceMode}">
         ${currentWorkspaceMode === "play" ? "" : `

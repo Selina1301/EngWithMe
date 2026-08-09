@@ -199,14 +199,12 @@ class PvPManager {
     const topicSelect = document.getElementById('pvp-topic-select');
     if (!topicSelect || !vocabularyData || !vocabularyData[level]) return;
     
-    let html = '';
+    let html = '<option value="random">🎲 Ngẫu Nhiên (Random)</option>';
     vocabularyData[level].topics.forEach(t => {
       html += `<option value="${t.id}">${t.name}</option>`;
     });
     topicSelect.innerHTML = html;
-    if (vocabularyData[level].topics.length > 0) {
-      topicSelect.value = vocabularyData[level].topics[0].id;
-    }
+    topicSelect.value = 'random';
     this.sendHostConfig();
   }
 
@@ -363,12 +361,27 @@ class PvPManager {
   }
 
   startGame(config) {
-    if (!config || !config.level || !config.topic) {
+    if (!config) {
       alert("Invalid game configuration!");
       return;
     }
+    const level = config.level || 'easy';
+    let topic = config.topic || 'random';
+
+    // Resolve random topic on client
+    if (topic === 'random' && typeof vocabularyData !== 'undefined' && vocabularyData[level]) {
+      const topics = vocabularyData[level].topics;
+      if (topics && topics.length > 0) {
+        const randItem = topics[Math.floor(Math.random() * topics.length)];
+        topic = randItem ? randItem.id : 'family';
+      } else {
+        topic = 'family';
+      }
+    }
+    const mode = config.mode || 'match';
+
     // Redirect to vocabulary-study.html with PvP parameters
-    window.location.href = `vocabulary-study.html?level=${config.level}&topic=${config.topic}&mode=pvp&game=${config.mode}&room=${this.roomId}&sid=${this.socket.id}`;
+    window.location.href = `vocabulary-study.html?level=${level}&topic=${topic}&mode=pvp&game=${mode}&room=${this.roomId}&sid=${this.socket.id}`;
   }
 }
 

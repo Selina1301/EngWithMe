@@ -110,57 +110,70 @@ function drawMeteorCanvas() {
   
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  // Draw ground
-  ctx.fillStyle = 'rgba(239, 68, 68, 0.2)';
-  ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
+  // Draw warning ground line
+  ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
+  ctx.fillRect(0, canvas.height - 18, canvas.width, 18);
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, canvas.height - 18);
+  ctx.lineTo(canvas.width, canvas.height - 18);
+  ctx.stroke();
   
   // Draw meteors
   meteorGameState.meteors.forEach(m => {
      const px = (m.x / 100) * canvas.width;
      const py = m.y;
      
-     // Draw meteor body
+     // Draw flame tail
+     const flameGrad = ctx.createLinearGradient(px, py - 30, px, py);
+     flameGrad.addColorStop(0, 'transparent');
+     flameGrad.addColorStop(1, '#f97316');
+     ctx.fillStyle = flameGrad;
      ctx.beginPath();
-     ctx.arc(px, py, 15, 0, Math.PI * 2);
-     ctx.fillStyle = '#f59e0b'; // amber
+     ctx.moveTo(px - 10, py);
+     ctx.lineTo(px, py - 35);
+     ctx.lineTo(px + 10, py);
+     ctx.fill();
+
+     // Draw meteor core
+     ctx.beginPath();
+     ctx.arc(px, py, 16, 0, Math.PI * 2);
+     ctx.fillStyle = '#f59e0b';
      ctx.shadowColor = '#f59e0b';
-     ctx.shadowBlur = 10;
+     ctx.shadowBlur = 12;
      ctx.fill();
      ctx.closePath();
-     
      ctx.shadowBlur = 0;
      
-     // Draw text
-     ctx.fillStyle = 'white';
-     ctx.font = 'bold 14px sans-serif';
+     // Draw English word
+     ctx.fillStyle = '#ffffff';
+     ctx.font = 'bold 15px system-ui, sans-serif';
      ctx.textAlign = 'center';
-     ctx.fillText(m.word, px, py - 20);
+     ctx.fillText(m.word, px, py + 5);
      
-     ctx.font = '12px sans-serif';
-     ctx.fillStyle = '#94a3b8';
-     ctx.fillText(m.meaning, px, py - 35);
+     // Draw Vietnamese meaning above
+     ctx.font = '600 13px system-ui, sans-serif';
+     ctx.fillStyle = '#cbd5e1';
+     ctx.fillText(m.meaning, px, py - 22);
   });
 }
 
 window.onMeteorInput = function(val) {
    meteorGameState.inputValue = val;
    
-   // Check if input matches any meteor's word exactly
    const typedStr = val.toLowerCase().trim();
-   const index = meteorGameState.meteors.findIndex(m => m.word.toLowerCase() === typedStr);
+   const index = meteorGameState.meteors.findIndex(m => m.word.toLowerCase().trim() === typedStr);
    
    if (index !== -1) {
-      // Destroy meteor
       meteorGameState.meteors.splice(index, 1);
       meteorGameState.inputValue = '';
       
-      // Send to opponent
       pvpManager?.socket?.emit('game_action', {
          roomId: window.pvpRoomId || pvpManager.roomId,
          action: 'send_meteor'
       });
       
-      // Update UI (input box)
       const inputEl = document.getElementById('meteor-input');
       if (inputEl) inputEl.value = '';
    }
@@ -180,7 +193,6 @@ window.renderMeteorGame = function(topic) {
     meteorGameState.frameId = requestAnimationFrame(updateMeteorGame);
   }
   
-  // Heart rendering
   const renderHearts = (lives) => {
     let str = '';
     for (let i = 0; i < 3; i++) {
@@ -190,41 +202,36 @@ window.renderMeteorGame = function(topic) {
   };
 
   return `
-    <div style="max-width: 720px; margin: 30px auto 0 auto;">
-      
-      <!-- HEADER -->
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 4px 8px; color: #cbd5e1;">
-        <a href="game.html?tab=online" style="text-decoration: none; color: rgba(255,255,255,0.4); font-weight: 500;">
-          <span style="font-size: 1.7rem; line-height: 1;">←</span> Back
-        </a>
-      </div>
-
-      <!-- GAME BOARD -->
-      <div class="game-board" style="background: rgba(15, 23, 42, 0.9); border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); text-align: center;">
+    <div style="width: 100%; max-width: 800px; margin: 0 auto;">
+      <div class="game-board" style="background: rgba(15, 23, 42, 0.95); border-radius: 20px; padding: 24px; border: 1.5px solid rgba(16, 185, 129, 0.3); text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
         
-        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+        <!-- HEART STATUS BAR -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);">
           <div style="text-align: left;">
-            <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 4px;">MẠNG CỦA BẠN</div>
-            <div style="font-size: 1.2rem;">${renderHearts(meteorGameState.myLives)}</div>
+            <div style="font-size: 0.75rem; color: #3b82f6; font-weight: 800; letter-spacing: 1px; margin-bottom: 2px;">MẠNG CỦA BẠN</div>
+            <div style="font-size: 1.3rem;">${renderHearts(meteorGameState.myLives)}</div>
           </div>
+          <div style="font-size: 1.6rem; color: #f59e0b; font-weight: 900;">☄️</div>
           <div style="text-align: right;">
-            <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 4px;">MẠNG ĐỐI THỦ</div>
-            <div style="font-size: 1.2rem;">${renderHearts(meteorGameState.opponentLives)}</div>
+            <div style="font-size: 0.75rem; color: #ef4444; font-weight: 800; letter-spacing: 1px; margin-bottom: 2px;">MẠNG ĐỐI THỦ</div>
+            <div style="font-size: 1.3rem;">${renderHearts(meteorGameState.opponentLives)}</div>
           </div>
         </div>
 
         <!-- CANVAS -->
-        <div style="position: relative; width: 100%; height: 400px; background: rgba(0,0,0,0.4); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;">
-           <canvas id="meteor-canvas" width="680" height="400" style="width: 100%; height: 100%;"></canvas>
+        <div style="position: relative; width: 100%; height: 380px; background: radial-gradient(circle at center, #0f172a 0%, #020617 100%); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 18px;">
+           <canvas id="meteor-canvas" width="732" height="380" style="width: 100%; height: 100%; display: block;"></canvas>
         </div>
         
         <!-- INPUT -->
-        <input id="meteor-input" type="text" 
-               oninput="window.onMeteorInput(this.value)"
-               placeholder="Gõ từ để phá hủy thiên thạch..."
-               autofocus
-               autocomplete="off"
-               style="width: 80%; padding: 15px; font-size: 1.2rem; text-align: center; border-radius: 12px; border: 2px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; outline: none;" />
+        <div style="width: 100%;">
+          <input id="meteor-input" type="text" 
+                 oninput="window.onMeteorInput(this.value)"
+                 placeholder="Gõ từ vựng tiếng Anh để bắn vỡ thiên thạch..."
+                 autofocus
+                 autocomplete="off"
+                 style="width: 100%; padding: 14px 20px; font-size: 1.25rem; text-align: center; border-radius: 14px; border: 2px solid rgba(16, 185, 129, 0.4); background: rgba(15, 23, 42, 0.8); color: white; outline: none; transition: border-color 0.2s;" />
+        </div>
       </div>
     </div>
   `;

@@ -99,56 +99,50 @@ window.renderBombGame = function(topic) {
   return `
     <style>
       .bomb-active {
-        box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        box-shadow: 0 0 35px rgba(239, 68, 68, 0.6);
         border: 2px solid #ef4444 !important;
       }
       @keyframes pulseRed {
-        0% { background-color: rgba(15, 23, 42, 0.9); }
-        50% { background-color: rgba(239, 68, 68, 0.15); }
-        100% { background-color: rgba(15, 23, 42, 0.9); }
+        0% { background-color: rgba(15, 23, 42, 0.95); }
+        50% { background-color: rgba(239, 68, 68, 0.2); }
+        100% { background-color: rgba(15, 23, 42, 0.95); }
       }
       .pulse-red {
-        animation: pulseRed 1s infinite;
+        animation: pulseRed 1s infinite alternate;
       }
     </style>
-    <div style="max-width: 720px; margin: 30px auto 0 auto;">
-      
-      <!-- HEADER -->
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 4px 8px; color: #cbd5e1;">
-        <a href="game.html?tab=online" style="text-decoration: none; color: rgba(255,255,255,0.4); font-weight: 500;">
-          <span style="font-size: 1.7rem; line-height: 1;">←</span> Back
-        </a>
-      </div>
-
-      <!-- GAME BOARD -->
-      <div class="game-board ${bgClass}" style="background: rgba(15, 23, 42, 0.9); border-radius: 20px; padding: 30px; border: 1px solid rgba(255,255,255,0.1); text-align: center; position: relative;">
+    <div style="width: 100%; max-width: 800px; margin: 0 auto;">
+      <div class="game-board ${bgClass}" style="background: rgba(15, 23, 42, 0.95); border-radius: 24px; padding: 32px; border: 1.5px solid rgba(239, 68, 68, 0.3); text-align: center; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.6);">
         
-        <div style="display: flex; justify-content: space-between; margin-bottom: 30px;">
-          <div style="flex: 1; text-align: center;">
-            <div style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 5px;">BẠN</div>
-            <div style="font-size: 2.5rem; font-weight: 800; color: ${myTimerColor}; font-family: monospace;">${bombGameState.myTimer}s</div>
-            ${bombGameState.hasBomb ? '<div style="font-size: 2rem; margin-top: 10px; animation: pulseRed 0.5s infinite alternate;">💣</div>' : ''}
+        <!-- STATUS TIMERS -->
+        <div style="display: flex; justify-content: space-between; gap: 20px; margin-bottom: 30px;">
+          <div style="flex: 1; text-align: center; background: rgba(0,0,0,0.3); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);">
+            <div style="font-size: 0.8rem; font-weight: 800; color: #3b82f6; letter-spacing: 1px; margin-bottom: 4px;">BẠN HỮU</div>
+            <div style="font-size: 2.8rem; font-weight: 900; color: ${myTimerColor}; font-family: monospace;">${bombGameState.myTimer}s</div>
+            ${bombGameState.hasBomb ? '<div style="font-size: 2.2rem; margin-top: 6px; animation: pulseRed 0.5s infinite alternate;">💣 (Cầm bom)</div>' : '<div style="font-size: 0.85rem; color: #94a3b8; margin-top: 6px;">An toàn</div>'}
           </div>
           
-          <div style="flex: 1; text-align: center; border-left: 1px solid rgba(255,255,255,0.1);">
-            <div style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 5px;">ĐỐI THỦ</div>
-            <div style="font-size: 2.5rem; font-weight: 800; color: ${oppTimerColor}; font-family: monospace;">${bombGameState.opponentTimer}s</div>
-            ${!bombGameState.hasBomb ? '<div style="font-size: 2rem; margin-top: 10px;">💣</div>' : ''}
+          <div style="flex: 1; text-align: center; background: rgba(0,0,0,0.3); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);">
+            <div style="font-size: 0.8rem; font-weight: 800; color: #ef4444; letter-spacing: 1px; margin-bottom: 4px;">ĐỐI THỦ</div>
+            <div style="font-size: 2.8rem; font-weight: 900; color: ${oppTimerColor}; font-family: monospace;">${bombGameState.opponentTimer}s</div>
+            ${!bombGameState.hasBomb ? '<div style="font-size: 2.2rem; margin-top: 6px;">💣 (Cầm bom)</div>' : '<div style="font-size: 0.85rem; color: #94a3b8; margin-top: 6px;">An toàn</div>'}
           </div>
         </div>
 
-        <div style="margin: 40px 0;">
-           <div style="font-size: 1.5rem; font-weight: 600; color: #fff; margin-bottom: 20px;">
+        <!-- MEANING & INPUT -->
+        <div style="margin: 30px 0 10px 0;">
+           <div style="font-size: 0.85rem; color: #cbd5e1; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;">Nghĩa tiếng Việt của từ:</div>
+           <div style="font-size: 2.2rem; font-weight: 900; color: #ffffff; margin-bottom: 24px;">
              ${targetWord ? targetWord.meaning : ''}
            </div>
            
            <input id="bomb-input" type="text" 
                   value="${bombGameState.inputValue}"
                   oninput="window.onBombInput(this.value)"
-                  placeholder="${bombGameState.hasBomb ? 'Gõ từ tiếng Anh...' : 'Chờ đối thủ gõ...'}"
+                  placeholder="${bombGameState.hasBomb ? '💣 Gõ từ tiếng Anh để chuyền bom sang đối thủ...' : '⏳ Chờ đối thủ gõ để chuyền bom...'}"
                   ${!bombGameState.hasBomb ? 'disabled' : 'autofocus'}
                   autocomplete="off"
-                  style="width: 80%; padding: 15px; font-size: 1.5rem; text-align: center; border-radius: 12px; border: 2px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; outline: none;" />
+                  style="width: 100%; padding: 16px 20px; font-size: 1.25rem; text-align: center; border-radius: 14px; border: 2px solid ${bombGameState.hasBomb ? '#ef4444' : 'rgba(255,255,255,0.15)'}; background: rgba(0,0,0,0.4); color: white; outline: none; transition: border-color 0.2s;" />
         </div>
       </div>
     </div>
