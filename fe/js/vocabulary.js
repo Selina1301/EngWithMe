@@ -60,6 +60,16 @@
   let quizTimer = null;
   let fastQuestionStreak = Math.max(0, parseInt(localStorage.getItem(fastStreakKey) || "0", 10));
 
+  // Prevent URL bypass for hard level
+  if (activeLevel === "hard" && typeof isUserVip === "function" && !isUserVip()) {
+    activeLevel = "easy";
+    if (window.history.replaceState) {
+      const url = new URL(window.location);
+      url.searchParams.set("level", "easy");
+      window.history.replaceState({}, "", url);
+    }
+  }
+
   function normalizeQuizStats(value) {
     if (!value || typeof value !== "object") {
       return {
@@ -593,21 +603,18 @@
   }
 
   function topicCardTemplate(topic) {
-    const isVip = typeof isUserVip === "function" && isUserVip();
-    const isHardLocked = activeLevel === "hard" && !isVip;
-
     return `
-      <article class="topic-card rail-card ${activeLevel} ${isHardLocked ? "is-vip-locked" : ""}" data-topic-id="${topic.id}">
+      <article class="topic-card rail-card ${activeLevel}" data-topic-id="${topic.id}">
         <button class="topic-card-open" type="button" data-topic-open data-topic-id="${topic.id}" aria-label="Mở chủ đề ${topic.name}"></button>
-        <span class="topic-level-chip">${vocabularyData[activeLevel].label} ${isHardLocked ? '<strong style="color: #f87171; margin-left: 4px;">🔒 PRO/PREMIUM</strong>' : ""}</span>
-        <div class="topic-icon" aria-hidden="true"><i class="${isHardLocked ? "ti-lock" : (topic.icon || "ti-book")}" style="${isHardLocked ? "color: #f87171;" : ""}"></i></div>
+        <span class="topic-level-chip">${vocabularyData[activeLevel].label}</span>
+        <div class="topic-icon" aria-hidden="true"><i class="${topic.icon || "ti-book"}"></i></div>
         <div class="topic-card-body">
-          <h3>${topic.name} ${isHardLocked ? '<i class="ti-lock" style="color: #f87171; font-size: 0.9rem; margin-left: 4px;"></i>' : ""}</h3>
+          <h3>${topic.name}</h3>
           <p>${topic.desc}</p>
         </div>
         <span class="topic-card-footer">
           <small>${topic.words.length} từ mới</small>
-          <i class="${isHardLocked ? "ti-lock" : "ti-arrow-right"}" aria-hidden="true" style="${isHardLocked ? "color: #f87171;" : ""}"></i>
+          <i class="ti-arrow-right" aria-hidden="true"></i>
         </span>
       </article>
     `;

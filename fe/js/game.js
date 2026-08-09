@@ -58,11 +58,17 @@ function closeTopicModal() {
 
 // Handle Level Selection inside Modal
 document.addEventListener("click", (e) => {
-  if (e.target.classList.contains("level-btn")) {
+  const levelBtn = e.target.closest(".level-btn");
+  if (levelBtn) {
+    const targetLvl = levelBtn.dataset.level;
+    if (targetLvl === "hard" && typeof checkHardModeAccess === "function") {
+      if (!checkHardModeAccess(e, "Từ vựng Nâng cao C1-C2 (Hard Mode)")) return;
+    }
+
     const levelBtns = document.querySelectorAll(".level-btn");
     levelBtns.forEach(btn => btn.classList.remove("active"));
-    e.target.classList.add("active");
-    renderTopics(e.target.dataset.level);
+    levelBtn.classList.add("active");
+    renderTopics(targetLvl);
   }
   
   // Close modal when clicking outside
