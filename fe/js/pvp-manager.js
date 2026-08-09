@@ -128,6 +128,10 @@ class PvPManager {
     if (hero) hero.style.display = "none";
     if (container) container.style.display = "block";
     
+    // Hide game-hub-header as requested by user
+    const hubHeader = document.querySelector(".game-hub-header");
+    if (hubHeader) hubHeader.style.display = "none";
+    
     if (linkInput) {
       linkInput.value = `${window.location.origin}${window.location.pathname}?tab=online&room=${this.roomId}`;
     }
