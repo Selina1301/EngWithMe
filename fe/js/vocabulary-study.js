@@ -2747,6 +2747,7 @@ function initVocabularyStudy() {
       const pvpPlayersList = (typeof pvpManager !== 'undefined' && pvpManager.players) ? pvpManager.players : [];
       let meP = pvpPlayersList.find(p => p.id === pvpManager?.socket?.id) || { name: 'Bạn', score: 0 };
       let oppP = pvpPlayersList.find(p => p.id !== pvpManager?.socket?.id) || { name: 'Đối thủ', score: 0 };
+      const myScoreDisplay = Math.max(matchedPairs.size, meP.score || 0);
 
       return `
         <div style="width: 100%; max-width: 960px; margin: 0 auto;">
@@ -2760,7 +2761,7 @@ function initVocabularyStudy() {
                 <div style="font-size: 0.82rem; color: #38bdf8; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;">CẶP ĐÚNG BẠN</div>
                 
                 <!-- Row 2: Score P1 -->
-                <div style="font-size: 2.2rem; font-weight: 900; color: #38bdf8; font-family: monospace;">${meP.score || 0} / ${gameWords.length}</div>
+                <div style="font-size: 2.2rem; font-weight: 900; color: #38bdf8; font-family: monospace;">${myScoreDisplay} / ${gameWords.length}</div>
                 
                 <!-- Row 3: Cards Icon Separator -->
                 <div style="font-size: 2.4rem; color: #34d399; margin: 2px 0; filter: drop-shadow(0 0 12px rgba(52, 211, 153, 0.6));">🃏</div>
@@ -3284,11 +3285,12 @@ function initVocabularyStudy() {
 
         if (isPair) {
           matchedPairs.add(button.dataset.matchId);
+          myPvPScore = matchedPairs.size;
           
           if (isPvPMode && typeof pvpManager !== 'undefined' && pvpManager.socket) {
-            myPvPScore++;
+            const curRoomId = pvpManager?.roomId || new URLSearchParams(window.location.search).get("room") || "";
             pvpManager.socket.emit('update_score', {
-              roomId: pvpRoomId,
+              roomId: curRoomId,
               score: myPvPScore,
               maxScore: (getTopic()?.words?.slice(0, 8).length || 8)
             });

@@ -178,6 +178,34 @@ io.on('connection', (socket) => {
     }
   });
 
+  // UPDATE SCORE
+  socket.on('update_score', (data) => {
+    const { roomId, score, maxScore } = data;
+    const room = rooms[roomId];
+    if (room) {
+      let player = room.players.find(p => p.id === socket.id);
+      if (!player) {
+        player = room.players[0];
+      }
+      if (player) {
+        player.score = score;
+        io.to(roomId).emit('score_update', { players: room.players });
+
+        if (maxScore && score >= maxScore) {
+          room.gameStarted = false;
+          io.to(roomId).emit('game_over', {
+            winnerId: player.id,
+            winnerName: player.name,
+            players: room.players,
+            gameMode: room.gameMode,
+            topic: room.topic
+          });
+          room.players.forEach(p => p.ready = false);
+        }
+      }
+    }
+  });
+
   // REQUEST REMATCH
   socket.on('pvp_request_rematch', (data) => {
     const { roomId } = data;

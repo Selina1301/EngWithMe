@@ -110,6 +110,9 @@ class PvPManager {
       if (typeof window.updatePvPHud === 'function') {
          window.updatePvPHud(this.players);
       }
+      if (typeof window.render === 'function') {
+         window.render();
+      }
     });
     
     this.socket.on('game_over', (data) => {
