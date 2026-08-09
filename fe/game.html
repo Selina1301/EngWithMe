@@ -102,11 +102,10 @@
           <div class="pvp-room-box">
             <h3 id="pvp-room-title">Phòng chờ: <span>EW-XXXX</span></h3>
             
-            <div class="pvp-link-box" id="pvp-link-section">
-              <p>Gửi đường link này cho đối thủ của bạn:</p>
-              <div style="display:flex; gap: 8px;">
-                <input type="text" id="pvpRoomLink" readonly value="https://engwithme.tungf.io.vn/game.html?room=EW-XXXX" style="flex:1;" />
-                <button class="btn btn-primary" onclick="copyPvPLink()">
+            <div class="pvp-link-box" id="pvp-link-section" style="margin: 0 auto 20px auto; max-width: 400px; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);">
+              <div style="display:flex; gap: 8px; align-items: center;">
+                <input type="text" id="pvpRoomLink" readonly value="https://engwithme.tungf.io.vn/game.html?room=EW-XXXX" style="flex:1; background: transparent; border: none; color: #4ade80; font-family: monospace; font-size: 0.85rem; outline: none; text-align: center;" />
+                <button class="btn btn-primary" onclick="copyPvPLink()" style="padding: 6px 12px; font-size: 0.85rem; height: auto;">
                   <i data-lucide="copy"></i> Copy
                 </button>
               </div>
