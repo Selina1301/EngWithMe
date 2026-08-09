@@ -51,6 +51,7 @@ function initVocabularyStudy() {
   let cannonCurrentStreak = 0;
   let cannonMaxStreak = 0;
 
+  let isTimerStarted = false;
   let isAnswered = false;
   let lastAnswerIsCorrect = false;
   let lastTypedAnswer = "";
@@ -956,7 +957,9 @@ function initVocabularyStudy() {
     syncUrl();
     attachEvents(topic);
     if (currentGameMode === "cannon") {
-      initCannonCanvas(topic);
+      setTimeout(() => {
+        initCannonCanvas(topic);
+      }, 10);
     }
     if (currentGameMode && gameTimerInterval) {
       updateTimerDisplay();
