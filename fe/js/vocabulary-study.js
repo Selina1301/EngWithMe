@@ -2453,7 +2453,7 @@ function initVocabularyStudy() {
       <div style="max-width: 720px; margin: 30px auto 0 auto;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 4px 8px; color: #cbd5e1; font-weight: 600; font-size: 0.95rem;">
           <div style="display: flex; align-items: center; gap: 8px;">
-            <a href="game.html" style="text-decoration: none; background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 0; font-size: 1.25rem; line-height: 1; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">←</a>
+            <a href="game.html" style="text-decoration: none; background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 0 10px 0 0; font-size: 2rem; line-height: 1; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">←</a>
             <span>${matchedPairs.size} / ${gameWords.length} cặp đúng</span>
           </div>
           <span>⏱️ <span data-game-timer>00:00</span></span>
