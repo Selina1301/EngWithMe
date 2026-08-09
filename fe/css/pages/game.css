@@ -4,6 +4,8 @@
   background: radial-gradient(circle at top center, #0f172a 0%, #020617 100%);
   color: #f8fafc;
   min-height: 100vh;
+  max-height: 100vh;
+  overflow-y: hidden !important;
   display: flex;
   flex-direction: column;
 }
@@ -16,7 +18,7 @@
 }
 
 .game-hub {
-  padding: 20px 20px 40px;
+  padding: 10px 20px 10px;
   max-width: 1000px;
   margin: 0 auto;
   flex: 1;
