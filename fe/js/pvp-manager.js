@@ -113,6 +113,18 @@ class PvPManager {
         window.onPvPActionReceived(data);
       }
     });
+
+    this.socket.on('pvp_rematch_requested', (data) => {
+      if (typeof window.onPvPRematchRequested === 'function') {
+        window.onPvPRematchRequested(data);
+      }
+    });
+
+    this.socket.on('pvp_rematch_start', (data) => {
+      if (typeof window.onPvPRematchStart === 'function') {
+        window.onPvPRematchStart(data);
+      }
+    });
   }
 
   createRoom() {

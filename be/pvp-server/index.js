@@ -150,7 +150,7 @@ io.on('connection', (socket) => {
   socket.on('finish_game', (data) => {
     const { roomId, winnerId } = data;
     const room = rooms[roomId];
-    if (room && room.gameStarted) {
+    if (room) {
       room.gameStarted = false;
       const winner = room.players.find(p => p.id === winnerId) || room.players.find(p => p.id !== socket.id) || room.players[0];
       if (winner) winner.score = (winner.score || 0) + 1;
@@ -164,6 +164,33 @@ io.on('connection', (socket) => {
       });
 
       room.players.forEach(p => p.ready = false);
+    }
+  });
+
+  // REQUEST REMATCH
+  socket.on('pvp_request_rematch', (data) => {
+    const { roomId } = data;
+    const room = rooms[roomId];
+    if (room) {
+      const player = room.players.find(p => p.id === socket.id);
+      if (player) {
+        player.requestedRematch = true;
+        
+        socket.to(roomId).emit('pvp_rematch_requested', {
+          requestedByName: player.name
+        });
+
+        if (room.players.length === 2 && room.players.every(p => p.requestedRematch)) {
+          room.players.forEach(p => {
+            p.ready = false;
+            p.requestedRematch = false;
+          });
+          io.to(roomId).emit('pvp_rematch_start', {
+            roomId: roomId,
+            gameConfig: { mode: room.gameMode, level: room.level, topic: room.topic }
+          });
+        }
+      }
     }
   });
   // GENERIC GAME ACTION FOR CUSTOM GAMES (Bomb, Tug, Meteor, etc.)

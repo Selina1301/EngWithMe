@@ -71,10 +71,33 @@ function initVocabularyStudy() {
     }
   };
 
+  window.isPvPResultActive = false;
+  window.pvpRematchTimer = null;
+
   window.showPvPResult = function(data) {
+    window.isPvPResultActive = true;
     if (gameTimerInterval) clearInterval(gameTimerInterval);
+    if (window.meteorGameState && window.meteorGameState.frameId) {
+      cancelAnimationFrame(window.meteorGameState.frameId);
+    }
+    if (window.bombGameState && window.bombGameState.timerInterval) {
+      clearInterval(window.bombGameState.timerInterval);
+    }
+
     const amIWinner = data.winnerId === pvpManager?.socket?.id;
     const roomId = pvpManager?.roomId || new URLSearchParams(window.location.search).get("room") || "";
+
+    // Award XP (+30 XP for Winner, +5 XP for Loser)
+    if (!data._xpAwarded) {
+      data._xpAwarded = true;
+      if (typeof addXP === "function") {
+        if (amIWinner) {
+          addXP(30, "🏆 Chiến thắng Đấu Trường PvP");
+        } else {
+          addXP(5, "⚔️ Hoàn thành trận đấu PvP");
+        }
+      }
+    }
 
     const modeNames = {
       match: "🃏 Lật Thẻ",
@@ -87,18 +110,24 @@ function initVocabularyStudy() {
     root.innerHTML = `
       <div style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(14px); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px;">
         <div style="background: rgba(30, 41, 59, 0.95); border: 2px solid ${amIWinner ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.4)'}; border-radius: 24px; padding: 40px 32px; max-width: 520px; width: 100%; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.8);">
+          
+          <!-- REMATCH NOTIFICATION BANNER -->
+          <div id="pvp-rematch-banner" style="display: none; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; padding: 10px 16px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; margin-bottom: 20px; text-align: center; animation: pulseRed 1s infinite alternate;">
+            🔔 Đối phương đang rủ bạn chơi lại!
+          </div>
+
           <div style="font-size: 4rem; margin-bottom: 12px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));">
             ${amIWinner ? '🏆' : '💀'}
           </div>
           <h2 style="font-size: 2.2rem; font-weight: 900; margin-bottom: 6px; color: ${amIWinner ? '#10b981' : '#ef4444'}; text-shadow: 0 0 20px ${amIWinner ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)'};">
             ${amIWinner ? 'BẠN ĐÃ CHIẾN THẮNG!' : 'BẠN ĐÃ THUA CUỘC!'}
           </h2>
-          <p style="font-size: 1.05rem; color: #94a3b8; margin-bottom: 24px; font-weight: 600;">
-            ${amIWinner ? `Chúc mừng! Bạn đã đánh bại đối thủ trong trận đấu!` : `Rất tiếc! ${data.winnerName} đã giành chiến thắng!`}
+          <p style="font-size: 1.05rem; color: #94a3b8; margin-bottom: 20px; font-weight: 600;">
+            ${amIWinner ? `Chúc mừng! Bạn nhận được +30 XP!` : `Rất tiếc! Bạn nhận được +5 XP khích lệ!`}
           </p>
 
           <!-- STATS BOX -->
-          <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 18px 20px; margin-bottom: 28px; text-align: left;">
+          <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 18px 20px; margin-bottom: 24px; text-align: left;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: #cbd5e1; font-weight: 600; font-size: 0.95rem;">
               <span>🎮 Trò chơi:</span>
               <span style="color: #38bdf8; font-weight: 700;">${modeLabel}</span>
@@ -108,23 +137,69 @@ function initVocabularyStudy() {
               <span style="color: #f59e0b; font-weight: 800;">${data.winnerName}</span>
             </div>
             <div style="display: flex; justify-content: space-between; color: #cbd5e1; font-weight: 600; font-size: 0.95rem;">
-              <span>⏱️ Thời gian thi đấu:</span>
-              <span style="color: #4ade80; font-weight: 700; font-family: monospace;">${gameTimeSeconds}s</span>
+              <span>⭐ Phần thưởng XP:</span>
+              <span style="color: #4ade80; font-weight: 800;">${amIWinner ? '+30 XP' : '+5 XP'}</span>
             </div>
           </div>
 
           <!-- ACTION BUTTONS -->
           <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
-            <a href="game.html?tab=online&room=${roomId}" class="btn btn-primary" style="flex: 1; text-decoration: none; padding: 14px 20px; font-size: 1rem; border-radius: 12px; color: white; cursor: pointer; font-weight: 700; background: linear-gradient(135deg, #10b981, #059669); text-align: center; box-shadow: 0 4px 15px rgba(16,185,129,0.3);">
-              🔄 Chơi Lại (Về Sảnh)
-            </a>
-            <a href="game.html?tab=online" class="btn btn-outline" style="flex: 1; text-decoration: none; padding: 14px 20px; font-size: 1rem; border-radius: 12px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; font-weight: 600; text-align: center;">
-              🏠 Menu Game
+            <button id="pvp-btn-rematch" onclick="window.requestPvPRematch()" class="btn btn-primary" style="flex: 1; border: none; padding: 14px 20px; font-size: 1rem; border-radius: 12px; color: white; cursor: pointer; font-weight: 700; background: linear-gradient(135deg, #10b981, #059669); text-align: center; box-shadow: 0 4px 15px rgba(16,185,129,0.3);">
+              🔄 Chơi Lại
+            </button>
+            <a href="https://engwithme.tungf.io.vn/game.html" class="btn btn-outline" style="flex: 1; text-decoration: none; padding: 14px 20px; font-size: 1rem; border-radius: 12px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; font-weight: 600; text-align: center;">
+              ⬅️ Back
             </a>
           </div>
         </div>
       </div>
     `;
+  };
+
+  window.requestPvPRematch = function() {
+    const btn = document.getElementById('pvp-btn-rematch');
+    if (!btn || btn.disabled) return;
+
+    if (pvpManager?.socket) {
+      pvpManager.socket.emit('pvp_request_rematch', {
+        roomId: pvpManager?.roomId || new URLSearchParams(window.location.search).get("room") || ""
+      });
+    }
+
+    btn.disabled = true;
+    btn.style.background = 'rgba(245, 158, 11, 0.2)';
+    btn.style.border = '1px solid rgba(245, 158, 11, 0.4)';
+    btn.style.color = '#fbbf24';
+    btn.style.cursor = 'wait';
+
+    let seconds = 60;
+    btn.innerHTML = `⏳ Đang chờ đối phương... (<span id="pvp-rematch-timer-sec">${seconds}</span>s)`;
+
+    if (window.pvpRematchTimer) clearInterval(window.pvpRematchTimer);
+    window.pvpRematchTimer = setInterval(() => {
+      seconds--;
+      const secSpan = document.getElementById('pvp-rematch-timer-sec');
+      if (secSpan) secSpan.innerText = seconds;
+
+      if (seconds <= 0) {
+        clearInterval(window.pvpRematchTimer);
+        alert('Đối phương không phản hồi. Đang quay về Menu Game...');
+        window.location.href = 'https://engwithme.tungf.io.vn/game.html';
+      }
+    }, 1000);
+  };
+
+  window.onPvPRematchRequested = function(data) {
+    const banner = document.getElementById('pvp-rematch-banner');
+    if (banner) {
+      banner.style.display = 'block';
+      banner.innerHTML = `🔔 ${data.requestedByName || 'Đối phương'} đang rủ bạn chơi lại!`;
+    }
+  };
+
+  window.onPvPRematchStart = function(data) {
+    if (window.pvpRematchTimer) clearInterval(window.pvpRematchTimer);
+    window.location.href = `https://engwithme.tungf.io.vn/game.html?tab=online&room=${data.roomId}`;
   };
   let cannonCurrentStreak = 0;
   let cannonMaxStreak = 0;
@@ -873,6 +948,7 @@ function initVocabularyStudy() {
   }
 
   function render() {
+    if (window.isPvPResultActive) return;
     const topic = getTopic();
     if (!topic) {
       root.innerHTML = `
