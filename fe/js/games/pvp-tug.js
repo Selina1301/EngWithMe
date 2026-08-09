@@ -85,7 +85,7 @@ window.renderTugGame = function(topic) {
 
   return `
     <div style="width: 100%; max-width: 800px; margin: 0 auto;">
-      <div class="game-board" style="background: rgba(15, 23, 42, 0.95); border-radius: 24px; padding: 32px; border: 1.5px solid rgba(59, 130, 246, 0.3); text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.6);">
+      <div class="pvp-game-board" style="background: rgba(15, 23, 42, 0.95); border-radius: 24px; padding: 32px; border: 1.5px solid rgba(59, 130, 246, 0.3); text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.6);">
         
         <!-- ROPE AREA -->
         <div style="margin: 20px 0 40px 0; background: rgba(0,0,0,0.35); padding: 20px 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);">

@@ -962,7 +962,16 @@ function initVocabularyStudy() {
       const meAvatar = mePlayer.avatar ? `<img src="${mePlayer.avatar}" style="width:26px; height:26px; border-radius:50%; object-fit:cover;">` : `👤`;
       const oppAvatar = oppPlayer.avatar ? `<img src="${oppPlayer.avatar}" style="width:26px; height:26px; border-radius:50%; object-fit:cover;">` : `👤`;
 
+      const countdownOverlayHtml = !window.pvpCountdownDone ? `
+        <div id="pvp-countdown-overlay" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(12px); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;">
+          <div style="font-size: 1.3rem; font-weight: 800; color: #f59e0b; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px;">🔥 TRẬN ĐẤU SẮP BẮT ĐẦU 🔥</div>
+          <div id="pvp-countdown-num" style="font-size: 9rem; font-weight: 900; color: #38bdf8; text-shadow: 0 0 50px rgba(56, 189, 248, 0.8); line-height: 1;">3</div>
+          <div style="font-size: 1.1rem; color: #cbd5e1; font-weight: 600; margin-top: 24px;">Sẵn sàng chiến đấu cùng đối thủ...</div>
+        </div>
+      ` : '';
+
       root.innerHTML = `
+        ${countdownOverlayHtml}
         <div class="vocab-workspace mode-pvp" style="max-width: 960px; margin: 0 auto; padding: 10px;">
           <!-- PVP DEDICATED TOP ACTION BAR -->
           <div class="pvp-action-bar" style="display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 18px; padding: 12px 22px; margin-bottom: 24px; box-shadow: 0 12px 30px rgba(0,0,0,0.5);">
@@ -1006,6 +1015,27 @@ function initVocabularyStudy() {
           ${reportPopupHtml}
         </div>
       `;
+
+      if (!window.pvpCountdownDone) {
+        let count = 3;
+        const countdownTimer = setInterval(() => {
+          count--;
+          const numEl = document.getElementById('pvp-countdown-num');
+          const overlayEl = document.getElementById('pvp-countdown-overlay');
+          if (count > 0) {
+            if (numEl) numEl.innerText = count;
+          } else if (count === 0) {
+            if (numEl) {
+              numEl.innerText = 'CHIẾN!';
+              numEl.style.color = '#10b981';
+            }
+          } else {
+            clearInterval(countdownTimer);
+            window.pvpCountdownDone = true;
+            if (overlayEl) overlayEl.remove();
+          }
+        }, 1000);
+      }
 
       syncUrl();
       attachEvents(topic);

@@ -112,7 +112,7 @@ window.renderBombGame = function(topic) {
       }
     </style>
     <div style="width: 100%; max-width: 800px; margin: 0 auto;">
-      <div class="game-board ${bgClass}" style="background: rgba(15, 23, 42, 0.95); border-radius: 24px; padding: 32px; border: 1.5px solid rgba(239, 68, 68, 0.3); text-align: center; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.6);">
+      <div class="pvp-game-board ${bgClass}" style="background: rgba(15, 23, 42, 0.95); border-radius: 24px; padding: 32px; border: 1.5px solid rgba(239, 68, 68, 0.3); text-align: center; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.6);">
         
         <!-- STATUS TIMERS -->
         <div style="display: flex; justify-content: space-between; gap: 20px; margin-bottom: 30px;">

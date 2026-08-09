@@ -112,50 +112,81 @@ function drawMeteorCanvas() {
   
   // Draw warning ground line
   ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
-  ctx.fillRect(0, canvas.height - 18, canvas.width, 18);
+  ctx.fillRect(0, canvas.height - 24, canvas.width, 24);
   ctx.strokeStyle = '#ef4444';
   ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(0, canvas.height - 18);
-  ctx.lineTo(canvas.width, canvas.height - 18);
+  ctx.moveTo(0, canvas.height - 24);
+  ctx.lineTo(canvas.width, canvas.height - 24);
   ctx.stroke();
   
+  ctx.fillStyle = '#ef4444';
+  ctx.font = 'bold 12px system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('⚠️ PHÒNG THỦ MẶT ĐẤT', canvas.width / 2, canvas.height - 8);
+
   // Draw meteors
   meteorGameState.meteors.forEach(m => {
      const px = (m.x / 100) * canvas.width;
      const py = m.y;
      
      // Draw flame tail
-     const flameGrad = ctx.createLinearGradient(px, py - 30, px, py);
+     const flameGrad = ctx.createLinearGradient(px, py - 40, px, py);
      flameGrad.addColorStop(0, 'transparent');
      flameGrad.addColorStop(1, '#f97316');
      ctx.fillStyle = flameGrad;
      ctx.beginPath();
-     ctx.moveTo(px - 10, py);
-     ctx.lineTo(px, py - 35);
-     ctx.lineTo(px + 10, py);
+     ctx.moveTo(px - 14, py);
+     ctx.lineTo(px, py - 45);
+     ctx.lineTo(px + 14, py);
      ctx.fill();
 
-     // Draw meteor core
+     // Draw glowing meteor core
      ctx.beginPath();
-     ctx.arc(px, py, 16, 0, Math.PI * 2);
+     ctx.arc(px, py, 18, 0, Math.PI * 2);
      ctx.fillStyle = '#f59e0b';
      ctx.shadowColor = '#f59e0b';
-     ctx.shadowBlur = 12;
+     ctx.shadowBlur = 16;
      ctx.fill();
      ctx.closePath();
      ctx.shadowBlur = 0;
      
-     // Draw English word
-     ctx.fillStyle = '#ffffff';
-     ctx.font = 'bold 15px system-ui, sans-serif';
+     // Draw rocket icon inside meteor
+     ctx.font = '16px sans-serif';
      ctx.textAlign = 'center';
-     ctx.fillText(m.word, px, py + 5);
-     
-     // Draw Vietnamese meaning above
-     ctx.font = '600 13px system-ui, sans-serif';
-     ctx.fillStyle = '#cbd5e1';
-     ctx.fillText(m.meaning, px, py - 22);
+     ctx.fillText('🚀', px, py + 6);
+
+     // Draw readable floating Pill Card for word & meaning
+     const wordText = m.word || '';
+     const meaningText = m.meaning || '';
+     ctx.font = 'bold 14px system-ui, sans-serif';
+     const wordWidth = ctx.measureText(wordText).width;
+     ctx.font = '600 12px system-ui, sans-serif';
+     const meaningWidth = ctx.measureText(meaningText).width;
+     const cardWidth = Math.max(80, Math.max(wordWidth, meaningWidth) + 24);
+     const cardHeight = 44;
+     const cardX = Math.max(10, Math.min(canvas.width - cardWidth - 10, px - cardWidth / 2));
+     const cardY = Math.max(10, py - 55);
+
+     // Pill Card Background
+     ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
+     ctx.strokeStyle = '#38bdf8';
+     ctx.lineWidth = 1.5;
+     ctx.beginPath();
+     ctx.roundRect(cardX, cardY, cardWidth, cardHeight, 10);
+     ctx.fill();
+     ctx.stroke();
+
+     // Draw Meaning (Top line)
+     ctx.fillStyle = '#f59e0b';
+     ctx.font = 'bold 12px system-ui, sans-serif';
+     ctx.textAlign = 'center';
+     ctx.fillText(meaningText, cardX + cardWidth / 2, cardY + 16);
+
+     // Draw Word (Bottom line)
+     ctx.fillStyle = '#ffffff';
+     ctx.font = 'bold 14px system-ui, sans-serif';
+     ctx.fillText(wordText, cardX + cardWidth / 2, cardY + 34);
   });
 }
 
@@ -203,7 +234,7 @@ window.renderMeteorGame = function(topic) {
 
   return `
     <div style="width: 100%; max-width: 800px; margin: 0 auto;">
-      <div class="game-board" style="background: rgba(15, 23, 42, 0.95); border-radius: 20px; padding: 24px; border: 1.5px solid rgba(16, 185, 129, 0.3); text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
+      <div class="pvp-game-board" style="background: rgba(15, 23, 42, 0.95); border-radius: 20px; padding: 24px; border: 1.5px solid rgba(16, 185, 129, 0.3); text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
         
         <!-- HEART STATUS BAR -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);">
