@@ -119,31 +119,11 @@ function startOfflineGame(level, topicId) {
 
 // --- ONLINE PVP LOGIC ---
 function createPvPRoom() {
-  // Simulate API call to Cloudflare Worker to create a room
-  const btn = document.querySelector(".pvp-actions .btn");
-  if (btn) {
-    btn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Đang tạo phòng...';
-    btn.disabled = true;
+  if (typeof pvpManager !== 'undefined') {
+    pvpManager.createRoom();
+  } else {
+    alert("PvP system is initializing, please wait.");
   }
-
-  setTimeout(() => {
-    // Generate a random room ID (in reality, from server)
-    const roomId = "EW-" + Math.random().toString(36).substr(2, 6).toUpperCase();
-    const link = `${window.location.origin}${window.location.pathname}?tab=online&room=${roomId}`;
-    
-    document.querySelector(".pvp-lobby-hero").style.display = "none";
-    const roomContainer = document.getElementById("pvp-room-container");
-    const linkInput = document.getElementById("pvpRoomLink");
-    
-    if (roomContainer && linkInput) {
-      linkInput.value = link;
-      roomContainer.style.display = "block";
-    }
-
-    if (typeof lucide !== 'undefined') {
-      lucide.createIcons();
-    }
-  }, 800);
 }
 
 function copyPvPLink() {

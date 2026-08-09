@@ -88,7 +88,7 @@
     <!-- ONLINE PVP SECTION -->
     <section class="game-section" id="tab-online">
       <div class="pvp-lobby">
-        <div class="pvp-lobby-hero">
+        <div class="pvp-lobby-hero" id="pvp-create-view">
           <h2>Đấu Trường Tốc Độ</h2>
           <p>Tạo phòng, gửi link cho bạn bè và xem ai phản xạ từ vựng nhanh hơn!</p>
           <div class="pvp-actions">
@@ -100,16 +100,64 @@
 
         <div id="pvp-room-container" class="pvp-room-container" style="display: none;">
           <div class="pvp-room-box">
-            <h3>Phòng chờ của bạn</h3>
-            <p>Gửi đường link này cho đối thủ của bạn:</p>
-            <div class="pvp-link-box">
-              <input type="text" id="pvpRoomLink" readonly value="https://engwithme.tungf.io.vn/game.html?room=EW-XXXX" />
-              <button class="btn btn-primary" onclick="copyPvPLink()">
-                <i data-lucide="copy"></i> Copy
-              </button>
+            <h3 id="pvp-room-title">Phòng chờ: <span>EW-XXXX</span></h3>
+            
+            <div class="pvp-link-box" id="pvp-link-section">
+              <p>Gửi đường link này cho đối thủ của bạn:</p>
+              <div style="display:flex; gap: 8px;">
+                <input type="text" id="pvpRoomLink" readonly value="https://engwithme.tungf.io.vn/game.html?room=EW-XXXX" style="flex:1;" />
+                <button class="btn btn-primary" onclick="copyPvPLink()">
+                  <i data-lucide="copy"></i> Copy
+                </button>
+              </div>
             </div>
-            <div class="pvp-status">
-              <i data-lucide="loader-2" class="spin"></i> Đang chờ đối thủ tham gia...
+
+            <!-- Player Slots -->
+            <div class="pvp-players">
+              <div class="pvp-player-slot" id="player1-slot">
+                <div class="pvp-avatar" style="border: 2px solid #3b82f6;"><i data-lucide="user"></i></div>
+                <div class="pvp-player-info">
+                  <h4>Player 1 (Bạn)</h4>
+                  <span class="pvp-ready-status not-ready">Chưa sẵn sàng</span>
+                </div>
+              </div>
+              <div class="pvp-vs">VS</div>
+              <div class="pvp-player-slot" id="player2-slot">
+                <div class="pvp-avatar"><i data-lucide="user"></i></div>
+                <div class="pvp-player-info">
+                  <h4 id="player2-name">Đang chờ...</h4>
+                  <span class="pvp-ready-status not-ready" id="player2-status">Chưa tham gia</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Game Config (Only visible to Host) -->
+            <div id="pvp-host-config" style="display: none; margin-top: 20px; text-align: left; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px;">
+              <h4 style="margin-bottom: 10px; color: #94a3b8;">Thiết lập trận đấu (Chỉ Chủ phòng)</h4>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <select id="pvp-level-select" class="btn" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;" onchange="pvpManager.onHostConfigChange()">
+                  <option value="easy">Easy (A1-A2)</option>
+                  <option value="medium">Medium (B1-B2)</option>
+                  <option value="hard">Hard (C1-C2)</option>
+                </select>
+                <select id="pvp-topic-select" class="btn" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;" onchange="pvpManager.onHostConfigChange()">
+                  <option value="">-- Chọn Chủ Đề --</option>
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+            </div>
+            
+            <div id="pvp-guest-config" style="display: none; margin-top: 20px; text-align: center; color: #94a3b8;">
+              <p>Chủ phòng đang chọn bài học...</p>
+            </div>
+
+            <div class="pvp-actions" style="margin-top: 24px;">
+              <button id="pvp-ready-btn" class="btn btn-primary btn-lg" onclick="pvpManager.toggleReady()" disabled>
+                Sẵn sàng
+              </button>
+              <button class="btn btn-outline" style="margin-left: 10px;" onclick="pvpManager.leaveRoom()">
+                Rời phòng
+              </button>
             </div>
           </div>
         </div>
@@ -154,7 +202,9 @@
   <script src="js/vocabulary/hard.js?v=20260805hotfix4"></script>
   <script src="js/vocabulary-data.js?v=20260805hotfix4"></script>
   
-  <script src="js/game.js?v=20260809hotfix3"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="js/pvp-manager.js?v=20260809"></script>
+  <script src="js/game.js?v=20260809hotfix4"></script>
   <script src="js/main.js?v=20260805hotfix4"></script>
 </body>
 </html>

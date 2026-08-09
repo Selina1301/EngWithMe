@@ -48,6 +48,37 @@ function initVocabularyStudy() {
   let cannonWrongFlashTimeout = null;
   let cannonMissedWords = [];
   let cannonTotalHits = 0;
+  
+  // PvP State Variables
+  let pvpPlayers = [];
+  let isPvPMode = params.get("mode") === "pvp";
+  let pvpRoomId = params.get("room");
+  let myPvPScore = 0;
+
+  window.updatePvPHud = function(players) {
+    pvpPlayers = players;
+    render();
+  };
+
+  window.showPvPResult = function(data) {
+    if (gameTimerInterval) clearInterval(gameTimerInterval);
+    const amIWinner = data.winnerId === pvpManager?.socket?.id;
+    
+    root.innerHTML = `
+      <div class="game-victory-panel" style="text-align: center; padding: 40px 20px; max-width: 720px; margin: 0 auto;">
+        <i class="ti-cup" style="font-size: 3.5rem; color: ${amIWinner ? '#ffd700' : '#a0aec0'}; margin-bottom: 20px; display: block;"></i>
+        <h3 style="font-size: 1.8rem; margin-bottom: 10px; color: ${amIWinner ? '#4ade80' : '#f87171'};">
+          ${amIWinner ? 'Chiến thắng!' : 'Thua cuộc!'}
+        </h3>
+        <p style="font-size: 1.1rem; color: #a0aec0; margin-bottom: 25px;">
+          ${data.winnerName} đã ghép xong tất cả các cặp từ trước!
+        </p>
+        <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+          <a class="btn btn-primary" href="game.html?tab=online" style="text-decoration: none; padding: 10px 24px; font-size: 1rem; border-radius: 8px; color: white; cursor: pointer; font-weight: 600;">Về Sảnh Chờ</a>
+        </div>
+      </div>
+    `;
+  };
   let cannonCurrentStreak = 0;
   let cannonMaxStreak = 0;
 
@@ -2449,14 +2480,28 @@ function initVocabularyStudy() {
       ]);
     }
 
+      let scoreDisplay = `<span style="position: absolute; left: 50%; transform: translateX(-50%);">${matchedPairs.size} / ${gameWords.length} cặp đúng</span>`;
+      
+      if (isPvPMode && pvpPlayers.length > 0) {
+        let pvpInfo = pvpPlayers.map(p => {
+          let isMe = pvpManager?.socket?.id === p.id;
+          return `<div style="display:flex; flex-direction: column; align-items: center; margin: 0 10px;">
+            <div style="font-size: 0.8rem; color: ${p.color};">${isMe ? 'BẠN' : p.name.toUpperCase()}</div>
+            <div style="font-weight: 700;">${p.score || 0} / ${gameWords.length}</div>
+          </div>`;
+        }).join('<div style="font-size: 1.2rem; font-weight: 900; color: #cbd5e1; margin-top: 5px;">VS</div>');
+        
+        scoreDisplay = `<div style="position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: flex-start;">${pvpInfo}</div>`;
+      }
+
     return `
       <div style="max-width: 720px; margin: 30px auto 0 auto;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 4px 8px; color: #cbd5e1; font-weight: 600; font-size: 0.95rem; position: relative;">
-          <a href="game.html" style="display: flex; align-items: center; gap: 6px; text-decoration: none; color: rgba(255,255,255,0.4); cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">
+          <a href="game.html${isPvPMode ? '?tab=online' : ''}" style="display: flex; align-items: center; gap: 6px; text-decoration: none; color: rgba(255,255,255,0.4); cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">
             <span style="font-size: 1.7rem; line-height: 1;">←</span>
             <span style="font-size: 1.2rem; font-weight: 500; margin-top: 2px;">Back</span>
           </a>
-          <span style="position: absolute; left: 50%; transform: translateX(-50%);">${matchedPairs.size} / ${gameWords.length} cặp đúng</span>
+          ${scoreDisplay}
           <span>⏱️ <span data-game-timer>00:00</span></span>
         </div>
         <div class="game-board" style="gap: 12px;">
@@ -2937,6 +2982,16 @@ function initVocabularyStudy() {
 
         if (isPair) {
           matchedPairs.add(button.dataset.matchId);
+          
+          if (isPvPMode && typeof pvpManager !== 'undefined' && pvpManager.socket) {
+            myPvPScore++;
+            pvpManager.socket.emit('update_score', {
+              roomId: pvpRoomId,
+              score: myPvPScore,
+              maxScore: (getTopic()?.words?.slice(0, 8).length || 8)
+            });
+          }
+          
           selectedMatchTile.classList.remove("is-selected");
           selectedMatchTile = null;
           render();
