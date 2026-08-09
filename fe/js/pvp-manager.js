@@ -234,6 +234,13 @@ class PvPManager {
     if (levelSelect) {
       const selectedLevel = levelSelect.value;
       
+      if (selectedLevel === 'hard' && typeof checkHardModeAccess === 'function') {
+        if (!checkHardModeAccess(null, 'Từ vựng Nâng cao C1-C2 (Hard Mode)')) {
+          levelSelect.value = this.currentConfigLevel || 'easy';
+          return;
+        }
+      }
+
       // If level changed, repopulate topics
       if (this.currentConfigLevel !== selectedLevel) {
          this.currentConfigLevel = selectedLevel;

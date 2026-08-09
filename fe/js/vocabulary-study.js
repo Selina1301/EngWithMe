@@ -4,8 +4,10 @@ function initVocabularyStudy() {
 
   const params = new URLSearchParams(window.location.search);
   let activeLevel = vocabularyData[params.get("level")] ? params.get("level") : "easy";
+  let currentWorkspaceMode = ["view", "study", "play", "pvp"].includes(params.get("mode")) ? params.get("mode") : "view";
   
-  if (activeLevel === "hard" && typeof checkHardModeAccess === "function") {
+  // PvP mode allows guest to play Hard mode if Host (Room creator with Pro/Premium) selected Hard mode
+  if (currentWorkspaceMode !== "pvp" && activeLevel === "hard" && typeof checkHardModeAccess === "function") {
     if (!checkHardModeAccess(null, "Từ vựng Nâng cao C1-C2 (Hard Mode)")) {
       window.location.href = "vocabulary.html?level=hard";
       return;
@@ -13,7 +15,6 @@ function initVocabularyStudy() {
   }
 
   let currentTopicId = params.get("topic") || vocabularyData[activeLevel].topics[0]?.id;
-  let currentWorkspaceMode = ["view", "study", "play", "pvp"].includes(params.get("mode")) ? params.get("mode") : "view";
   let currentStudyMode = "flashcard";
   const studyModeOrder = ["flashcard", "quiz", "type", "speak"];
   const enabledStudyModes = new Set(studyModeOrder);
