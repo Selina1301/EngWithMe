@@ -130,8 +130,7 @@ window.renderBombGame = function(topic) {
      const targetWord = bombGameState.words[bombGameState.currentWordIndex];
 
      if (targetWord && val.toLowerCase().trim() === targetWord.word.toLowerCase().trim() && bombGameState.hasBomb) {
-        // Correct answer! Add +5s bonus time before passing bomb
-        bombGameState.myTimer = Math.min(60, bombGameState.myTimer + 5);
+        // Correct answer! Pass bomb to opponent
         bombGameState.hasBomb = false;
         
         pvpManager?.socket?.emit('game_action', {
@@ -203,7 +202,7 @@ window.renderBombGame = function(topic) {
              <input id="bomb-input" type="text"
                     value="${bombGameState.inputValue}"
                     oninput="window.onBombInput(this.value)"
-                    placeholder="${bombGameState.hasBomb ? '💣 Gõ từ tiếng Anh tương ứng để chuyền bom sang đối thủ (+5s)...' : '⏳ Chờ đối thủ gõ để chuyền bom...'}"
+                    placeholder="${bombGameState.hasBomb ? '💣 Gõ từ tiếng Anh tương ứng để chuyền bom sang đối thủ...' : '⏳ Chờ đối thủ gõ để chuyền bom...'}"
                     ${!bombGameState.hasBomb ? 'disabled' : ''}
                     autocomplete="off"
                     style="width: 100%; max-width: 540px; padding: 16px 20px; font-size: 1.25rem; text-align: center; border-radius: 14px; border: 2px solid ${bombGameState.hasBomb ? '#ef4444' : 'rgba(255,255,255,0.15)'}; background: rgba(15, 23, 42, 0.8); color: white; outline: none; transition: border-color 0.2s;" />
