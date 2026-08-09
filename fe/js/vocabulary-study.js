@@ -2758,28 +2758,67 @@ function initVocabularyStudy() {
       ]);
     }
 
-      let scoreDisplay = `<span style="position: absolute; left: 50%; transform: translateX(-50%);">${matchedPairs.size} / ${gameWords.length} cặp đúng</span>`;
-      
-      if (isPvPMode && pvpPlayers.length > 0) {
-        let pvpInfo = pvpPlayers.map(p => {
-          let isMe = pvpManager?.socket?.id === p.id;
-          return `<div style="display:flex; flex-direction: column; align-items: center; margin: 0 10px;">
-            <div style="font-size: 0.8rem; color: ${p.color};">${isMe ? 'BẠN' : p.name.toUpperCase()}</div>
-            <div style="font-weight: 700;">${p.score || 0} / ${gameWords.length}</div>
-          </div>`;
-        }).join('<div style="font-size: 1.2rem; font-weight: 900; color: #cbd5e1; margin-top: 5px;">VS</div>');
-        
-        scoreDisplay = `<div style="position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: flex-start;">${pvpInfo}</div>`;
-      }
+    if (isPvPMode) {
+      const pvpPlayersList = (typeof pvpManager !== 'undefined' && pvpManager.players) ? pvpManager.players : [];
+      let meP = pvpPlayersList.find(p => p.id === pvpManager?.socket?.id) || { name: 'Bạn', score: 0 };
+      let oppP = pvpPlayersList.find(p => p.id !== pvpManager?.socket?.id) || { name: 'Đối thủ', score: 0 };
+
+      return `
+        <div style="width: 100%; max-width: 960px; margin: 0 auto;">
+          <div class="pvp-game-board" style="background: rgba(15, 23, 42, 0.95); border-radius: 20px; padding: 24px; border: 1.5px solid rgba(16, 185, 129, 0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
+            
+            <div style="display: grid; grid-template-columns: 210px 1fr; gap: 24px; align-items: start;">
+              
+              <!-- COL 1: 5-ROW MATCH STATUS PANEL -->
+              <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 24px 14px; text-align: center; display: flex; flex-direction: column; gap: 16px; align-items: center; justify-content: center; min-height: 440px;">
+                <!-- Row 1: CẶP ĐÚNG CỦA BẠN -->
+                <div style="font-size: 0.82rem; color: #38bdf8; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;">CẶP ĐÚNG BẠN</div>
+                
+                <!-- Row 2: Score P1 -->
+                <div style="font-size: 2.2rem; font-weight: 900; color: #38bdf8; font-family: monospace;">${meP.score || 0} / ${gameWords.length}</div>
+                
+                <!-- Row 3: Cards Icon Separator -->
+                <div style="font-size: 2.6rem; color: #34d399; margin: 4px 0; filter: drop-shadow(0 0 12px rgba(52, 211, 153, 0.6));">🃏</div>
+                
+                <!-- Row 4: CẶP ĐÚNG ĐỐI THỦ -->
+                <div style="font-size: 0.82rem; color: #ef4444; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;">CẶP ĐÚNG ĐỐI THỦ</div>
+                
+                <!-- Row 5: Score P2 -->
+                <div style="font-size: 2.2rem; font-weight: 900; color: #f87171; font-family: monospace;">${oppP.score || 0} / ${gameWords.length}</div>
+              </div>
+
+              <!-- COL 2: MATCH CARD GRID -->
+              <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 24px; min-height: 440px; display: flex; flex-direction: column; justify-content: center;">
+                <div class="game-board" style="gap: 12px; margin: 0;">
+                  ${currentMatchTiles.map(tile => {
+                    const isMatched = matchedPairs.has(tile.id);
+                    return `
+                      <button class="game-tile ${tile.type} ${isMatched ? "is-matched" : ""}" 
+                              type="button" 
+                              data-match-id="${tile.id}" 
+                              data-match-type="${tile.type}"
+                              style="padding: 20px 22px; font-size: 0.95rem; min-height: 68px;">
+                        ${tile.text}
+                      </button>
+                    `;
+                  }).join("")}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      `;
+    }
 
     return `
       <div style="max-width: 720px; margin: 30px auto 0 auto;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 4px 8px; color: #cbd5e1; font-weight: 600; font-size: 0.95rem; position: relative;">
-          <a href="game.html${isPvPMode ? '?tab=online' : ''}" style="display: flex; align-items: center; gap: 6px; text-decoration: none; color: rgba(255,255,255,0.4); cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">
+          <a href="game.html" style="display: flex; align-items: center; gap: 6px; text-decoration: none; color: rgba(255,255,255,0.4); cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">
             <span style="font-size: 1.7rem; line-height: 1;">←</span>
             <span style="font-size: 1.2rem; font-weight: 500; margin-top: 2px;">Back</span>
           </a>
-          ${scoreDisplay}
+          <span style="position: absolute; left: 50%; transform: translateX(-50%);">${matchedPairs.size} / ${gameWords.length} cặp đúng</span>
           <span>⏱️ <span data-game-timer>00:00</span></span>
         </div>
         <div class="game-board" style="gap: 12px;">

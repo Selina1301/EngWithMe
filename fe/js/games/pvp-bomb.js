@@ -6,7 +6,8 @@ window.bombGameState = {
   words: [],
   currentWordIndex: 0,
   inputValue: '',
-  timerInterval: null
+  timerInterval: null,
+  gameOverSent: false
 };
 
 window.onBombAction = function(data) {
@@ -19,12 +20,14 @@ window.onBombAction = function(data) {
     bombGameState.opponentTimer = data.payload.timer;
     if (typeof window.render === 'function') window.render();
   } else if (data.action === 'boom') {
-    // I win because opponent exploded!
-    if (typeof pvpManager !== 'undefined' && pvpManager.socket) {
-      pvpManager.socket.emit('update_score', {
-        roomId: window.pvpRoomId || pvpManager.roomId,
-        score: 1,
-        maxScore: 1
+    // Opponent exploded! I win!
+    if (!bombGameState.gameOverSent) {
+      bombGameState.gameOverSent = true;
+      if (bombGameState.timerInterval) clearInterval(bombGameState.timerInterval);
+      const myId = pvpManager?.socket?.id;
+      pvpManager?.socket?.emit('finish_game', {
+        roomId: window.pvpRoomId || pvpManager?.roomId,
+        winnerId: myId
       });
     }
   }
@@ -44,13 +47,17 @@ window.renderBombGame = function(topic) {
     bombGameState.myTimer = 60;
     bombGameState.opponentTimer = 60;
     bombGameState.hasBomb = window.pvpManager?.isHost || false; // Host starts with bomb
+    bombGameState.gameOverSent = false;
     pickNewBombWord();
 
+    if (bombGameState.timerInterval) clearInterval(bombGameState.timerInterval);
     bombGameState.timerInterval = setInterval(() => {
+      if (!window.pvpCountdownDone) return;
+
       if (bombGameState.hasBomb) {
         bombGameState.myTimer--;
         
-        // Sync every 3 seconds to keep opponent UI updated without spamming
+        // Sync every 3 seconds to keep opponent UI updated
         if (bombGameState.myTimer % 3 === 0) {
            pvpManager?.socket?.emit('game_action', {
              roomId: window.pvpRoomId || pvpManager.roomId,
@@ -61,12 +68,20 @@ window.renderBombGame = function(topic) {
         
         if (bombGameState.myTimer <= 0) {
           clearInterval(bombGameState.timerInterval);
-          pvpManager?.socket?.emit('game_action', {
-             roomId: window.pvpRoomId || pvpManager.roomId,
-             action: 'boom'
-          });
-          // I lose, so my score is 0, opponent score is 1
-          // Let the opponent's 'boom' handler claim the win to avoid race conditions.
+          if (!bombGameState.gameOverSent) {
+            bombGameState.gameOverSent = true;
+            const myId = pvpManager?.socket?.id;
+            const oppPlayer = pvpManager?.players?.find(p => p.id !== myId);
+            
+            pvpManager?.socket?.emit('game_action', {
+               roomId: window.pvpRoomId || pvpManager.roomId,
+               action: 'boom'
+            });
+            pvpManager?.socket?.emit('finish_game', {
+               roomId: window.pvpRoomId || pvpManager.roomId,
+               winnerId: oppPlayer ? oppPlayer.id : null
+            });
+          }
         }
         
         if (typeof window.render === 'function') window.render();
@@ -74,12 +89,11 @@ window.renderBombGame = function(topic) {
     }, 1000);
   }
   
-  // Clean up previous listeners if any (simple hack for React-like render)
   window.onBombInput = function(val) {
      bombGameState.inputValue = val;
      const targetWord = bombGameState.words[bombGameState.currentWordIndex];
      
-     if (val.toLowerCase().trim() === targetWord.word.toLowerCase().trim() && bombGameState.hasBomb) {
+     if (targetWord && val.toLowerCase().trim() === targetWord.word.toLowerCase().trim() && bombGameState.hasBomb) {
         bombGameState.hasBomb = false;
         pvpManager?.socket?.emit('game_action', {
            roomId: window.pvpRoomId || pvpManager.roomId,
@@ -93,8 +107,8 @@ window.renderBombGame = function(topic) {
   const targetWord = bombGameState.words[bombGameState.currentWordIndex];
   
   const bgClass = bombGameState.hasBomb ? 'bomb-active pulse-red' : '';
-  const myTimerColor = bombGameState.myTimer <= 10 ? '#ef4444' : '#4ade80';
-  const oppTimerColor = bombGameState.opponentTimer <= 10 ? '#ef4444' : '#4ade80';
+  const myTimerColor = bombGameState.myTimer <= 10 ? '#ef4444' : '#38bdf8';
+  const oppTimerColor = bombGameState.opponentTimer <= 10 ? '#ef4444' : '#f87171';
 
   return `
     <style>
@@ -111,38 +125,47 @@ window.renderBombGame = function(topic) {
         animation: pulseRed 1s infinite alternate;
       }
     </style>
-    <div style="width: 100%; max-width: 800px; margin: 0 auto;">
-      <div class="pvp-game-board ${bgClass}" style="background: rgba(15, 23, 42, 0.95); border-radius: 24px; padding: 32px; border: 1.5px solid rgba(239, 68, 68, 0.3); text-align: center; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.6);">
+    <div style="width: 100%; max-width: 960px; margin: 0 auto;">
+      <div class="pvp-game-board ${bgClass}" style="background: rgba(15, 23, 42, 0.95); border-radius: 20px; padding: 24px; border: 1.5px solid rgba(239, 68, 68, 0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
         
-        <!-- STATUS TIMERS -->
-        <div style="display: flex; justify-content: space-between; gap: 20px; margin-bottom: 30px;">
-          <div style="flex: 1; text-align: center; background: rgba(0,0,0,0.3); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);">
-            <div style="font-size: 0.8rem; font-weight: 800; color: #3b82f6; letter-spacing: 1px; margin-bottom: 4px;">BẠN HỮU</div>
-            <div style="font-size: 2.8rem; font-weight: 900; color: ${myTimerColor}; font-family: monospace;">${bombGameState.myTimer}s</div>
-            ${bombGameState.hasBomb ? '<div style="font-size: 2.2rem; margin-top: 6px; animation: pulseRed 0.5s infinite alternate;">💣 (Cầm bom)</div>' : '<div style="font-size: 0.85rem; color: #94a3b8; margin-top: 6px;">An toàn</div>'}
-          </div>
+        <div style="display: grid; grid-template-columns: 210px 1fr; gap: 24px; align-items: start;">
           
-          <div style="flex: 1; text-align: center; background: rgba(0,0,0,0.3); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);">
-            <div style="font-size: 0.8rem; font-weight: 800; color: #ef4444; letter-spacing: 1px; margin-bottom: 4px;">ĐỐI THỦ</div>
-            <div style="font-size: 2.8rem; font-weight: 900; color: ${oppTimerColor}; font-family: monospace;">${bombGameState.opponentTimer}s</div>
-            ${!bombGameState.hasBomb ? '<div style="font-size: 2.2rem; margin-top: 6px;">💣 (Cầm bom)</div>' : '<div style="font-size: 0.85rem; color: #94a3b8; margin-top: 6px;">An toàn</div>'}
-          </div>
-        </div>
+          <!-- COL 1: 5-ROW BOMB STATUS PANEL -->
+          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 24px 14px; text-align: center; display: flex; flex-direction: column; gap: 16px; align-items: center; justify-content: center; min-height: 400px;">
+            <!-- Row 1: MẠNG CỦA BẠN -->
+            <div style="font-size: 0.82rem; color: #38bdf8; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;">THỜI GIAN BẠN</div>
+            
+            <!-- Row 2: Timer P1 -->
+            <div style="font-size: 2.2rem; font-weight: 900; color: ${myTimerColor}; font-family: monospace;">${bombGameState.myTimer}s</div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: ${bombGameState.hasBomb ? '#ef4444' : '#4ade80'};">${bombGameState.hasBomb ? '💣 Cầm Bom' : '✅ An Toàn'}</div>
 
-        <!-- MEANING & INPUT -->
-        <div style="margin: 30px 0 10px 0;">
-           <div style="font-size: 0.85rem; color: #cbd5e1; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;">Nghĩa tiếng Việt của từ:</div>
-           <div style="font-size: 2.2rem; font-weight: 900; color: #ffffff; margin-bottom: 24px;">
-             ${targetWord ? targetWord.meaning : ''}
-           </div>
-           
-           <input id="bomb-input" type="text" 
-                  value="${bombGameState.inputValue}"
-                  oninput="window.onBombInput(this.value)"
-                  placeholder="${bombGameState.hasBomb ? '💣 Gõ từ tiếng Anh để chuyền bom sang đối thủ...' : '⏳ Chờ đối thủ gõ để chuyền bom...'}"
-                  ${!bombGameState.hasBomb ? 'disabled' : 'autofocus'}
-                  autocomplete="off"
-                  style="width: 100%; padding: 16px 20px; font-size: 1.25rem; text-align: center; border-radius: 14px; border: 2px solid ${bombGameState.hasBomb ? '#ef4444' : 'rgba(255,255,255,0.15)'}; background: rgba(0,0,0,0.4); color: white; outline: none; transition: border-color 0.2s;" />
+            <!-- Row 3: Bomb Icon Separator -->
+            <div style="font-size: 2.6rem; color: #ef4444; margin: 4px 0; filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.6));">💣</div>
+            
+            <!-- Row 4: MẠNG ĐỐI THỦ -->
+            <div style="font-size: 0.82rem; color: #ef4444; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;">THỜI GIAN ĐỐI THỦ</div>
+            
+            <!-- Row 5: Timer P2 -->
+            <div style="font-size: 2.2rem; font-weight: 900; color: ${oppTimerColor}; font-family: monospace;">${bombGameState.opponentTimer}s</div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: ${!bombGameState.hasBomb ? '#ef4444' : '#4ade80'};">${!bombGameState.hasBomb ? '💣 Cầm Bom' : '✅ An Toàn'}</div>
+          </div>
+
+          <!-- COL 2: BOMB GAME PLAY CONTAINER -->
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 30px 24px; min-height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+             <div style="font-size: 0.85rem; color: #cbd5e1; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;">Nghĩa tiếng Việt của từ:</div>
+             <div style="font-size: 2.3rem; font-weight: 900; color: #ffffff; margin-bottom: 28px; text-shadow: 0 0 20px rgba(255,255,255,0.2);">
+               ${targetWord ? targetWord.meaning : ''}
+             </div>
+             
+             <input id="bomb-input" type="text" 
+                    value="${bombGameState.inputValue}"
+                    oninput="window.onBombInput(this.value)"
+                    placeholder="${bombGameState.hasBomb ? '💣 Gõ từ tiếng Anh tương ứng để chuyền bom sang đối thủ...' : '⏳ Chờ đối thủ gõ để chuyền bom...'}"
+                    ${!bombGameState.hasBomb ? 'disabled' : 'autofocus'}
+                    autocomplete="off"
+                    style="width: 100%; max-width: 540px; padding: 16px 20px; font-size: 1.25rem; text-align: center; border-radius: 14px; border: 2px solid ${bombGameState.hasBomb ? '#ef4444' : 'rgba(255,255,255,0.15)'}; background: rgba(15, 23, 42, 0.8); color: white; outline: none; transition: border-color 0.2s;" />
+          </div>
+
         </div>
       </div>
     </div>
