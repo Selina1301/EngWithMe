@@ -362,6 +362,22 @@
   box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
 }
 
+/* PvP Game Board Container Overrides */
+.mode-pvp .workspace-panel {
+  display: block !important;
+  grid-template-columns: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.pvp-game-board {
+  display: block !important;
+  grid-template-columns: none !important;
+  width: 100% !important;
+  max-width: 860px !important;
+  margin: 0 auto !important;
+}
+
 .pvp-status {
   display: flex;
   align-items: center;

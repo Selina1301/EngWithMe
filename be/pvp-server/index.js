@@ -146,34 +146,24 @@ io.on('connection', (socket) => {
     }
   });
 
-  // UPDATE SCORE
-  socket.on('update_score', (data) => {
-    const { roomId, score, maxScore } = data;
+  // FINISH GAME
+  socket.on('finish_game', (data) => {
+    const { roomId, winnerId } = data;
     const room = rooms[roomId];
-    
     if (room && room.gameStarted) {
-      const player = room.players.find(p => p.id === socket.id);
-      if (player) {
-        player.score = score;
-        
-        // Broadcast the updated scores to everyone
-        io.to(roomId).emit('score_update', {
-          players: room.players
-        });
-        
-        // Check win condition
-        if (score >= maxScore) {
-          room.gameStarted = false; // end game
-          io.to(roomId).emit('game_over', {
-            winnerId: socket.id,
-            winnerName: player.name,
-            players: room.players
-          });
-          
-          // Reset ready state for next game
-          room.players.forEach(p => p.ready = false);
-        }
-      }
+      room.gameStarted = false;
+      const winner = room.players.find(p => p.id === winnerId) || room.players.find(p => p.id !== socket.id) || room.players[0];
+      if (winner) winner.score = (winner.score || 0) + 1;
+
+      io.to(roomId).emit('game_over', {
+        winnerId: winner ? winner.id : winnerId,
+        winnerName: winner ? winner.name : 'Người chơi',
+        players: room.players,
+        gameMode: room.gameMode,
+        topic: room.topic
+      });
+
+      room.players.forEach(p => p.ready = false);
     }
   });
   // GENERIC GAME ACTION FOR CUSTOM GAMES (Bomb, Tug, Meteor, etc.)

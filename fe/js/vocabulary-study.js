@@ -73,18 +73,54 @@ function initVocabularyStudy() {
   window.showPvPResult = function(data) {
     if (gameTimerInterval) clearInterval(gameTimerInterval);
     const amIWinner = data.winnerId === pvpManager?.socket?.id;
-    
+    const roomId = pvpManager?.roomId || new URLSearchParams(window.location.search).get("room") || "";
+
+    const modeNames = {
+      match: "🃏 Lật Thẻ",
+      bomb: "💣 Bom Hẹn Giờ",
+      tug: "⚔️ Kéo Co",
+      meteor: "☄️ Mưa Thiên Thạch"
+    };
+    const modeLabel = modeNames[currentGameMode] || "Đấu Trường PvP";
+
     root.innerHTML = `
-      <div class="game-victory-panel" style="text-align: center; padding: 40px 20px; max-width: 720px; margin: 0 auto;">
-        <i class="ti-cup" style="font-size: 3.5rem; color: ${amIWinner ? '#ffd700' : '#a0aec0'}; margin-bottom: 20px; display: block;"></i>
-        <h3 style="font-size: 1.8rem; margin-bottom: 10px; color: ${amIWinner ? '#4ade80' : '#f87171'};">
-          ${amIWinner ? 'Chiến thắng!' : 'Thua cuộc!'}
-        </h3>
-        <p style="font-size: 1.1rem; color: #a0aec0; margin-bottom: 25px;">
-          ${data.winnerName} đã ghép xong tất cả các cặp từ trước!
-        </p>
-        <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
-          <a class="btn btn-primary" href="game.html?tab=online" style="text-decoration: none; padding: 10px 24px; font-size: 1rem; border-radius: 8px; color: white; cursor: pointer; font-weight: 600;">Về Sảnh Chờ</a>
+      <div style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(14px); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: rgba(30, 41, 59, 0.95); border: 2px solid ${amIWinner ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.4)'}; border-radius: 24px; padding: 40px 32px; max-width: 520px; width: 100%; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.8);">
+          <div style="font-size: 4rem; margin-bottom: 12px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));">
+            ${amIWinner ? '🏆' : '💀'}
+          </div>
+          <h2 style="font-size: 2.2rem; font-weight: 900; margin-bottom: 6px; color: ${amIWinner ? '#10b981' : '#ef4444'}; text-shadow: 0 0 20px ${amIWinner ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)'};">
+            ${amIWinner ? 'BẠN ĐÃ CHIẾN THẮNG!' : 'BẠN ĐÃ THUA CUỘC!'}
+          </h2>
+          <p style="font-size: 1.05rem; color: #94a3b8; margin-bottom: 24px; font-weight: 600;">
+            ${amIWinner ? `Chúc mừng! Bạn đã đánh bại đối thủ trong trận đấu!` : `Rất tiếc! ${data.winnerName} đã giành chiến thắng!`}
+          </p>
+
+          <!-- STATS BOX -->
+          <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 18px 20px; margin-bottom: 28px; text-align: left;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: #cbd5e1; font-weight: 600; font-size: 0.95rem;">
+              <span>🎮 Trò chơi:</span>
+              <span style="color: #38bdf8; font-weight: 700;">${modeLabel}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: #cbd5e1; font-weight: 600; font-size: 0.95rem;">
+              <span>👑 Người thắng cuộc:</span>
+              <span style="color: #f59e0b; font-weight: 800;">${data.winnerName}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; color: #cbd5e1; font-weight: 600; font-size: 0.95rem;">
+              <span>⏱️ Thời gian thi đấu:</span>
+              <span style="color: #4ade80; font-weight: 700; font-family: monospace;">${gameTimeSeconds}s</span>
+            </div>
+          </div>
+
+          <!-- ACTION BUTTONS -->
+          <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+            <a href="game.html?tab=online&room=${roomId}" class="btn btn-primary" style="flex: 1; text-decoration: none; padding: 14px 20px; font-size: 1rem; border-radius: 12px; color: white; cursor: pointer; font-weight: 700; background: linear-gradient(135deg, #10b981, #059669); text-align: center; box-shadow: 0 4px 15px rgba(16,185,129,0.3);">
+              🔄 Chơi Lại (Về Sảnh)
+            </a>
+            <a href="game.html?tab=online" class="btn btn-outline" style="flex: 1; text-decoration: none; padding: 14px 20px; font-size: 1rem; border-radius: 12px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; font-weight: 600; text-align: center;">
+              🏠 Menu Game
+            </a>
+          </div>
         </div>
       </div>
     `;
