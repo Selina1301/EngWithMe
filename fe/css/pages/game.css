@@ -490,6 +490,7 @@
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   overflow: hidden;
+  z-index: 1;
 }
 
 .topic-item::before {
@@ -499,6 +500,7 @@
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), transparent);
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: -1;
 }
 
 .topic-item:hover {
@@ -516,14 +518,10 @@
   font-size: 19px;
   margin-bottom: 10px;
   font-weight: 800;
-  position: relative;
-  z-index: 1;
 }
 
 .topic-item p {
   color: #94a3b8;
   font-size: 14px;
   line-height: 1.6;
-  position: relative;
-  z-index: 1;
 }
