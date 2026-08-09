@@ -81,6 +81,12 @@ class PvPManager {
          window.showPvPResult(data);
       }
     });
+
+    this.socket.on('game_action', (data) => {
+      if (typeof window.onPvPActionReceived === 'function') {
+        window.onPvPActionReceived(data);
+      }
+    });
   }
 
   createRoom() {
@@ -163,11 +169,13 @@ class PvPManager {
   onHostConfigChange() {
     if (!this.isHost) return;
     
+    const modeSelect = document.getElementById('pvp-mode-select');
     const levelSelect = document.getElementById('pvp-level-select');
     const topicSelect = document.getElementById('pvp-topic-select');
     
     if (levelSelect && topicSelect) {
       const selectedLevel = levelSelect.value;
+      const selectedMode = modeSelect ? modeSelect.value : 'match';
       
       // If level changed, repopulate topics
       if (this.currentConfigLevel !== selectedLevel) {
@@ -178,7 +186,7 @@ class PvPManager {
       if (this.socket && topicSelect.value) {
         this.socket.emit('configure_room', {
           roomId: this.roomId,
-          gameMode: 'match', // default for now
+          gameMode: selectedMode,
           level: selectedLevel,
           topic: topicSelect.value
         });

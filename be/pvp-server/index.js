@@ -158,6 +158,20 @@ io.on('connection', (socket) => {
       }
     }
   });
+  // GENERIC GAME ACTION FOR CUSTOM GAMES (Bomb, Tug, Meteor, etc.)
+  socket.on('game_action', (data) => {
+    const { roomId, action, payload } = data;
+    const room = rooms[roomId];
+    
+    if (room && room.gameStarted) {
+      // Forward the action to everyone else in the room
+      socket.to(roomId).emit('game_action', {
+        senderId: socket.id,
+        action: action,
+        payload: payload
+      });
+    }
+  });
 
   // DISCONNECT
   socket.on('disconnect', () => {

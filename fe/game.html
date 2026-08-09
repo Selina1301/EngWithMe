@@ -135,6 +135,12 @@
             <div id="pvp-host-config" style="display: none; margin-top: 20px; text-align: left; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px;">
               <h4 style="margin-bottom: 10px; color: #94a3b8;">Thiết lập trận đấu (Chỉ Chủ phòng)</h4>
               <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <select id="pvp-mode-select" class="btn" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;" onchange="pvpManager.onHostConfigChange()">
+                  <option value="match">🃏 Lật Thẻ</option>
+                  <option value="bomb">💣 Bom Hẹn Giờ</option>
+                  <option value="tug">⚔️ Kéo Co</option>
+                  <option value="meteor">☄️ Mưa Thiên Thạch</option>
+                </select>
                 <select id="pvp-level-select" class="btn" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;" onchange="pvpManager.onHostConfigChange()">
                   <option value="easy">Easy (A1-A2)</option>
                   <option value="medium">Medium (B1-B2)</option>

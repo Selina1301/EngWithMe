@@ -21,7 +21,7 @@ function initVocabularyStudy() {
   let isWordRevealed = false;
   let isClassifyingWord = false;
   let studyAdvanceTimer = null;
-  let currentGameMode = ["match", "cannon"].includes(params.get("game")) ? params.get("game") : null;
+  let currentGameMode = ["match", "cannon", "bomb", "tug", "meteor"].includes(params.get("game")) ? params.get("game") : null;
   let selectedMatchTile = null;
   let matchedPairs = new Set();
   let gameScore = 0;
@@ -58,6 +58,16 @@ function initVocabularyStudy() {
   window.updatePvPHud = function(players) {
     pvpPlayers = players;
     render();
+  };
+
+  window.onPvPActionReceived = function(data) {
+    if (currentGameMode === "bomb" && typeof window.onBombAction === "function") {
+      window.onBombAction(data);
+    } else if (currentGameMode === "tug" && typeof window.onTugAction === "function") {
+      window.onTugAction(data);
+    } else if (currentGameMode === "meteor" && typeof window.onMeteorAction === "function") {
+      window.onMeteorAction(data);
+    }
   };
 
   window.showPvPResult = function(data) {
@@ -459,6 +469,15 @@ function initVocabularyStudy() {
     cannonTotalHits = 0;
     cannonCurrentStreak = 0;
     cannonMaxStreak = 0;
+    
+    if (typeof window.bombGameState !== 'undefined' && window.bombGameState.timerInterval) {
+       clearInterval(window.bombGameState.timerInterval);
+       window.bombGameState.timerInterval = null;
+    }
+    if (typeof window.meteorGameState !== 'undefined' && window.meteorGameState.frameId) {
+       cancelAnimationFrame(window.meteorGameState.frameId);
+       window.meteorGameState.frameId = null;
+    }
   }
 
   function startGameTimer() {
@@ -1796,9 +1815,10 @@ function initVocabularyStudy() {
       return "";
     }
 
-    if (currentGameMode === "cannon") {
-      return renderCannonGame(topic);
-    }
+    if (currentGameMode === "cannon") return renderCannonGame(topic);
+    if (currentGameMode === "bomb" && typeof renderBombGame === "function") return renderBombGame(topic);
+    if (currentGameMode === "tug" && typeof renderTugGame === "function") return renderTugGame(topic);
+    if (currentGameMode === "meteor" && typeof renderMeteorGame === "function") return renderMeteorGame(topic);
 
     return renderMatchGame(topic);
   }
