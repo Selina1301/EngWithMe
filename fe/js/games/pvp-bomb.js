@@ -8,15 +8,27 @@ window.bombGameState = {
   inputValue: '',
   timerInterval: null,
   gameOverSent: false,
-  wordHoldTime: 0
+  wordHoldTime: 0,
+  lastTickTimestamp: Date.now()
 };
+
+function getPvpRoomId() {
+  return pvpManager?.roomId || window.pvpRoomId || new URLSearchParams(window.location.search).get("room") || "";
+}
 
 window.onBombAction = function(data) {
   if (data.action === 'pass_bomb') {
     bombGameState.hasBomb = true;
     bombGameState.opponentTimer = data.payload.timer;
     bombGameState.wordHoldTime = 0;
-    pickNewBombWord();
+    bombGameState.lastTickTimestamp = Date.now();
+    
+    if (data.payload && data.payload.wordIndex !== undefined && bombGameState.words[data.payload.wordIndex]) {
+      bombGameState.currentWordIndex = data.payload.wordIndex;
+      bombGameState.inputValue = '';
+    } else {
+      pickNewBombWord();
+    }
     if (typeof window.render === 'function') window.render();
   } else if (data.action === 'timer_sync') {
     bombGameState.opponentTimer = data.payload.timer;
@@ -29,7 +41,7 @@ window.onBombAction = function(data) {
       if (bombGameState.timerInterval) clearInterval(bombGameState.timerInterval);
       const myId = pvpManager?.socket?.id;
       pvpManager?.socket?.emit('finish_game', {
-        roomId: window.pvpRoomId || pvpManager?.roomId,
+        roomId: getPvpRoomId(),
         winnerId: myId
       });
     }
@@ -47,6 +59,41 @@ function pickNewBombWord() {
   bombGameState.inputValue = '';
   bombGameState.wordHoldTime = 0;
 }
+
+// Background Tab Visibility Change Handler
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && bombGameState.initialized && bombGameState.hasBomb && !bombGameState.gameOverSent) {
+    const now = Date.now();
+    const elapsedSeconds = Math.floor((now - bombGameState.lastTickTimestamp) / 1000);
+    if (elapsedSeconds > 0) {
+      bombGameState.myTimer = Math.max(0, bombGameState.myTimer - elapsedSeconds);
+      bombGameState.wordHoldTime += elapsedSeconds;
+      bombGameState.lastTickTimestamp = now;
+
+      const myEl = document.getElementById('bomb-my-timer');
+      if (myEl) {
+        myEl.innerText = bombGameState.myTimer + 's';
+        if (bombGameState.myTimer <= 10) myEl.style.color = '#ef4444';
+      }
+
+      if (bombGameState.myTimer <= 0) {
+        if (bombGameState.timerInterval) clearInterval(bombGameState.timerInterval);
+        bombGameState.gameOverSent = true;
+        const myId = pvpManager?.socket?.id;
+        const oppPlayer = pvpManager?.players?.find(p => p.id !== myId);
+
+        pvpManager?.socket?.emit('game_action', {
+           roomId: getPvpRoomId(),
+           action: 'boom'
+        });
+        pvpManager?.socket?.emit('finish_game', {
+           roomId: getPvpRoomId(),
+           winnerId: oppPlayer ? oppPlayer.id : null
+        });
+      }
+    }
+  }
+});
 
 window.renderBombGame = function(topic) {
   if (!bombGameState.initialized) {
@@ -67,71 +114,81 @@ window.renderBombGame = function(topic) {
     bombGameState.opponentTimer = 60;
     bombGameState.gameOverSent = false;
     bombGameState.wordHoldTime = 0;
+    bombGameState.lastTickTimestamp = Date.now();
     pickNewBombWord();
 
     if (bombGameState.timerInterval) clearInterval(bombGameState.timerInterval);
     bombGameState.timerInterval = setInterval(() => {
-      if (!window.pvpCountdownDone) return;
+      if (!window.pvpCountdownDone) {
+        bombGameState.lastTickTimestamp = Date.now();
+        return;
+      }
 
       if (bombGameState.hasBomb) {
-        bombGameState.myTimer--;
-        bombGameState.wordHoldTime++;
+        const now = Date.now();
+        const elapsedSeconds = Math.floor((now - bombGameState.lastTickTimestamp) / 1000);
 
-        // Direct DOM update for timer to prevent input focus loss
-        const myEl = document.getElementById('bomb-my-timer');
-        if (myEl) {
-          myEl.innerText = bombGameState.myTimer + 's';
-          if (bombGameState.myTimer <= 10) myEl.style.color = '#ef4444';
-        }
+        if (elapsedSeconds >= 1) {
+          bombGameState.myTimer = Math.max(0, bombGameState.myTimer - elapsedSeconds);
+          bombGameState.wordHoldTime += elapsedSeconds;
+          bombGameState.lastTickTimestamp += elapsedSeconds * 1000;
 
-        // 10s auto-refresh word if player is stuck
-        if (bombGameState.wordHoldTime >= 10) {
-          pickNewBombWord();
-          const wordEl = document.getElementById('bomb-target-meaning');
-          const inputEl = document.getElementById('bomb-input');
-          const tipEl = document.getElementById('bomb-skip-tip');
-          if (wordEl && bombGameState.words[bombGameState.currentWordIndex]) {
-            wordEl.innerText = bombGameState.words[bombGameState.currentWordIndex].meaning;
+          // Direct DOM update for timer to prevent input focus loss
+          const myEl = document.getElementById('bomb-my-timer');
+          if (myEl) {
+            myEl.innerText = bombGameState.myTimer + 's';
+            if (bombGameState.myTimer <= 10) myEl.style.color = '#ef4444';
           }
-          if (inputEl) {
-            inputEl.value = '';
-            inputEl.focus();
+
+          // 10s auto-refresh word if player is stuck
+          if (bombGameState.wordHoldTime >= 10) {
+            pickNewBombWord();
+            const wordEl = document.getElementById('bomb-target-meaning');
+            const inputEl = document.getElementById('bomb-input');
+            const tipEl = document.getElementById('bomb-skip-tip');
+            if (wordEl && bombGameState.words[bombGameState.currentWordIndex]) {
+              wordEl.innerText = bombGameState.words[bombGameState.currentWordIndex].meaning;
+            }
+            if (inputEl) {
+              inputEl.value = '';
+              inputEl.focus();
+            }
+            if (tipEl) {
+              tipEl.style.opacity = '1';
+              setTimeout(() => { if (tipEl) tipEl.style.opacity = '0'; }, 2000);
+            }
           }
-          if (tipEl) {
-            tipEl.style.opacity = '1';
-            setTimeout(() => { if (tipEl) tipEl.style.opacity = '0'; }, 2000);
+
+          // Sync every 3 seconds to keep opponent UI updated
+          if (bombGameState.myTimer % 3 === 0) {
+             pvpManager?.socket?.emit('game_action', {
+               roomId: getPvpRoomId(),
+               action: 'timer_sync',
+               payload: { timer: bombGameState.myTimer }
+             });
           }
-        }
 
-        // Sync every 3 seconds to keep opponent UI updated
-        if (bombGameState.myTimer % 3 === 0) {
-           pvpManager?.socket?.emit('game_action', {
-             roomId: window.pvpRoomId || pvpManager.roomId,
-             action: 'timer_sync',
-             payload: { timer: bombGameState.myTimer }
-           });
-        }
+          // Explosion check
+          if (bombGameState.myTimer <= 0) {
+            clearInterval(bombGameState.timerInterval);
+            if (!bombGameState.gameOverSent) {
+              bombGameState.gameOverSent = true;
+              const myId = pvpManager?.socket?.id;
+              const oppPlayer = pvpManager?.players?.find(p => p.id !== myId);
 
-        // Explosion check
-        if (bombGameState.myTimer <= 0) {
-          clearInterval(bombGameState.timerInterval);
-          if (!bombGameState.gameOverSent) {
-            bombGameState.gameOverSent = true;
-            const myId = pvpManager?.socket?.id;
-            const oppPlayer = pvpManager?.players?.find(p => p.id !== myId);
-
-            pvpManager?.socket?.emit('game_action', {
-               roomId: window.pvpRoomId || pvpManager.roomId,
-               action: 'boom'
-            });
-            pvpManager?.socket?.emit('finish_game', {
-               roomId: window.pvpRoomId || pvpManager.roomId,
-               winnerId: oppPlayer ? oppPlayer.id : null
-            });
+              pvpManager?.socket?.emit('game_action', {
+                 roomId: getPvpRoomId(),
+                 action: 'boom'
+              });
+              pvpManager?.socket?.emit('finish_game', {
+                 roomId: getPvpRoomId(),
+                 winnerId: oppPlayer ? oppPlayer.id : null
+              });
+            }
           }
         }
       }
-    }, 1000);
+    }, 500);
   }
 
   window.onBombInput = function(val) {
@@ -139,13 +196,18 @@ window.renderBombGame = function(topic) {
      const targetWord = bombGameState.words[bombGameState.currentWordIndex];
 
      if (targetWord && val.toLowerCase().trim() === targetWord.word.toLowerCase().trim() && bombGameState.hasBomb) {
-        // Correct answer! Pass bomb to opponent
+        // Correct answer! Pick next word index for opponent and pass bomb
         bombGameState.hasBomb = false;
         
+        let nextWordIndex = Math.floor(Math.random() * bombGameState.words.length);
+        if (nextWordIndex === bombGameState.currentWordIndex && bombGameState.words.length > 1) {
+          nextWordIndex = (nextWordIndex + 1) % bombGameState.words.length;
+        }
+
         pvpManager?.socket?.emit('game_action', {
-           roomId: window.pvpRoomId || pvpManager.roomId,
+           roomId: getPvpRoomId(),
            action: 'pass_bomb',
-           payload: { timer: bombGameState.myTimer }
+           payload: { timer: bombGameState.myTimer, wordIndex: nextWordIndex }
         });
         if (typeof window.render === 'function') window.render();
      }
