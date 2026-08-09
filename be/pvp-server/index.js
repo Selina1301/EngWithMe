@@ -47,6 +47,25 @@ io.on('connection', (socket) => {
 
     const room = rooms[roomId];
     
+    // Check if player with same name is already in room (re-joining during page transition)
+    const existingPlayer = room.players.find(p => p.name === playerName);
+    if (existingPlayer) {
+      existingPlayer.id = socket.id;
+      if (playerAvatar) existingPlayer.avatar = playerAvatar;
+      if (existingPlayer.disconnectTimeout) {
+        clearTimeout(existingPlayer.disconnectTimeout);
+        existingPlayer.disconnectTimeout = null;
+      }
+      console.log(`${playerName} re-joined room ${roomId} with socket ${socket.id}`);
+
+      io.to(roomId).emit('room_update', {
+        players: room.players,
+        gameStarted: room.gameStarted,
+        gameConfig: { mode: room.gameMode, level: room.level, topic: room.topic }
+      });
+      return;
+    }
+
     // Prevent more than 2 players
     if (room.players.length >= 2) {
       socket.emit('room_full', { message: 'Phòng đã đầy (tối đa 2 người).' });
@@ -175,35 +194,55 @@ io.on('connection', (socket) => {
   // DISCONNECT
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);
-    // Find which room the user was in and remove them
     for (const roomId in rooms) {
       const room = rooms[roomId];
       const playerIndex = room.players.findIndex(p => p.id === socket.id);
       
       if (playerIndex !== -1) {
-        const playerName = room.players[playerIndex].name;
-        room.players.splice(playerIndex, 1);
-        console.log(`${playerName} left room ${roomId}`);
-        
-        if (room.players.length === 0) {
-          // Clean up empty room
-          delete rooms[roomId];
+        const player = room.players[playerIndex];
+        const playerName = player.name;
+
+        // If game is started, give a 5-second grace period for page transitions (game.html -> vocabulary-study.html)
+        if (room.gameStarted) {
+          if (player.disconnectTimeout) clearTimeout(player.disconnectTimeout);
+          player.disconnectTimeout = setTimeout(() => {
+            const idx = room.players.findIndex(p => p.id === socket.id);
+            if (idx !== -1) {
+              room.players.splice(idx, 1);
+              console.log(`${playerName} left room ${roomId} after grace period`);
+              if (room.players.length === 0) {
+                delete rooms[roomId];
+              } else {
+                room.gameStarted = false;
+                room.players.forEach(p => { p.ready = false; p.score = 0; });
+                if (room.players[0]) room.players[0].color = COLORS[0];
+                io.to(roomId).emit('player_left', {
+                  message: `${playerName} đã rời phòng.`,
+                  players: room.players,
+                  gameStarted: false,
+                  gameConfig: { mode: room.gameMode, level: room.level, topic: room.topic }
+                });
+              }
+            }
+          }, 5000);
         } else {
-          // If a player disconnects during a game, reset game
-          room.gameStarted = false;
-          room.players.forEach(p => { p.ready = false; p.score = 0; });
+          room.players.splice(playerIndex, 1);
+          console.log(`${playerName} left room ${roomId}`);
           
-          // Re-assign color to remaining player to ensure they are host (blue)
-          if (room.players[0]) {
-             room.players[0].color = COLORS[0];
+          if (room.players.length === 0) {
+            delete rooms[roomId];
+          } else {
+            room.gameStarted = false;
+            room.players.forEach(p => { p.ready = false; p.score = 0; });
+            if (room.players[0]) room.players[0].color = COLORS[0];
+            
+            io.to(roomId).emit('player_left', {
+              message: `${playerName} đã rời phòng.`,
+              players: room.players,
+              gameStarted: false,
+              gameConfig: { mode: room.gameMode, level: room.level, topic: room.topic }
+            });
           }
-          
-          io.to(roomId).emit('player_left', {
-            message: `${playerName} đã rời phòng.`,
-            players: room.players,
-            gameStarted: false,
-            gameConfig: { mode: room.gameMode, level: room.level, topic: room.topic }
-          });
         }
         break;
       }

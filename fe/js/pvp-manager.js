@@ -57,6 +57,10 @@ class PvPManager {
     });
 
     this.socket.on('room_full', (data) => {
+      if (window.location.pathname.includes("vocabulary-study.html")) {
+        console.warn("Ignored room_full on study page:", data.message);
+        return;
+      }
       alert(data.message);
       window.location.href = 'game.html?tab=online';
     });
@@ -69,6 +73,11 @@ class PvPManager {
     });
 
     this.socket.on('player_left', (data) => {
+      if (window.location.pathname.includes("vocabulary-study.html")) {
+        alert(data.message);
+        window.location.href = 'game.html?tab=online';
+        return;
+      }
       alert(data.message);
       this.players = data.players;
       this.amIReady = false;

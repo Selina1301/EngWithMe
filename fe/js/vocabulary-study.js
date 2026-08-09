@@ -1028,6 +1028,8 @@ function initVocabularyStudy() {
     }
   }
 
+  window.render = render;
+
   function renderWorkspacePanel(topic) {
     if (currentWorkspaceMode === "study") return renderStudyPanel(topic);
     if (currentWorkspaceMode === "play" || currentWorkspaceMode === "pvp") return renderPlayPanel(topic);
