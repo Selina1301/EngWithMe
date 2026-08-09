@@ -30,7 +30,7 @@ io.on('connection', (socket) => {
 
   // JOIN ROOM
   socket.on('join_room', (data) => {
-    const { roomId, playerName } = data;
+    const { roomId, playerName, playerAvatar } = data;
     
     // Join the socket to the room
     socket.join(roomId);
@@ -57,6 +57,7 @@ io.on('connection', (socket) => {
     const player = {
       id: socket.id,
       name: playerName || `Người chơi ${room.players.length + 1}`,
+      avatar: playerAvatar || null,
       ready: false,
       score: 0,
       color: COLORS[room.players.length]

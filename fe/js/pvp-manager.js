@@ -27,9 +27,20 @@ class PvPManager {
       
       // If we already have a room ID but just connected
       if (this.roomId) {
+        let playerName = 'Guest ' + Math.floor(Math.random() * 1000);
+        let playerAvatar = null;
+        if (typeof getCurrentUser === 'function') {
+          const user = getCurrentUser();
+          if (user && user.id !== 'user' && user.id !== 'guest') {
+            playerName = user.name || user.email || playerName;
+            playerAvatar = user.avatar || null;
+          }
+        }
+        
         this.socket.emit('join_room', {
           roomId: this.roomId,
-          playerName: 'Guest ' + Math.floor(Math.random() * 1000)
+          playerName: playerName,
+          playerAvatar: playerAvatar
         });
       }
     });
@@ -102,6 +113,15 @@ class PvPManager {
   }
 
   joinRoom(roomId) {
+    if (typeof getCurrentUser === 'function') {
+      const user = getCurrentUser();
+      if (!user || user.id === 'user' || user.id === 'guest') {
+        alert("Vui lòng đăng nhập hoặc đăng ký tài khoản để tham gia phòng thi đấu!");
+        window.location.href = "login.html?redirect=game.html?tab=online&room=" + roomId;
+        return;
+      }
+    }
+
     this.isHost = false;
     this.roomId = roomId;
     
@@ -213,12 +233,22 @@ class PvPManager {
     if (me) {
       const nameEl = p1Slot.querySelector('h4');
       const statusEl = p1Slot.querySelector('.pvp-ready-status');
+      const avatarEl = p1Slot.querySelector('.pvp-avatar');
+      
       if (nameEl) nameEl.innerText = `${me.name} (Bạn)`;
       if (statusEl) {
         statusEl.innerText = me.ready ? 'Đã sẵn sàng' : 'Chưa sẵn sàng';
         statusEl.className = `pvp-ready-status ${me.ready ? 'ready' : 'not-ready'}`;
       }
-      p1Slot.querySelector('.pvp-avatar').style.borderColor = me.color;
+      if (avatarEl) {
+        avatarEl.style.borderColor = me.color;
+        if (me.avatar) {
+          avatarEl.innerHTML = `<img src="${me.avatar}" alt="${me.name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+        } else {
+          avatarEl.innerHTML = `<i data-lucide="user"></i>`;
+          if (typeof lucide !== 'undefined') lucide.createIcons({root: avatarEl});
+        }
+      }
       
       // Enable ready button if I have joined successfully
       if (readyBtn) readyBtn.disabled = false;
@@ -228,22 +258,38 @@ class PvPManager {
     if (opponent) {
       const nameEl = p2Slot.querySelector('h4');
       const statusEl = p2Slot.querySelector('.pvp-ready-status');
+      const avatarEl = p2Slot.querySelector('.pvp-avatar');
+      
       if (nameEl) nameEl.innerText = opponent.name;
       if (statusEl) {
         statusEl.innerText = opponent.ready ? 'Đã sẵn sàng' : 'Chưa sẵn sàng';
         statusEl.className = `pvp-ready-status ${opponent.ready ? 'ready' : 'not-ready'}`;
       }
-      p2Slot.querySelector('.pvp-avatar').style.borderColor = opponent.color;
+      if (avatarEl) {
+        avatarEl.style.borderColor = opponent.color;
+        if (opponent.avatar) {
+          avatarEl.innerHTML = `<img src="${opponent.avatar}" alt="${opponent.name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+        } else {
+          avatarEl.innerHTML = `<i data-lucide="user"></i>`;
+          if (typeof lucide !== 'undefined') lucide.createIcons({root: avatarEl});
+        }
+      }
     } else {
       // Opponent hasn't joined or left
       const nameEl = p2Slot.querySelector('h4');
       const statusEl = p2Slot.querySelector('.pvp-ready-status');
+      const avatarEl = p2Slot.querySelector('.pvp-avatar');
+      
       if (nameEl) nameEl.innerText = 'Đang chờ...';
       if (statusEl) {
         statusEl.innerText = 'Chưa tham gia';
         statusEl.className = 'pvp-ready-status not-ready';
       }
-      p2Slot.querySelector('.pvp-avatar').style.borderColor = 'transparent';
+      if (avatarEl) {
+        avatarEl.style.borderColor = 'transparent';
+        avatarEl.innerHTML = `<i data-lucide="user"></i>`;
+        if (typeof lucide !== 'undefined') lucide.createIcons({root: avatarEl});
+      }
     }
     
     // Update Guest UI with host's selection
