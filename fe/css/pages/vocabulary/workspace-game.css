@@ -1374,6 +1374,12 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   color: #e2e8f0;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 100%;
+}
+.pronounce-btn span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pronounce-btn.us {

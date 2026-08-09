@@ -356,15 +356,77 @@
 }
 
 /* Topic Modal Fixes for Dark Theme */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(2, 6, 23, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
 .game-topic-modal {
   background: #0f172a;
   border: 1px solid rgba(255,255,255,0.1);
   color: #f8fafc;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 700px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+.level-selector {
+  display: flex;
+  padding: 20px 32px;
+  gap: 12px;
+  background: rgba(0,0,0,0.2);
 }
 
 .level-btn {
+  background: transparent;
   color: #94a3b8;
-  border-color: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 8px 16px;
+  border-radius: 99px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .level-btn:hover {
@@ -372,16 +434,44 @@
   color: #fff;
 }
 
+.level-btn.active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+.topic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 24px 32px;
+  overflow-y: auto;
+}
+
 .topic-item {
   background: rgba(255,255,255,0.03);
-  border-color: rgba(255,255,255,0.1);
-  color: #f8fafc;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.topic-item:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+  transform: translateY(-2px);
 }
 
 .topic-item h4 {
   color: #f8fafc;
+  font-size: 18px;
+  margin-bottom: 8px;
+  font-weight: 700;
 }
 
 .topic-item p {
   color: #94a3b8;
+  font-size: 14px;
+  line-height: 1.5;
 }
