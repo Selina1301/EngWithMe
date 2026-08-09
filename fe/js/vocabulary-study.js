@@ -893,6 +893,7 @@ function initVocabularyStudy() {
 
     root.innerHTML = `
       <div class="vocab-workspace mode-${currentWorkspaceMode}">
+        ${currentWorkspaceMode === "play" ? "" : `
         <div class="workspace-top-bar">
           <div class="top-bar-left">
             <a class="workspace-back" href="${getListHref()}">← Quay lại chủ đề</a>
@@ -934,6 +935,7 @@ function initVocabularyStudy() {
             </div>
           </div>
         </div>
+        `}
 
         <div class="workspace-title">
           <div class="workspace-title-head">
