@@ -6,7 +6,7 @@ class PvPManager {
     this.roomId = null;
     this.isHost = false;
     this.players = [];
-    this.serverUrl = 'http://localhost:3001'; // Default local for dev
+    this.serverUrl = 'https://engwithme.onrender.com'; // Deployed on Render
     this.amIReady = false;
     
     // Attempt to parse room from URL
