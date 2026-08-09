@@ -1112,7 +1112,7 @@ function initVocabularyStudy() {
         ${countdownOverlayHtml}
         <div class="vocab-workspace mode-pvp" style="max-width: 960px; margin: 0 auto; padding: 10px;">
           <!-- PVP DEDICATED TOP ACTION BAR -->
-          <div class="pvp-action-bar" style="display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 18px; padding: 12px 22px; margin-bottom: 24px; box-shadow: 0 12px 30px rgba(0,0,0,0.5);">
+          <div class="pvp-action-bar" style="display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 18px; padding: 10px 20px; margin-bottom: 16px; box-shadow: 0 12px 30px rgba(0,0,0,0.5);">
             <div style="display: flex; align-items: center; gap: 12px;">
               <a href="game.html?tab=online" class="btn btn-outline btn-sm" style="display: flex; align-items: center; gap: 6px; border-radius: 10px; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.15); text-decoration: none; font-weight: 700; padding: 8px 16px; font-size: 0.9rem;">
                 ← Về Menu Game
@@ -1120,21 +1120,6 @@ function initVocabularyStudy() {
               <a href="game.html?tab=online&action=create" class="btn btn-primary btn-sm" style="display: flex; align-items: center; gap: 6px; border-radius: 10px; font-weight: 700; padding: 8px 16px; font-size: 0.9rem; background: linear-gradient(135deg, #10b981, #059669); color: white; text-decoration: none;">
                 ➕ Tạo Phòng Mới
               </a>
-            </div>
-
-            <!-- LIVE SCOREBOARD -->
-            <div style="display: flex; align-items: center; gap: 18px; background: rgba(0,0,0,0.45); padding: 8px 20px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);">
-              <div style="display: flex; align-items: center; gap: 8px; color: ${mePlayer.color || '#3b82f6'}; font-weight: 800; font-size: 0.95rem;">
-                ${meAvatar}
-                <span>${mePlayer.name} (Bạn)</span>
-                <span style="background: rgba(59, 130, 246, 0.25); border: 1px solid rgba(59, 130, 246, 0.4); padding: 2px 10px; border-radius: 12px; font-size: 1.15rem; color: #60a5fa;">${mePlayer.score || 0}</span>
-              </div>
-              <span style="color: #f59e0b; font-weight: 900; font-style: italic; font-size: 1.2rem;">VS</span>
-              <div style="display: flex; align-items: center; gap: 8px; color: ${oppPlayer.color || '#ef4444'}; font-weight: 800; font-size: 0.95rem;">
-                <span style="background: rgba(239, 68, 68, 0.25); border: 1px solid rgba(239, 68, 68, 0.4); padding: 2px 10px; border-radius: 12px; font-size: 1.15rem; color: #f87171;">${oppPlayer.score || 0}</span>
-                <span>${oppPlayer.name}</span>
-                ${oppAvatar}
-              </div>
             </div>
 
             <!-- TIMER & TOPIC INFO -->
@@ -2770,7 +2755,7 @@ function initVocabularyStudy() {
             <div style="display: grid; grid-template-columns: 210px 1fr; gap: 24px; align-items: start;">
               
               <!-- COL 1: 5-ROW MATCH STATUS PANEL -->
-              <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 24px 14px; text-align: center; display: flex; flex-direction: column; gap: 16px; align-items: center; justify-content: center; min-height: 440px;">
+              <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 18px 12px; text-align: center; display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center; min-height: 340px;">
                 <!-- Row 1: CẶP ĐÚNG CỦA BẠN -->
                 <div style="font-size: 0.82rem; color: #38bdf8; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;">CẶP ĐÚNG BẠN</div>
                 
@@ -2778,7 +2763,7 @@ function initVocabularyStudy() {
                 <div style="font-size: 2.2rem; font-weight: 900; color: #38bdf8; font-family: monospace;">${meP.score || 0} / ${gameWords.length}</div>
                 
                 <!-- Row 3: Cards Icon Separator -->
-                <div style="font-size: 2.6rem; color: #34d399; margin: 4px 0; filter: drop-shadow(0 0 12px rgba(52, 211, 153, 0.6));">🃏</div>
+                <div style="font-size: 2.4rem; color: #34d399; margin: 2px 0; filter: drop-shadow(0 0 12px rgba(52, 211, 153, 0.6));">🃏</div>
                 
                 <!-- Row 4: CẶP ĐÚNG ĐỐI THỦ -->
                 <div style="font-size: 0.82rem; color: #ef4444; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;">CẶP ĐÚNG ĐỐI THỦ</div>
@@ -2788,8 +2773,8 @@ function initVocabularyStudy() {
               </div>
 
               <!-- COL 2: MATCH CARD GRID -->
-              <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 24px; min-height: 440px; display: flex; flex-direction: column; justify-content: center;">
-                <div class="game-board" style="gap: 12px; margin: 0;">
+              <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 16px; min-height: 340px; display: flex; flex-direction: column; justify-content: center;">
+                <div class="game-board" style="gap: 10px; margin: 0;">
                   ${currentMatchTiles.map(tile => {
                     const isMatched = matchedPairs.has(tile.id);
                     return `
@@ -2797,7 +2782,7 @@ function initVocabularyStudy() {
                               type="button" 
                               data-match-id="${tile.id}" 
                               data-match-type="${tile.type}"
-                              style="padding: 20px 22px; font-size: 0.95rem; min-height: 68px;">
+                              style="padding: 12px 14px; font-size: 0.9rem; min-height: 52px; border-radius: 12px;">
                         ${tile.text}
                       </button>
                     `;

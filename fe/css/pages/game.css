@@ -366,6 +366,12 @@
 }
 
 /* PvP Game Board Container Overrides */
+html:has(.mode-pvp),
+body:has(.mode-pvp) {
+  overflow-y: hidden !important;
+  max-height: 100vh !important;
+}
+
 .mode-pvp .workspace-panel {
   display: block !important;
   grid-template-columns: none !important;
@@ -377,7 +383,7 @@
   display: block !important;
   grid-template-columns: none !important;
   width: 100% !important;
-  max-width: 860px !important;
+  max-width: 960px !important;
   margin: 0 auto !important;
 }
 
