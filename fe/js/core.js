@@ -32,7 +32,7 @@ function setActiveNav() {
     { href: "quiz.html", label: "Exam" },
     { href: "rank.html", label: "Rank" },
     { href: "blog.html", label: "Blog" },
-    { href: "game.html", label: "Arena" },
+    { href: "game.html", label: "Game" },
     { href: "pricing.html", label: "Premium" }
   ];
 
