@@ -89,7 +89,7 @@
     <section class="game-section" id="tab-online">
       <div class="pvp-lobby">
         <div class="pvp-lobby-header" style="text-align: center; margin-bottom: 12px;">
-          <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 4px; background: linear-gradient(135deg, #10b981, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Đấu Trường Tốc Độ</h2>
+          <h2 style="font-size: 2rem; font-weight: 800; margin-top: -4px; margin-bottom: 4px; background: linear-gradient(135deg, #10b981, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Đấu Trường Tốc Độ</h2>
           <p style="font-size: 0.95rem; color: #94a3b8; max-width: 600px; margin: 0 auto;">Tạo phòng, gửi link cho bạn bè và xem ai phản xạ từ vựng nhanh hơn!</p>
         </div>
 
@@ -131,8 +131,8 @@
               </div>
             </div>
 
-            <!-- Game Config (Only visible to Host - Transparent background, no excess top dark area) -->
-            <div id="pvp-host-config" style="display: none; margin-top: 12px; text-align: left; background: transparent; padding: 0;">
+            <!-- Game Config (Only visible to Host - Transparent background, margin-top +3px to 15px) -->
+            <div id="pvp-host-config" style="display: none; margin-top: 15px; text-align: left; background: transparent; padding: 0;">
               <h4 style="margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem; font-weight: 700;">Thiết lập trận đấu (Chỉ Chủ phòng)</h4>
               <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <select id="pvp-mode-select" class="btn" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 8px 14px; font-size: 0.9rem;" onchange="pvpManager.onHostConfigChange()">
