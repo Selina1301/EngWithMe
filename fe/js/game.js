@@ -44,6 +44,14 @@ function openTopicModal(gameType) {
   const modal = document.getElementById("topicModal");
   if (modal) {
     modal.style.display = "flex";
+    // Reset active tab to easy
+    document.querySelectorAll(".topic-level-btn").forEach(b => {
+      if (b.dataset.level === "easy") {
+        b.classList.add("active");
+      } else {
+        b.classList.remove("active");
+      }
+    });
     // Default load easy topics
     renderTopics("easy");
   }
