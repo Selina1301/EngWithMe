@@ -251,14 +251,18 @@ io.on('connection', (socket) => {
                 delete rooms[roomId];
               } else {
                 room.gameStarted = false;
-                room.players.forEach(p => { p.ready = false; p.score = 0; });
-                if (room.players[0]) room.players[0].color = COLORS[0];
-                io.to(roomId).emit('player_left', {
-                  message: `${playerName} đã rời phòng.`,
+                const winner = room.players[0];
+                io.to(roomId).emit('game_over', {
+                  winnerId: winner ? winner.id : null,
+                  winnerName: winner ? winner.name : 'Người chơi',
                   players: room.players,
-                  gameStarted: false,
-                  gameConfig: { mode: room.gameMode, level: room.level, topic: room.topic }
+                  gameMode: room.gameMode,
+                  topic: room.topic,
+                  isOpponentLeft: true,
+                  message: `${playerName} đã thoát trận đấu!`
                 });
+
+                room.players.forEach(p => p.ready = false);
               }
             }
           }, 5000);

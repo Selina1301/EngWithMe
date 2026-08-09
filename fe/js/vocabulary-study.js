@@ -87,14 +87,34 @@ function initVocabularyStudy() {
     const amIWinner = data.winnerId === pvpManager?.socket?.id;
     const roomId = pvpManager?.roomId || new URLSearchParams(window.location.search).get("room") || "";
 
-    // Award XP (+30 XP for Winner, +5 XP for Loser)
+    let xpNoticeHtml = "";
+    let xpBadgeText = amIWinner ? "+30 XP" : "+5 XP";
+
+    // Award XP (+30 XP for Winner, +5 XP for Loser; Anti-abuse rule for Opponent Left: +30 XP every 3 opponent out wins)
     if (!data._xpAwarded) {
       data._xpAwarded = true;
-      if (typeof addXP === "function") {
-        if (amIWinner) {
-          addXP(30, "🏆 Chiến thắng Đấu Trường PvP");
+      if (data.isOpponentLeft && amIWinner) {
+        let oppOutCount = parseInt(localStorage.getItem('ewm_pvp_opp_out_count') || '0', 10);
+        oppOutCount++;
+        localStorage.setItem('ewm_pvp_opp_out_count', oppOutCount);
+
+        const remainder = oppOutCount % 3;
+        if (remainder === 0) {
+          if (typeof addXP === "function") addXP(30, "🏆 Thắng 3 trận PvP (Do đối thủ out)");
+          xpBadgeText = "+30 XP";
+          xpNoticeHtml = `<div style="color: #4ade80; font-weight: 700; font-size: 0.9rem; margin-top: 6px;">🎉 Đã tích lũy đủ 3 trận đối thủ out -> Thưởng +30 XP!</div>`;
         } else {
-          addXP(5, "⚔️ Hoàn thành trận đấu PvP");
+          xpBadgeText = "+0 XP";
+          const needed = 3 - remainder;
+          xpNoticeHtml = `<div style="color: #f59e0b; font-weight: 600; font-size: 0.85rem; margin-top: 6px;">⚠️ Đối thủ thoát trận (${remainder}/3 trận). Cần thêm ${needed} trận đối thủ out nữa để nhận +30 XP!</div>`;
+        }
+      } else {
+        if (typeof addXP === "function") {
+          if (amIWinner) {
+            addXP(30, "🏆 Chiến thắng Đấu Trường PvP");
+          } else {
+            addXP(5, "⚔️ Hoàn thành trận đấu PvP");
+          }
         }
       }
     }
@@ -106,6 +126,11 @@ function initVocabularyStudy() {
       meteor: "☄️ Mưa Thiên Thạch"
     };
     const modeLabel = modeNames[currentGameMode] || "Đấu Trường PvP";
+
+    const winTitleText = data.isOpponentLeft ? 'ĐỐI THỦ ĐÃ THOÁT TRẬN!' : (amIWinner ? 'BẠN ĐÃ CHIẾN THẮNG!' : 'BẠN ĐÃ THUA CUỘC!');
+    const winSubText = data.isOpponentLeft 
+      ? `Đối thủ đã rời khỏi phòng thi đấu. Bạn giành chiến thắng tự động! ${xpNoticeHtml}`
+      : (amIWinner ? `Chúc mừng! Bạn nhận được +30 XP!` : `Rất tiếc! Bạn nhận được +5 XP khích lệ!`);
 
     root.innerHTML = `
       <div style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(14px); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px;">
@@ -120,11 +145,11 @@ function initVocabularyStudy() {
             ${amIWinner ? '🏆' : '💀'}
           </div>
           <h2 style="font-size: 2.2rem; font-weight: 900; margin-bottom: 6px; color: ${amIWinner ? '#10b981' : '#ef4444'}; text-shadow: 0 0 20px ${amIWinner ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)'};">
-            ${amIWinner ? 'BẠN ĐÃ CHIẾN THẮNG!' : 'BẠN ĐÃ THUA CUỘC!'}
+            ${winTitleText}
           </h2>
-          <p style="font-size: 1.05rem; color: #94a3b8; margin-bottom: 20px; font-weight: 600;">
-            ${amIWinner ? `Chúc mừng! Bạn nhận được +30 XP!` : `Rất tiếc! Bạn nhận được +5 XP khích lệ!`}
-          </p>
+          <div style="font-size: 1.05rem; color: #94a3b8; margin-bottom: 20px; font-weight: 600;">
+            ${winSubText}
+          </div>
 
           <!-- STATS BOX -->
           <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 18px 20px; margin-bottom: 24px; text-align: left;">
@@ -138,7 +163,7 @@ function initVocabularyStudy() {
             </div>
             <div style="display: flex; justify-content: space-between; color: #cbd5e1; font-weight: 600; font-size: 0.95rem;">
               <span>⭐ Phần thưởng XP:</span>
-              <span style="color: #4ade80; font-weight: 800;">${amIWinner ? '+30 XP' : '+5 XP'}</span>
+              <span style="color: #4ade80; font-weight: 800;">${xpBadgeText}</span>
             </div>
           </div>
 
