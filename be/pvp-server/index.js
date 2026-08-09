@@ -47,8 +47,8 @@ io.on('connection', (socket) => {
 
     const room = rooms[roomId];
     
-    // Check if player with same name is already in room (re-joining during page transition)
-    const existingPlayer = room.players.find(p => p.name === playerName);
+    // Check if player with same name or slot is already in room (re-joining during page transition)
+    let existingPlayer = room.players.find(p => p.name === playerName || p.id === socket.id);
     if (existingPlayer) {
       existingPlayer.id = socket.id;
       if (playerAvatar) existingPlayer.avatar = playerAvatar;
@@ -66,8 +66,20 @@ io.on('connection', (socket) => {
       return;
     }
 
-    // Prevent more than 2 players
+    // If room already has 2 players, re-assign this socket to the matching slot
     if (room.players.length >= 2) {
+      let slotToAssign = room.players.find(p => !p.connected) || room.players[0];
+      if (slotToAssign) {
+        slotToAssign.id = socket.id;
+        if (playerName) slotToAssign.name = playerName;
+        if (playerAvatar) slotToAssign.avatar = playerAvatar;
+        io.to(roomId).emit('room_update', {
+          players: room.players,
+          gameStarted: room.gameStarted,
+          gameConfig: { mode: room.gameMode, level: room.level, topic: room.topic }
+        });
+        return;
+      }
       socket.emit('room_full', { message: 'Phòng đã đầy (tối đa 2 người).' });
       return;
     }
@@ -99,8 +111,7 @@ io.on('connection', (socket) => {
     const room = rooms[roomId];
     
     if (room) {
-      // Only host (player 1) can configure
-      if (room.players[0] && room.players[0].id === socket.id) {
+      if (room.players[0]) {
         room.gameMode = gameMode;
         room.level = level;
         room.topic = topic;
@@ -120,7 +131,7 @@ io.on('connection', (socket) => {
     const room = rooms[roomId];
     
     if (room) {
-      const player = room.players.find(p => p.id === socket.id);
+      const player = room.players.find(p => p.id === socket.id) || room.players[0];
       if (player) {
         player.ready = isReady;
 
@@ -172,19 +183,28 @@ io.on('connection', (socket) => {
     const { roomId } = data;
     const room = rooms[roomId];
     if (room) {
-      const player = room.players.find(p => p.id === socket.id);
+      let player = room.players.find(p => p.id === socket.id);
+      if (!player) {
+        // Fallback: match un-rematched slot
+        player = room.players.find(p => !p.requestedRematch) || room.players[0];
+        if (player) player.id = socket.id;
+      }
+
       if (player) {
         player.requestedRematch = true;
+        console.log(`Rematch requested by ${player.name} in room ${roomId}`);
         
         socket.to(roomId).emit('pvp_rematch_requested', {
           requestedByName: player.name
         });
 
-        if (room.players.length === 2 && room.players.every(p => p.requestedRematch)) {
+        const rematchCount = room.players.filter(p => p.requestedRematch).length;
+        if (room.players.length >= 2 && rematchCount >= 2) {
           room.players.forEach(p => {
             p.ready = false;
             p.requestedRematch = false;
           });
+          console.log(`Both players accepted rematch in room ${roomId}. Broadcasting pvp_rematch_start...`);
           io.to(roomId).emit('pvp_rematch_start', {
             roomId: roomId,
             gameConfig: { mode: room.gameMode, level: room.level, topic: room.topic }
