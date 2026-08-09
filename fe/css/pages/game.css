@@ -16,8 +16,8 @@
 }
 
 .game-hub {
-  padding: 80px 20px 60px;
-  max-width: 1200px;
+  padding: 40px 20px 40px;
+  max-width: 1000px;
   margin: 0 auto;
   flex: 1;
   width: 100%;
@@ -69,7 +69,7 @@
 }
 
 .game-hub-header h1 {
-  font-size: 56px;
+  font-size: 42px;
   background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -80,9 +80,9 @@
 
 .game-hub-header p {
   color: #94a3b8;
-  font-size: 20px;
+  font-size: 16px;
   max-width: 650px;
-  margin: 0 auto 40px;
+  margin: 0 auto 30px;
   line-height: 1.6;
 }
 
@@ -100,9 +100,9 @@
   background: transparent;
   border: none;
   color: #94a3b8;
-  padding: 14px 28px;
+  padding: 10px 20px;
   border-radius: 50px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -144,17 +144,17 @@
 /* Offline Grid - Premium Glassmorphism */
 .game-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 32px;
-  margin-top: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 10px;
 }
 
 .game-card {
   background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 40px 32px;
+  border-radius: 20px;
+  padding: 30px 24px;
   text-align: center;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
@@ -186,13 +186,13 @@
 }
 
 .game-icon-bg {
-  width: 90px;
-  height: 90px;
-  border-radius: 24px;
+  width: 70px;
+  height: 70px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   position: relative;
 }
 
@@ -208,8 +208,8 @@
 }
 
 .game-icon-bg i {
-  width: 44px;
-  height: 44px;
+  width: 32px;
+  height: 32px;
   color: white;
 }
 
@@ -222,17 +222,17 @@
 }
 
 .game-info h3 {
-  font-size: 26px;
-  margin-bottom: 12px;
+  font-size: 22px;
+  margin-bottom: 8px;
   color: #f8fafc;
   font-weight: 700;
 }
 
 .game-info p {
   color: #94a3b8;
-  margin-bottom: 32px;
-  line-height: 1.6;
-  font-size: 15px;
+  margin-bottom: 24px;
+  line-height: 1.5;
+  font-size: 14px;
 }
 
 .game-info .btn {
@@ -255,10 +255,10 @@
   background: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(30px);
   border: 1px solid rgba(46, 232, 120, 0.3);
-  border-radius: 30px;
-  padding: 80px 40px;
+  border-radius: 24px;
+  padding: 50px 30px;
   text-align: center;
-  max-width: 800px;
+  max-width: 700px;
   margin: 0 auto;
   position: relative;
   overflow: hidden;
@@ -266,7 +266,7 @@
 }
 
 .pvp-lobby-hero h2 {
-  font-size: 42px;
+  font-size: 32px;
   background: linear-gradient(135deg, #4ade80 0%, #3b82f6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -281,9 +281,9 @@
 }
 
 .pvp-actions .btn {
-  padding: 16px 32px;
-  font-size: 18px;
-  font-weight: 800;
+  padding: 12px 28px;
+  font-size: 16px;
+  font-weight: 700;
   border-radius: 50px;
   background: linear-gradient(135deg, #10b981, #3b82f6);
   box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
@@ -304,8 +304,8 @@
 }
 
 .pvp-room-box h3 {
-  font-size: 24px;
-  margin-bottom: 12px;
+  font-size: 20px;
+  margin-bottom: 8px;
   color: #f8fafc;
 }
 
