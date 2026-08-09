@@ -9,9 +9,11 @@ class PvPManager {
     this.serverUrl = 'https://engwithme.onrender.com'; // Deployed on Render
     this.amIReady = false;
     
-    // Attempt to parse room from URL
+    // Attempt to parse room or action from URL
     const urlParams = new URLSearchParams(window.location.search);
     const roomParam = urlParams.get("room");
+    const actionParam = urlParams.get("action");
+
     if (roomParam) {
       if (window.location.pathname.includes("vocabulary-study.html") || urlParams.get("mode") === "pvp") {
         this.roomId = roomParam;
@@ -19,6 +21,14 @@ class PvPManager {
       } else {
         this.joinRoom(roomParam);
       }
+    } else if (actionParam === "create" && !window.location.pathname.includes("vocabulary-study.html")) {
+      setTimeout(() => {
+        if (typeof createPvPRoom === "function") {
+          createPvPRoom();
+        } else {
+          this.createRoom();
+        }
+      }, 150);
     }
   }
 
