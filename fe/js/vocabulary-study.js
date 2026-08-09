@@ -1751,23 +1751,8 @@ function initVocabularyStudy() {
 
   function renderPlayPanel(topic) {
     if (!currentGameMode) {
-      return `
-        <div class="game-selection-wrapper">
-          <h3 class="word-list-title">Chọn game</h3>
-          <div class="game-menu">
-            <button class="game-choice" type="button" data-start-game="match">
-              <i class="ti-layout-grid2"></i>
-              <h3>Word Match</h3>
-              <p>Ghép từ tiếng Anh với nghĩa tiếng Việt</p>
-            </button>
-            <button class="game-choice" type="button" data-start-game="cannon">
-              <i class="ti-target"></i>
-              <h3>Word Cannon</h3>
-              <p>Bắn pháo từ vựng chính xác để ghi điểm</p>
-            </button>
-          </div>
-        </div>
-      `;
+      window.location.href = "game.html";
+      return "";
     }
 
     if (currentGameMode === "cannon") {
@@ -1907,7 +1892,7 @@ function initVocabularyStudy() {
           to { opacity: 1; transform: scale(1) translateY(0); }
         }
       </style>
-      <div style="position: relative; max-width: 720px; margin: 0 auto; width: 100%;">
+      <div style="position: relative; max-width: 720px; margin: 30px auto 0 auto; width: 100%;">
         <!-- Background Game Board (blurred if isGameEnded) -->
         <div style="${isGameEnded ? 'filter: blur(5px) brightness(0.35); pointer-events: none; transition: filter 0.3s ease;' : 'transition: filter 0.3s ease;'}">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 4px 8px; color: #cbd5e1; font-weight: 600; font-size: 0.95rem; width: 100%;">
@@ -1926,7 +1911,7 @@ function initVocabularyStudy() {
           <div class="game-panel study-card cannon-game-panel" style="position: relative; overflow: hidden; padding: 0; min-height: 480px; display: flex; flex-direction: column; align-items: stretch; justify-content: start;">
             <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; background: rgba(15, 23, 42, 0.4); border-bottom: 1px solid rgba(255, 255, 255, 0.05); z-index: 5;">
               <div style="display: flex; align-items: center; gap: 6px;">
-                <button type="button" data-game-menu style="background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 0 4px 0 0; font-size: 1.15rem; line-height: 1; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">←</button>
+                <a href="game.html" style="text-decoration: none; background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 0 4px 0 0; font-size: 1.15rem; line-height: 1; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">←</a>
                 ${livesHtml}
               </div>
               <div style="font-weight: 700; color: #38bdf8; font-size: 0.95rem; display: flex; align-items: center; gap: 4px;">
@@ -2238,7 +2223,7 @@ function initVocabularyStudy() {
               ).join("");
               const heartsWrap = gamePanel?.querySelector(".ti-heart")?.parentElement;
               if (heartsWrap) {
-                heartsWrap.innerHTML = `<button type="button" data-game-menu style="background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 0 4px 0 0; font-size: 1.15rem; line-height: 1; transition: color 0.2s;">←</button>${heartsHtml}`;
+                heartsWrap.innerHTML = `<a href="game.html" style="text-decoration: none; background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 0 4px 0 0; font-size: 1.15rem; line-height: 1; transition: color 0.2s;">←</a>${heartsHtml}`;
               }
             }
           }
@@ -2440,7 +2425,7 @@ function initVocabularyStudy() {
           <p style="font-size: 1.1rem; color: #a0aec0; margin-bottom: 25px;">Bạn đã ghép đúng tất cả các từ trong <strong>${minutes}:${seconds}</strong>!</p>
           <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
             <button class="btn btn-primary" type="button" data-start-game="match" style="background: linear-gradient(135deg, #319795, #2b6cb0); border: none; padding: 10px 24px; font-size: 1rem; border-radius: 8px; color: white; cursor: pointer; font-weight: 600; box-shadow: 0 4px 12px rgba(49, 151, 149, 0.3); transition: all 0.2s;">Chơi lại</button>
-            <button class="btn" type="button" data-game-menu style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); padding: 10px 24px; font-size: 1rem; border-radius: 8px; color: white; cursor: pointer; font-weight: 600; transition: all 0.2s;">Menu Game</button>
+            <a class="btn" href="game.html" style="text-decoration: none; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); padding: 10px 24px; font-size: 1rem; border-radius: 8px; color: white; cursor: pointer; font-weight: 600; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center;">Menu Game</a>
           </div>
         </div>
       `;
@@ -2454,10 +2439,10 @@ function initVocabularyStudy() {
     }
 
     return `
-      <div style="max-width: 720px; margin: 0 auto;">
+      <div style="max-width: 720px; margin: 30px auto 0 auto;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 4px 8px; color: #cbd5e1; font-weight: 600; font-size: 0.95rem;">
           <div style="display: flex; align-items: center; gap: 8px;">
-            <button type="button" data-game-menu style="background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 0; font-size: 1.25rem; line-height: 1; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">←</button>
+            <a href="game.html" style="text-decoration: none; background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 0; font-size: 1.25rem; line-height: 1; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">←</a>
             <span>${matchedPairs.size} / ${gameWords.length} cặp đúng</span>
           </div>
           <span>⏱️ <span data-game-timer>00:00</span></span>
@@ -2470,7 +2455,7 @@ function initVocabularyStudy() {
                       type="button" 
                       data-match-id="${tile.id}" 
                       data-match-type="${tile.type}"
-                      style="padding: 12px 14px; font-size: 0.95rem; min-height: 52px;">
+                      style="padding: 22px 24px; font-size: 0.95rem; min-height: 72px;">
                 ${tile.text}
               </button>
             `;
