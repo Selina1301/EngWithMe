@@ -1312,6 +1312,7 @@ function getCachedAuthUser() {
     has_password: hasPasswordVal
   };
 }
+window.getCurrentUser = getCachedAuthUser;
 
 function showVipUpgradeModal(featureName = "chế độ KHÓ (HARD Mode)") {
   const existingModal = document.getElementById("vip-upgrade-modal");

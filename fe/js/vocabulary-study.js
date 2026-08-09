@@ -470,13 +470,18 @@ function initVocabularyStudy() {
     cannonCurrentStreak = 0;
     cannonMaxStreak = 0;
     
-    if (typeof window.bombGameState !== 'undefined' && window.bombGameState.timerInterval) {
-       clearInterval(window.bombGameState.timerInterval);
+    if (typeof window.bombGameState !== 'undefined') {
+       if (window.bombGameState.timerInterval) clearInterval(window.bombGameState.timerInterval);
        window.bombGameState.timerInterval = null;
+       window.bombGameState.initialized = false;
     }
-    if (typeof window.meteorGameState !== 'undefined' && window.meteorGameState.frameId) {
-       cancelAnimationFrame(window.meteorGameState.frameId);
+    if (typeof window.tugGameState !== 'undefined') {
+       window.tugGameState.initialized = false;
+    }
+    if (typeof window.meteorGameState !== 'undefined') {
+       if (window.meteorGameState.frameId) cancelAnimationFrame(window.meteorGameState.frameId);
        window.meteorGameState.frameId = null;
+       window.meteorGameState.initialized = false;
     }
   }
 
@@ -1809,6 +1814,16 @@ function initVocabularyStudy() {
     }, 1100);
   }
 
+  function loadGameScript(src) {
+    if (document.querySelector(`script[src*="${src}"]`)) return;
+    const script = document.createElement("script");
+    script.src = `${src}?v=20260809`;
+    script.onload = () => {
+      render();
+    };
+    document.head.appendChild(script);
+  }
+
   function renderPlayPanel(topic) {
     if (!currentGameMode) {
       window.location.href = "game.html";
@@ -1816,9 +1831,21 @@ function initVocabularyStudy() {
     }
 
     if (currentGameMode === "cannon") return renderCannonGame(topic);
-    if (currentGameMode === "bomb" && typeof renderBombGame === "function") return renderBombGame(topic);
-    if (currentGameMode === "tug" && typeof renderTugGame === "function") return renderTugGame(topic);
-    if (currentGameMode === "meteor" && typeof renderMeteorGame === "function") return renderMeteorGame(topic);
+    if (currentGameMode === "bomb") {
+      if (typeof renderBombGame === "function") return renderBombGame(topic);
+      loadGameScript("js/games/pvp-bomb.js");
+      return `<div style="text-align:center; padding: 60px 20px; color:#cbd5e1; font-size:1.1rem;">💣 Đang tải trò chơi Bom Hẹn Giờ...</div>`;
+    }
+    if (currentGameMode === "tug") {
+      if (typeof renderTugGame === "function") return renderTugGame(topic);
+      loadGameScript("js/games/pvp-tug.js");
+      return `<div style="text-align:center; padding: 60px 20px; color:#cbd5e1; font-size:1.1rem;">⚔️ Đang tải trò chơi Kéo Co...</div>`;
+    }
+    if (currentGameMode === "meteor") {
+      if (typeof renderMeteorGame === "function") return renderMeteorGame(topic);
+      loadGameScript("js/games/pvp-meteor.js");
+      return `<div style="text-align:center; padding: 60px 20px; color:#cbd5e1; font-size:1.1rem;">☄️ Đang tải trò chơi Mưa Thiên Thạch...</div>`;
+    }
 
     return renderMatchGame(topic);
   }

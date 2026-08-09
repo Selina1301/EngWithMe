@@ -67,8 +67,13 @@ window.renderTugGame = function(topic) {
         });
         checkTugWinCondition();
      } else {
-        // Penalty for wrong answer? Maybe flag moves to opponent?
-        // Let's just do a small stun or just ignore.
+        // Penalty: flag moves 1 step toward opponent when choosing wrong answer
+        tugGameState.flagPos = Math.max(-tugGameState.target, tugGameState.flagPos - 1);
+        pvpManager?.socket?.emit('game_action', {
+           roomId: window.pvpRoomId || pvpManager.roomId,
+           action: 'pull'
+        });
+        checkTugWinCondition();
      }
      pickNewTugQuestion();
      if (typeof window.render === 'function') window.render();

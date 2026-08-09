@@ -119,8 +119,9 @@ function startOfflineGame(level, topicId) {
 
 // --- ONLINE PVP LOGIC ---
 function createPvPRoom() {
-  if (typeof getCurrentUser === 'function') {
-    const user = getCurrentUser();
+  const getUserFn = typeof getCurrentUser === 'function' ? getCurrentUser : (typeof getCachedAuthUser === 'function' ? getCachedAuthUser : null);
+  if (getUserFn) {
+    const user = getUserFn();
     if (!user || user.id === 'user' || user.id === 'guest') {
       alert("Vui lòng đăng nhập hoặc đăng ký tài khoản để tạo phòng thi đấu!");
       window.location.href = "login.html?redirect=game.html?tab=online";
