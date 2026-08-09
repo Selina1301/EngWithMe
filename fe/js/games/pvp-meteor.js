@@ -20,25 +20,28 @@ window.onMeteorAction = function(data) {
     meteorGameState.opponentLives--;
     if (typeof window.render === 'function') window.render();
     checkMeteorWinCondition();
-  } else if (data.action === 'meteor_win') {
-     // I win!
-     if (typeof pvpManager !== 'undefined' && pvpManager.socket) {
-        pvpManager.socket.emit('update_score', {
-           roomId: window.pvpRoomId || pvpManager.roomId,
-           score: 1,
-           maxScore: 1
-        });
-     }
   }
 };
 
 function checkMeteorWinCondition() {
+  if (meteorGameState.gameOverSent) return;
+
+  const myId = pvpManager?.socket?.id;
+  const oppPlayer = pvpManager?.players?.find(p => p.id !== myId);
+
   if (meteorGameState.myLives <= 0) {
-    // I lose
+    meteorGameState.gameOverSent = true;
     if (meteorGameState.frameId) cancelAnimationFrame(meteorGameState.frameId);
-    pvpManager?.socket?.emit('game_action', {
-       roomId: window.pvpRoomId || pvpManager.roomId,
-       action: 'meteor_win'
+    pvpManager?.socket?.emit('finish_game', {
+       roomId: window.pvpRoomId || pvpManager?.roomId,
+       winnerId: oppPlayer ? oppPlayer.id : null
+    });
+  } else if (meteorGameState.opponentLives <= 0) {
+    meteorGameState.gameOverSent = true;
+    if (meteorGameState.frameId) cancelAnimationFrame(meteorGameState.frameId);
+    pvpManager?.socket?.emit('finish_game', {
+       roomId: window.pvpRoomId || pvpManager?.roomId,
+       winnerId: myId
     });
   }
 }
@@ -58,6 +61,11 @@ function spawnMeteor(speedMultiplier = 1) {
 }
 
 function updateMeteorGame(timestamp) {
+  if (!window.pvpCountdownDone) {
+    meteorGameState.frameId = requestAnimationFrame(updateMeteorGame);
+    return;
+  }
+
   if (!meteorGameState.lastTime) meteorGameState.lastTime = timestamp;
   const dt = (timestamp - meteorGameState.lastTime) / 1000;
   meteorGameState.lastTime = timestamp;
@@ -98,7 +106,7 @@ function updateMeteorGame(timestamp) {
   // Re-render canvas
   drawMeteorCanvas();
   
-  if (meteorGameState.myLives > 0) {
+  if (meteorGameState.myLives > 0 && !meteorGameState.gameOverSent) {
     meteorGameState.frameId = requestAnimationFrame(updateMeteorGame);
   }
 }
@@ -156,37 +164,29 @@ function drawMeteorCanvas() {
      ctx.textAlign = 'center';
      ctx.fillText('🚀', px, py + 6);
 
-     // Draw readable floating Pill Card for word & meaning
-     const wordText = m.word || '';
+     // Draw floating Pill Card for VIETNAMESE MEANING ONLY (English answer is hidden!)
      const meaningText = m.meaning || '';
      ctx.font = 'bold 14px system-ui, sans-serif';
-     const wordWidth = ctx.measureText(wordText).width;
-     ctx.font = '600 12px system-ui, sans-serif';
      const meaningWidth = ctx.measureText(meaningText).width;
-     const cardWidth = Math.max(80, Math.max(wordWidth, meaningWidth) + 24);
-     const cardHeight = 44;
+     const cardWidth = Math.max(90, meaningWidth + 28);
+     const cardHeight = 36;
      const cardX = Math.max(10, Math.min(canvas.width - cardWidth - 10, px - cardWidth / 2));
-     const cardY = Math.max(10, py - 55);
+     const cardY = Math.max(10, py - 48);
 
      // Pill Card Background
      ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
-     ctx.strokeStyle = '#38bdf8';
+     ctx.strokeStyle = '#f59e0b';
      ctx.lineWidth = 1.5;
      ctx.beginPath();
      ctx.roundRect(cardX, cardY, cardWidth, cardHeight, 10);
      ctx.fill();
      ctx.stroke();
 
-     // Draw Meaning (Top line)
+     // Draw Meaning ONLY (Centered)
      ctx.fillStyle = '#f59e0b';
-     ctx.font = 'bold 12px system-ui, sans-serif';
-     ctx.textAlign = 'center';
-     ctx.fillText(meaningText, cardX + cardWidth / 2, cardY + 16);
-
-     // Draw Word (Bottom line)
-     ctx.fillStyle = '#ffffff';
      ctx.font = 'bold 14px system-ui, sans-serif';
-     ctx.fillText(wordText, cardX + cardWidth / 2, cardY + 34);
+     ctx.textAlign = 'center';
+     ctx.fillText(meaningText, cardX + cardWidth / 2, cardY + 23);
   });
 }
 
@@ -218,6 +218,7 @@ window.renderMeteorGame = function(topic) {
     meteorGameState.opponentLives = 3;
     meteorGameState.meteors = [];
     meteorGameState.spawnTimer = 2000;
+    meteorGameState.gameOverSent = false;
     
     if (meteorGameState.frameId) cancelAnimationFrame(meteorGameState.frameId);
     meteorGameState.lastTime = 0;
@@ -233,35 +234,47 @@ window.renderMeteorGame = function(topic) {
   };
 
   return `
-    <div style="width: 100%; max-width: 800px; margin: 0 auto;">
-      <div class="pvp-game-board" style="background: rgba(15, 23, 42, 0.95); border-radius: 20px; padding: 24px; border: 1.5px solid rgba(16, 185, 129, 0.3); text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
+    <div style="width: 100%; max-width: 960px; margin: 0 auto;">
+      <div class="pvp-game-board" style="background: rgba(15, 23, 42, 0.95); border-radius: 20px; padding: 24px; border: 1.5px solid rgba(16, 185, 129, 0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
         
-        <!-- HEART STATUS BAR -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);">
-          <div style="text-align: left;">
-            <div style="font-size: 0.75rem; color: #3b82f6; font-weight: 800; letter-spacing: 1px; margin-bottom: 2px;">MẠNG CỦA BẠN</div>
-            <div style="font-size: 1.3rem;">${renderHearts(meteorGameState.myLives)}</div>
+        <div style="display: grid; grid-template-columns: 210px 1fr; gap: 24px; align-items: start;">
+          
+          <!-- COL 1: 5-ROW HEART STATUS PANEL -->
+          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 24px 14px; text-align: center; display: flex; flex-direction: column; gap: 16px; align-items: center; justify-content: center; min-height: 440px;">
+            <!-- Row 1: MẠNG CỦA BẠN -->
+            <div style="font-size: 0.82rem; color: #38bdf8; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;">MẠNG CỦA BẠN</div>
+            
+            <!-- Row 2: Hearts P1 -->
+            <div style="font-size: 1.6rem; letter-spacing: 4px;">${renderHearts(meteorGameState.myLives)}</div>
+            
+            <!-- Row 3: Meteor Icon Separator -->
+            <div style="font-size: 2.6rem; color: #f59e0b; margin: 8px 0; filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.6));">☄️</div>
+            
+            <!-- Row 4: MẠNG ĐỐI THỦ -->
+            <div style="font-size: 0.82rem; color: #ef4444; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;">MẠNG ĐỐI THỦ</div>
+            
+            <!-- Row 5: Hearts P2 -->
+            <div style="font-size: 1.6rem; letter-spacing: 4px;">${renderHearts(meteorGameState.opponentLives)}</div>
           </div>
-          <div style="font-size: 1.6rem; color: #f59e0b; font-weight: 900;">☄️</div>
-          <div style="text-align: right;">
-            <div style="font-size: 0.75rem; color: #ef4444; font-weight: 800; letter-spacing: 1px; margin-bottom: 2px;">MẠNG ĐỐI THỦ</div>
-            <div style="font-size: 1.3rem;">${renderHearts(meteorGameState.opponentLives)}</div>
-          </div>
-        </div>
 
-        <!-- CANVAS -->
-        <div style="position: relative; width: 100%; height: 380px; background: radial-gradient(circle at center, #0f172a 0%, #020617 100%); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 18px;">
-           <canvas id="meteor-canvas" width="732" height="380" style="width: 100%; height: 100%; display: block;"></canvas>
-        </div>
-        
-        <!-- INPUT -->
-        <div style="width: 100%;">
-          <input id="meteor-input" type="text" 
-                 oninput="window.onMeteorInput(this.value)"
-                 placeholder="Gõ từ vựng tiếng Anh để bắn vỡ thiên thạch..."
-                 autofocus
-                 autocomplete="off"
-                 style="width: 100%; padding: 14px 20px; font-size: 1.25rem; text-align: center; border-radius: 14px; border: 2px solid rgba(16, 185, 129, 0.4); background: rgba(15, 23, 42, 0.8); color: white; outline: none; transition: border-color 0.2s;" />
+          <!-- COL 2 & 3: GAME CANVAS & INPUT -->
+          <div style="display: flex; flex-direction: column; gap: 16px; width: 100%;">
+            <!-- CANVAS -->
+            <div style="position: relative; width: 100%; height: 420px; background: radial-gradient(circle at center, #0f172a 0%, #020617 100%); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+               <canvas id="meteor-canvas" width="680" height="420" style="width: 100%; height: 100%; display: block;"></canvas>
+            </div>
+            
+            <!-- INPUT -->
+            <div style="width: 100%;">
+              <input id="meteor-input" type="text" 
+                     oninput="window.onMeteorInput(this.value)"
+                     placeholder="Gõ từ vựng tiếng Anh tương ứng để bắn phá rocket..."
+                     autofocus
+                     autocomplete="off"
+                     style="width: 100%; padding: 14px 20px; font-size: 1.25rem; text-align: center; border-radius: 14px; border: 2px solid rgba(16, 185, 129, 0.4); background: rgba(15, 23, 42, 0.8); color: white; outline: none; transition: border-color 0.2s;" />
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
