@@ -93,7 +93,7 @@ function renderTopics(level) {
   }
 
   container.innerHTML = topics.map(topic => `
-    <div class="topic-item" onclick="startOfflineGame('${level}', '${topic.id}')">
+    <div class="topic-item ${level}" onclick="startOfflineGame('${level}', '${topic.id}')">
       <div class="topic-icon-game"><i class="${topic.icon || 'ti-book'}"></i></div>
       <h4>${topic.name}</h4>
       <p>${topic.desc.substring(0, 40)}...</p>
