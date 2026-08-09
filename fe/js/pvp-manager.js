@@ -63,6 +63,9 @@ class PvPManager {
 
     this.socket.on('room_update', (data) => {
       this.players = data.players;
+      if (data.players && data.players.length > 0) {
+        this.isHost = (data.players[0].id === this.socket.id);
+      }
       this.updateLobbyUI(data);
     });
 

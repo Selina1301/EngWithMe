@@ -1156,6 +1156,19 @@ function initVocabularyStudy() {
             clearInterval(countdownTimer);
             window.pvpCountdownDone = true;
             if (overlayEl) overlayEl.remove();
+            
+            // Start top bar timer
+            window.pvpMatchTimeSeconds = 0;
+            if (window.pvpMatchTimerInterval) clearInterval(window.pvpMatchTimerInterval);
+            window.pvpMatchTimerInterval = setInterval(() => {
+              window.pvpMatchTimeSeconds++;
+              const timerEl = document.querySelector("[data-game-timer]");
+              if (timerEl) {
+                const mins = String(Math.floor(window.pvpMatchTimeSeconds / 60)).padStart(2, "0");
+                const secs = String(window.pvpMatchTimeSeconds % 60).padStart(2, "0");
+                timerEl.textContent = `${mins}:${secs}`;
+              }
+            }, 1000);
           }
         }, 1000);
       }

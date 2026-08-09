@@ -44,9 +44,8 @@ window.renderBombGame = function(topic) {
   if (!bombGameState.initialized) {
     bombGameState.words = topic.words;
     bombGameState.initialized = true;
-    bombGameState.myTimer = 60;
-    bombGameState.opponentTimer = 60;
-    bombGameState.hasBomb = window.pvpManager?.isHost || false; // Host starts with bomb
+    const isMeHost = (pvpManager?.players?.[0]?.id === pvpManager?.socket?.id) || pvpManager?.isHost || false;
+    bombGameState.hasBomb = isMeHost; // Host starts with bomb
     bombGameState.gameOverSent = false;
     pickNewBombWord();
 
