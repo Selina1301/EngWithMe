@@ -416,7 +416,8 @@ class PvPManager {
     const mode = config.mode || 'match';
 
     // Redirect to vocabulary-study.html with PvP parameters
-    window.location.href = `vocabulary-study.html?level=${level}&topic=${topic}&mode=pvp&game=${mode}&room=${this.roomId}&sid=${this.socket.id}`;
+    const starterId = config.starterId || '';
+    window.location.href = `vocabulary-study.html?level=${level}&topic=${topic}&mode=pvp&game=${mode}&room=${this.roomId}&sid=${this.socket.id}&starter=${starterId}`;
   }
 }
 

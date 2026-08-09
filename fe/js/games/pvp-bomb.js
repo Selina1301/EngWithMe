@@ -51,9 +51,18 @@ function pickNewBombWord() {
 window.renderBombGame = function(topic) {
   if (!bombGameState.initialized) {
     bombGameState.words = topic.words;
-    bombGameState.initialized = true;
-    const isMeHost = (pvpManager?.players?.[0]?.id === pvpManager?.socket?.id) || pvpManager?.isHost || false;
-    bombGameState.hasBomb = isMeHost; // Host starts with bomb
+    const urlParams = new URLSearchParams(window.location.search);
+    const starterParam = urlParams.get("starter");
+    const mySid = urlParams.get("sid") || pvpManager?.socket?.id;
+    let startsWithBomb = false;
+
+    if (starterParam && mySid) {
+      startsWithBomb = (starterParam === mySid);
+    } else {
+      startsWithBomb = (pvpManager?.players?.[0]?.id === pvpManager?.socket?.id) || pvpManager?.isHost || false;
+    }
+
+    bombGameState.hasBomb = startsWithBomb;
     bombGameState.myTimer = 60;
     bombGameState.opponentTimer = 60;
     bombGameState.gameOverSent = false;

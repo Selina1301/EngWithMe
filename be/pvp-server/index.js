@@ -148,8 +148,13 @@ io.on('connection', (socket) => {
           if (!room.gameMode) room.gameMode = 'match';
           
           room.gameStarted = true;
+          // Random 50/50 starter selection
+          const starterIndex = Math.floor(Math.random() * room.players.length);
+          const starterId = room.players[starterIndex].id;
+          room.starterId = starterId;
+
           io.to(roomId).emit('game_start', {
-            gameConfig: { mode: room.gameMode, level: room.level, topic: room.topic },
+            gameConfig: { mode: room.gameMode, level: room.level, topic: room.topic, starterId: starterId },
             message: 'Game is starting!'
           });
         }
