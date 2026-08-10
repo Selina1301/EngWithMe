@@ -463,8 +463,14 @@ function openOtpModal(email, originalForm, isLoginOtp = false, initialMsg = "") 
       if (email) {
         if (payload.remember === 1) {
           localStorage.setItem("engWithMeRememberedEmail", email);
+          localStorage.setItem("ewm_remember", "1");
+          // Max age 7 days
+          document.cookie = `ewm_session_active=1; path=/; max-age=${60 * 60 * 24 * 7}`;
         } else if (isLoginOtp) {
           localStorage.removeItem("engWithMeRememberedEmail");
+          localStorage.setItem("ewm_remember", "0");
+          // Session cookie (clears when browser closes)
+          document.cookie = `ewm_session_active=1; path=/`;
         }
       }
       if (res.token) {

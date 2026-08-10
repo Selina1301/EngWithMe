@@ -2,6 +2,26 @@
  * EngWithMe - Centralized Enterprise ApiClient Module
  * Encapsulates all REST API communications, CORS headers, token authentication, and error handling.
  */
+
+// --- SESSION CLEANUP LOGIC ---
+// If the user did NOT check "Remember me" (ewm_remember === "0"),
+// we rely on a frontend session cookie (ewm_session_active).
+// When the browser closes, the session cookie is deleted by the browser.
+// When the user reopens the browser, the cookie is missing, so we clear the localStorage.
+if (localStorage.getItem("ewm_remember") === "0" && document.cookie.indexOf("ewm_session_active=1") === -1) {
+    localStorage.removeItem("engWithMeAuthToken");
+    localStorage.removeItem("ewm_token");
+    localStorage.removeItem("engWithMeUserId");
+    localStorage.removeItem("engWithMeUserEmail");
+    localStorage.removeItem("engWithMeStudentName");
+    localStorage.removeItem("engWithMeUserRole");
+    localStorage.removeItem("engWithMeUserStatus");
+    localStorage.removeItem("engWithMeUserAvatar");
+    localStorage.removeItem("engWithMeLevel");
+    localStorage.removeItem("engWithMeGoal");
+    localStorage.removeItem("ewm_remember");
+}
+
 (function (window) {
   class ApiClient {
     constructor() {
