@@ -167,6 +167,7 @@ io.on('connection', (socket) => {
     const { roomId, winnerId } = data;
     const room = rooms[roomId];
     if (room) {
+      if (!room.gameStarted) return;
       room.gameStarted = false;
       const winner = room.players.find(p => p.id === winnerId) || room.players.find(p => p.id !== socket.id) || room.players[0];
       if (winner) winner.score = (winner.score || 0) + 1;
