@@ -18,7 +18,14 @@ window.onMeteorAction = function(data) {
     spawnMeteor(1.5); // Spawn a fast meteor
   } else if (data.action === 'life_lost') {
     meteorGameState.opponentLives--;
-    if (typeof window.render === 'function') window.render();
+    const oppLivesEl = document.getElementById('meteor-opp-lives');
+    if (oppLivesEl) {
+      let str = '';
+      for (let i = 0; i < 3; i++) {
+         str += i < meteorGameState.opponentLives ? '❤️ ' : '🖤 ';
+      }
+      oppLivesEl.innerHTML = str;
+    }
     checkMeteorWinCondition();
   }
 };
@@ -99,7 +106,14 @@ function updateMeteorGame(timestamp) {
        action: 'life_lost'
     });
     
-    if (typeof window.render === 'function') window.render();
+    const myLivesEl = document.getElementById('meteor-my-lives');
+    if (myLivesEl) {
+      let str = '';
+      for (let i = 0; i < 3; i++) {
+         str += i < meteorGameState.myLives ? '❤️ ' : '🖤 ';
+      }
+      myLivesEl.innerHTML = str;
+    }
     checkMeteorWinCondition();
   }
   
@@ -245,7 +259,7 @@ window.renderMeteorGame = function(topic) {
             <div style="font-size: 0.82rem; color: #38bdf8; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;">MẠNG CỦA BẠN</div>
             
             <!-- Row 2: Hearts P1 -->
-            <div style="font-size: 1.6rem; letter-spacing: 4px;">${renderHearts(meteorGameState.myLives)}</div>
+            <div id="meteor-my-lives" style="font-size: 1.6rem; letter-spacing: 4px;">${renderHearts(meteorGameState.myLives)}</div>
             
             <!-- Row 3: Meteor Icon Separator -->
             <div style="font-size: 2.6rem; color: #f59e0b; margin: 8px 0; filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.6));">☄️</div>
@@ -254,7 +268,7 @@ window.renderMeteorGame = function(topic) {
             <div style="font-size: 0.82rem; color: #ef4444; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;">MẠNG ĐỐI THỦ</div>
             
             <!-- Row 5: Hearts P2 -->
-            <div style="font-size: 1.6rem; letter-spacing: 4px;">${renderHearts(meteorGameState.opponentLives)}</div>
+            <div id="meteor-opp-lives" style="font-size: 1.6rem; letter-spacing: 4px;">${renderHearts(meteorGameState.opponentLives)}</div>
           </div>
 
           <!-- COL 2 & 3: GAME CANVAS & INPUT -->
