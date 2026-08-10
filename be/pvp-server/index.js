@@ -30,7 +30,7 @@ io.on('connection', (socket) => {
 
   // JOIN ROOM
   socket.on('join_room', (data) => {
-    const { roomId, playerName, playerAvatar } = data;
+    const { roomId, playerName, playerAvatar, playerId } = data;
     
     // Join the socket to the room
     socket.join(roomId);
@@ -47,16 +47,17 @@ io.on('connection', (socket) => {
 
     const room = rooms[roomId];
     
-    // Check if player with same name or slot is already in room (re-joining during page transition)
-    let existingPlayer = room.players.find(p => p.name === playerName || p.id === socket.id);
+    // Check if player with same playerId or slot is already in room (re-joining during page transition)
+    let existingPlayer = room.players.find(p => (playerId && p.playerId === playerId) || p.id === socket.id);
     if (existingPlayer) {
       existingPlayer.id = socket.id;
       if (playerAvatar) existingPlayer.avatar = playerAvatar;
+      if (playerName) existingPlayer.name = playerName; // Update name just in case
       if (existingPlayer.disconnectTimeout) {
         clearTimeout(existingPlayer.disconnectTimeout);
         existingPlayer.disconnectTimeout = null;
       }
-      console.log(`${playerName} re-joined room ${roomId} with socket ${socket.id}`);
+      console.log(`${existingPlayer.name} re-joined room ${roomId} with socket ${socket.id}`);
 
       io.to(roomId).emit('room_update', {
         players: room.players,
@@ -66,11 +67,12 @@ io.on('connection', (socket) => {
       return;
     }
 
-    // If room already has 2 players, re-assign this socket to the matching slot
+    // If room already has 2 players, re-assign this socket to a disconnected slot
     if (room.players.length >= 2) {
-      let slotToAssign = room.players.find(p => !p.connected) || room.players[0];
+      let slotToAssign = room.players.find(p => p.disconnectTimeout) || room.players[0];
       if (slotToAssign) {
         slotToAssign.id = socket.id;
+        if (playerId) slotToAssign.playerId = playerId;
         if (playerName) slotToAssign.name = playerName;
         if (playerAvatar) slotToAssign.avatar = playerAvatar;
         io.to(roomId).emit('room_update', {
@@ -87,6 +89,7 @@ io.on('connection', (socket) => {
     // Add player
     const player = {
       id: socket.id,
+      playerId: playerId || socket.id,
       name: playerName || `Người chơi ${room.players.length + 1}`,
       avatar: playerAvatar || null,
       ready: false,

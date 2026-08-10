@@ -52,11 +52,17 @@ class PvPManager {
             playerAvatar = user.avatar || null;
           }
         }
-        
+        let pvpPlayerId = sessionStorage.getItem('pvpPlayerId');
+        if (!pvpPlayerId) {
+            pvpPlayerId = Math.random().toString(36).substr(2, 9);
+            sessionStorage.setItem('pvpPlayerId', pvpPlayerId);
+        }
+
         this.socket.emit('join_room', {
           roomId: this.roomId,
           playerName: playerName,
-          playerAvatar: playerAvatar
+          playerAvatar: playerAvatar,
+          playerId: pvpPlayerId
         });
       }
     });
