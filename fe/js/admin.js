@@ -1763,11 +1763,11 @@ async function fetchAndRenderReports() {
         <td style="color: #94a3b8; font-size: 0.85rem;">${new Date(r.createdAt).toLocaleString("vi-VN")}</td>
         <td><strong style="color: #fff;">${r.word}</strong></td>
         <td><span style="color: #f87171; font-weight: bold;">${r.issues.join(", ")}</span></td>
-        <td style="color: #cbd5e1; font-size: 0.85rem;">${r.description || "<i>Không có mô tả</i>"}</td>
+        <td style="color: #cbd5e1; font-size: 0.85rem;">${r.description || "<i>No description</i>"}</td>
         <td style="color: #94a3b8; font-size: 0.8rem;">${r.reporterEmail}</td>
         <td style="text-align: center;">
           <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; border-radius: 6px; border: 1px solid #10b981; color: #10b981; cursor: pointer;" onclick="resolveReport('${r.id}')">
-            Đã xử lý
+            Resolve
           </button>
         </td>
       </tr>
@@ -1778,7 +1778,7 @@ async function fetchAndRenderReports() {
 }
 
 window.resolveReport = async function(id) {
-  if (!confirm("Đánh dấu báo cáo này là đã xử lý và xóa khỏi danh sách?")) return;
+  if (!confirm("Mark this report as resolved and remove it from the list?")) return;
   try {
     const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
     if (!response.ok) throw new Error("Failed to delete report");

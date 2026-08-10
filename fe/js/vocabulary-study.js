@@ -1043,11 +1043,11 @@ function initVocabularyStudy() {
 
       const descriptionBoxHtml = hasOther ? `
         <div style="margin-top: 14px; margin-bottom: 14px;">
-          <label style="display: block; font-size: 0.88rem; font-weight: 700; color: #ffffff; margin-bottom: 6px;">Mô tả chi tiết <span style="color: #ef4444;">*</span></label>
-          <textarea data-report-desc style="width: 100%; height: 72px; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: #ffffff; padding: 10px; font-family: inherit; font-size: 0.85rem; resize: none; outline: none; transition: border-color 0.2s; box-sizing: border-box;" placeholder="Ví dụ: Bấm loa không nghe gì, đã reload trang 2 lần. Đang dùng Chrome trên iPhone, mạng 4G.">${descVal}</textarea>
+          <label style="display: block; font-size: 0.88rem; font-weight: 700; color: #ffffff; margin-bottom: 6px;">Description <span style="color: #ef4444;">*</span></label>
+          <textarea data-report-desc style="width: 100%; height: 72px; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: #ffffff; padding: 10px; font-family: inherit; font-size: 0.85rem; resize: none; outline: none; transition: border-color 0.2s; box-sizing: border-box;" placeholder="Example: The audio doesn't play...">${descVal}</textarea>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
             <span data-report-word-req-text style="font-size: 0.78rem; color: #ef4444; font-weight: 500;">
-              ${wordCount < 5 ? `Cần thêm ${5 - wordCount} từ nữa (tối thiểu 5)` : ""}
+              ${wordCount < 5 ? `Please enter ${5 - wordCount} more words` : ""}
             </span>
             <span data-report-char-counter style="font-size: 0.78rem; color: #64748b;">${charCount}/500</span>
           </div>
@@ -1071,9 +1071,9 @@ function initVocabularyStudy() {
                 <line x1="12" y1="9" x2="12" y2="13"></line>
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
               </svg>
-              <h3 style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0;">Báo lỗi</h3>
+              <h3 style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin: 0;">Report Issue</h3>
             </div>
-            <p style="font-size: 0.85rem; color: #94a3b8; margin: 0 0 16px 0;">Bạn đang báo lỗi: <strong style="color: #ffffff;">${activeReportWord}</strong></p>
+            <p style="font-size: 0.85rem; color: #94a3b8; margin: 0 0 16px 0;">You are reporting: <strong style="color: #ffffff;">${activeReportWord}</strong></p>
             
             <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
               ${options.map((opt, idx) => {
@@ -1093,8 +1093,8 @@ function initVocabularyStudy() {
             ${descriptionBoxHtml}
             
             <div style="display: flex; justify-content: flex-end; align-items: center; gap: 12px;">
-              <button class="modal-btn-cancel-text" type="button" data-close-report style="background: transparent; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; font-size: 0.88rem; transition: color 0.2s;">Hủy</button>
-              <button class="modal-btn-submit-report" type="button" data-submit-report ${isSubmitActive ? "" : "disabled"} style="background: ${isSubmitActive ? '#ef4444' : 'rgba(239, 68, 68, 0.15)'}; border: none; color: ${isSubmitActive ? '#ffffff' : 'rgba(255,255,255,0.3)'}; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: ${isSubmitActive ? 'pointer' : 'not-allowed'}; font-size: 0.88rem; transition: all 0.2s;">Gửi báo cáo</button>
+              <button class="modal-btn-cancel-text" type="button" data-close-report style="background: transparent; border: none; color: #94a3b8; font-weight: bold; cursor: pointer; font-size: 0.88rem; transition: color 0.2s;">Cancel</button>
+              <button class="modal-btn-submit-report" type="button" data-submit-report ${isSubmitActive ? "" : "disabled"} style="background: ${isSubmitActive ? '#ef4444' : 'rgba(239, 68, 68, 0.15)'}; border: none; color: ${isSubmitActive ? '#ffffff' : 'rgba(255,255,255,0.3)'}; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: ${isSubmitActive ? 'pointer' : 'not-allowed'}; font-size: 0.88rem; transition: all 0.2s;">Submit Report</button>
             </div>
           </div>
         </div>
@@ -1653,7 +1653,7 @@ function initVocabularyStudy() {
         <button class="card-action-btn ${isStudySettingsOpen ? 'settings-active' : ''}" type="button" data-toggle-study-settings title="Tùy chỉnh cách học">
           <i class="ti-settings"></i>
         </button>
-        <button class="card-action-btn report-btn" type="button" data-report-word="${item.word}" title="Báo cáo lỗi từ vựng">
+        <button class="card-action-btn report-btn" type="button" data-report-word="${item.word}" title="Report issue">
           <i class="ti-alert"></i>
         </button>
       </div>
@@ -3125,7 +3125,7 @@ function initVocabularyStudy() {
       const isSubmitActive = isSelected && (!hasOther || wordCount >= 5);
 
       if (isSubmitActive) {
-        const optionNames = ["Ảnh không đúng nghĩa", "Từ vựng sai", "Ví dụ sai", "Lỗi âm thanh", "Khác"];
+        const optionNames = ["Wrong image", "Wrong vocabulary", "Wrong example", "Audio error", "Other"];
         const selectedNames = Array.from(selectedReportOptions).map(idx => optionNames[idx]);
         
         try {
@@ -3147,11 +3147,11 @@ function initVocabularyStudy() {
             })
           });
           
-          if (!response.ok) throw new Error("Lỗi mạng");
+          if (!response.ok) throw new Error("Network error");
           
-          alert(`Cảm ơn bạn! Báo cáo cho từ "${activeReportWord}" đã được gửi tới Admin.`);
+          alert(`Thank you! The report for the word "${activeReportWord}" has been sent to the Admin.`);
         } catch (error) {
-          alert(`Đã lưu báo cáo cục bộ (Lỗi gửi server: ${error.message}).`);
+          alert(`Saved report locally (Server error: ${error.message}).`);
         }
 
         activeReportWord = null;

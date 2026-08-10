@@ -48,7 +48,7 @@
         </a>
         <a class="admin-nav-item" data-admin-tab="reports">
           <span class="nav-icon ti-alert"></span>
-          <span>Báo cáo lỗi</span>
+          <span>Reports</span>
         </a>
       </nav>
 
@@ -564,15 +564,15 @@
           </table>
         </div>
       </section>
-      <!-- TAB: REPORTS (BÁO CÁO LỖI) -->
+      <!-- TAB: REPORTS -->
       <section class="admin-tab-section" id="tab-reports" style="display: none;">
         <div class="section-header">
           <div>
-            <h1 class="section-title">Báo Cáo Lỗi Từ Vựng</h1>
-            <p class="section-subtitle">Quản lý và xử lý các báo cáo từ người dùng</p>
+            <h1 class="section-title">Vocabulary Reports</h1>
+            <p class="section-subtitle">Manage and resolve user reports</p>
           </div>
           <button type="button" class="btn btn-primary" id="btn-refresh-reports" style="padding: 10px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-            <i class="ti-reload"></i> Làm mới
+            <i class="ti-reload"></i> Refresh
           </button>
         </div>
 
@@ -580,12 +580,12 @@
           <table class="admin-table">
             <thead>
               <tr>
-                <th style="width: 15%">Thời gian</th>
-                <th style="width: 15%">Từ vựng</th>
-                <th style="width: 25%">Vấn đề</th>
-                <th style="width: 25%">Mô tả</th>
-                <th style="width: 10%">Người gửi</th>
-                <th style="width: 10%; text-align: center;">Hành động</th>
+                <th style="width: 15%">Time</th>
+                <th style="width: 15%">Word</th>
+                <th style="width: 25%">Issues</th>
+                <th style="width: 25%">Description</th>
+                <th style="width: 10%">Reporter</th>
+                <th style="width: 10%; text-align: center;">Action</th>
               </tr>
             </thead>
             <tbody id="admin-reports-tbody">
@@ -594,8 +594,8 @@
           </table>
           <div id="reports-empty-state" style="display: none; padding: 40px 20px; text-align: center; color: #94a3b8;">
             <i class="ti-check-box" style="font-size: 3rem; color: #10b981; margin-bottom: 12px; display: block;"></i>
-            <h3 style="color: #f8fafc; margin-bottom: 8px;">Không có báo cáo nào</h3>
-            <p>Hệ thống hiện tại đang hoạt động tốt!</p>
+            <h3 style="color: #f8fafc; margin-bottom: 8px;">No reports found</h3>
+            <p>The system is currently running smoothly!</p>
           </div>
         </div>
       </section>
