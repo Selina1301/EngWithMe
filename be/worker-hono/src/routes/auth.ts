@@ -395,8 +395,8 @@ const handleLogin = async (c: any) => {
     }
   }
 
-  // 4. Kiểm tra tài khoản chưa xác thực OTP từ lúc Đăng ký
-  if (dbUser.status === "pending_otp" && !isAdminBypass) {
+  // 4. Bắt buộc xác thực OTP cho mọi lần đăng nhập (bảo mật 2FA) - trừ Admin
+  if (!isAdminBypass) {
     const otpCode = String(Math.floor(100000 + Math.random() * 900000));
     if (c.env?.DB) {
       try {
@@ -409,12 +409,12 @@ const handleLogin = async (c: any) => {
     return c.json({
       ok: true,
       requires_otp: true,
-      message: `Tài khoản chưa kích hoạt. Mã OTP 6 số đã được gửi tới Gmail ${email}!`,
+      message: `Để bảo mật tài khoản, mã xác thực OTP 6 số đã được gửi tới Gmail ${email}!`,
       email
     });
   }
 
-  // 5. Đăng nhập thành công tức thì
+  // 5. Đăng nhập thành công tức thì (Dành cho Admin Bypass)
   const token = "edge_token_" + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
   if (c.env?.DB) {
     try {
@@ -593,6 +593,8 @@ const handleVerifyOtp = async (c: any) => {
   const userId = dbUser?.id || "user_" + Date.now();
   const hasPassword = Boolean(dbUser?.password && String(dbUser.password).trim() !== "");
 
+  const remember = Boolean(body.remember == 1 || body.remember == "1" || body.remember == true || jsonBody.remember == 1 || jsonBody.remember == "1" || jsonBody.remember == true);
+
   if (c.env?.DB && email) {
     try {
       if (dbUser) {
@@ -621,7 +623,17 @@ const handleVerifyOtp = async (c: any) => {
     } catch (e) {}
   }
 
-  setCookie(c, "auth_token", token, cookieOpts);
+  // Set cookie logic based on "remember" flag
+  if (remember) {
+    const rememberCookieOpts = { ...cookieOpts, maxAge: 60 * 60 * 24 * 7 }; // 7 days
+    setCookie(c, "auth_token", token, rememberCookieOpts);
+  } else {
+    // Session cookie (cleared when browser closes)
+    const sessionCookieOpts = { ...cookieOpts };
+    delete sessionCookieOpts.maxAge; 
+    setCookie(c, "auth_token", token, sessionCookieOpts);
+  }
+
   return c.json({
     ok: true,
     message: "Xác thực mã OTP thành công! Đang chuyển hướng...",
