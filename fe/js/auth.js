@@ -286,23 +286,26 @@ function openOtpModal(email, originalForm, isLoginOtp = false, initialMsg = "") 
   digits.forEach((input, index) => {
     input.value = "";
     
-    // Auto-advance
-    input.oninput = () => {
-      // Allow only numbers
+    // Allow only numbers on input
+    input.oninput = (e) => {
       input.value = input.value.replace(/[^0-9]/g, '');
-      
       if (input.value.length > 1) {
         input.value = input.value.slice(-1);
       }
-      if (input.value && index < digits.length - 1) {
-        setTimeout(() => digits[index + 1].focus(), 10);
-      }
     };
     
-    // Auto-backspace
+    // Auto-advance & Auto-backspace on keydown/keyup
+    input.onkeyup = (e) => {
+      // If a number was typed and value exists, move to next
+      if (input.value && e.key >= '0' && e.key <= '9' && index < digits.length - 1) {
+        digits[index + 1].focus();
+      }
+    };
+
     input.onkeydown = (e) => {
       if (e.key === "Backspace" && !input.value && index > 0) {
         digits[index - 1].focus();
+        digits[index - 1].value = ''; // clear previous on backspace for better UX
       }
     };
   });
