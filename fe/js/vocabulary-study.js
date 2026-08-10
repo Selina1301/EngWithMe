@@ -3235,6 +3235,7 @@ function initVocabularyStudy() {
       input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
+          e.stopPropagation();
           if (input.value.trim() !== "") {
             checkBtn?.click();
           }
