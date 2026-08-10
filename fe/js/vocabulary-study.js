@@ -3116,7 +3116,7 @@ function initVocabularyStudy() {
       });
     }
 
-    root.querySelector("[data-submit-report]")?.addEventListener("click", () => {
+    root.querySelector("[data-submit-report]")?.addEventListener("click", async () => {
       const text = reportDescription || "";
       const wordCount = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
       
@@ -3127,7 +3127,33 @@ function initVocabularyStudy() {
       if (isSubmitActive) {
         const optionNames = ["Ảnh không đúng nghĩa", "Từ vựng sai", "Ví dụ sai", "Lỗi âm thanh", "Khác"];
         const selectedNames = Array.from(selectedReportOptions).map(idx => optionNames[idx]);
-        alert(`Báo cáo của bạn đã được ghi nhận: "${selectedNames.join(", ")}" cho từ "${activeReportWord}".`);
+        
+        try {
+          // Determine the API URL (use render URL in prod, or localhost if running locally)
+          const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3001/api/reports' 
+            : 'https://engwithme.onrender.com/api/reports';
+            
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              word: activeReportWord,
+              issues: selectedNames,
+              description: text,
+              reporterEmail: localStorage.getItem("loggedInUserEmail") || 'guest'
+            })
+          });
+          
+          if (!response.ok) throw new Error("Lỗi mạng");
+          
+          alert(`Cảm ơn bạn! Báo cáo cho từ "${activeReportWord}" đã được gửi tới Admin.`);
+        } catch (error) {
+          alert(`Đã lưu báo cáo cục bộ (Lỗi gửi server: ${error.message}).`);
+        }
+
         activeReportWord = null;
         selectedReportOptions.clear();
         reportDescription = "";

@@ -75,6 +75,8 @@ async function initAdminDashboard() {
 
       if (targetTabId === "payments") {
         fetchAndRenderAdminPayments();
+      } else if (targetTabId === "reports") {
+        fetchAndRenderReports();
       }
     });
   });
@@ -1734,3 +1736,58 @@ async function clearAdminTestOrders() {
   }
 }
 window.clearAdminTestOrders = clearAdminTestOrders;
+
+// --- REPORTS LOGIC ---
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+  ? 'http://localhost:3001/api/reports' 
+  : 'https://engwithme.onrender.com/api/reports';
+
+async function fetchAndRenderReports() {
+  try {
+    const response = await fetch(API_URL);
+    if (!response.ok) throw new Error("Failed to fetch reports");
+    const reports = await response.json();
+    
+    const tbody = document.getElementById("admin-reports-tbody");
+    const emptyState = document.getElementById("reports-empty-state");
+    
+    if (reports.length === 0) {
+      tbody.innerHTML = "";
+      emptyState.style.display = "block";
+      return;
+    }
+    
+    emptyState.style.display = "none";
+    tbody.innerHTML = reports.map(r => `
+      <tr>
+        <td style="color: #94a3b8; font-size: 0.85rem;">${new Date(r.createdAt).toLocaleString("vi-VN")}</td>
+        <td><strong style="color: #fff;">${r.word}</strong></td>
+        <td><span style="color: #f87171; font-weight: bold;">${r.issues.join(", ")}</span></td>
+        <td style="color: #cbd5e1; font-size: 0.85rem;">${r.description || "<i>Không có mô tả</i>"}</td>
+        <td style="color: #94a3b8; font-size: 0.8rem;">${r.reporterEmail}</td>
+        <td style="text-align: center;">
+          <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; border-radius: 6px; border: 1px solid #10b981; color: #10b981; cursor: pointer;" onclick="resolveReport('${r.id}')">
+            Đã xử lý
+          </button>
+        </td>
+      </tr>
+    `).join("");
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+window.resolveReport = async function(id) {
+  if (!confirm("Đánh dấu báo cáo này là đã xử lý và xóa khỏi danh sách?")) return;
+  try {
+    const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+    if (!response.ok) throw new Error("Failed to delete report");
+    fetchAndRenderReports();
+  } catch (error) {
+    alert("Lỗi khi xóa báo cáo!");
+  }
+};
+
+document.getElementById("btn-refresh-reports")?.addEventListener("click", () => {
+  fetchAndRenderReports();
+});

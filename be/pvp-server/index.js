@@ -2,12 +2,71 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
 app.get('/health', (req, res) => {
   res.json({ status: 'PvP Server Online' });
+});
+
+const reportsFilePath = path.join(__dirname, 'reports.json');
+
+app.get('/api/reports', (req, res) => {
+  try {
+    if (fs.existsSync(reportsFilePath)) {
+      const data = fs.readFileSync(reportsFilePath, 'utf8');
+      res.json(JSON.parse(data));
+    } else {
+      res.json([]);
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to read reports' });
+  }
+});
+
+app.post('/api/reports', (req, res) => {
+  try {
+    const report = {
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+      word: req.body.word,
+      issues: req.body.issues || [],
+      description: req.body.description || '',
+      reporterEmail: req.body.reporterEmail || 'unknown'
+    };
+    
+    let reports = [];
+    if (fs.existsSync(reportsFilePath)) {
+      try {
+        const data = fs.readFileSync(reportsFilePath, 'utf8');
+        reports = JSON.parse(data);
+      } catch(e) {}
+    }
+    reports.push(report);
+    fs.writeFileSync(reportsFilePath, JSON.stringify(reports, null, 2));
+    
+    res.json({ success: true, report });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to save report' });
+  }
+});
+
+app.delete('/api/reports/:id', (req, res) => {
+  try {
+    if (fs.existsSync(reportsFilePath)) {
+      const data = fs.readFileSync(reportsFilePath, 'utf8');
+      let reports = JSON.parse(data);
+      reports = reports.filter(r => r.id !== req.params.id);
+      fs.writeFileSync(reportsFilePath, JSON.stringify(reports, null, 2));
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete report' });
+  }
 });
 
 const server = http.createServer(app);
