@@ -288,11 +288,14 @@ function openOtpModal(email, originalForm, isLoginOtp = false, initialMsg = "") 
     
     // Auto-advance
     input.oninput = () => {
+      // Allow only numbers
+      input.value = input.value.replace(/[^0-9]/g, '');
+      
       if (input.value.length > 1) {
         input.value = input.value.slice(-1);
       }
       if (input.value && index < digits.length - 1) {
-        digits[index + 1].focus();
+        setTimeout(() => digits[index + 1].focus(), 10);
       }
     };
     
