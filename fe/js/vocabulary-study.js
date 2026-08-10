@@ -321,6 +321,14 @@ function initVocabularyStudy() {
         root.querySelector('[data-classify="easy"]')?.click();
       }
       return;
+    } else if (currentStudyMode === "quiz" && !isAnswered) {
+      if (["1", "2", "3", "4"].includes(e.key)) {
+        e.preventDefault();
+        const optionIndex = parseInt(e.key) - 1;
+        const optionBtn = root.querySelector(`[data-answer-index="${optionIndex}"]`);
+        optionBtn?.click();
+        return;
+      }
     }
 
     if (e.key === "Tab") {
@@ -1696,17 +1704,22 @@ function initVocabularyStudy() {
         </div>
       `;
 
-      actionsHtml = `
-        <div class="study-action-row fade-in">
-          <button class="study-action-btn learned-btn" type="button" data-mark-learned>
-            <i class="ti-check"></i> Đã thuộc
-          </button>
-          <button class="study-action-btn continue-btn" type="button" data-next-step>
-            Học tiếp
-          </button>
-        </div>
-      `;
-      shortcutText = "<kbd>Tab</kbd> Đã thuộc · <kbd>Enter</kbd> Học tiếp";
+      if (isAnswered) {
+        actionsHtml = `
+          <div class="study-action-row fade-in">
+            <button class="study-action-btn learned-btn" type="button" data-mark-learned>
+              <i class="ti-check"></i> Đã thuộc
+            </button>
+            <button class="study-action-btn continue-btn" type="button" data-next-step>
+              Học tiếp
+            </button>
+          </div>
+        `;
+        shortcutText = "<kbd>Tab</kbd> Đã thuộc &middot; <kbd>Enter</kbd> Học tiếp";
+      } else {
+        actionsHtml = "";
+        shortcutText = "<kbd>1</kbd>-<kbd>4</kbd> Chọn đáp án";
+      }
     } else if (currentStudyMode === "type") {
       if (isAnswered) {
         if (lastAnswerIsCorrect) {
