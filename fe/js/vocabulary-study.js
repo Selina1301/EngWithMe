@@ -75,6 +75,7 @@ function initVocabularyStudy() {
   window.pvpRematchTimer = null;
 
   window.showPvPResult = function(data) {
+    if (window.isPvPResultActive) return;
     window.isPvPResultActive = true;
     if (gameTimerInterval) clearInterval(gameTimerInterval);
     if (window.meteorGameState && window.meteorGameState.frameId) {

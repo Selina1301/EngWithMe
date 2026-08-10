@@ -66,6 +66,11 @@ class PvPManager {
       if (data.players && data.players.length > 0) {
         this.isHost = (data.players[0].id === this.socket.id);
       }
+      if (data.gameConfig) {
+        this.gameMode = data.gameConfig.mode;
+        this.level = data.gameConfig.level;
+        this.topic = data.gameConfig.topic;
+      }
       this.updateLobbyUI(data);
     });
 
