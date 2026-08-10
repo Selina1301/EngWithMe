@@ -14,6 +14,11 @@ window.onTugAction = function(data) {
     tugGameState.flagPos--;
     if (typeof window.render === 'function') window.render();
     checkTugWinCondition();
+  } else if (data.action === 'push') {
+    // Opponent answered wrong, flag moves towards us (+1)
+    tugGameState.flagPos++;
+    if (typeof window.render === 'function') window.render();
+    checkTugWinCondition();
   }
 };
 
@@ -81,7 +86,7 @@ window.renderTugGame = function(topic) {
         tugGameState.flagPos = Math.max(-tugGameState.target, tugGameState.flagPos - 1);
         pvpManager?.socket?.emit('game_action', {
            roomId: window.pvpRoomId || pvpManager.roomId,
-           action: 'pull'
+           action: 'push' // Opponent gains ground
         });
         checkTugWinCondition();
      }
