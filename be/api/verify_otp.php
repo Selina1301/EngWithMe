@@ -50,31 +50,48 @@ try {
         }
     }
     
-    $token = generate_remember_token();
-    $update = $pdo->prepare('UPDATE users SET status = "active", verification_token = NULL, last_login_at = NOW(), login_attempts = 0, attempt_lock_until = NULL, remember_token = ?, remember_until = DATE_ADD(NOW(), INTERVAL 30 DAY) WHERE id = ?');
-    $update->execute([$token, (int) $user['id']]);
-    $user['remember_token'] = $token;
+    $remember = isset($data['remember']) && ($data['remember'] === 1 || $data['remember'] === '1' || $data['remember'] === true || $data['remember'] === 'true');
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') 
+        || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https');
+
+    if ($remember) {
+        $token = generate_remember_token();
+        $update = $pdo->prepare('UPDATE users SET status = "active", verification_token = NULL, last_login_at = NOW(), login_attempts = 0, attempt_lock_until = NULL, remember_token = ?, remember_until = DATE_ADD(NOW(), INTERVAL 7 DAY) WHERE id = ?');
+        $update->execute([$token, (int) $user['id']]);
+        $user['remember_token'] = $token;
+        
+        setcookie('ewm_trusted_device', $user['id'] . ':' . $token, [
+            'expires' => time() + 86400 * 7,
+            'path' => '/',
+            'secure' => $isHttps,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+    } else {
+        $update = $pdo->prepare('UPDATE users SET status = "active", verification_token = NULL, last_login_at = NOW(), login_attempts = 0, attempt_lock_until = NULL, remember_token = NULL, remember_until = NULL WHERE id = ?');
+        $update->execute([(int) $user['id']]);
+        unset($user['remember_token']);
+        
+        setcookie('ewm_trusted_device', '', [
+            'expires' => time() - 3600,
+            'path' => '/',
+            'secure' => $isHttps,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+    }
+
     $user['status'] = 'active';
 
     // Tạo session đăng nhập chính thức
     session_regenerate_id(true);
     $_SESSION['user_id'] = (int) $user['id'];
-    
-    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') 
-        || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https');
 
     setcookie('ewm_logged_in', '1', [
         'expires' => time() + 86400 * 30,
         'path' => '/',
         'secure' => $isHttps,
         'httponly' => false,
-        'samesite' => 'Lax'
-    ]);
-    setcookie('ewm_trusted_device', $user['id'] . ':' . $token, [
-        'expires' => time() + 86400 * 30,
-        'path' => '/',
-        'secure' => $isHttps,
-        'httponly' => true,
         'samesite' => 'Lax'
     ]);
     
